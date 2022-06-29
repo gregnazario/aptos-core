@@ -9,7 +9,10 @@ use crate::{
     },
     ApiError,
 };
-use aptos_rest_client::{aptos::Balance, aptos_api_types::TransactionInfo};
+use aptos_rest_client::{
+    aptos::Balance,
+    aptos_api_types::{TransactionInfo, WriteSetChange},
+};
 use aptos_types::account_address::AccountAddress;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
@@ -373,16 +376,6 @@ pub struct Transaction {
     /// Related transactions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub related_transactions: Option<Vec<RelatedTransaction>>,
-}
-
-impl From<&TransactionInfo> for Transaction {
-    fn from(txn: &TransactionInfo) -> Self {
-        Transaction {
-            transaction_identifier: txn.into(),
-            operations: vec![],
-            related_transactions: None,
-        }
-    }
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]

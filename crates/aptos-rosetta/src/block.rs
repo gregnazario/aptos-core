@@ -4,14 +4,27 @@
 use crate::{
     common::{check_network, handle_request, strip_hex_prefix, with_context},
     error::{ApiError, ApiResult},
-    types::{Block, BlockRequest, BlockResponse},
+    types::{Block, BlockRequest, BlockResponse, Currency},
     RosettaContext,
 };
 use aptos_crypto::HashValue;
 use aptos_logger::{debug, trace};
-use aptos_rest_client::Transaction;
-use std::str::FromStr;
+use aptos_rest_client::{
+    aptos_api_types::{
+        MoveStructTag, MoveStructValue, MoveType, MoveValue::Address, TransactionInfo,
+        WriteSetChange,
+    },
+    Transaction,
+};
+use aptos_sdk::move_types::{
+    ident_str,
+    identifier::Identifier,
+    language_storage::{ModuleId, StructTag, TypeTag},
+};
+use aptos_types::account_address::AccountAddress;
+use std::{collections::HashMap, str::FromStr};
 use warp::Filter;
+use move_deps::move_resource_viewer::AnnotatedMoveStruct;
 
 pub fn routes(
     server_context: RosettaContext,
@@ -132,4 +145,104 @@ async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResu
     };
 
     Ok(response)
+}
+
+async fn get_transaction(rest_client: &aptos_rest_client::Client, txn: &TransactionInfo) {
+    // TODO: get new currencies from updates and store locally
+    // Convert operations from txn
+    let mut currencies: HashMap<String, Currency> = HashMap::new();
+    let mut changes = HashMap::new();
+    for change in txn.changes {
+        match change {
+            WriteSetChange::WriteResource { address, data, .. } => {
+                let test_coin = StructTag {
+                    address: AccountAddress::ONE,
+                    module: Identifier::new("Coin").unwrap(),
+                    name: Identifier::new("CoinStore").unwrap(),
+                    type_params: vec![TypeTag::Struct(StructTag {
+                        address: AccountAddress::ONE,
+                        module: Identifier::new("TestCoin").unwrap(),
+                        name: Identifier::new("TestCoin").unwrap(),
+                        type_params: vec![],
+                    })],
+                };
+
+                // If it is a coinstore
+                if data.typ.address == Address::from(AccountAddress::ONE)
+                    && data.typ.module == Identifier::new("Coin").unwrap()
+                    && data.typ.name == Identifier::new("CoinStore").unwrap()
+                {
+                    // Retrieve the coin type
+                    if let MoveType::Struct(coin_type) =
+                        data.typ.generic_type_params.first().unwrap()
+                    {
+                        // TODO: If the coin type is a generic, we should handle that, and we aren't here
+                        if !coin_type.generic_type_params.is_empty() {
+                            continue;
+                        }
+
+                        // If we already processed this coin type, let's continue
+                        if currencies.contains_key(&coin_type.to_string()) {
+                            // do nothing
+                        } else if let Some(currency) = get_currency(&rest_client, coin_type)? {
+                            currencies.insert(coin_type.to_string(), currency);
+                        } else {
+                            // This is a malformed currency, and we have to just skip it, otherwise the API will completely fail
+                            continue;
+                        }
+
+                        // Now get the balance changes
+                        let data: AnnotatedMoveStruct = data.data.into();
+                        for item in data.value {
+                            match item.0.as_str() {
+                                "deposit_events" => {
+                                    item.1.
+                                },
+                                "withdraw_events" => {},
+                                _ => continue,
+                            }
+                        }
+                        match data.data {
+                            MoveStructValue(inner) => inner,
+                        }
+                    } else {
+                        // Continue, but this is a bad coin so we'll skip it
+                        continue;
+                    }
+                }
+            }
+            // skip non resource changes
+            _ => continue,
+        }
+    }
+
+    Transaction {
+        transaction_identifier: txn.into(),
+        operations: vec![],
+        related_transactions: None,
+    }
+}
+
+fn get_currency(
+    rest_client: &aptos_rest_client::Client,
+    coin_type: &MoveStructTag,
+) -> ApiResult<Option<Currency>> {
+    let response = rest_client
+        .get_account_resource(coin_type.address.into(), &coin_type.to_string())
+        .await?;
+
+    // TODO: Handle all the unwraps
+    if let Some(resource) = response.into_inner() {
+        if let Some(data) = resource.data.as_object() {
+            let decimals = u64::from_str(data.get("decimals").unwrap().as_str().unwrap()).unwrap();
+            let symbol = data.get("symbol").unwrap().as_str().unwrap();
+
+            return Ok(Some(Currency {
+                symbol: symbol.to_string(),
+                decimals,
+            }));
+        }
+    }
+    // TODO: This is a bad coin, but we have to skip it for now
+    Ok(None)
 }
