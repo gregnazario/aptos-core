@@ -12,6 +12,7 @@ mod page;
 pub mod param;
 pub mod runtime;
 mod state;
+mod tables;
 mod transactions;
 pub(crate) mod version;
 

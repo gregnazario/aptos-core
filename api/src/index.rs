@@ -8,7 +8,7 @@ use crate::{
     failpoint::fail_point,
     log,
     metrics::{metrics, status_metrics},
-    state, transactions,
+    tables, transactions,
 };
 use aptos_api_types::{Error, Response};
 
@@ -31,6 +31,8 @@ pub fn routes(context: Context) -> impl Filter<Extract = impl Reply, Error = Inf
         .or(accounts::get_account(context.clone()))
         .or(accounts::get_account_resources(context.clone()))
         .or(accounts::get_account_modules(context.clone()))
+        .or(accounts::get_account_resource(context.clone()))
+        .or(accounts::get_account_module(context.clone()))
         .or(transactions::get_transaction(context.clone()))
         .or(transactions::get_transactions(context.clone()))
         .or(transactions::get_account_transactions(context.clone()))
@@ -41,9 +43,7 @@ pub fn routes(context: Context) -> impl Filter<Extract = impl Reply, Error = Inf
         .or(transactions::create_signing_message(context.clone()))
         .or(events::get_events_by_event_key(context.clone()))
         .or(events::get_events_by_event_handle(context.clone()))
-        .or(state::get_account_resource(context.clone()))
-        .or(state::get_account_module(context.clone()))
-        .or(state::get_table_item(context.clone()))
+        .or(tables::get_table_item(context.clone()))
         .or(context.health_check_route().with(metrics("health_check")))
         .with(
             warp::cors()
