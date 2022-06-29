@@ -3,7 +3,7 @@
 
 use crate::{
     error::{ApiError, ApiResult},
-    types::NetworkIdentifier,
+    types::{BlockIdentifier, NetworkIdentifier},
     RosettaContext,
 };
 use aptos_crypto::ValidCryptoMaterial;
@@ -111,10 +111,15 @@ pub async fn get_account_balance(
         .map_err(|_| ApiError::AccountNotFound)
 }
 
-pub async fn get_genesis_transaction(
+pub async fn get_transaction(
     rest_client: &aptos_rest_client::Client,
-) -> ApiResult<Response<Transaction>> {
-    Ok(rest_client.get_transaction_by_version(0).await?)
+    version: u64,
+) -> ApiResult<(BlockIdentifier, Response<Transaction>)> {
+    let response = rest_client.get_transaction_by_version(version).await?;
+    Ok((
+        BlockIdentifier::from(response.inner().transaction_info()?),
+        response,
+    ))
 }
 
 /// Retrieve the timestamp according ot the Rosetta spec (milliseconds)

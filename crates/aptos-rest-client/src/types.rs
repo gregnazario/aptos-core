@@ -33,6 +33,21 @@ where
     s.parse::<T>().map_err(D::Error::custom)
 }
 
+pub fn deserialize_from_string_option<'de, D, T>(deserializer: D) -> Result<Option<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: FromStr,
+    <T as FromStr>::Err: std::fmt::Display,
+{
+    use serde::de::Error;
+
+    if let Some(s) = <Option<String>>::deserialize(deserializer)? {
+        s.parse::<T>().map(Some).map_err(D::Error::custom)
+    } else {
+        Ok(None)
+    }
+}
+
 pub fn deserialize_from_prefixed_hex_string<'de, D, T>(deserializer: D) -> Result<T, D::Error>
 where
     D: Deserializer<'de>,

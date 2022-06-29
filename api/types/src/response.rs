@@ -11,6 +11,7 @@ pub const X_APTOS_CHAIN_ID: &str = "X-Aptos-Chain-Id";
 pub const X_APTOS_EPOCH: &str = "X-Aptos-Epoch";
 pub const X_APTOS_LEDGER_VERSION: &str = "X-Aptos-Ledger-Version";
 pub const X_APTOS_LEDGER_TIMESTAMP: &str = "X-Aptos-Ledger-TimestampUsec";
+pub const X_APTOS_OLDEST_LEDGER_VERSION: &str = "X-Aptos-Oldest-Ledger-Version";
 
 pub struct Response {
     pub ledger_info: LedgerInfo,
@@ -37,6 +38,9 @@ impl warp::Reply for Response {
             X_APTOS_LEDGER_VERSION,
             self.ledger_info.ledger_version.into(),
         );
+        if let Some(oldest_ledger_version) = self.ledger_info.oldest_ledger_version {
+            headers.insert(X_APTOS_OLDEST_LEDGER_VERSION, oldest_ledger_version.into());
+        }
         headers.insert(
             X_APTOS_LEDGER_TIMESTAMP,
             self.ledger_info.ledger_timestamp.into(),

@@ -3,12 +3,12 @@
 
 use crate::{
     common::{
-        check_network, get_genesis_transaction, get_timestamp, handle_request, with_context,
+        check_network, get_timestamp, get_transaction, handle_request, with_context,
         with_empty_request, EmptyRequest,
     },
-    error::ApiError,
+    error::{ApiError, ApiResult},
     types::{
-        Allow, BlockIdentifier, NetworkListResponse, NetworkOptionsResponse, NetworkRequest,
+        Allow, NetworkListResponse, NetworkOptionsResponse, NetworkRequest,
         NetworkStatusResponse, OperationStatusType, OperationType, Peer, Version,
     },
     RosettaContext, MIDDLEWARE_VERSION, NODE_VERSION, ROSETTA_VERSION,
@@ -124,7 +124,7 @@ async fn network_options(
 async fn network_status(
     request: NetworkRequest,
     server_context: RosettaContext,
-) -> Result<NetworkStatusResponse, ApiError> {
+) -> ApiResult<NetworkStatusResponse> {
     debug!("/network/status");
     trace!(
         request = ?request,
@@ -135,19 +135,19 @@ async fn network_status(
     check_network(request.network_identifier, &server_context)?;
 
     let rest_client = server_context.rest_client()?;
-    let response = get_genesis_transaction(rest_client).await?;
+    // TODO: Cache the genesis transaction?
+    let (genesis_txn, response) = get_transaction(rest_client, 0).await?;
     let state = response.state();
-    let transaction = response.inner();
 
-    // TODO: Cache the genesis transaction
-    let genesis_txn = BlockIdentifier::from(transaction.transaction_info()?);
+    // If there is an oldest block identifier, retrieve the transaction
+    let oldest_txn = if let Some(oldest_version) = state.oldest_ledger_version {
+        let (oldest_txn, _) = get_transaction(rest_client, oldest_version).await?;
+        Some(oldest_txn)
+    } else {
+        None
+    };
 
-    let response = rest_client
-        .get_transaction_by_version(state.version)
-        .await?;
-    let transaction = response.inner();
-    let latest_txn = BlockIdentifier::from(transaction.transaction_info()?);
-
+    let (latest_txn, response) = get_transaction(rest_client, state.version).await?;
     let current_block_timestamp = get_timestamp(&response);
 
     // TODO: add peers
@@ -157,8 +157,7 @@ async fn network_status(
         current_block_identifier: latest_txn,
         current_block_timestamp,
         genesis_block_identifier: genesis_txn,
-        // TODO: Fill in with oldest block not pruned
-        oldest_block_identifier: None,
+        oldest_block_identifier: oldest_txn,
         sync_status: None,
         peers,
     };
