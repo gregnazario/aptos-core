@@ -8,8 +8,8 @@ use crate::{
     },
     error::{ApiError, ApiResult},
     types::{
-        Allow, NetworkListResponse, NetworkOptionsResponse, NetworkRequest,
-        NetworkStatusResponse, OperationStatusType, OperationType, Peer, Version,
+        Allow, NetworkListResponse, NetworkOptionsResponse, NetworkRequest, NetworkStatusResponse,
+        OperationStatusType, OperationType, Peer, Version,
     },
     RosettaContext, MIDDLEWARE_VERSION, NODE_VERSION, ROSETTA_VERSION,
 };

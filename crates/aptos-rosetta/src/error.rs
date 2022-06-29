@@ -15,7 +15,7 @@ pub enum ApiError {
     #[error("Aptos error {0}")]
     AptosError(String),
     #[error("bad block request")]
-    BadBlockRequest,
+    BadBlockRequest(String),
     #[error("bad network")]
     BadNetwork,
     #[error("deserialization failed: {0}")]
@@ -40,6 +40,10 @@ pub enum ApiError {
     HistoricBalancesUnsupported,
     #[error("node is offline")]
     NodeIsOffline,
+    #[error("transaction not found")]
+    TransactionNotFound,
+    #[error("failed to retrieve transaction")]
+    TransactionRetrievalFailed(String),
 }
 
 impl ApiError {
@@ -47,7 +51,7 @@ impl ApiError {
         use ApiError::*;
         vec![
             AptosError(String::new()),
-            BadBlockRequest,
+            BadBlockRequest(String::new()),
             BadNetwork,
             DeserializationFailed(String::new()),
             BadTransferOperations(String::new()),
@@ -60,6 +64,8 @@ impl ApiError {
             BadSignatureCount,
             HistoricBalancesUnsupported,
             NodeIsOffline,
+            TransactionNotFound,
+            TransactionRetrievalFailed(String::new()),
         ]
     }
 
@@ -67,7 +73,7 @@ impl ApiError {
         use ApiError::*;
         match self {
             AptosError(_) => 10,
-            BadBlockRequest => 20,
+            BadBlockRequest(_) => 20,
             BadNetwork => 40,
             DeserializationFailed(_) => 50,
             BadTransferOperations(_) => 70,
@@ -80,11 +86,14 @@ impl ApiError {
             BadSignatureCount => 160,
             HistoricBalancesUnsupported => 170,
             NodeIsOffline => 180,
+            TransactionRetrievalFailed(_) => 190,
+            TransactionNotFound => 191,
         }
     }
 
     pub fn retriable(&self) -> bool {
-        matches!(self, ApiError::AccountNotFound)
+        use ApiError::*;
+        matches!(self, AccountNotFound | TransactionNotFound)
     }
 
     pub fn status_code(&self) -> StatusCode {

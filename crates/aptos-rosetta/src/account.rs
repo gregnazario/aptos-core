@@ -57,15 +57,13 @@ async fn account_balance(
     let txns = rest_client
         .get_transactions(Some(state.version), Some(1))
         .await
-        .map_err(|err| ApiError::AptosError(err.to_string()))?
+        .map_err(|err| ApiError::TransactionRetrievalFailed(err.to_string()))?
         .into_inner();
-    let txn = txns
-        .first()
-        .ok_or_else(|| ApiError::AptosError("Transaction not found".to_string()))?;
+    let txn = txns.first().ok_or(ApiError::TransactionNotFound)?;
 
     let txn_info = txn
         .transaction_info()
-        .map_err(|err| ApiError::AptosError(err.to_string()))?;
+        .map_err(|err| ApiError::TransactionRetrievalFailed(err.to_string()))?;
 
     let response = get_account_balance(rest_client, address).await?;
     let balance = response.into_inner();
