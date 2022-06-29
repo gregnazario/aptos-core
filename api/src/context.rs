@@ -90,11 +90,16 @@ impl Context {
         Ok(LedgerInfo::new(
             &self.chain_id(),
             &self.get_latest_ledger_info_with_signatures()?,
+            self.get_oldest_version()?,
         ))
     }
 
     pub fn get_latest_ledger_info_with_signatures(&self) -> Result<LedgerInfoWithSignatures> {
         self.db.get_latest_ledger_info()
+    }
+
+    pub fn get_oldest_version(&self) -> Result<Option<Version>> {
+        self.db.get_first_txn_version()
     }
 
     pub fn get_state_value(&self, state_key: &StateKey, version: u64) -> Result<Option<Vec<u8>>> {

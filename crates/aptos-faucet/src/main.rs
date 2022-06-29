@@ -226,6 +226,7 @@ mod tests {
             epoch: 1,
             ledger_version: 5.into(),
             ledger_timestamp: 5.into(),
+            oldest_ledger_version: None,
         };
         Response::new(li, body).unwrap().into_response()
     }
