@@ -33,27 +33,27 @@ export class Transactions<SecurityDataType = unknown> {
    * @tags transactions
    * @name GetTransactions
    * @summary Get transactions
-   * @request GET:/transactions
+   * @request GET:/v1/transactions
    */
   getTransactions = (query?: { start?: number; limit?: number }, params: RequestParams = {}) =>
     this.http.request<OnChainTransaction[], AptosError>({
-      path: `/transactions`,
+      path: `/v1/transactions`,
       method: "GET",
       query: query,
       format: "json",
       ...params,
     });
   /**
-   * @description **Submit transaction using JSON without additional tools** * Send [POST /transactions/signing_message](#operation/create-signing-message) to create transaction signing message. * Sign the transaction signing message and create transaction signature. * Submit the user transaction request with the transaction siganture. The request header "Content-Type" must set to "application/json".
+   * @description **Submit transaction using JSON without additional tools** * Send [POST /v1/transactions/signing_message](#operation/create-signing-message) to create transaction signing message. * Sign the transaction signing message and create transaction signature. * Submit the user transaction request with the transaction siganture. The request header "Content-Type" must set to "application/json".
    *
    * @tags transactions
    * @name SubmitTransaction
    * @summary Submit transaction
-   * @request POST:/transactions
+   * @request POST:/v1/transactions
    */
   submitTransaction = (data: SubmitTransactionRequest, params: RequestParams = {}) =>
     this.http.request<PendingTransaction, AptosError>({
-      path: `/transactions`,
+      path: `/v1/transactions`,
       method: "POST",
       body: data,
       type: ContentType.Json,
@@ -66,11 +66,11 @@ export class Transactions<SecurityDataType = unknown> {
    * @tags transactions
    * @name SimulateTransaction
    * @summary Simulate transaction
-   * @request POST:/transactions/simulate
+   * @request POST:/v1/transactions/simulate
    */
   simulateTransaction = (data: SubmitTransactionRequest, params: RequestParams = {}) =>
     this.http.request<OnChainTransaction[], AptosError>({
-      path: `/transactions/simulate`,
+      path: `/v1/transactions/simulate`,
       method: "POST",
       body: data,
       type: ContentType.Json,
@@ -83,11 +83,11 @@ export class Transactions<SecurityDataType = unknown> {
    * @tags transactions
    * @name GetTransaction
    * @summary Get transaction
-   * @request GET:/transactions/{txn_hash_or_version}
+   * @request GET:/v1/transactions/{txn_hash_or_version}
    */
   getTransaction = (txnHashOrVersion: string, params: RequestParams = {}) =>
     this.http.request<Transaction, AptosError>({
-      path: `/transactions/${txnHashOrVersion}`,
+      path: `/v1/transactions/${txnHashOrVersion}`,
       method: "GET",
       format: "json",
       ...params,
@@ -98,11 +98,11 @@ export class Transactions<SecurityDataType = unknown> {
    * @tags transactions
    * @name CreateSigningMessage
    * @summary Create transaction signing message
-   * @request POST:/transactions/signing_message
+   * @request POST:/v1/transactions/signing_message
    */
   createSigningMessage = (data: UserCreateSigningMessageRequest, params: RequestParams = {}) =>
     this.http.request<{ message: HexEncodedBytes }, AptosError>({
-      path: `/transactions/signing_message`,
+      path: `/v1/transactions/signing_message`,
       method: "POST",
       body: data,
       type: ContentType.Json,

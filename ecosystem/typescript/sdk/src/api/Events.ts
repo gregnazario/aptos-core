@@ -25,11 +25,11 @@ export class Events<SecurityDataType = unknown> {
    * @tags events
    * @name GetEventsByEventKey
    * @summary Get events by event key
-   * @request GET:/events/{event_key}
+   * @request GET:/v1/events/{event_key}
    */
   getEventsByEventKey = (eventKey: HexEncodedBytes, params: RequestParams = {}) =>
     this.http.request<Event[], AptosError>({
-      path: `/events/${eventKey}`,
+      path: `/v1/events/${eventKey}`,
       method: "GET",
       format: "json",
       ...params,

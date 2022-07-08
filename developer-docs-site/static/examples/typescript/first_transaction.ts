@@ -59,7 +59,7 @@ export class RestClient {
   //:!:>section_3
   /** Returns the sequence number and authentication key for an account */
   async account(accountAddress: string): Promise<Record<string, string> & { sequence_number: string }> {
-    const response = await fetch(`${this.url}/accounts/${accountAddress}`, { method: "GET" });
+    const response = await fetch(`${this.url}/v1/accounts/${accountAddress}`, { method: "GET" });
     if (response.status != 200) {
       assert(response.status == 200, await response.text());
     }
@@ -68,7 +68,7 @@ export class RestClient {
 
   /** Returns all resources associated with the account */
   async accountResource(accountAddress: string, resourceType: string): Promise<any> {
-    const response = await fetch(`${this.url}/accounts/${accountAddress}/resource/${resourceType}`, { method: "GET" });
+    const response = await fetch(`${this.url}/v1/accounts/${accountAddress}/resource/${resourceType}`, { method: "GET" });
     if (response.status == 404) {
       return null;
     }
@@ -100,7 +100,7 @@ export class RestClient {
   /** Converts a transaction request produced by `generate_transaction` into a properly signed
    transaction, which can then be submitted to the blockchain. */
   async signTransaction(accountFrom: Account, txnRequest: TxnRequest): Promise<TxnRequest> {
-    const response = await fetch(`${this.url}/transactions/signing_message`, {
+    const response = await fetch(`${this.url}/v1/transactions/signing_message`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(txnRequest),
@@ -122,7 +122,7 @@ export class RestClient {
 
   /** Submits a signed transaction to the blockchain. */
   async submitTransaction(txnRequest: TxnRequest): Promise<Record<string, any>> {
-    const response = await fetch(`${this.url}/transactions`, {
+    const response = await fetch(`${this.url}/v1/transactions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(txnRequest),
@@ -141,7 +141,7 @@ export class RestClient {
   }
 
   async transactionPending(txnHash: string): Promise<boolean> {
-    const response = await fetch(`${this.url}/transactions/${txnHash}`, { method: "GET" });
+    const response = await fetch(`${this.url}/v1/transactions/${txnHash}`, { method: "GET" });
     if (response.status == 404) {
       return true;
     }

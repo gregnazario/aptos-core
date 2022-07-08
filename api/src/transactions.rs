@@ -36,9 +36,9 @@ use warp::{
     reply, Filter, Rejection, Reply,
 };
 
-// GET /transactions/{txn-hash / version}
+// GET /v1/transactions/{txn-hash / version}
 pub fn get_json_transaction(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions" / TransactionIdParam)
+    warp::path!("v1" / "transactions" / TransactionIdParam)
         .and(warp::get())
         .and(context.filter())
         .map(|id, context| (id, context, AcceptType::Json))
@@ -48,9 +48,9 @@ pub fn get_json_transaction(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /transactions/{txn-hash / version}
+// GET /v1/transactions/{txn-hash / version}
 pub fn get_bcs_transaction(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions" / TransactionIdParam)
+    warp::path!("v1" / "transactions" / TransactionIdParam)
         .and(warp::get())
         .and(warp::header::exact_ignore_case(ACCEPT.as_str(), BCS))
         .and(context.filter())
@@ -61,9 +61,9 @@ pub fn get_bcs_transaction(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /transactions?start={u64}&limit={u16}
+// GET /v1/transactions?start={u64}&limit={u16}
 pub fn get_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions")
+    warp::path!("v1" / "transactions")
         .and(warp::get())
         .and(warp::query::<Page>())
         .and(context.filter())
@@ -74,9 +74,9 @@ pub fn get_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /transactions?start={u64}&limit={u16}
+// GET /v1/transactions?start={u64}&limit={u16}
 pub fn get_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions")
+    warp::path!("v1" / "transactions")
         .and(warp::get())
         .and(warp::header::exact_ignore_case(ACCEPT.as_str(), BCS))
         .and(warp::query::<Page>())
@@ -88,9 +88,9 @@ pub fn get_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /accounts/{address}/transactions?start={u64}&limit={u16}
+// GET /v1/accounts/{address}/transactions?start={u64}&limit={u16}
 pub fn get_account_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "transactions")
+    warp::path!("v1" / "accounts" / AddressParam / "transactions")
         .and(warp::get())
         .and(warp::query::<Page>())
         .and(context.filter())
@@ -99,9 +99,9 @@ pub fn get_account_transactions(context: Context) -> BoxedFilter<(impl Reply,)> 
         .boxed()
 }
 
-// POST /transactions/simulate with JSON
+// POST /v1/transactions/simulate with JSON
 pub fn simulate_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions" / "simulate")
+    warp::path!("v1" / "transactions" / "simulate")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),
@@ -113,9 +113,9 @@ pub fn simulate_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)
         .boxed()
 }
 
-// POST /transactions/simulate with BCS
+// POST /v1/transactions/simulate with BCS
 pub fn simulate_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions" / "simulate")
+    warp::path!("v1" / "transactions" / "simulate")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),
@@ -131,9 +131,9 @@ pub fn simulate_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)>
         .boxed()
 }
 
-// POST /transactions with JSON
+// POST /v1/transactions with JSON
 pub fn submit_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions")
+    warp::path!("v1" / "transactions")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),
@@ -145,14 +145,14 @@ pub fn submit_json_transactions(context: Context) -> BoxedFilter<(impl Reply,)> 
         .boxed()
 }
 
-// POST /transactions with BCS
+// POST /v1/transactions with BCS
 pub fn submit_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
     // The `warp::body::bytes` does not check content-type like `warp::body::json`,
     // so we used `warp::header::exact` to ensure only BCS signed txn matches this route.
     // When the content-type is invalid (not json / bcs signed txn), `submit_json_transactions`
     // route will emit correct rejection (UnsupportedMediaType) which will be handled by recover
     // handler, the invalid header error should be ignored.
-    warp::path!("transactions")
+    warp::path!("v1" / "transactions")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),
@@ -168,9 +168,9 @@ pub fn submit_bcs_transactions(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// POST /transactions/signing_message
+// POST /v1/transactions/signing_message
 pub fn create_signing_message(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("transactions" / "signing_message")
+    warp::path!("v1" / "transactions" / "signing_message")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),

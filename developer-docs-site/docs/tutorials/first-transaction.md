@@ -316,6 +316,6 @@ The data can be verified by visiting either a REST interface or the explorer:
 The Aptos devnet is reset from time to time, so the above links may not work. Try the tutorial yourself and check the accounts in the [Aptos Explorer][bob_account_explorer] then.
 
 [account_basics]: /concepts/basics-accounts
-[alice_account_rest]: /rest-api/#tag/accounts/e26d69b8d3ff12874358da6a4082a2ac/resources
+[alice_account_rest]: /rest-api/#tag/v1/accounts/e26d69b8d3ff12874358da6a4082a2ac/resources
 [bob_account_explorer]: https://aptos-explorer.netlify.app/account/c8585f009c8a90f22c6b603f28b9ed8c
 [rest_spec]: /rest-api

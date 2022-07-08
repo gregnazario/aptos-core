@@ -118,7 +118,7 @@ export class TokenClient {
 
   //:!:>section_3
   async tableItem(handle: string, keyType: string, valueType: string, key: any): Promise<any> {
-    const response = await fetch(`${this.restClient.url}/tables/${handle}/item`, {
+    const response = await fetch(`${this.restClient.url}/v1/tables/${handle}/item`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

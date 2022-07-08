@@ -14,7 +14,10 @@ async fn test_get_index() {
 #[tokio::test]
 async fn test_returns_not_found_for_the_invalid_path() {
     let mut context = new_test_context(current_function_name!());
-    let resp = context.expect_status_code(404).get("/invalid_path").await;
+    let resp = context
+        .expect_status_code(404)
+        .get("/v1/invalid_path")
+        .await;
     context.check_golden_output(resp);
 }
 
@@ -23,7 +26,7 @@ async fn test_return_bad_request_if_method_not_allowed() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(405)
-        .post("/accounts/0x1/resources", json!({}))
+        .post("/v1/accounts/0x1/resources", json!({}))
         .await;
     context.check_golden_output(resp);
 }
@@ -51,7 +54,7 @@ async fn test_openapi_spec() {
 #[tokio::test]
 async fn test_cors() {
     let context = new_test_context(current_function_name!());
-    let paths = ["/openapi.yaml", "/spec.html", "/", "/transactions"];
+    let paths = ["/openapi.yaml", "/spec.html", "/v1", "/v1/transactions"];
     for path in paths {
         let req = warp::test::request()
             .header("origin", "test")
@@ -69,7 +72,7 @@ async fn test_cors() {
 #[tokio::test]
 async fn test_cors_forbidden() {
     let mut context = new_test_context(current_function_name!());
-    let paths = ["/openapi.yaml", "/spec.html", "/", "/transactions"];
+    let paths = ["/openapi.yaml", "/spec.html", "/v1", "/v1/transactions"];
     for path in paths {
         let req = warp::test::request()
             .header("origin", "test")
@@ -93,7 +96,7 @@ async fn test_cors_on_non_200_responses() {
         .header("Access-Control-Request-Headers", "Content-Type")
         .header("Access-Control-Request-Method", "GET")
         .method("OPTIONS")
-        .path("/accounts/nope/resources");
+        .path("/v1/accounts/nope/resources");
     let preflight_resp = context.reply(preflight_req).await;
     assert_eq!(preflight_resp.status(), 200);
     let cors_header = preflight_resp
@@ -108,7 +111,7 @@ async fn test_cors_on_non_200_responses() {
         .header("Access-Control-Request-Headers", "Content-Type")
         .header("Access-Control-Request-Method", "GET")
         .method("GET")
-        .path("/accounts/nope/resources");
+        .path("/v1/accounts/nope/resources");
     let resp = context.reply(req).await;
     assert_eq!(resp.status(), 400);
     let cors_header = resp.headers().get("access-control-allow-origin").unwrap();

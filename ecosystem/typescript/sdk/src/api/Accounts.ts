@@ -35,11 +35,11 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags accounts, state
    * @name GetAccount
    * @summary Get account
-   * @request GET:/accounts/{address}
+   * @request GET:/v1/accounts/{address}
    */
   getAccount = (address: Address, params: RequestParams = {}) =>
     this.http.request<Account, AptosError>({
-      path: `/accounts/${address}`,
+      path: `/v1/accounts/${address}`,
       method: "GET",
       format: "json",
       ...params,
@@ -50,11 +50,11 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags accounts, state
    * @name GetAccountResources
    * @summary Get account resources
-   * @request GET:/accounts/{address}/resources
+   * @request GET:/v1/accounts/{address}/resources
    */
   getAccountResources = (address: Address, query?: { version?: LedgerVersion }, params: RequestParams = {}) =>
     this.http.request<AccountResource[], AptosError>({
-      path: `/accounts/${address}/resources`,
+      path: `/v1/accounts/${address}/resources`,
       method: "GET",
       query: query,
       format: "json",
@@ -66,7 +66,7 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags accounts, state
    * @name GetAccountResource
    * @summary Get resource by account address and resource type.
-   * @request GET:/accounts/{address}/resource/{resource_type}
+   * @request GET:/v1/accounts/{address}/resource/{resource_type}
    */
   getAccountResource = (
     address: Address,
@@ -75,7 +75,7 @@ export class Accounts<SecurityDataType = unknown> {
     params: RequestParams = {},
   ) =>
     this.http.request<AccountResource, AptosError>({
-      path: `/accounts/${address}/resource/${resourceType}`,
+      path: `/v1/accounts/${address}/resource/${resourceType}`,
       method: "GET",
       query: query,
       format: "json",
@@ -87,11 +87,11 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags accounts, state
    * @name GetAccountModules
    * @summary Get account modules
-   * @request GET:/accounts/{address}/modules
+   * @request GET:/v1/accounts/{address}/modules
    */
   getAccountModules = (address: Address, query?: { version?: LedgerVersion }, params: RequestParams = {}) =>
     this.http.request<MoveModule[], AptosError>({
-      path: `/accounts/${address}/modules`,
+      path: `/v1/accounts/${address}/modules`,
       method: "GET",
       query: query,
       format: "json",
@@ -103,7 +103,7 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags accounts, state
    * @name GetAccountModule
    * @summary Get module by module id.
-   * @request GET:/accounts/{address}/module/{module_name}
+   * @request GET:/v1/accounts/{address}/module/{module_name}
    */
   getAccountModule = (
     address: Address,
@@ -112,7 +112,7 @@ export class Accounts<SecurityDataType = unknown> {
     params: RequestParams = {},
   ) =>
     this.http.request<MoveModule, AptosError>({
-      path: `/accounts/${address}/module/${moduleName}`,
+      path: `/v1/accounts/${address}/module/${moduleName}`,
       method: "GET",
       query: query,
       format: "json",
@@ -124,11 +124,11 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags transactions
    * @name GetAccountTransactions
    * @summary Get account transactions
-   * @request GET:/accounts/{address}/transactions
+   * @request GET:/v1/accounts/{address}/transactions
    */
   getAccountTransactions = (address: Address, query?: { start?: number; limit?: number }, params: RequestParams = {}) =>
     this.http.request<OnChainTransaction[], AptosError>({
-      path: `/accounts/${address}/transactions`,
+      path: `/v1/accounts/${address}/transactions`,
       method: "GET",
       query: query,
       format: "json",
@@ -140,7 +140,7 @@ export class Accounts<SecurityDataType = unknown> {
    * @tags events
    * @name GetEventsByEventHandle
    * @summary Get events by event handle
-   * @request GET:/accounts/{address}/events/{event_handle_struct}/{field_name}
+   * @request GET:/v1/accounts/{address}/events/{event_handle_struct}/{field_name}
    */
   getEventsByEventHandle = (
     address: Address,
@@ -150,7 +150,7 @@ export class Accounts<SecurityDataType = unknown> {
     params: RequestParams = {},
   ) =>
     this.http.request<Event[], AptosError>({
-      path: `/accounts/${address}/events/${eventHandleStruct}/${fieldName}`,
+      path: `/v1/accounts/${address}/events/${eventHandleStruct}/${fieldName}`,
       method: "GET",
       query: query,
       format: "json",

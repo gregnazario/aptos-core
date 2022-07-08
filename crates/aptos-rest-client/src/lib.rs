@@ -224,7 +224,7 @@ impl Client {
     ) -> Result<reqwest::Response> {
         let url = self
             .base_url
-            .join(&format!("transactions/{}", version_or_hash))?;
+            .join(&format!("v1/transactions/{}", version_or_hash))?;
 
         Ok(self.inner.get(url).send().await?)
     }
@@ -237,7 +237,7 @@ impl Client {
     ) -> Result<Response<Vec<Transaction>>> {
         let url = self
             .base_url
-            .join(&format!("accounts/{}/transactions", address))?;
+            .join(&format!("v1/accounts/{}/transactions", address))?;
 
         let mut request = self.inner.get(url);
         if let Some(start) = start {
@@ -259,7 +259,7 @@ impl Client {
     ) -> Result<Response<Vec<Resource>>> {
         let url = self
             .base_url
-            .join(&format!("accounts/{}/resources", address))?;
+            .join(&format!("v1/accounts/{}/resources", address))?;
 
         let response = self.inner.get(url).send().await?;
 
@@ -272,7 +272,7 @@ impl Client {
         version: u64,
     ) -> Result<Response<Vec<Resource>>> {
         let url = self.base_url.join(&format!(
-            "accounts/{}/resources?version={}",
+            "v1/accounts/{}/resources?version={}",
             address, version
         ))?;
 
@@ -306,9 +306,10 @@ impl Client {
         address: AccountAddress,
         resource_type: &str,
     ) -> Result<Response<Option<Resource>>> {
-        let url = self
-            .base_url
-            .join(&format!("accounts/{}/resource/{}", address, resource_type))?;
+        let url = self.base_url.join(&format!(
+            "v1/accounts/{}/resource/{}",
+            address, resource_type
+        ))?;
 
         let response = self.inner.get(url).send().await?;
         self.json(response).await
@@ -321,7 +322,7 @@ impl Client {
         version: u64,
     ) -> Result<Response<Option<Resource>>> {
         let url = self.base_url.join(&format!(
-            "accounts/{}/resource/{}?version={}",
+            "v1/accounts/{}/resource/{}?version={}",
             address, resource_type, version
         ))?;
 
@@ -335,7 +336,7 @@ impl Client {
     ) -> Result<Response<Vec<MoveModuleBytecode>>> {
         let url = self
             .base_url
-            .join(&format!("accounts/{}/modules", address))?;
+            .join(&format!("v1/accounts/{}/modules", address))?;
 
         let response = self.inner.get(url).send().await?;
         self.json(response).await
@@ -350,7 +351,7 @@ impl Client {
     ) -> Result<Response<Value>> {
         let url = self
             .base_url
-            .join(&format!("tables/{}/item", table_handle))?;
+            .join(&format!("v1/tables/{}/item", table_handle))?;
         let data = json!({
             "key_type": key_type,
             "value_type": value_type,
@@ -362,7 +363,7 @@ impl Client {
     }
 
     pub async fn get_account(&self, address: AccountAddress) -> Result<Response<Account>> {
-        let url = self.base_url.join(&format!("accounts/{}", address))?;
+        let url = self.base_url.join(&format!("v1/accounts/{}", address))?;
         let response = self.inner.get(url).send().await?;
         self.json(response).await
     }

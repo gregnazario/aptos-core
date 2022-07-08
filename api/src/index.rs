@@ -77,7 +77,7 @@ pub fn openapi_spec() -> BoxedFilter<(impl Reply,)> {
 
 // GET /
 pub fn index(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path::end()
+    warp::path("v1")
         .and(warp::get())
         .and(context.filter())
         .and_then(handle_index)

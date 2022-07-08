@@ -38,7 +38,7 @@ class RestClient:
     def account(self, account_address: AccountAddress) -> Dict[str, str]:
         """Returns the sequence number and authentication key for an account"""
 
-        response = self.client.get(f"{self.base_url}/accounts/{account_address}")
+        response = self.client.get(f"{self.base_url}/v1/accounts/{account_address}")
         assert response.status_code == 200, f"{response.text} - {account_address}"
         return response.json()
 
@@ -56,7 +56,7 @@ class RestClient:
         self, account_address: AccountAddress, resource_type: str
     ) -> Optional[Dict[str, Any]]:
         response = self.client.get(
-            f"{self.base_url}/accounts/{account_address}/resource/{resource_type}"
+            f"{self.base_url}/v1/accounts/{account_address}/resource/{resource_type}"
         )
         if response.status_code == 404:
             return None
@@ -67,7 +67,7 @@ class RestClient:
         self, handle: str, key_type: str, value_type: str, key: Any
     ) -> Any:
         response = self.client.post(
-            f"{self.base_url}/tables/{handle}/item",
+            f"{self.base_url}/v1/tables/{handle}/item",
             json={
                 "key_type": key_type,
                 "value_type": value_type,

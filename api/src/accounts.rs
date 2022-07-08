@@ -30,9 +30,9 @@ use move_deps::move_core_types::{
 use std::convert::TryInto;
 use warp::{filters::BoxedFilter, Filter, Rejection, Reply};
 
-// GET /accounts/<address>
+// GET /v1/accounts/<address>
 pub fn get_account(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam)
+    warp::path!("v1" / "accounts" / AddressParam)
         .and(warp::get())
         .and(context.filter())
         .and_then(handle_get_account)
@@ -40,9 +40,9 @@ pub fn get_account(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /accounts/<address>/resources
+// GET /v1/accounts/<address>/resources
 pub fn get_account_resources(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "resources")
+    warp::path!("v1" / "accounts" / AddressParam / "resources")
         .and(warp::get())
         .and(context.filter())
         .and(warp::query::<Version>())
@@ -53,9 +53,9 @@ pub fn get_account_resources(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /accounts/<address>/modules
+// GET /v1/accounts/<address>/modules
 pub fn get_account_modules(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "modules")
+    warp::path!("v1" / "accounts" / AddressParam / "modules")
         .and(warp::get())
         .and(context.filter())
         .and(warp::query::<Version>())

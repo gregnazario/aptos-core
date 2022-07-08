@@ -17,9 +17,9 @@ use anyhow::Result;
 use aptos_types::event::EventKey;
 use warp::{filters::BoxedFilter, http::header::ACCEPT, Filter, Rejection, Reply};
 
-// GET /events/<event_key>
+// GET /v1/events/<event_key>
 pub fn get_json_events_by_event_key(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("events" / EventKeyParam)
+    warp::path!("v1" / "events" / EventKeyParam)
         .and(warp::get())
         .and(warp::query::<Page>())
         .and(context.filter())
@@ -32,9 +32,9 @@ pub fn get_json_events_by_event_key(context: Context) -> BoxedFilter<(impl Reply
         .boxed()
 }
 
-// GET /events/<event_key>
+// GET /v1/events/<event_key>
 pub fn get_bcs_events_by_event_key(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("events" / EventKeyParam)
+    warp::path!("v1" / "events" / EventKeyParam)
         .and(warp::get())
         .and(warp::header::exact(ACCEPT.as_str(), BCS))
         .and(warp::query::<Page>())
@@ -48,48 +48,52 @@ pub fn get_bcs_events_by_event_key(context: Context) -> BoxedFilter<(impl Reply,
         .boxed()
 }
 
-// GET /accounts/<address>/events/<event_handle_struct>/<field_name>
+// GET /v1/accounts/<address>/events/<event_handle_struct>/<field_name>
 pub fn get_json_events_by_event_handle(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "events" / MoveStructTagParam / MoveIdentifierParam)
-        .and(warp::get())
-        .and(warp::query::<Page>())
-        .and(context.filter())
-        .map(|address, struct_tag, field_name, page, context| {
-            (
-                address,
-                struct_tag,
-                field_name,
-                page,
-                context,
-                AcceptType::Json,
-            )
-        })
-        .untuple_one()
-        .and_then(handle_get_events_by_event_handle)
-        .with(metrics("get_events_by_event_handle"))
-        .boxed()
+    warp::path!(
+        "v1" / "accounts" / AddressParam / "events" / MoveStructTagParam / MoveIdentifierParam
+    )
+    .and(warp::get())
+    .and(warp::query::<Page>())
+    .and(context.filter())
+    .map(|address, struct_tag, field_name, page, context| {
+        (
+            address,
+            struct_tag,
+            field_name,
+            page,
+            context,
+            AcceptType::Json,
+        )
+    })
+    .untuple_one()
+    .and_then(handle_get_events_by_event_handle)
+    .with(metrics("get_events_by_event_handle"))
+    .boxed()
 }
 
 pub fn get_bcs_events_by_event_handle(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "events" / MoveStructTagParam / MoveIdentifierParam)
-        .and(warp::get())
-        .and(warp::header::exact(ACCEPT.as_str(), BCS))
-        .and(warp::query::<Page>())
-        .and(context.filter())
-        .map(|address, struct_tag, field_name, page, context| {
-            (
-                address,
-                struct_tag,
-                field_name,
-                page,
-                context,
-                AcceptType::Bcs,
-            )
-        })
-        .untuple_one()
-        .and_then(handle_get_events_by_event_handle)
-        .with(metrics("get_bcs_events_by_event_handle"))
-        .boxed()
+    warp::path!(
+        "v1" / "accounts" / AddressParam / "events" / MoveStructTagParam / MoveIdentifierParam
+    )
+    .and(warp::get())
+    .and(warp::header::exact(ACCEPT.as_str(), BCS))
+    .and(warp::query::<Page>())
+    .and(context.filter())
+    .map(|address, struct_tag, field_name, page, context| {
+        (
+            address,
+            struct_tag,
+            field_name,
+            page,
+            context,
+            AcceptType::Bcs,
+        )
+    })
+    .untuple_one()
+    .and_then(handle_get_events_by_event_handle)
+    .with(metrics("get_bcs_events_by_event_handle"))
+    .boxed()
 }
 
 async fn handle_get_events_by_event_key(

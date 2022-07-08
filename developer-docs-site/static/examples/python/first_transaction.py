@@ -52,12 +52,12 @@ class RestClient:
     def account(self, account_address: str) -> Dict[str, str]:
         """Returns the sequence number and authentication key for an account"""
 
-        response = requests.get(f"{self.url}/accounts/{account_address}")
+        response = requests.get(f"{self.url}/v1/accounts/{account_address}")
         assert response.status_code == 200, f"{response.text} - {account_address}"
         return response.json()
 
     def account_resource(self, account_address: str, resource_type: str) -> Optional[Dict[str, Any]]:
-        response = requests.get(f"{self.url}/accounts/{account_address}/resource/{resource_type}")
+        response = requests.get(f"{self.url}/v1/accounts/{account_address}/resource/{resource_type}")
         if response.status_code == 404:
             return None
         assert response.status_code == 200, response.text
@@ -86,7 +86,7 @@ class RestClient:
         """Converts a transaction request produced by `generate_transaction` into a properly signed
         transaction, which can then be submitted to the blockchain."""
 
-        res = requests.post(f"{self.url}/transactions/signing_message", json=txn_request)
+        res = requests.post(f"{self.url}/v1/transactions/signing_message", json=txn_request)
         assert res.status_code == 200, res.text
         to_sign = bytes.fromhex(res.json()["message"][2:])
         signature = account_from.signing_key.sign(to_sign).signature
@@ -101,7 +101,7 @@ class RestClient:
         """Submits a signed transaction to the blockchain."""
 
         headers = {'Content-Type': 'application/json'}
-        response = requests.post(f"{self.url}/transactions", headers=headers, json=txn)
+        response = requests.post(f"{self.url}/v1/transactions", headers=headers, json=txn)
         assert response.status_code == 202, f"{response.text} - {txn}"
         return response.json()
     
@@ -113,7 +113,7 @@ class RestClient:
         return self.submit_transaction(signed_txn)
 
     def transaction_pending(self, txn_hash: str) -> bool:
-        response = requests.get(f"{self.url}/transactions/{txn_hash}")
+        response = requests.get(f"{self.url}/v1/transactions/{txn_hash}")
         if response.status_code == 404:
             return True
         assert response.status_code == 200, f"{response.text} - {txn_hash}"
@@ -127,7 +127,7 @@ class RestClient:
             assert count < 10, f"transaction {txn_hash} timed out"
             time.sleep(1)
             count += 1
-        response = requests.get(f"{self.url}/transactions/{txn_hash}")
+        response = requests.get(f"{self.url}/v1/transactions/{txn_hash}")
         assert "success" in response.json(), f"{response.text} - {txn_hash}"
 #<:!:section_4
 

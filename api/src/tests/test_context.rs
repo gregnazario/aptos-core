@@ -274,7 +274,7 @@ impl TestContext {
     ) -> serde_json::Value {
         let resources = self
             .get(&format!(
-                "/accounts/{}/resources",
+                "/v1/accounts/{}/resources",
                 account.address().to_hex_literal()
             ))
             .await;
@@ -325,7 +325,7 @@ impl TestContext {
             "payload": payload,
         });
         let resp = self
-            .post("/transactions/signing_message", request.clone())
+            .post("/v1/transactions/signing_message", request.clone())
             .await;
 
         let signing_msg: HexEncodedBytes = resp["message"].as_str().unwrap().parse().unwrap();
@@ -341,7 +341,7 @@ impl TestContext {
         });
 
         self.expect_status_code(202)
-            .post("/transactions", request)
+            .post("/v1/transactions", request)
             .await;
         self.commit_mempool_txns(1).await;
         *account.sequence_number_mut() += 1;

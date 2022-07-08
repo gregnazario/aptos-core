@@ -35,7 +35,7 @@ use serde_json::json;
 #[tokio::test]
 async fn test_deserialize_genesis_transaction() {
     let context = new_test_context(current_function_name!());
-    let resp = context.get("/transactions/0").await;
+    let resp = context.get("/v1/transactions/0").await;
     serde_json::from_value::<aptos_api_types::Transaction>(resp).unwrap();
 }
 
@@ -44,7 +44,7 @@ async fn test_deserialize_genesis_transaction() {
 #[tokio::test]
 async fn test_get_transactions_output_genesis_transaction() {
     let mut context = new_test_context(current_function_name!());
-    let resp = context.get("/transactions").await;
+    let resp = context.get("/v1/transactions").await;
     context.check_golden_output(resp);
 }
 
@@ -59,7 +59,7 @@ async fn test_get_transactions_returns_last_page_when_start_version_is_not_speci
         context.commit_block(&vec![txn.clone()]).await;
     }
 
-    let resp = context.get("/transactions").await;
+    let resp = context.get("/v1/transactions").await;
     context.check_golden_output(resp);
 }
 
@@ -68,7 +68,7 @@ async fn test_get_transactions_with_start_version_is_too_large() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(404)
-        .get("/transactions?start=1000000&limit=10")
+        .get("/v1/transactions?start=1000000&limit=10")
         .await;
     context.check_golden_output(resp);
 }
@@ -78,7 +78,7 @@ async fn test_get_transactions_with_invalid_start_version_param() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(400)
-        .get("/transactions?start=hello")
+        .get("/v1/transactions?start=hello")
         .await;
     context.check_golden_output(resp);
 }
@@ -88,7 +88,7 @@ async fn test_get_transactions_with_invalid_limit_param() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(400)
-        .get("/transactions?limit=hello")
+        .get("/v1/transactions?limit=hello")
         .await;
     context.check_golden_output(resp);
 }
@@ -98,7 +98,7 @@ async fn test_get_transactions_with_zero_limit() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(400)
-        .get("/transactions?limit=0")
+        .get("/v1/transactions?limit=0")
         .await;
     context.check_golden_output(resp);
 }
@@ -108,7 +108,7 @@ async fn test_get_transactions_param_limit_exceeds_limit() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(400)
-        .get("/transactions?limit=2000")
+        .get("/v1/transactions?limit=2000")
         .await;
     context.check_golden_output(resp);
 }
@@ -120,7 +120,7 @@ async fn test_get_transactions_output_user_transaction_with_script_function_payl
     let txn = context.create_user_account(&account);
     context.commit_block(&vec![txn.clone()]).await;
 
-    let txns = context.get("/transactions?start=1").await;
+    let txns = context.get("/v1/transactions?start=1").await;
     assert_eq!(3, txns.as_array().unwrap().len());
     context.check_golden_output(txns);
 }
@@ -139,7 +139,7 @@ async fn test_get_transactions_output_user_transaction_with_module_payload() {
     );
     context.commit_block(&vec![txn.clone()]).await;
 
-    let txns = context.get("/transactions?start=2").await;
+    let txns = context.get("/v1/transactions?start=2").await;
     assert_eq!(1, txns.as_array().unwrap().len());
 
     let expected_txns = context.get_transactions(2, 1);
@@ -215,7 +215,7 @@ async fn test_get_transactions_output_user_transaction_with_write_set_payload() 
     );
     context.commit_block(&vec![txn.clone()]).await;
 
-    let txns = context.get("/transactions?start=2").await;
+    let txns = context.get("/v1/transactions?start=2").await;
     assert_eq!(1, txns.as_array().unwrap().len());
 
     context.check_golden_output(txns);
@@ -229,14 +229,14 @@ async fn test_post_bcs_format_transaction() {
     let body = bcs::to_bytes(&txn).unwrap();
     let resp = context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", body)
+        .post_bcs_txn("/v1/transactions", body)
         .await;
     context.check_golden_output(resp.clone());
 
     // ensure ed25519 sig txn can be submitted into mempool by JSON format
     context
         .expect_status_code(202)
-        .post("/transactions", resp)
+        .post("/v1/transactions", resp)
         .await;
 }
 
@@ -246,7 +246,7 @@ async fn test_post_invalid_bcs_format_transaction() {
 
     let resp = context
         .expect_status_code(400)
-        .post_bcs_txn("/transactions", bcs::to_bytes("invalid data").unwrap())
+        .post_bcs_txn("/v1/transactions", bcs::to_bytes("invalid data").unwrap())
         .await;
     context.check_golden_output(resp);
 }
@@ -258,7 +258,7 @@ async fn test_post_invalid_signature_transaction() {
     let body = bcs::to_bytes(&txn).unwrap();
     let resp = context
         .expect_status_code(400)
-        .post_bcs_txn("/transactions", &body)
+        .post_bcs_txn("/v1/transactions", &body)
         .await;
     context.check_golden_output(resp);
 }
@@ -273,12 +273,12 @@ async fn test_post_transaction_rejected_by_mempool() {
 
     context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", &bcs::to_bytes(&txn1).unwrap())
+        .post_bcs_txn("/v1/transactions", &bcs::to_bytes(&txn1).unwrap())
         .await;
 
     let resp = context
         .expect_status_code(400)
-        .post_bcs_txn("/transactions", &bcs::to_bytes(&txn2).unwrap())
+        .post_bcs_txn("/v1/transactions", &bcs::to_bytes(&txn2).unwrap())
         .await;
     context.check_golden_output(resp);
 }
@@ -299,7 +299,7 @@ async fn test_multi_agent_signed_transaction() {
     let body = bcs::to_bytes(&txn).unwrap();
     let resp = context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", body)
+        .post_bcs_txn("/v1/transactions", body)
         .await;
 
     let (sender, secondary_signers) = match txn.authenticator() {
@@ -338,7 +338,7 @@ async fn test_multi_agent_signed_transaction() {
     // ensure multi agent txns can be submitted into mempool by JSON format
     context
         .expect_status_code(202)
-        .post("/transactions", resp)
+        .post("/v1/transactions", resp)
         .await;
 }
 
@@ -372,7 +372,7 @@ async fn test_multi_ed25519_signed_transaction() {
     let body = bcs::to_bytes(&txn).unwrap();
     let resp = context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", body)
+        .post_bcs_txn("/v1/transactions", body)
         .await;
 
     assert_json(
@@ -406,7 +406,7 @@ async fn test_multi_ed25519_signed_transaction() {
     // ensure multi sig txns can be submitted into mempool by JSON format
     context
         .expect_status_code(202)
-        .post("/transactions", resp)
+        .post("/v1/transactions", resp)
         .await;
 }
 
@@ -417,12 +417,12 @@ async fn test_get_transaction_by_hash() {
     let txn = context.create_user_account(&account);
     context.commit_block(&vec![txn.clone()]).await;
 
-    let txns = context.get("/transactions?start=2&limit=1").await;
+    let txns = context.get("/v1/transactions?start=2&limit=1").await;
     assert_eq!(1, txns.as_array().unwrap().len());
 
     let resp = context
         .get(&format!(
-            "/transactions/{}",
+            "/v1/transactions/{}",
             txns[0]["hash"].as_str().unwrap()
         ))
         .await;
@@ -435,7 +435,7 @@ async fn test_get_transaction_by_hash_not_found() {
 
     let resp = context
         .expect_status_code(404)
-        .get("/transactions/0xdadfeddcca7cb6396c735e9094c76c6e4e9cb3e3ef814730693aed59bd87b31d")
+        .get("/v1/transactions/0xdadfeddcca7cb6396c735e9094c76c6e4e9cb3e3ef814730693aed59bd87b31d")
         .await;
     context.check_golden_output(resp);
 }
@@ -446,7 +446,7 @@ async fn test_get_transaction_by_invalid_hash() {
 
     let resp = context
         .expect_status_code(400)
-        .get("/transactions/0x1")
+        .get("/v1/transactions/0x1")
         .await;
     context.check_golden_output(resp);
 }
@@ -457,7 +457,7 @@ async fn test_get_transaction_by_version_not_found() {
 
     let resp = context
         .expect_status_code(404)
-        .get("/transactions/10000")
+        .get("/v1/transactions/10000")
         .await;
     context.check_golden_output(resp);
 }
@@ -469,10 +469,10 @@ async fn test_get_transaction_by_version() {
     let txn = context.create_user_account(&account);
     context.commit_block(&vec![txn.clone()]).await;
 
-    let txns = context.get("/transactions?start=2&limit=1").await;
+    let txns = context.get("/v1/transactions?start=2&limit=1").await;
     assert_eq!(1, txns.as_array().unwrap().len());
 
-    let resp = context.get("/transactions/2").await;
+    let resp = context.get("/v1/transactions/2").await;
     assert_json(resp, txns[0].clone())
 }
 
@@ -484,17 +484,17 @@ async fn test_get_pending_transaction_by_hash() {
     let body = bcs::to_bytes(&txn).unwrap();
     let pending_txn = context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", body)
+        .post_bcs_txn("/v1/transactions", body)
         .await;
 
     let txn_hash = pending_txn["hash"].as_str().unwrap();
 
-    let txn = context.get(&format!("/transactions/{}", txn_hash)).await;
+    let txn = context.get(&format!("/v1/transactions/{}", txn_hash)).await;
     assert_json(txn, pending_txn);
 
     let not_found = context
         .expect_status_code(404)
-        .get("/transactions/0xdadfeddcca7cb6396c735e9094c76c6e4e9cb3e3ef814730693aed59bd87b31d")
+        .get("/v1/transactions/0xdadfeddcca7cb6396c735e9094c76c6e4e9cb3e3ef814730693aed59bd87b31d")
         .await;
     context.check_golden_output(not_found);
 }
@@ -614,7 +614,7 @@ async fn test_signing_message_with_write_set_payload() {
 
     context
         .expect_status_code(400)
-        .post("/transactions/signing_message", body)
+        .post("/v1/transactions/signing_message", body)
         .await;
 }
 
@@ -634,7 +634,7 @@ async fn test_signing_message_with_payload(
     });
 
     let resp = context
-        .post("/transactions/signing_message", body.clone())
+        .post("/v1/transactions/signing_message", body.clone())
         .await;
 
     let signing_msg = resp["message"].as_str().unwrap();
@@ -669,7 +669,7 @@ async fn test_signing_message_with_payload(
 
     context
         .expect_status_code(202)
-        .post("/transactions", body)
+        .post("/v1/transactions", body)
         .await;
 
     context.commit_mempool_txns(10).await;
@@ -688,14 +688,14 @@ async fn test_get_account_transactions() {
     let txns = context
         .get(
             format!(
-                "/accounts/{}/transactions",
+                "/v1/accounts/{}/transactions",
                 context.root_account().address()
             )
             .as_str(),
         )
         .await;
     assert_eq!(1, txns.as_array().unwrap().len());
-    let expected_txns = context.get("/transactions?start=2&limit=1").await;
+    let expected_txns = context.get("/v1/transactions?start=2&limit=1").await;
     assert_json(txns, expected_txns);
 }
 
@@ -709,7 +709,7 @@ async fn test_get_account_transactions_filter_transactions_by_start_sequence_num
     let txns = context
         .get(
             format!(
-                "/accounts/{}/transactions?start=1",
+                "/v1/accounts/{}/transactions?start=1",
                 context.root_account().address()
             )
             .as_str(),
@@ -728,7 +728,7 @@ async fn test_get_account_transactions_filter_transactions_by_start_sequence_num
     let txns = context
         .get(
             format!(
-                "/accounts/{}/transactions?start=1000",
+                "/v1/accounts/{}/transactions?start=1000",
                 context.root_account().address()
             )
             .as_str(),
@@ -750,7 +750,7 @@ async fn test_get_account_transactions_filter_transactions_by_limit() {
     let txns = context
         .get(
             format!(
-                "/accounts/{}/transactions?start=0&limit=1",
+                "/v1/accounts/{}/transactions?start=0&limit=1",
                 context.root_account().address()
             )
             .as_str(),
@@ -761,7 +761,7 @@ async fn test_get_account_transactions_filter_transactions_by_limit() {
     let txns = context
         .get(
             format!(
-                "/accounts/{}/transactions?start=0&limit=2",
+                "/v1/accounts/{}/transactions?start=0&limit=2",
                 context.root_account().address()
             )
             .as_str(),
@@ -1040,11 +1040,11 @@ async fn test_transaction_vm_status(
     // we don't validate transaction payload when submit txn into mempool.
     context
         .expect_status_code(202)
-        .post_bcs_txn("/transactions", body)
+        .post_bcs_txn("/v1/transactions", body)
         .await;
     context.commit_mempool_txns(1).await;
     let resp = context
-        .get(format!("/transactions/{}", txn.committed_hash().to_hex_literal()).as_str())
+        .get(format!("/v1/transactions/{}", txn.committed_hash().to_hex_literal()).as_str())
         .await;
     assert_eq!(
         resp["success"].as_bool().unwrap(),
@@ -1062,7 +1062,7 @@ async fn test_submit_transaction_rejects_payload_too_large_bcs_txn_body() {
     let resp = context
         .expect_status_code(413)
         .post_bcs_txn(
-            "/transactions",
+            "/v1/transactions",
             gen_string(context.context.content_length_limit() + 1).as_bytes(),
         )
         .await;
@@ -1076,7 +1076,7 @@ async fn test_submit_transaction_rejects_payload_too_large_json_body() {
     let resp = context
         .expect_status_code(413)
         .post(
-            "/transactions",
+            "/v1/transactions",
             json!({
                 "data": gen_string(context.context.content_length_limit()+1).as_bytes(),
             }),
@@ -1092,7 +1092,7 @@ async fn test_submit_transaction_rejects_invalid_content_type() {
         .header("content-type", "invalid")
         .method("POST")
         .body("text")
-        .path("/transactions");
+        .path("/v1/transactions");
 
     let resp = context.expect_status_code(415).execute(req).await;
     context.check_golden_output(resp);
@@ -1105,7 +1105,7 @@ async fn test_submit_transaction_rejects_invalid_json() {
         .header("content-type", "application/json")
         .method("POST")
         .body("invalid json")
-        .path("/transactions");
+        .path("/v1/transactions");
 
     let resp = context.expect_status_code(400).execute(req).await;
     context.check_golden_output(resp);
@@ -1118,7 +1118,7 @@ async fn test_create_signing_message_rejects_payload_too_large_json_body() {
     let resp = context
         .expect_status_code(413)
         .post(
-            "/transactions/signing_message",
+            "/v1/transactions/signing_message",
             json!({
                 "data": gen_string(context.context.content_length_limit()+1).as_bytes(),
             }),
@@ -1134,7 +1134,7 @@ async fn test_create_signing_message_rejects_invalid_content_type() {
         .header("content-type", "invalid")
         .method("POST")
         .body("text")
-        .path("/transactions/signing_message");
+        .path("/v1/transactions/signing_message");
 
     let resp = context.expect_status_code(415).execute(req).await;
     context.check_golden_output(resp);
@@ -1147,7 +1147,7 @@ async fn test_create_signing_message_rejects_invalid_json() {
         .header("content-type", "application/json")
         .method("POST")
         .body("invalid json")
-        .path("/transactions/signing_message");
+        .path("/v1/transactions/signing_message");
 
     let resp = context.expect_status_code(400).execute(req).await;
     context.check_golden_output(resp);
@@ -1159,7 +1159,7 @@ async fn test_create_signing_message_rejects_no_content_length_request() {
     let req = warp::test::request()
         .header("content-type", "application/json")
         .method("POST")
-        .path("/transactions/signing_message");
+        .path("/v1/transactions/signing_message");
 
     let resp = context.expect_status_code(411).execute(req).await;
     context.check_golden_output(resp);

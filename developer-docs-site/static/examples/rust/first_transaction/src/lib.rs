@@ -69,7 +69,7 @@ impl RestClient {
     /// Returns the sequence number and authentication key for an account
     pub fn account(&self, account_address: &str) -> serde_json::Value {
         let res =
-            reqwest::blocking::get(format!("{}/accounts/{}", self.url, account_address)).unwrap();
+            reqwest::blocking::get(format!("{}/v1/accounts/{}", self.url, account_address)).unwrap();
 
         if res.status() != 200 {
             assert_eq!(
@@ -91,7 +91,7 @@ impl RestClient {
         resource_type: &str,
     ) -> Option<serde_json::Value> {
         let res = reqwest::blocking::get(format!(
-            "{}/accounts/{}/resource/{}",
+            "{}/v1/accounts/{}/resource/{}",
             self.url, account_address, resource_type,
         ))
         .unwrap();
@@ -154,7 +154,7 @@ impl RestClient {
         mut txn_request: serde_json::Value,
     ) -> serde_json::Value {
         let res = reqwest::blocking::Client::new()
-            .post(format!("{}/transactions/signing_message", self.url))
+            .post(format!("{}/v1/transactions/signing_message", self.url))
             .body(txn_request.to_string())
             .send()
             .unwrap();
@@ -190,7 +190,7 @@ impl RestClient {
     /// Submits a signed transaction to the blockchain.
     pub fn submit_transaction(&self, txn_request: &serde_json::Value) -> serde_json::Value {
         let res = reqwest::blocking::Client::new()
-            .post(format!("{}/transactions", self.url))
+            .post(format!("{}/v1/transactions", self.url))
             .body(txn_request.to_string())
             .header("Content-Type", "application/json")
             .send()
@@ -221,7 +221,7 @@ impl RestClient {
     }
 
     pub fn transaction_pending(&self, transaction_hash: &str) -> bool {
-        let res = reqwest::blocking::get(format!("{}/transactions/{}", self.url, transaction_hash))
+        let res = reqwest::blocking::get(format!("{}/v1/transactions/{}", self.url, transaction_hash))
             .unwrap();
 
         if res.status() == 404 {

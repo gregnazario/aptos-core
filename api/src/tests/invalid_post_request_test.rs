@@ -116,7 +116,7 @@ async fn response_error_msg(req: Value, test_name: &'static str) {
     let mut context = new_test_context(test_name);
     let resp = context
         .expect_status_code(400)
-        .post("/transactions/signing_message", req)
+        .post("/v1/transactions/signing_message", req)
         .await;
     context.check_golden_output(resp)
 }

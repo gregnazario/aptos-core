@@ -109,7 +109,7 @@ class TokenClient(RestClient):
 
 #:!:>section_3
     def get_table_item(self, handle: str, key_type: str, value_type: str, key: Any) -> Any:
-        response = requests.post(f"{self.url}/tables/{handle}/item", json={
+        response = requests.post(f"{self.url}/v1/tables/{handle}/item", json={
             "key_type": key_type,
             "value_type": value_type,
             "key": key,

@@ -384,7 +384,7 @@ export class AptosClient {
     const httpClient = this.transactions.http;
 
     const response = await httpClient.request<Types.PendingTransaction, AptosError>({
-      path: '/transactions',
+      path: '/v1/transactions',
       method: 'POST',
       body: signedTxn,
       // @ts-ignore
@@ -406,7 +406,7 @@ export class AptosClient {
     const httpClient = this.transactions.http;
 
     const response = await httpClient.request<Types.OnChainTransaction[], AptosError>({
-      path: '/transactions/simulate',
+      path: '/v1/transactions/simulate',
       method: 'POST',
       body: bcsBody,
       // @ts-ignore

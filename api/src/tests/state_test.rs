@@ -177,15 +177,15 @@ async fn test_get_table_item() {
 }
 
 fn get_account_resource(address: &str, struct_tag: &str) -> String {
-    format!("/accounts/{}/resource/{}", address, struct_tag)
+    format!("/v1/accounts/{}/resource/{}", address, struct_tag)
 }
 
 fn get_account_module(address: &str, name: &str) -> String {
-    format!("/accounts/{}/module/{}", address, name)
+    format!("/v1/accounts/{}/module/{}", address, name)
 }
 
 fn get_table_item(handle: u128) -> String {
-    format!("/tables/{}/item", handle)
+    format!("/v1/tables/{}/item", handle)
 }
 
 async fn make_test_tables(ctx: &mut TestContext, account: &mut LocalAccount) {

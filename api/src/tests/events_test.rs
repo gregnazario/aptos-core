@@ -11,7 +11,9 @@ static EVENT_KEY: &str =
 async fn test_get_events() {
     let mut context = new_test_context(current_function_name!());
 
-    let resp = context.get(format!("/events/{}", EVENT_KEY).as_str()).await;
+    let resp = context
+        .get(format!("/v1/events/{}", EVENT_KEY).as_str())
+        .await;
 
     context.check_golden_output(resp);
 }
@@ -21,7 +23,7 @@ async fn test_get_events_filter_by_start_sequence_number() {
     let mut context = new_test_context(current_function_name!());
 
     let resp = context
-        .get(format!("/events/{}?start=1", EVENT_KEY).as_str())
+        .get(format!("/v1/events/{}?start=1", EVENT_KEY).as_str())
         .await;
     context.check_golden_output(resp);
 }
@@ -33,12 +35,12 @@ async fn test_get_events_filter_by_limit_page_size() {
     let context = new_test_context(current_function_name!());
 
     let resp = context
-        .get(format!("/events/{}?start=1&limit=1", EVENT_KEY).as_str())
+        .get(format!("/v1/events/{}?start=1&limit=1", EVENT_KEY).as_str())
         .await;
     assert_eq!(resp.as_array().unwrap().len(), 1);
 
     let resp = context
-        .get(format!("/events/{}?start=1&limit=2", EVENT_KEY).as_str())
+        .get(format!("/v1/events/{}?start=1&limit=2", EVENT_KEY).as_str())
         .await;
     assert_eq!(resp.as_array().unwrap().len(), 2);
 }
@@ -47,7 +49,10 @@ async fn test_get_events_filter_by_limit_page_size() {
 async fn test_get_events_by_invalid_key() {
     let mut context = new_test_context(current_function_name!());
 
-    let resp = context.expect_status_code(400).get("/events/invalid").await;
+    let resp = context
+        .expect_status_code(400)
+        .get("/v1/events/invalid")
+        .await;
     context.check_golden_output(resp);
 }
 
@@ -55,7 +60,7 @@ async fn test_get_events_by_invalid_key() {
 async fn test_get_events_by_account_event_handle() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
-        .get("/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/events")
+        .get("/v1/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/events")
         .await;
     context.check_golden_output(resp);
 }
@@ -65,7 +70,7 @@ async fn test_get_events_by_invalid_account_event_handle_struct_address() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(404)
-        .get("/accounts/0xa550c18/events/0x9::Reconfiguration::Configuration/events")
+        .get("/v1/accounts/0xa550c18/events/0x9::Reconfiguration::Configuration/events")
         .await;
     context.check_golden_output(resp);
 }
@@ -75,7 +80,7 @@ async fn test_get_events_by_invalid_account_event_handle_struct_module() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(404)
-        .get("/accounts/0xa550c18/events/0x1::NotFound::Configuration/events")
+        .get("/v1/accounts/0xa550c18/events/0x1::NotFound::Configuration/events")
         .await;
     context.check_golden_output(resp);
 }
@@ -85,7 +90,7 @@ async fn test_get_events_by_invalid_account_event_handle_struct_name() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(404)
-        .get("/accounts/0xa550c18/events/0x1::Reconfiguration::NotFound/events")
+        .get("/v1/accounts/0xa550c18/events/0x1::Reconfiguration::NotFound/events")
         .await;
     context.check_golden_output(resp);
 }
@@ -95,7 +100,7 @@ async fn test_get_events_by_invalid_account_event_handle_field_name() {
     let mut context = new_test_context(current_function_name!());
     let resp = context
         .expect_status_code(404)
-        .get("/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/not_found")
+        .get("/v1/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/not_found")
         .await;
     context.check_golden_output(resp);
 }
@@ -106,7 +111,7 @@ async fn test_get_events_by_invalid_account_event_handle_field_type() {
 
     let resp = context
         .expect_status_code(400)
-        .get("/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/epoch")
+        .get("/v1/accounts/0xa550c18/events/0x1::Reconfiguration::Configuration/epoch")
         .await;
     context.check_golden_output(resp);
 }
@@ -121,7 +126,7 @@ async fn test_get_events_by_struct_type_has_generic_type_parameter() {
     // type specified in the URL path.
     // Instead of creating the example, we just look up an event handle that does not exist.
     let path = format!(
-        "/accounts/0x1/events/{}/coin",
+        "/v1/accounts/0x1/events/{}/coin",
         utf8_percent_encode(
             "0x1::Coin::CoinStore<0x1::TestCoin::TestCoin>",
             NON_ALPHANUMERIC

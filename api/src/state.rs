@@ -26,9 +26,9 @@ use std::convert::TryInto;
 use storage_interface::state_view::DbStateView;
 use warp::{filters::BoxedFilter, Filter, Rejection, Reply};
 
-// GET /accounts/<address>/resource/<resource_type>
+// GET /v1/accounts/<address>/resource/<resource_type>
 pub fn get_account_resource(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "resource" / MoveStructTagParam)
+    warp::path!("v1" / "accounts" / AddressParam / "resource" / MoveStructTagParam)
         .and(warp::get())
         .and(context.filter())
         .and(warp::query::<Version>())
@@ -43,7 +43,7 @@ pub fn get_account_resource(context: Context) -> BoxedFilter<(impl Reply,)> {
 
 // GET /state/module/<address>/<module_name>
 pub fn get_account_module(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("accounts" / AddressParam / "module" / MoveIdentifierParam)
+    warp::path!("v1" / "accounts" / AddressParam / "module" / MoveIdentifierParam)
         .and(warp::get())
         .and(context.filter())
         .and(warp::query::<Version>())
@@ -54,9 +54,9 @@ pub fn get_account_module(context: Context) -> BoxedFilter<(impl Reply,)> {
         .boxed()
 }
 
-// GET /tables/<table_handle>/item
+// GET /v1/tables/<table_handle>/item
 pub fn get_table_item(context: Context) -> BoxedFilter<(impl Reply,)> {
-    warp::path!("tables" / TableHandleParam / "item")
+    warp::path!("v1" / "tables" / TableHandleParam / "item")
         .and(warp::post())
         .and(warp::body::content_length_limit(
             context.content_length_limit(),

@@ -19,6 +19,44 @@ tags:
     description: Access to account resources and modules
   - name: events
     description: Access to events
+servers: [
+  {
+    "url": "http://{server_name}:{port}/v1",
+    "description": "The HTTP REST API v1 endpoint",
+    "variables": {
+      "username": {
+        "default": "localhost",
+        "description": "This value is assigned by the service provider"
+      },
+      "port": {
+        "enum": [
+          "80",
+          "8080",
+        ],
+        "default": "8080",
+        "description": "This value is assigned by the service provider"
+      }
+    }
+  },
+  {
+    "url": "https://{server_name}:{port}/v1",
+    "description": "The HTTPS REST API v1 endpoint",
+    "variables": {
+      "username": {
+        "default": "localhost",
+        "description": "This value is assigned by the service provider"
+      },
+      "port": {
+        "enum": [
+          "443",
+          "8443",
+        ],
+        "default": "443",
+        "description": "This value is assigned by the service provider"
+      }
+    }
+  }
+]
 paths:
   /:
     get:
