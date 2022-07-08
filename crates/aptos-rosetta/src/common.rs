@@ -98,7 +98,7 @@ pub async fn get_account(
     rest_client
         .get_account(address)
         .await
-        .map_err(|_| ApiError::AccountNotFound(Some(address.to_string())))
+        .map_err(|_| ApiError::AccountNotFound(Some(address.to_hex())))
 }
 
 /// Retrieve the timestamp according ot the Rosetta spec (milliseconds)
