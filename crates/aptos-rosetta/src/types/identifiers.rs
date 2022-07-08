@@ -7,7 +7,7 @@
 
 use crate::{
     block::version_to_block_index,
-    common::BLOCKCHAIN,
+    common::{strip_hex_prefix, BLOCKCHAIN},
     error::{ApiError, ApiResult},
 };
 use aptos_rest_client::{aptos_api_types::TransactionInfo, Transaction};
@@ -53,7 +53,7 @@ impl TryFrom<&AccountIdentifier> for AccountAddress {
 impl From<AccountAddress> for AccountIdentifier {
     fn from(address: AccountAddress) -> Self {
         AccountIdentifier {
-            address: format!("{:#x}", address),
+            address: address.to_string(),
             sub_account: None,
         }
     }
@@ -88,7 +88,7 @@ impl BlockIdentifier {
         } else {
             BlockIdentifier {
                 index: version_to_block_index(block_size, info.version.0),
-                hash: info.accumulator_root_hash.to_string(),
+                hash: strip_hex_prefix(&info.accumulator_root_hash.to_string()).to_string(),
             }
         }
     }
@@ -219,7 +219,7 @@ pub struct TransactionIdentifier {
 impl From<&TransactionInfo> for TransactionIdentifier {
     fn from(txn: &TransactionInfo) -> Self {
         TransactionIdentifier {
-            hash: txn.accumulator_root_hash.to_string(),
+            hash: strip_hex_prefix(&txn.hash.to_string()).to_string(),
         }
     }
 }

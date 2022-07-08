@@ -6,7 +6,7 @@
 //! [Spec](https://www.rosetta-api.org/docs/api_objects.html)
 
 use crate::{
-    common::{is_native_coin, native_coin},
+    common::{is_native_coin, native_coin, strip_hex_prefix},
     error::ApiResult,
     types::{
         account_identifier, coin_identifier, coin_store_identifier, deposit_events_identifier,
@@ -362,7 +362,8 @@ impl TryFrom<Ed25519PublicKey> for PublicKey {
 
     fn try_from(public_key: Ed25519PublicKey) -> Result<Self, Self::Error> {
         Ok(PublicKey {
-            hex_bytes: public_key.to_encoded_string()?,
+            // 0x is not wanted for Rosetta
+            hex_bytes: strip_hex_prefix(&public_key.to_encoded_string()?).to_string(),
             curve_type: CurveType::Edwards25519,
         })
     }

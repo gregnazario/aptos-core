@@ -27,7 +27,7 @@
 use crate::{
     common::{
         check_network, decode_bcs, decode_key, encode_bcs, get_account, handle_request,
-        is_native_coin, native_coin, with_context,
+        is_native_coin, native_coin, strip_hex_prefix, with_context,
     },
     error::{ApiError, ApiResult},
     types::{InternalOperation, *},
@@ -534,7 +534,7 @@ async fn construction_submit(
     let response = rest_client.submit(&txn).await?;
     Ok(ConstructionSubmitResponse {
         transaction_identifier: TransactionIdentifier {
-            hash: response.into_inner().hash.to_string(),
+            hash: strip_hex_prefix(&response.into_inner().hash.to_string()).to_string(),
         },
     })
 }
