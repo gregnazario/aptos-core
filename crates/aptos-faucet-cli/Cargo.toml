@@ -16,6 +16,7 @@ bytes = "1.1.0"
 clap = "3.1.18"
 futures = "0.3.21"
 hex = "0.4.3"
+itertools = "0.10.3"
 rand = "0.7.3"
 reqwest = { version = "0.11.10", features = ["blocking"], default-features = false }
 serde = { version = "1.0.137", features = ["derive"] }
@@ -26,6 +27,7 @@ url = "2.2.2"
 warp = "0.3.2"
 
 aptos = { path = "../aptos" }
+aptos-keygen = { path = "../aptos-keygen" }
 aptos-config = { path = "../../config" }
 aptos-crypto = { path = "../aptos-crypto" }
 aptos-faucet = { path = "../aptos-faucet" }
