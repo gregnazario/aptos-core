@@ -5,7 +5,7 @@ use crate::HashValue;
 use serde::{Deserialize, Serialize};
 
 /// A description of a block
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct BlockInfo {
     pub block_height: u64,
     pub block_hash: HashValue,
