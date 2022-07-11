@@ -223,7 +223,10 @@ async fn construction_hash(
     let hash = UserTransaction(signed_transaction).hash().to_hex();
 
     Ok(TransactionIdentifierResponse {
-        transaction_identifier: TransactionIdentifier { hash },
+        transaction_identifier: TransactionIdentifier {
+            hash,
+            metadata: None,
+        },
     })
 }
 
@@ -535,6 +538,7 @@ async fn construction_submit(
     Ok(ConstructionSubmitResponse {
         transaction_identifier: TransactionIdentifier {
             hash: response.into_inner().hash.to_string(),
+            metadata: None,
         },
     })
 }

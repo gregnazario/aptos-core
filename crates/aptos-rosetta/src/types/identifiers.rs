@@ -205,12 +205,21 @@ pub struct SubNetworkIdentifier {
 pub struct TransactionIdentifier {
     /// The hash of the transaction so it can be looked up in mempool
     pub hash: String,
+    pub metadata: Option<TransactionMetadata>,
+}
+
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
+pub struct TransactionMetadata {
+    pub version: u64,
 }
 
 impl From<&TransactionInfo> for TransactionIdentifier {
     fn from(txn: &TransactionInfo) -> Self {
         TransactionIdentifier {
-            hash: strip_hex_prefix(&txn.accumulator_root_hash.to_string()).to_string(),
+            hash: strip_hex_prefix(&txn.hash.to_string()).to_string(),
+            metadata: Some(TransactionMetadata {
+                version: txn.version.0,
+            }),
         }
     }
 }
