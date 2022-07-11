@@ -642,7 +642,8 @@ impl Transaction {
         if let Some(sender) = maybe_sender {
             operations.push(Operation::withdraw(
                 operation_index,
-                Some(status),
+                // Gas charging is always successful if it's been committed
+                Some(OperationStatusType::Failure),
                 *sender.inner(),
                 native_coin(),
                 txn_info.gas_used.0,
