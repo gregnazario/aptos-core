@@ -29,6 +29,7 @@ use std::{
     sync::{Arc, RwLock},
 };
 use warp::Filter;
+use aptos_rest_client::aptos::TestCoin;
 
 /// Account routes e.g. balance
 pub fn routes(
@@ -179,7 +180,9 @@ async fn get_balances(
             })
             .collect())
     } else {
-        Ok(HashMap::new())
+        let mut currency_map = HashMap::new();
+        currency_map.insert(native_coin_tag(), Balance { coin: TestCoin { value: U64(0) } });
+        Ok(currency_map)
     }
 }
 
