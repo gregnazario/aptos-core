@@ -68,7 +68,7 @@ pub struct BlockIdentifier {
     pub index: u64,
     /// Accumulator hash at the beginning of the block
     pub hash: String,
-    pub metadata: Option<BlockInfo>
+    pub metadata: Option<BlockInfo>,
 }
 
 impl BlockIdentifier {
@@ -79,7 +79,7 @@ impl BlockIdentifier {
         BlockIdentifier {
             index: 0,
             hash: "0xGenesis".to_string(),
-            metadata: None
+            metadata: None,
         }
     }
 
@@ -87,7 +87,7 @@ impl BlockIdentifier {
         BlockIdentifier {
             index: block_info.block_height,
             hash: strip_hex_prefix(&block_info.block_hash.to_string()).to_string(),
-            metadata: Some(block_info)
+            metadata: Some(block_info),
         }
     }
 }

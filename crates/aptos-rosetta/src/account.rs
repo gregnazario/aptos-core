@@ -14,12 +14,15 @@ use crate::{
     error::{ApiError, ApiResult},
     types::{
         coin_identifier, coin_store_identifier, AccountBalanceRequest, AccountBalanceResponse,
-        Amount, BlockIdentifier, Currency,
+        Amount, BlockIdentifier, Currency, CurrencyMetadata,
     },
     RosettaContext,
 };
 use aptos_logger::{debug, trace};
-use aptos_rest_client::{aptos::Balance, aptos_api_types::U64};
+use aptos_rest_client::{
+    aptos::{Balance, TestCoin},
+    aptos_api_types::U64,
+};
 use aptos_sdk::move_types::language_storage::TypeTag;
 use aptos_types::account_address::AccountAddress;
 use percent_encoding::{utf8_percent_encode, AsciiSet, CONTROLS};
@@ -29,7 +32,6 @@ use std::{
     sync::{Arc, RwLock},
 };
 use warp::Filter;
-use aptos_rest_client::aptos::TestCoin;
 
 /// Account routes e.g. balance
 pub fn routes(
@@ -181,7 +183,12 @@ async fn get_balances(
             .collect())
     } else {
         let mut currency_map = HashMap::new();
-        currency_map.insert(native_coin_tag(), Balance { coin: TestCoin { value: U64(0) } });
+        currency_map.insert(
+            native_coin_tag(),
+            Balance {
+                coin: TestCoin { value: U64(0) },
+            },
+        );
         Ok(currency_map)
     }
 }
@@ -282,6 +289,9 @@ impl CoinCache {
             Ok(Some(Currency {
                 symbol: coin_info.symbol,
                 decimals: coin_info.decimals.0,
+                metadata: Some(CurrencyMetadata {
+                    move_type: resource_tag.to_string(),
+                }),
             }))
         } else {
             Err(ApiError::DeserializationFailed(Some(format!(
