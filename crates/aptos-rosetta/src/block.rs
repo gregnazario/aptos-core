@@ -9,7 +9,7 @@ use crate::{
     types::{Block, BlockIdentifier, BlockRequest, BlockResponse, Transaction},
     RosettaContext,
 };
-use aptos_logger::{debug, info, trace};
+use aptos_logger::info;
 use aptos_rest_client::aptos_api_types::{BlockInfo, HashValue};
 use std::{
     collections::BTreeMap,
@@ -36,7 +36,6 @@ pub fn block_route(
 async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResult<BlockResponse> {
     info!(
         request = ?request,
-        server_context = ?server_context,
         "/block",
     );
 
@@ -46,7 +45,7 @@ async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResu
 
     // Retrieve by block or by hash, both or neither is not allowed
     let block_index =
-        get_block_index_from_request(&server_context, Some(request.block_identifier)).await?;
+        get_block_index_from_request(&server_context, request.block_identifier).await?;
 
     let (parent_transaction, block_info, transactions) = get_block_by_index(
         server_context.block_cache()?.as_ref(),

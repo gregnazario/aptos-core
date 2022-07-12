@@ -4,7 +4,7 @@
 use crate::common::{format_output, BlockArgs, NetworkArgs, UrlArgs};
 use aptos_rosetta::{
     common::native_coin,
-    types::{AccountBalanceRequest, AccountBalanceResponse},
+    types::{AccountBalanceRequest, AccountBalanceResponse, Currency},
 };
 use aptos_types::account_address::AccountAddress;
 use clap::{Parser, Subcommand};
@@ -55,7 +55,11 @@ impl AccountBalanceCommand {
                 account_identifier: self.account.into(),
                 block_identifier: self.block_args.into(),
                 currencies: if self.filter_currency {
-                    Some(vec![native_coin()])
+                    Some(vec![Currency {
+                        symbol: "TC".to_string(),
+                        decimals: 6,
+                        metadata: None,
+                    }])
                 } else {
                     None
                 },

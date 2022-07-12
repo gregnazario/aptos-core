@@ -18,7 +18,7 @@ use crate::{
     },
     RosettaContext,
 };
-use aptos_logger::{debug, info, trace};
+use aptos_logger::info;
 use aptos_rest_client::{
     aptos::{Balance, TestCoin},
     aptos_api_types::U64,
@@ -54,12 +54,10 @@ async fn account_balance(
 ) -> ApiResult<AccountBalanceResponse> {
     info!(
         request = ?request,
-        server_context = ?server_context,
-        "account/balance {:?}",
-        request
+        "account/balance",
     );
 
-    let network_identifier = request.network_identifier;
+    let network_identifier = request.network_identifier.clone();
 
     check_network(network_identifier, &server_context)?;
     let rest_client = server_context.rest_client()?;
@@ -67,7 +65,7 @@ async fn account_balance(
     // Retrieve the block index to read
     let block_index =
         get_block_index_from_request(&server_context, request.block_identifier.clone()).await?;
-
+    info!("Block index: {}", block_index);
     // Version to grab is the last entry in the block (balance is at end of block)
     let block_info = server_context
         .block_cache()?
@@ -75,29 +73,34 @@ async fn account_balance(
         .await?;
     let balance_version = block_info.end_version;
 
+    info!("Balance index: {}", block_index);
     let balances = get_balances(
         &rest_client,
         request.account_identifier.account_address()?,
         balance_version,
     )
     .await?;
+    info!("Balances: {:?}", balances);
 
     let amounts = convert_balances_to_amounts(
         &rest_client,
         server_context.coin_cache.clone(),
-        request.currencies,
+        request.currencies.clone(),
         balances,
         balance_version,
     )
     .await?;
+    info!("Amounts: {:?}", amounts);
 
     // Get the block identifier
     let block_identifier = BlockIdentifier::from_block_info(block_info);
-
-    Ok(AccountBalanceResponse {
+    info!("Block: {:?}", block_identifier);
+    let response = AccountBalanceResponse {
         block_identifier,
         balances: amounts,
-    })
+    };
+    info!("Request: {:?}\nResponse {:?}", request, response);
+    Ok(response)
 }
 
 /// Lookup currencies and convert them to Rosetta types
@@ -122,6 +125,7 @@ async fn convert_balances_to_amounts(
             });
         }
     }
+    info!("Amounts: {:?}", amounts);
 
     // Filter based on requested currencies
     if let Some(currencies) = maybe_filter_currencies {
