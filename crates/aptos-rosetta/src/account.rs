@@ -18,7 +18,7 @@ use crate::{
     },
     RosettaContext,
 };
-use aptos_logger::{debug, trace};
+use aptos_logger::{debug, info, trace};
 use aptos_rest_client::{
     aptos::{Balance, TestCoin},
     aptos_api_types::U64,
@@ -52,12 +52,11 @@ async fn account_balance(
     request: AccountBalanceRequest,
     server_context: RosettaContext,
 ) -> ApiResult<AccountBalanceResponse> {
-    debug!("/account/balance");
-    trace!(
+    info!(
         request = ?request,
         server_context = ?server_context,
-        "account_balance for [{}]",
-        request.account_identifier.address
+        "account/balance {:?}",
+        request
     );
 
     let network_identifier = request.network_identifier;

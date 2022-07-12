@@ -38,7 +38,7 @@ use aptos_crypto::{
     hash::CryptoHash,
     signing_message,
 };
-use aptos_logger::debug;
+use aptos_logger::info;
 use aptos_sdk::{
     move_types::{
         identifier::Identifier,
@@ -146,7 +146,7 @@ async fn construction_combine(
     request: ConstructionCombineRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionCombineResponse> {
-    debug!("/construction/combine {:?}", request);
+    info!("/construction/combine {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let unsigned_txn: RawTransaction =
@@ -190,7 +190,7 @@ async fn construction_derive(
     request: ConstructionDeriveRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionDeriveResponse> {
-    debug!("/construction/derive {:?}", request);
+    info!("/construction/derive {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let public_key: Ed25519PublicKey =
@@ -216,7 +216,7 @@ async fn construction_hash(
     request: ConstructionHashRequest,
     server_context: RosettaContext,
 ) -> ApiResult<TransactionIdentifierResponse> {
-    debug!("/construction/hash {:?}", request);
+    info!("/construction/hash {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let signed_transaction = decode_bcs(&request.signed_transaction, "SignedTransaction")?;
@@ -236,7 +236,7 @@ async fn construction_metadata(
     request: ConstructionMetadataRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionMetadataResponse> {
-    debug!("/construction/metadata {:?}", request);
+    info!("/construction/metadata {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let rest_client = server_context.rest_client()?;
@@ -268,7 +268,7 @@ async fn construction_parse(
     request: ConstructionParseRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionParseResponse> {
-    debug!("/construction/parse {:?}", request);
+    info!("/construction/parse {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let (account_identifier_signers, unsigned_txn) = if request.signed {
@@ -413,7 +413,7 @@ async fn construction_payloads(
     request: ConstructionPayloadsRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionPayloadsResponse> {
-    debug!("/construction/payloads {:?}", request);
+    info!("/construction/payloads {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     // Retrieve the real operation we're doing
@@ -477,7 +477,7 @@ async fn construction_preprocess(
     request: ConstructionPreprocessRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionPreprocessResponse> {
-    debug!("/construction/preprocess {:?}", request);
+    info!("/construction/preprocess {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     // Ensure that the max fee is only in the native coin
@@ -525,7 +525,7 @@ async fn construction_submit(
     request: ConstructionSubmitRequest,
     server_context: RosettaContext,
 ) -> ApiResult<ConstructionSubmitResponse> {
-    debug!("/construction/submit {:?}", request);
+    info!("/construction/submit {:?}", request);
     check_network(request.network_identifier, &server_context)?;
 
     let rest_client = server_context.rest_client()?;

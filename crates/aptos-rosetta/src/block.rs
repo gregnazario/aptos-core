@@ -9,7 +9,7 @@ use crate::{
     types::{Block, BlockIdentifier, BlockRequest, BlockResponse, Transaction},
     RosettaContext,
 };
-use aptos_logger::{debug, trace};
+use aptos_logger::{debug, info, trace};
 use aptos_rest_client::aptos_api_types::{BlockInfo, HashValue};
 use std::{
     collections::BTreeMap,
@@ -34,8 +34,7 @@ pub fn block_route(
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/BlockApi.html#block)
 async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResult<BlockResponse> {
-    debug!("/block");
-    trace!(
+    info!(
         request = ?request,
         server_context = ?server_context,
         "/block",
