@@ -3,6 +3,7 @@
 
 use serde::{de::Error as _, Deserialize, Deserializer, Serialize, Serializer};
 use std::{fmt, str::FromStr};
+use std::fmt::{Formatter, LowerHex};
 
 #[derive(Debug, Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct HashValue(aptos_crypto::hash::HashValue);
@@ -50,6 +51,12 @@ impl<'de> Deserialize<'de> for HashValue {
 impl fmt::Display for HashValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:#x}", self.0)
+    }
+}
+
+impl LowerHex for HashValue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{:x}", self.0)
     }
 }
 

@@ -6,7 +6,7 @@
 //! [Spec](https://www.rosetta-api.org/docs/api_identifiers.html)
 
 use crate::{
-    common::{strip_hex_prefix, BLOCKCHAIN},
+    common::{BLOCKCHAIN},
     error::{ApiError, ApiResult},
 };
 use aptos_rest_client::aptos_api_types::{BlockInfo, TransactionInfo};
@@ -16,6 +16,7 @@ use std::{
     convert::{TryFrom, TryInto},
     str::FromStr,
 };
+use crate::common::to_hex_lower;
 
 /// Account identifier, specified as a hex encoded account address (with leading 0x)
 ///
@@ -52,7 +53,7 @@ impl TryFrom<&AccountIdentifier> for AccountAddress {
 impl From<AccountAddress> for AccountIdentifier {
     fn from(address: AccountAddress) -> Self {
         AccountIdentifier {
-            address: format!("{:x}", address),
+            address: to_hex_lower(&address),
             sub_account: None,
         }
     }
@@ -71,20 +72,10 @@ pub struct BlockIdentifier {
 }
 
 impl BlockIdentifier {
-    /// Provides the block identifier for the genesis transaction
-    pub fn genesis_txn() -> BlockIdentifier {
-        // TODO: We may possibly get the real hash, but this works for now
-        // It must be unique,
-        BlockIdentifier {
-            index: 0,
-            hash: "0xGenesis".to_string(),
-        }
-    }
-
     pub fn from_block_info(block_info: BlockInfo) -> BlockIdentifier {
         BlockIdentifier {
             index: block_info.block_height,
-            hash: strip_hex_prefix(&block_info.block_hash.to_string()).to_string(),
+            hash: to_hex_lower(&block_info.block_hash),
         }
     }
 }
@@ -207,7 +198,7 @@ pub struct TransactionIdentifier {
 impl From<&TransactionInfo> for TransactionIdentifier {
     fn from(txn: &TransactionInfo) -> Self {
         TransactionIdentifier {
-            hash: strip_hex_prefix(&txn.hash.to_string()).to_string(),
+            hash: to_hex_lower(&txn.hash),
         }
     }
 }
