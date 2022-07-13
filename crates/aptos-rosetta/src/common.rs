@@ -4,8 +4,8 @@
 use crate::{
     error::{ApiError, ApiResult},
     types::{
-        test_coin_identifier, BlockIdentifier, Currency, CurrencyMetadata, MetadataRequest,
-        NetworkIdentifier, PartialBlockIdentifier,
+        test_coin_identifier, Currency, CurrencyMetadata, MetadataRequest, NetworkIdentifier,
+        PartialBlockIdentifier,
     },
     RosettaContext,
 };
@@ -193,16 +193,12 @@ pub async fn get_block_index_from_request(
             index: None,
             hash: Some(hash),
         }) => {
-            if hash == BlockIdentifier::genesis_txn().hash {
-                0
-            } else {
-                server_context
-                    .block_cache()?
-                    .get_block_index_by_hash(
-                        &aptos_rest_client::aptos_api_types::HashValue::from_str(&hash)?,
-                    )
-                    .await?
-            }
+            server_context
+                .block_cache()?
+                .get_block_index_by_hash(&aptos_rest_client::aptos_api_types::HashValue::from_str(
+                    &hash,
+                )?)
+                .await?
         }
         // Lookup latest version
         _ => {

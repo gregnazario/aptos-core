@@ -71,16 +71,6 @@ pub struct BlockIdentifier {
 }
 
 impl BlockIdentifier {
-    /// Provides the block identifier for the genesis transaction
-    pub fn genesis_txn() -> BlockIdentifier {
-        // TODO: We may possibly get the real hash, but this works for now
-        // It must be unique,
-        BlockIdentifier {
-            index: 0,
-            hash: "0xGenesis".to_string(),
-        }
-    }
-
     pub fn from_block_info(block_info: BlockInfo) -> BlockIdentifier {
         BlockIdentifier {
             index: block_info.block_height,
