@@ -1,7 +1,6 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use aptos_cli_common::types::EncodingType;
 use aptos_config::keys::ConfigKey;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_faucet::{mint, mint::MintParams, Service};
@@ -63,9 +62,7 @@ impl FaucetCliArgs {
         let mint_key = if let Some(ref key) = self.mint_key {
             key.private_key()
         } else {
-            EncodingType::BCS
-                .load_key::<Ed25519PrivateKey>("mint key", self.mint_key_file_path.as_path())
-                .unwrap()
+            bcs::from_bytes(&std::fs::read(self.mint_key_file_path.as_path()).unwrap()).unwrap()
         };
         let faucet_account = LocalAccount::new(mint_account_address, mint_key, 0);
         let service = Service::new(self.server_url, self.chain_id, faucet_account, None);
