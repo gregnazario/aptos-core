@@ -1,12 +1,15 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{format_output, BlockArgs, NetworkArgs, UrlArgs};
+use crate::common::{BlockArgs, NetworkArgs, UrlArgs};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::types::{CliResult, CliTypedResult};
 use aptos_rosetta::{
     common::native_coin,
     types::{AccountBalanceRequest, AccountBalanceResponse},
 };
 use aptos_types::account_address::AccountAddress;
+use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 
 /// Account APIs
@@ -20,9 +23,9 @@ pub enum AccountCommand {
 }
 
 impl AccountCommand {
-    pub async fn execute(self) -> anyhow::Result<String> {
+    pub async fn execute(self) -> CliResult {
         match self {
-            AccountCommand::Balance(inner) => format_output(inner.execute().await),
+            AccountCommand::Balance(inner) => inner.execute_serialized().await,
         }
     }
 }
@@ -46,10 +49,15 @@ pub struct AccountBalanceCommand {
     account: AccountAddress,
 }
 
-impl AccountBalanceCommand {
-    pub async fn execute(self) -> anyhow::Result<AccountBalanceResponse> {
+#[async_trait]
+impl CliCommand<AccountBalanceResponse> for AccountBalanceCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaAccountBalance"
+    }
+
+    async fn execute(self) -> CliTypedResult<AccountBalanceResponse> {
         let client = self.url_args.client();
-        client
+        Ok(client
             .account_balance(&AccountBalanceRequest {
                 network_identifier: self.network_args.network_identifier(),
                 account_identifier: self.account.into(),
@@ -60,6 +68,6 @@ impl AccountBalanceCommand {
                     None
                 },
             })
-            .await
+            .await?)
     }
 }

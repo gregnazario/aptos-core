@@ -1004,6 +1004,7 @@ dependencies = [
  "aptos-logger",
  "aptos-rosetta",
  "aptos-types",
+ "async-trait",
  "clap 3.2.15",
  "hex",
  "serde 1.0.137",

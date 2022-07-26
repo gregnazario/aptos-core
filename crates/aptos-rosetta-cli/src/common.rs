@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{account, block, construction, network};
+use aptos_cli_common::types::CliResult;
 use aptos_rosetta::{
     client::RosettaClient,
     types::{NetworkIdentifier, NetworkRequest, PartialBlockIdentifier},
 };
 use aptos_types::chain_id::ChainId;
 use clap::Parser;
-use serde::Serialize;
 
 /// Aptos Rosetta CLI
 ///
@@ -27,7 +27,7 @@ pub enum RosettaCliArgs {
 }
 
 impl RosettaCliArgs {
-    pub async fn execute(self) -> anyhow::Result<String> {
+    pub async fn execute(self) -> CliResult {
         use RosettaCliArgs::*;
         match self {
             Account(inner) => inner.execute().await,
@@ -36,11 +36,6 @@ impl RosettaCliArgs {
             Network(inner) => inner.execute().await,
         }
     }
-}
-
-/// Format output to a human readable form
-pub fn format_output<T: Serialize>(input: anyhow::Result<T>) -> anyhow::Result<String> {
-    input.map(|value| serde_json::to_string_pretty(&value).unwrap())
 }
 
 #[derive(Debug, Parser)]
@@ -74,12 +69,6 @@ impl NetworkArgs {
             network_identifier: self.network_identifier(),
         }
     }
-}
-
-/// Wrapper so that it's easy to tell that the output is an error
-#[derive(Serialize)]
-pub struct ErrorWrapper {
-    pub error: String,
 }
 
 /// Arguments for requesting a block

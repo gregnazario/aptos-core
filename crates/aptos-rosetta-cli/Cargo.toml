@@ -11,6 +11,7 @@ publish = false
 
 [dependencies]
 anyhow = "1.0.57"
+async-trait = "0.1.56"
 clap = "3.1.18"
 hex = "0.4.3"
 serde = { version = "1.0.137", features = ["derive"] }

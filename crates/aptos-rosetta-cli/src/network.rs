@@ -1,8 +1,11 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{format_output, NetworkArgs, UrlArgs};
+use crate::common::{NetworkArgs, UrlArgs};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::types::{CliResult, CliTypedResult};
 use aptos_rosetta::types::{NetworkListResponse, NetworkOptionsResponse, NetworkStatusResponse};
+use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 
 /// Network APIs
@@ -18,11 +21,11 @@ pub enum NetworkCommand {
 }
 
 impl NetworkCommand {
-    pub async fn execute(self) -> anyhow::Result<String> {
+    pub async fn execute(self) -> CliResult {
         match self {
-            NetworkCommand::List(inner) => format_output(inner.execute().await),
-            NetworkCommand::Options(inner) => format_output(inner.execute().await),
-            NetworkCommand::Status(inner) => format_output(inner.execute().await),
+            NetworkCommand::List(inner) => inner.execute_serialized().await,
+            NetworkCommand::Options(inner) => inner.execute_serialized().await,
+            NetworkCommand::Status(inner) => inner.execute_serialized().await,
         }
     }
 }
@@ -36,9 +39,14 @@ pub struct NetworkListCommand {
     url_args: UrlArgs,
 }
 
-impl NetworkListCommand {
-    pub async fn execute(self) -> anyhow::Result<NetworkListResponse> {
-        self.url_args.client().network_list().await
+#[async_trait]
+impl CliCommand<NetworkListResponse> for NetworkListCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaListNetworks"
+    }
+
+    async fn execute(self) -> CliTypedResult<NetworkListResponse> {
+        Ok(self.url_args.client().network_list().await?)
     }
 }
 
@@ -53,10 +61,15 @@ pub struct NetworkOptionsCommand {
     url_args: UrlArgs,
 }
 
-impl NetworkOptionsCommand {
-    pub async fn execute(self) -> anyhow::Result<NetworkOptionsResponse> {
+#[async_trait]
+impl CliCommand<NetworkOptionsResponse> for NetworkOptionsCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaListNetworkOptions"
+    }
+
+    async fn execute(self) -> CliTypedResult<NetworkOptionsResponse> {
         let request = self.network_args.network_request();
-        self.url_args.client().network_options(&request).await
+        Ok(self.url_args.client().network_options(&request).await?)
     }
 }
 
@@ -71,9 +84,14 @@ pub struct NetworkStatusCommand {
     url_args: UrlArgs,
 }
 
-impl NetworkStatusCommand {
-    pub async fn execute(self) -> anyhow::Result<NetworkStatusResponse> {
+#[async_trait]
+impl CliCommand<NetworkStatusResponse> for NetworkStatusCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaListStatus"
+    }
+
+    async fn execute(self) -> CliTypedResult<NetworkStatusResponse> {
         let request = self.network_args.network_request();
-        self.url_args.client().network_status(&request).await
+        Ok(self.url_args.client().network_status(&request).await?)
     }
 }

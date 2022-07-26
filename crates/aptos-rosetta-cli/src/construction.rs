@@ -1,10 +1,12 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{format_output, NetworkArgs, UrlArgs};
+use crate::common::{NetworkArgs, UrlArgs};
 use anyhow::anyhow;
+use aptos_cli_common::command::CliCommand;
 use aptos_cli_common::config::ProfileOptions;
 use aptos_cli_common::keys::{EncodingOptions, PrivateKeyInputOptions};
+use aptos_cli_common::types::{CliResult, CliTypedResult};
 use aptos_crypto::{
     ed25519::Ed25519PrivateKey, PrivateKey, SigningKey, ValidCryptoMaterialStringExt,
 };
@@ -21,6 +23,7 @@ use aptos_rosetta::{
     },
 };
 use aptos_types::account_address::AccountAddress;
+use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use std::{collections::HashMap, convert::TryInto};
 
@@ -35,11 +38,11 @@ pub enum ConstructionCommand {
 }
 
 impl ConstructionCommand {
-    pub async fn execute(self) -> anyhow::Result<String> {
+    pub async fn execute(self) -> CliResult {
         use ConstructionCommand::*;
         match self {
-            CreateAccount(inner) => format_output(inner.execute().await),
-            Transfer(inner) => format_output(inner.execute().await),
+            CreateAccount(inner) => inner.execute_serialized().await,
+            Transfer(inner) => inner.execute_serialized().await,
         }
     }
 }
@@ -68,8 +71,13 @@ pub struct CreateAccountCommand {
     new_account: AccountAddress,
 }
 
-impl CreateAccountCommand {
-    pub async fn execute(self) -> anyhow::Result<TransactionIdentifier> {
+#[async_trait]
+impl CliCommand<TransactionIdentifier> for CreateAccountCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaCreateAccount"
+    }
+
+    async fn execute(self) -> CliTypedResult<TransactionIdentifier> {
         info!("Create account: {:?}", self);
         let client = self.url_args.client();
         let network_identifier = self.network_args.network_identifier();
@@ -91,7 +99,7 @@ impl CreateAccountCommand {
         // A create account transaction is just a Create account operation
         let operations = vec![Operation::create_account(0, None, self.new_account, sender)];
 
-        submit_operations(&client, network_identifier, &keys, operations).await
+        Ok(submit_operations(&client, network_identifier, &keys, operations).await?)
     }
 }
 
@@ -122,8 +130,13 @@ pub struct TransferCommand {
     amount: u64,
 }
 
-impl TransferCommand {
-    pub async fn execute(self) -> anyhow::Result<TransactionIdentifier> {
+#[async_trait]
+impl CliCommand<TransactionIdentifier> for TransferCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaTransfer"
+    }
+
+    async fn execute(self) -> CliTypedResult<TransactionIdentifier> {
         info!("Transfer {:?}", self);
         let client = self.url_args.client();
         let network_identifier = self.network_args.network_identifier();
@@ -147,7 +160,7 @@ impl TransferCommand {
             Operation::deposit(1, None, self.receiver, native_coin(), self.amount),
         ];
 
-        submit_operations(&client, network_identifier, &keys, operations).await
+        Ok(submit_operations(&client, network_identifier, &keys, operations).await?)
     }
 }
 

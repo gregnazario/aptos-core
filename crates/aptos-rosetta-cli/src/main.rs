@@ -23,7 +23,7 @@ mod common;
 mod construction;
 mod network;
 
-use crate::common::{ErrorWrapper, RosettaCliArgs};
+use crate::common::RosettaCliArgs;
 use aptos_logger::Level;
 use clap::Parser;
 use std::process::exit;
@@ -43,13 +43,10 @@ async fn main() {
     let result = args.execute().await;
 
     match result {
-        Ok(value) => println!("{}", value),
-        Err(error) => {
-            let error = ErrorWrapper {
-                error: error.to_string(),
-            };
-            println!("{}", serde_json::to_string_pretty(&error).unwrap());
-            exit(-1)
+        Ok(inner) => println!("{}", inner),
+        Err(inner) => {
+            println!("{}", inner);
+            exit(1);
         }
     }
 }

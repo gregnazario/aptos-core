@@ -1,8 +1,11 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{format_output, BlockArgs, NetworkArgs, UrlArgs};
+use crate::common::{BlockArgs, NetworkArgs, UrlArgs};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::types::{CliResult, CliTypedResult};
 use aptos_rosetta::types::{BlockRequest, BlockResponse};
+use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 
 /// Block APIs
@@ -16,9 +19,9 @@ pub enum BlockCommand {
 }
 
 impl BlockCommand {
-    pub async fn execute(self) -> anyhow::Result<String> {
+    pub async fn execute(self) -> CliResult {
         match self {
-            BlockCommand::Get(inner) => format_output(inner.execute().await),
+            BlockCommand::Get(inner) => inner.execute_serialized().await,
         }
     }
 }
@@ -36,12 +39,17 @@ pub struct GetBlockCommand {
     url_args: UrlArgs,
 }
 
-impl GetBlockCommand {
-    pub async fn execute(self) -> anyhow::Result<BlockResponse> {
+#[async_trait]
+impl CliCommand<BlockResponse> for GetBlockCommand {
+    fn command_name(&self) -> &'static str {
+        "RosettaGetBlock"
+    }
+
+    async fn execute(self) -> CliTypedResult<BlockResponse> {
         let request = BlockRequest {
             network_identifier: self.network_args.network_identifier(),
             block_identifier: self.block_args.into(),
         };
-        self.url_args.client().block(&request).await
+        Ok(self.url_args.client().block(&request).await?)
     }
 }
