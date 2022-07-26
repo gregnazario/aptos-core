@@ -1,8 +1,8 @@
 [package]
-name = "aptos"
-version = "0.2.1"
+name = "aptos-cli-common"
+version = "0.1.0"
 authors = ["Aptos Labs <opensource@aptoslabs.com>"]
-description = "Aptos tool for management of nodes and interacting with the blockchain"
+description = "CLI common constructs to remove dependencies"
 repository = "https://github.com/aptos-labs/aptos-core"
 homepage = "https://aptoslabs.com"
 license = "Apache-2.0"
@@ -34,7 +34,6 @@ tokio-util = { version = "0.7.2", features = ["compat"] }
 toml = "0.5.9"
 uuid = { version = "1.0.0", features = ["v4", "serde"] }
 
-aptos-cli-common = { path = "../aptos-cli-common" }
 aptos-config = { path = "../../config" }
 aptos-crypto = { path = "../aptos-crypto", features = [] }
 aptos-faucet = { path = "../aptos-faucet" }
@@ -43,7 +42,6 @@ aptos-github-client = { path = "../../secure/storage/github" }
 aptos-keygen = { path = "../aptos-keygen" }
 aptos-logger = { path = "../aptos-logger" }
 aptos-module-verifier = { path = "../../aptos-move/aptos-module-verifier" }
-aptos-node = { path = "../../aptos-node" }
 aptos-rest-client = { path = "../../crates/aptos-rest-client" }
 aptos-sdk = { path = "../../sdk" }
 aptos-secure-storage = { path = "../../secure/storage" }

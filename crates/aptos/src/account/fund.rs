@@ -1,13 +1,12 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    account::create::DEFAULT_FUNDED_COINS,
-    common::{
-        types::{CliCommand, CliTypedResult, FaucetOptions, ProfileOptions},
-        utils::fund_account,
-    },
-};
+use crate::account::create::DEFAULT_FUNDED_COINS;
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::config::ProfileOptions;
+use aptos_cli_common::faucet::FaucetOptions;
+use aptos_cli_common::types::CliTypedResult;
+use aptos_cli_common::utils::fund_account;
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;
 use clap::Parser;
@@ -19,7 +18,7 @@ pub struct FundAccount {
     #[clap(flatten)]
     pub(crate) profile_options: ProfileOptions,
     /// Address to create account for
-    #[clap(long, parse(try_from_str=crate::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     pub(crate) account: AccountAddress,
     #[clap(flatten)]
     pub(crate) faucet_options: FaucetOptions,

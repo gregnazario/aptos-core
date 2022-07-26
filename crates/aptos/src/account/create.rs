@@ -1,10 +1,11 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{
-    types::{CliCommand, CliTypedResult, FaucetOptions, TransactionOptions},
-    utils::fund_account,
-};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::faucet::FaucetOptions;
+use aptos_cli_common::transactions::TransactionOptions;
+use aptos_cli_common::types::CliTypedResult;
+use aptos_cli_common::utils::fund_account;
 use aptos_transaction_builder::aptos_stdlib;
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;
@@ -19,7 +20,7 @@ pub struct CreateAccount {
     #[clap(flatten)]
     pub(crate) txn_options: TransactionOptions,
     /// Address to create account for
-    #[clap(long, parse(try_from_str=crate::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     pub(crate) account: AccountAddress,
     /// Flag for using faucet to create the account
     #[clap(long)]

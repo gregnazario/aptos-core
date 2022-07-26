@@ -1,7 +1,7 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use aptos::common::types::EncodingType;
+use aptos_cli_common::types::EncodingType;
 use aptos_config::keys::ConfigKey;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_faucet::{mint, mint::MintParams, Service};

@@ -1,18 +1,13 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{
-    common::{
-        types::{PromptOptions, RngArgs},
-        utils::write_to_file,
-    },
-    genesis::{
-        git::{GitOptions, SetupGit},
-        keys::{GenerateKeys, SetValidatorConfiguration},
-        GenerateGenesis,
-    },
-    CliCommand,
-};
+use crate::genesis::git::{GitOptions, SetupGit};
+use crate::genesis::keys::{GenerateKeys, SetValidatorConfiguration};
+use crate::genesis::GenerateGenesis;
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::file::write_to_file;
+use aptos_cli_common::prompts::PromptOptions;
+use aptos_cli_common::rand::RngArgs;
 use aptos_crypto::{
     ed25519::{Ed25519PrivateKey, Ed25519PublicKey},
     PrivateKey,

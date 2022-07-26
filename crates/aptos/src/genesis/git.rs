@@ -1,14 +1,12 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::utils::create_dir_if_not_exist;
-use crate::{
-    common::{
-        types::{CliError, CliTypedResult},
-        utils::write_to_file,
-    },
-    CliCommand,
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::file::{create_dir_if_not_exist, write_to_file};
+use aptos_cli_common::parse::{
+    from_base64_encoded_yaml, from_yaml, to_base64_encoded_yaml, to_yaml,
 };
+use aptos_cli_common::types::{CliError, CliTypedResult};
 use aptos_config::config::Token;
 use aptos_genesis::config::Layout;
 use aptos_github_client::Client as GithubClient;
@@ -236,20 +234,4 @@ impl Client {
         }
         Ok(modules)
     }
-}
-
-pub fn to_yaml<T: Serialize + ?Sized>(input: &T) -> CliTypedResult<String> {
-    Ok(serde_yaml::to_string(input)?)
-}
-
-pub fn from_yaml<T: DeserializeOwned>(input: &str) -> CliTypedResult<T> {
-    Ok(serde_yaml::from_str(input)?)
-}
-
-pub fn to_base64_encoded_yaml<T: Serialize + ?Sized>(input: &T) -> CliTypedResult<String> {
-    Ok(base64::encode(to_yaml(input)?))
-}
-
-pub fn from_base64_encoded_yaml<T: DeserializeOwned>(input: &str) -> CliTypedResult<T> {
-    from_yaml(&String::from_utf8(base64::decode(input)?)?)
 }

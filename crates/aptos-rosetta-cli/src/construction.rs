@@ -3,7 +3,8 @@
 
 use crate::common::{format_output, NetworkArgs, UrlArgs};
 use anyhow::anyhow;
-use aptos::common::types::{EncodingOptions, PrivateKeyInputOptions, ProfileOptions};
+use aptos_cli_common::config::ProfileOptions;
+use aptos_cli_common::keys::{EncodingOptions, PrivateKeyInputOptions};
 use aptos_crypto::{
     ed25519::Ed25519PrivateKey, PrivateKey, SigningKey, ValidCryptoMaterialStringExt,
 };
@@ -60,10 +61,10 @@ pub struct CreateAccountCommand {
     private_key_options: PrivateKeyInputOptions,
     /// The sending account, since the private key doesn't always match the
     /// AccountAddress if it rotates
-    #[clap(long, parse(try_from_str=aptos::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     sender: Option<AccountAddress>,
     /// The new account (TODO: Maybe we want to take in the public key instead)
-    #[clap(long, parse(try_from_str=aptos::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     new_account: AccountAddress,
 }
 
@@ -111,10 +112,10 @@ pub struct TransferCommand {
     private_key_options: PrivateKeyInputOptions,
     /// The sending account, since the private key doesn't always match the
     /// AccountAddress if it rotates
-    #[clap(long, parse(try_from_str=aptos::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     sender: Option<AccountAddress>,
     /// The receiving account
-    #[clap(long, parse(try_from_str=aptos::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     receiver: AccountAddress,
     /// The amount of coins to send
     #[clap(long)]

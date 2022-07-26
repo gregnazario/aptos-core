@@ -1,9 +1,10 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::types::{
-    CliCommand, CliConfig, CliError, CliTypedResult, ProfileOptions, RestOptions,
-};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::config::{CliConfig, ProfileOptions};
+use aptos_cli_common::rest::RestOptions;
+use aptos_cli_common::types::{CliError, CliTypedResult};
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;
 use clap::{ArgEnum, Parser};
@@ -55,7 +56,7 @@ pub struct ListAccount {
     pub(crate) profile_options: ProfileOptions,
 
     /// Address of account you want to list resources/modules for
-    #[clap(long, parse(try_from_str=crate::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     pub(crate) account: Option<AccountAddress>,
 
     /// Type of items to list: resources, modules. (Defaults to 'resources').

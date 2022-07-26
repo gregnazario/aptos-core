@@ -1,22 +1,21 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::{
-    types::{
-        account_address_from_public_key, CliCommand, CliConfig, CliError, CliTypedResult,
-        EncodingOptions, PrivateKeyInputOptions, ProfileConfig, ProfileOptions, PromptOptions,
-        RngArgs,
-    },
-    utils::{fund_account, prompt_yes_with_override, read_line},
-};
+use aptos_cli_common::account::account_address_from_public_key;
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::config::{CliConfig, ProfileConfig, ProfileOptions, DEFAULT_REST_URL};
+use aptos_cli_common::faucet::DEFAULT_FAUCET_URL;
+use aptos_cli_common::keys::{EncodingOptions, PrivateKeyInputOptions};
+use aptos_cli_common::prompts::{prompt_yes_with_override, read_line, PromptOptions};
+use aptos_cli_common::rand::RngArgs;
+use aptos_cli_common::types::{CliError, CliTypedResult};
+use aptos_cli_common::utils::fund_account;
 use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey, ValidCryptoMaterialStringExt};
 use async_trait::async_trait;
 use clap::Parser;
 use reqwest::Url;
 use std::collections::HashMap;
 
-pub const DEFAULT_REST_URL: &str = "https://fullnode.devnet.aptoslabs.com";
-pub const DEFAULT_FAUCET_URL: &str = "https://faucet.devnet.aptoslabs.com";
 const NUM_DEFAULT_COINS: u64 = 10000;
 
 /// Tool to initialize current directory for the aptos tool

@@ -42,7 +42,7 @@ pub struct AccountBalanceCommand {
     #[clap(long)]
     filter_currency: bool,
     /// Account to list the balance
-    #[clap(long, parse(try_from_str=aptos::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     account: AccountAddress,
 }
 

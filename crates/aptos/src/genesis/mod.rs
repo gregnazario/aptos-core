@@ -6,15 +6,11 @@ pub mod keys;
 #[cfg(test)]
 mod tests;
 
-use crate::common::utils::dir_default_to_current;
-use crate::{
-    common::{
-        types::{CliError, CliTypedResult, PromptOptions},
-        utils::{check_if_file_exists, write_to_file},
-    },
-    genesis::git::{Client, GitOptions, LAYOUT_NAME},
-    CliCommand, CliResult,
-};
+use crate::genesis::git::{Client, GitOptions, LAYOUT_NAME};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::file::{dir_default_to_current, write_to_file};
+use aptos_cli_common::prompts::{check_if_file_exists, PromptOptions};
+use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
 use aptos_crypto::{bls12381, ed25519::Ed25519PublicKey, x25519, ValidCryptoMaterialStringExt};
 use aptos_genesis::{
     config::{HostAndPort, Layout, ValidatorConfiguration},

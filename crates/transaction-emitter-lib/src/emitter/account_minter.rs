@@ -6,7 +6,6 @@ use crate::{
     query_sequence_numbers, EmitJobRequest,
 };
 use anyhow::{format_err, Result};
-use aptos::common::types::EncodingType;
 use aptos_crypto::ed25519::{Ed25519PrivateKey, Ed25519PublicKey};
 use aptos_logger::{debug, info};
 use aptos_rest_client::{Client as RestClient, PendingTransaction, Response};
@@ -194,9 +193,7 @@ impl<'t> AccountMinter<'t> {
         index: usize,
     ) -> Result<LocalAccount> {
         let file = "vasp".to_owned() + index.to_string().as_str() + ".key";
-        let mint_key: Ed25519PrivateKey = EncodingType::BCS
-            .load_key("vasp private key", Path::new(&file))
-            .unwrap();
+        let mint_key: Ed25519PrivateKey = bcs::from_bytes(&std::fs::read(Path::new(&file))?)?;
         let account_key = AccountKey::from_private_key(mint_key);
         let address = account_key.authentication_key().derived_address();
         let sequence_number = query_sequence_numbers(client, &[address])

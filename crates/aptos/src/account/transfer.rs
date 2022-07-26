@@ -1,7 +1,9 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::types::{CliCommand, CliTypedResult, TransactionOptions};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::transactions::TransactionOptions;
+use aptos_cli_common::types::CliTypedResult;
 use aptos_rest_client::{
     aptos_api_types::{WriteResource, WriteSetChange},
     Transaction,
@@ -21,7 +23,7 @@ pub struct TransferCoins {
     pub(crate) txn_options: TransactionOptions,
 
     /// Address of account you want to send coins to
-    #[clap(long, parse(try_from_str = crate::common::types::load_account_arg))]
+    #[clap(long, parse(try_from_str=aptos_cli_common::account::load_account_arg))]
     pub(crate) account: AccountAddress,
 
     /// Amount of coins to transfer

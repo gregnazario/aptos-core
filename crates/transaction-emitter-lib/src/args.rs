@@ -4,7 +4,6 @@
 use std::{convert::TryFrom, path::Path};
 
 use anyhow::{bail, format_err, Result};
-use aptos::common::types::EncodingType;
 use aptos_config::keys::ConfigKey;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_sdk::types::chain_id::ChainId;
@@ -29,8 +28,7 @@ impl MintArgs {
     pub fn get_mint_key(&self) -> Result<Ed25519PrivateKey> {
         let key = match &self.mint_key {
             Some(ref key) => key.private_key(),
-            None => EncodingType::BCS
-                .load_key::<Ed25519PrivateKey>("mint key pair", Path::new(&self.mint_file))?,
+            None => bcs::from_bytes(&std::fs::read(Path::new(&self.mint_file))?)?,
         };
         Ok(key)
     }

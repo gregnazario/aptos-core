@@ -4,7 +4,6 @@
 #![forbid(unsafe_code)]
 
 pub mod account;
-pub mod common;
 pub mod config;
 pub mod genesis;
 pub mod move_tool;
@@ -12,11 +11,11 @@ pub mod node;
 pub mod op;
 pub mod test;
 
-use crate::common::types::{CliCommand, CliResult, CliTypedResult};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::types::{CliResult, CliTypedResult};
 use async_trait::async_trait;
 use clap::Parser;
 use std::collections::BTreeMap;
-use self::config;
 
 shadow_rs::shadow!(build);
 

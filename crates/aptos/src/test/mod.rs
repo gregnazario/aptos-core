@@ -1,30 +1,27 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::common::types::FaucetOptions;
-use crate::{
-    account::{
-        create::{CreateAccount, DEFAULT_FUNDED_COINS},
-        fund::FundAccount,
-        list::{ListAccount, ListQuery},
-        transfer::{TransferCoins, TransferSummary},
-    },
-    CliCommand,
-    common::{
-        types::{
-            CliConfig, CliTypedResult, EncodingOptions, PrivateKeyInputOptions, ProfileOptions,
-            PromptOptions, RestOptions, RngArgs, TransactionOptions,
-        },
-    },
-};
+use crate::account::create::{CreateAccount, DEFAULT_FUNDED_COINS};
+use crate::account::fund::FundAccount;
+use crate::account::list::{ListAccount, ListQuery};
+use crate::account::transfer::{TransferCoins, TransferSummary};
+use crate::config::init::InitTool;
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::config::{CliConfig, ProfileOptions};
+use aptos_cli_common::faucet::FaucetOptions;
+use aptos_cli_common::keys::{EncodingOptions, PrivateKeyInputOptions};
+use aptos_cli_common::prompts::PromptOptions;
+use aptos_cli_common::rand::RngArgs;
+use aptos_cli_common::rest::RestOptions;
+use aptos_cli_common::transactions::TransactionOptions;
+use aptos_cli_common::types::CliTypedResult;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_keygen::KeyGen;
 use aptos_sdk::move_types::account_address::AccountAddress;
 use reqwest::Url;
 use serde_json::Value;
 use std::{str::FromStr, time::Duration};
-use tokio::time::{Instant, sleep};
-use crate::config::init::InitTool;
+use tokio::time::{sleep, Instant};
 
 /// A framework for testing the CLI
 pub struct CliTestFramework {
