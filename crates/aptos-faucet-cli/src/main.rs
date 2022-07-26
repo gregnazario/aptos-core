@@ -1,6 +1,10 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_common::keys::EncodingType;
+use aptos_cli_common::types::{CliError, CliTypedResult};
+use aptos_cli_common::utils::print_cli_result;
 use aptos_config::keys::ConfigKey;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_faucet::{mint, mint::MintParams, Service};
@@ -8,15 +12,16 @@ use aptos_sdk::types::{
     account_address::AccountAddress, account_config::aptos_root_address, chain_id::ChainId,
     LocalAccount,
 };
+use async_trait::async_trait;
 use clap::Parser;
 use std::{collections::HashSet, path::PathBuf, str::FromStr};
 use url::Url;
 
 #[tokio::main]
 async fn main() {
-    aptos_logger::Logger::new().init();
     let args: FaucetCliArgs = FaucetCliArgs::parse();
-    args.execute().await
+    let result = args.execute_serialized().await;
+    print_cli_result(result)
 }
 
 #[derive(Debug, Parser)]
@@ -56,13 +61,20 @@ pub struct FaucetCliArgs {
     pub account_file: Option<PathBuf>,
 }
 
-impl FaucetCliArgs {
-    async fn execute(self) {
+#[async_trait]
+impl CliCommand<()> for FaucetCliArgs {
+    fn command_name(&self) -> &'static str {
+        "FaucetCliMint"
+    }
+
+    async fn execute(self) -> CliTypedResult<()> {
         let mint_account_address = self.mint_account_address.unwrap_or_else(aptos_root_address);
         let mint_key = if let Some(ref key) = self.mint_key {
             key.private_key()
         } else {
-            bcs::from_bytes(&std::fs::read(self.mint_key_file_path.as_path()).unwrap()).unwrap()
+            EncodingType::BCS
+                .load_key::<Ed25519PrivateKey>("mint key", self.mint_key_file_path.as_path())
+                .unwrap()
         };
         let faucet_account = LocalAccount::new(mint_account_address, mint_key, 0);
         let service = Service::new(self.server_url, self.chain_id, faucet_account, None);
@@ -85,6 +97,7 @@ impl FaucetCliArgs {
         };
 
         // Iterate through accounts to mint the tokens
+        let mut success = true;
         for account in accounts {
             let response = mint::process(
                 &service,
@@ -103,12 +116,23 @@ impl FaucetCliArgs {
                     account.to_hex_literal(),
                     response
                 ),
-                Err(response) => println!(
-                    "FAILURE: Account: {} Response: {:?}",
-                    account.to_hex_literal(),
-                    response
-                ),
+                Err(response) => {
+                    println!(
+                        "FAILURE: Account: {} Response: {:?}",
+                        account.to_hex_literal(),
+                        response
+                    );
+                    success = false;
+                }
             }
+        }
+
+        if success {
+            Ok(())
+        } else {
+            Err(CliError::ApiError(
+                "Failed to mint to all accounts".to_string(),
+            ))
         }
     }
 }

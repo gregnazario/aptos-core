@@ -1,11 +1,12 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::types::{CliError, CliTypedResult};
+use crate::types::{CliError, CliResult, CliTypedResult};
 use aptos_logger::Level;
 use aptos_types::account_address::AccountAddress;
 use aptos_types::chain_id::ChainId;
 use reqwest::Url;
+use std::process::exit;
 
 /// Retrieves the chain id from the rest client
 pub async fn chain_id(rest_client: &aptos_rest_client::Client) -> CliTypedResult<ChainId> {
@@ -49,4 +50,14 @@ pub fn start_logger() {
         .level(Level::Warn)
         .read_env();
     logger.build();
+}
+
+pub fn print_cli_result(result: CliResult) {
+    match result {
+        Ok(inner) => println!("{}", inner),
+        Err(inner) => {
+            println!("{}", inner);
+            exit(1);
+        }
+    }
 }
