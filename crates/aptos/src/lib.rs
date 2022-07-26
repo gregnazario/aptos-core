@@ -16,6 +16,7 @@ use crate::common::types::{CliCommand, CliResult, CliTypedResult};
 use async_trait::async_trait;
 use clap::Parser;
 use std::collections::BTreeMap;
+use self::config;
 
 shadow_rs::shadow!(build);
 
@@ -31,7 +32,7 @@ pub enum Tool {
     #[clap(subcommand)]
     Genesis(genesis::GenesisTool),
     Info(InfoTool),
-    Init(common::init::InitTool),
+    Init(config::init::InitTool),
     #[clap(subcommand)]
     Key(op::key::KeyTool),
     #[clap(subcommand)]

@@ -18,11 +18,13 @@ use std::fmt::Formatter;
 use std::path::PathBuf;
 use std::str::FromStr;
 
+pub mod init;
+
 /// Tool for configuration of the CLI tool
 ///
 #[derive(Parser)]
 pub enum ConfigTool {
-    Init(crate::common::init::InitTool),
+    Init(init::InitTool),
     GenerateShellCompletions(GenerateShellCompletions),
     SetGlobalConfig(SetGlobalConfig),
     ShowGlobalConfig(ShowGlobalConfig),

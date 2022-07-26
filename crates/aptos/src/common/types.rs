@@ -5,7 +5,6 @@ use crate::common::utils::{create_dir_if_not_exist, dir_default_to_current, star
 use crate::config::GlobalConfig;
 use crate::{
     common::{
-        init::{DEFAULT_FAUCET_URL, DEFAULT_REST_URL},
         utils::{
             chain_id, check_if_file_exists, get_sequence_number, read_from_file, to_common_result,
             to_common_success_result, write_to_file, write_to_file_with_opts,
@@ -16,7 +15,7 @@ use crate::{
 };
 use aptos_crypto::{
     ed25519::{Ed25519PrivateKey, Ed25519PublicKey},
-    x25519, PrivateKey, ValidCryptoMaterial, ValidCryptoMaterialStringExt,
+    PrivateKey, ValidCryptoMaterial, ValidCryptoMaterialStringExt, x25519,
 };
 use aptos_keygen::KeyGen;
 use aptos_rest_client::aptos_api_types::{
@@ -50,6 +49,7 @@ use std::{
     time::Instant,
 };
 use thiserror::Error;
+use crate::config::init::{DEFAULT_FAUCET_URL, DEFAULT_REST_URL};
 
 /// A common result to be returned to users
 pub type CliResult = Result<String, String>;

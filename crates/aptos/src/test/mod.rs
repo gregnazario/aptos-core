@@ -9,14 +9,13 @@ use crate::{
         list::{ListAccount, ListQuery},
         transfer::{TransferCoins, TransferSummary},
     },
+    CliCommand,
     common::{
-        init::InitTool,
         types::{
             CliConfig, CliTypedResult, EncodingOptions, PrivateKeyInputOptions, ProfileOptions,
             PromptOptions, RestOptions, RngArgs, TransactionOptions,
         },
     },
-    CliCommand,
 };
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_keygen::KeyGen;
@@ -24,7 +23,8 @@ use aptos_sdk::move_types::account_address::AccountAddress;
 use reqwest::Url;
 use serde_json::Value;
 use std::{str::FromStr, time::Duration};
-use tokio::time::{sleep, Instant};
+use tokio::time::{Instant, sleep};
+use crate::config::init::InitTool;
 
 /// A framework for testing the CLI
 pub struct CliTestFramework {
