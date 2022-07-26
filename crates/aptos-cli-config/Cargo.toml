@@ -1,0 +1,24 @@
+[package]
+name = "aptos-cli-config"
+version = "0.1.0"
+authors = ["Aptos Labs <opensource@aptoslabs.com>"]
+description = "CLI common constructs to remove dependencies"
+repository = "https://github.com/aptos-labs/aptos-core"
+homepage = "https://aptoslabs.com"
+license = "Apache-2.0"
+publish = false
+edition = "2018"
+
+[dependencies]
+clap = "3.2.11"
+hex = "0.4.3"
+itertools = "0.10.3"
+rand = "0.7.3"
+serde = "1.0.137"
+serde_yaml = "0.8.24"
+
+aptos-cli-base = { path = "../aptos-cli-base" }
+
+aptos-crypto = { path = "../aptos-crypto", features = [] }
+aptos-keygen = { path = "../aptos-keygen" }
+aptos-types = { path = "../../types" }

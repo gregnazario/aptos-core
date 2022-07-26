@@ -1,8 +1,8 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::config::CliConfig;
-use crate::types::CliError;
+use aptos_cli_base::types::CliError;
+use aptos_cli_config::config::CliConfig;
 use aptos_crypto::ed25519::Ed25519PublicKey;
 use aptos_crypto::PrivateKey;
 use aptos_types::account_address::AccountAddress;

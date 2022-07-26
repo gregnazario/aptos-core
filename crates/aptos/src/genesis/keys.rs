@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::genesis::git::GitOptions;
-use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::file::{
+use aptos_cli_base::file::{
     create_dir_if_not_exist, dir_default_to_current, read_from_file, write_to_user_only_file,
 };
-use aptos_cli_common::parse::{from_yaml, to_yaml};
-use aptos_cli_common::prompts::{check_if_file_exists, PromptOptions};
-use aptos_cli_common::rand::RngArgs;
-use aptos_cli_common::types::{CliError, CliTypedResult};
+use aptos_cli_base::parse::{from_yaml, to_yaml};
+use aptos_cli_base::prompts::{check_if_file_exists, PromptOptions};
+use aptos_cli_base::types::{CliError, CliTypedResult};
+use aptos_cli_common::command::CliCommand;
+use aptos_cli_config::rand::RngArgs;
 use aptos_crypto::{bls12381, PrivateKey};
 use aptos_genesis::{
     config::{HostAndPort, ValidatorConfiguration},
@@ -53,7 +53,7 @@ impl CliCommand<Vec<PathBuf>> for GenerateKeys {
 
         let mut key_generator = self.rng_args.key_generator()?;
         let (validator_blob, vfn_blob, private_identity) =
-            generate_key_objects(&mut key_generator)?;
+            generate_key_objects(&mut key_generator).map_err(CliError::unexpected)?;
 
         // Create the directory if it doesn't exist
         create_dir_if_not_exist(output_dir.as_path())?;

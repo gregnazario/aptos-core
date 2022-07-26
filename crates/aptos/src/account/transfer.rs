@@ -1,9 +1,9 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::types::CliTypedResult;
 use aptos_cli_common::command::CliCommand;
 use aptos_cli_common::transactions::TransactionOptions;
-use aptos_cli_common::types::CliTypedResult;
 use aptos_rest_client::{
     aptos_api_types::{WriteResource, WriteSetChange},
     Transaction,

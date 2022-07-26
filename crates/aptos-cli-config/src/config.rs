@@ -1,9 +1,11 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::file::{create_dir_if_not_exist, current_dir, read_from_file, write_to_user_only_file};
-use crate::parse::{from_yaml, to_yaml};
-use crate::types::{CliError, CliTypedResult};
+use aptos_cli_base::file::{
+    create_dir_if_not_exist, current_dir, home_dir, read_from_file, write_to_user_only_file,
+};
+use aptos_cli_base::parse::{from_yaml, to_yaml};
+use aptos_cli_base::types::{CliError, CliTypedResult};
 use aptos_crypto::ed25519::{Ed25519PrivateKey, Ed25519PublicKey};
 use aptos_types::account_address::AccountAddress;
 use clap::ArgEnum;
@@ -62,13 +64,7 @@ impl GlobalConfig {
 }
 
 fn global_folder() -> CliTypedResult<PathBuf> {
-    if let Some(dir) = dirs::home_dir() {
-        Ok(dir.join(CONFIG_FOLDER))
-    } else {
-        Err(CliError::UnexpectedError(
-            "Unable to retrieve home directory".to_string(),
-        ))
-    }
+    Ok(home_dir()?.join(CONFIG_FOLDER))
 }
 
 /// A configuration for where to place and use the config

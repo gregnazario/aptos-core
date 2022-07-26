@@ -1,15 +1,15 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::file::{append_file_extension, write_to_file, SaveFile};
+use aptos_cli_base::prompts::check_if_file_exists;
+use aptos_cli_base::types::{CliError, CliResult, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::ProfileOptions;
-use aptos_cli_common::file::{append_file_extension, write_to_file, SaveFile};
 use aptos_cli_common::keys::{
     EncodingOptions, EncodingType, ExtractPublicKey, KeyType, PrivateKeyInputOptions,
 };
-use aptos_cli_common::prompts::check_if_file_exists;
-use aptos_cli_common::rand::RngArgs;
-use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
+use aptos_cli_config::config::ProfileOptions;
+use aptos_cli_config::rand::RngArgs;
 use aptos_config::config::{Peer, PeerRole};
 use aptos_crypto::{ed25519, x25519, PrivateKey, ValidCryptoMaterial};
 use aptos_types::account_address::{from_identity_public_key, AccountAddress};

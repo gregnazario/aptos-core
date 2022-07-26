@@ -3,13 +3,13 @@
 
 mod aptos_debug_natives;
 
+use aptos_cli_base::file::{create_dir_if_not_exist, dir_default_to_current};
+use aptos_cli_base::prompts::{check_if_file_exists, PromptOptions};
+use aptos_cli_base::types::{CliError, CliResult, CliTypedResult};
 use aptos_cli_common::account::{load_account_arg, AccountAddressWrapper};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::file::{create_dir_if_not_exist, dir_default_to_current};
-use aptos_cli_common::prompts::{check_if_file_exists, PromptOptions};
 use aptos_cli_common::r#move::MovePackageDir;
 use aptos_cli_common::transactions::{TransactionOptions, TransactionSummary};
-use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
 use aptos_module_verifier::module_init::verify_module_init_function;
 use aptos_rest_client::aptos_api_types::MoveType;
 use aptos_types::transaction::{ModuleBundle, ScriptFunction, TransactionPayload};
@@ -78,7 +78,7 @@ pub struct InitPackage {
     /// Example: alice=0x1234, bob=0x5678
     ///
     /// Note: This will fail if there are duplicates in the Move.toml file remove those first.
-    #[clap(long, parse(try_from_str = aptos_cli_common::parse::parse_map), default_value = "")]
+    #[clap(long, parse(try_from_str = aptos_cli_base::parse::parse_map), default_value = "")]
     named_addresses: BTreeMap<String, AccountAddressWrapper>,
     #[clap(flatten)]
     prompt_options: PromptOptions,

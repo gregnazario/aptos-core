@@ -1,15 +1,11 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::file::{create_dir_if_not_exist, write_to_file};
+use aptos_cli_base::parse::{from_yaml, to_yaml};
+use aptos_cli_base::types::{CliError, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::file::{create_dir_if_not_exist, write_to_file};
-use aptos_cli_common::parse::{
-    from_base64_encoded_yaml, from_yaml, to_base64_encoded_yaml, to_yaml,
-};
-use aptos_cli_common::types::{CliError, CliTypedResult};
-use aptos_config::config::Token;
 use aptos_genesis::config::Layout;
-use aptos_github_client::Client as GithubClient;
 use async_trait::async_trait;
 use clap::Parser;
 use serde::{de::DeserializeOwned, Serialize};
@@ -35,7 +31,7 @@ impl CliCommand<()> for SetupGit {
     }
 
     async fn execute(self) -> CliTypedResult<()> {
-        let layout = Layout::from_disk(&self.layout_file)?;
+        let layout = Layout::from_disk(&self.layout_file).map_err(CliError::unexpected)?;
 
         // Upload layout file to ensure we can read later
         let client = self.git_options.get_client()?;
@@ -97,11 +93,7 @@ impl GitOptions {
             && self.github_token_file.is_some()
             && self.local_repository_dir.is_none()
         {
-            Client::github(
-                self.github_repository.unwrap(),
-                self.github_branch,
-                self.github_token_file.unwrap(),
-            )
+            Err(CliError::CommandArgumentError("Unsupported".to_string()))
         } else {
             Err(CliError::CommandArgumentError("Must provide either only --local-repository-dir or both --github-repository and --github-token-path".to_string()))
         }
@@ -113,26 +105,11 @@ impl GitOptions {
 /// Note: Writes do not commit locally
 pub enum Client {
     Local(PathBuf),
-    Github(GithubClient),
 }
 
 impl Client {
     pub fn local(path: PathBuf) -> Client {
         Client::Local(path)
-    }
-
-    pub fn github(
-        repository: GithubRepo,
-        branch: String,
-        token_path: PathBuf,
-    ) -> CliTypedResult<Client> {
-        let token = Token::FromDisk(token_path).read_token()?;
-        Ok(Client::Github(GithubClient::new(
-            repository.owner,
-            repository.repository,
-            branch,
-            token,
-        )))
     }
 
     /// Retrieves an object as a YAML encoded file from the appropriate storage
@@ -147,9 +124,6 @@ impl Client {
                 file.read_to_string(&mut contents)
                     .map_err(|e| CliError::IO(path.display().to_string(), e))?;
                 from_yaml(&contents)
-            }
-            Client::Github(client) => {
-                from_base64_encoded_yaml(&client.get_file(&format!("{}.yaml", name))?)
             }
         }
     }
@@ -167,9 +141,6 @@ impl Client {
                     to_yaml(input)?.as_bytes(),
                 )?;
             }
-            Client::Github(client) => {
-                client.put(&format!("{}.yaml", name), &to_base64_encoded_yaml(input)?)?;
-            }
         }
 
         Ok(())
@@ -180,9 +151,6 @@ impl Client {
             Client::Local(local_repository_path) => {
                 let path = local_repository_path.join(name);
                 create_dir_if_not_exist(path.as_path())?;
-            }
-            Client::Github(_) => {
-                // There's no such thing as an empty directory in Git, so do nothing
             }
         }
 
@@ -218,16 +186,6 @@ impl Client {
                             std::fs::read(file.as_path())
                                 .map_err(|e| CliError::IO(file.display().to_string(), e))?,
                         );
-                    }
-                }
-            }
-            Client::Github(client) => {
-                let files = client.get_directory(name)?;
-
-                for file in files {
-                    // Only collect .mv files
-                    if file.ends_with(".mv") {
-                        modules.push(base64::decode(client.get_file(&file)?)?)
                     }
                 }
             }

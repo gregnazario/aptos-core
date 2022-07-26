@@ -11,8 +11,8 @@ pub mod node;
 pub mod op;
 pub mod test;
 
+use aptos_cli_base::types::{CliResult, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::types::{CliResult, CliTypedResult};
 use async_trait::async_trait;
 use clap::Parser;
 use std::collections::BTreeMap;

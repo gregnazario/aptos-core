@@ -1,11 +1,10 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::types::CliTypedResult;
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::faucet::FaucetOptions;
+use aptos_cli_common::faucet::{fund_account, FaucetOptions};
 use aptos_cli_common::transactions::TransactionOptions;
-use aptos_cli_common::types::CliTypedResult;
-use aptos_cli_common::utils::fund_account;
 use aptos_transaction_builder::aptos_stdlib;
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;

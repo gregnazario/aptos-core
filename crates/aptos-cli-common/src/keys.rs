@@ -1,9 +1,9 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::config::CliConfig;
-use crate::file::read_from_file;
-use crate::types::{CliError, CliTypedResult};
+use aptos_cli_base::file::read_from_file;
+use aptos_cli_base::types::{CliError, CliTypedResult};
+use aptos_cli_config::config::CliConfig;
 use aptos_crypto::ed25519::{Ed25519PrivateKey, Ed25519PublicKey};
 use aptos_crypto::{x25519, PrivateKey, ValidCryptoMaterial, ValidCryptoMaterialStringExt};
 use clap::ArgEnum;

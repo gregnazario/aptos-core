@@ -1,15 +1,14 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::prompts::{prompt_yes_with_override, read_line, PromptOptions};
+use aptos_cli_base::types::{CliError, CliTypedResult};
 use aptos_cli_common::account::account_address_from_public_key;
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::{CliConfig, ProfileConfig, ProfileOptions, DEFAULT_REST_URL};
-use aptos_cli_common::faucet::DEFAULT_FAUCET_URL;
+use aptos_cli_common::faucet::{fund_account, DEFAULT_FAUCET_URL};
 use aptos_cli_common::keys::{EncodingOptions, PrivateKeyInputOptions};
-use aptos_cli_common::prompts::{prompt_yes_with_override, read_line, PromptOptions};
-use aptos_cli_common::rand::RngArgs;
-use aptos_cli_common::types::{CliError, CliTypedResult};
-use aptos_cli_common::utils::fund_account;
+use aptos_cli_config::config::{CliConfig, ProfileConfig, ProfileOptions, DEFAULT_REST_URL};
+use aptos_cli_config::rand::RngArgs;
 use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey, ValidCryptoMaterialStringExt};
 use async_trait::async_trait;
 use clap::Parser;

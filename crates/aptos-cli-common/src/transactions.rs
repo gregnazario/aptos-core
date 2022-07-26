@@ -1,11 +1,10 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::config::ProfileOptions;
 use crate::keys::{EncodingOptions, PrivateKeyInputOptions};
 use crate::rest::RestOptions;
-use crate::types::{CliError, CliTypedResult};
-use crate::utils::chain_id;
+use aptos_cli_base::types::{CliError, CliTypedResult};
+use aptos_cli_config::config::ProfileOptions;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_crypto::PrivateKey;
 use aptos_rest_client::aptos_api_types::{
@@ -18,6 +17,7 @@ use aptos_sdk::move_types::language_storage::{ModuleId, TypeTag};
 use aptos_sdk::transaction_builder::TransactionFactory;
 use aptos_sdk::types::LocalAccount;
 use aptos_types::account_address::AccountAddress;
+use aptos_types::chain_id::ChainId;
 use aptos_types::transaction::authenticator::AuthenticationKey;
 use aptos_types::transaction::{ScriptFunction, TransactionPayload};
 use clap::Parser;
@@ -126,6 +126,19 @@ impl TransactionOptions {
 
         Ok(response.into_inner())
     }
+}
+
+async fn chain_id(client: &aptos_rest_client::Client) -> CliTypedResult<ChainId> {
+    Ok(ChainId::new(
+        client
+            .get_ledger_information()
+            .await
+            .map_err(|err| {
+                CliError::UnexpectedError(format!("Failed to retrieve chain id {}", err))
+            })?
+            .into_inner()
+            .chain_id,
+    ))
 }
 
 /// Retrieves sequence number from the rest client

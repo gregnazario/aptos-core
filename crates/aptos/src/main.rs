@@ -6,7 +6,7 @@
 #![forbid(unsafe_code)]
 
 use aptos::Tool;
-use aptos_cli_common::utils::print_cli_result;
+use aptos_cli_base::utils::print_cli_result;
 use clap::Parser;
 
 #[tokio::main]

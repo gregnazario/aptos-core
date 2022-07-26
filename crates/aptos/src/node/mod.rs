@@ -1,19 +1,19 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::file::read_from_file;
+use aptos_cli_base::parse::from_yaml;
+use aptos_cli_base::prompts::{prompt_yes_with_override, PromptOptions};
+use aptos_cli_base::types::{CliError, CliResult, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::{GlobalConfig, ProfileOptions};
-use aptos_cli_common::file::read_from_file;
-use aptos_cli_common::parse::from_yaml;
-use aptos_cli_common::prompts::{prompt_yes_with_override, PromptOptions};
 use aptos_cli_common::rest::RestOptions;
 use aptos_cli_common::transactions::TransactionOptions;
-use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
+use aptos_cli_config::config::{GlobalConfig, ProfileOptions};
 use aptos_config::config::NodeConfig;
 use aptos_crypto::{bls12381, x25519, ValidCryptoMaterialStringExt};
 use aptos_faucet::FaucetArgs;
 use aptos_genesis::config::{HostAndPort, ValidatorConfiguration};
-use aptos_rest_client::{Response, Transaction};
+use aptos_rest_client::Transaction;
 use aptos_types::chain_id::ChainId;
 use aptos_types::{account_address::AccountAddress, account_config::CORE_CODE_ADDRESS};
 use async_trait::async_trait;
@@ -313,11 +313,24 @@ impl CliCommand<Transaction> for RegisterValidatorCandidate {
             validator_host,
             full_node_host,
         ) = self.process_inputs()?;
-        let validator_network_addresses =
-            vec![validator_host.as_network_address(validator_network_public_key)?];
+        let validator_network_addresses = vec![validator_host
+            .as_network_address(validator_network_public_key)
+            .map_err(|err| {
+                CliError::CommandArgumentError(format!(
+                    "Failed to build validator network address {}",
+                    err
+                ))
+            })?];
         let full_node_network_addresses =
             match (full_node_host.as_ref(), full_node_network_public_key) {
-                (Some(host), Some(public_key)) => vec![host.as_network_address(public_key)?],
+                (Some(host), Some(public_key)) => {
+                    vec![host.as_network_address(public_key).map_err(|err| {
+                        CliError::CommandArgumentError(format!(
+                            "Failed to build full node network address {}",
+                            err
+                        ))
+                    })?]
+                }
                 _ => vec![],
             };
 
@@ -440,13 +453,10 @@ impl CliCommand<serde_json::Value> for ShowValidatorStake {
     async fn execute(mut self) -> CliTypedResult<serde_json::Value> {
         let client = self.rest_options.client(&self.profile_options.profile)?;
         let address = self.operator_args.address(&self.profile_options)?;
-        let response = get_resource_migration(
-            &client,
-            address,
-            "0x1::Stake::StakePool",
-            "0x1::stake::StakePool",
-        )
-        .await?;
+        let response = client
+            .get_resource(address, "0x1::stake::StakePool")
+            .await
+            .map_err(CliError::unexpected)?;
         Ok(response.into_inner())
     }
 }
@@ -471,13 +481,10 @@ impl CliCommand<serde_json::Value> for ShowValidatorConfig {
     async fn execute(mut self) -> CliTypedResult<serde_json::Value> {
         let client = self.rest_options.client(&self.profile_options.profile)?;
         let address = self.operator_args.address(&self.profile_options)?;
-        let response = get_resource_migration(
-            &client,
-            address,
-            "0x1::Stake::ValidatorConfig",
-            "0x1::stake::ValidatorConfig",
-        )
-        .await?;
+        let response = client
+            .get_resource(address, "0x1::stake::ValidatorConfig")
+            .await
+            .map_err(CliError::unexpected)?;
         Ok(response.into_inner())
     }
 }
@@ -499,27 +506,11 @@ impl CliCommand<serde_json::Value> for ShowValidatorSet {
 
     async fn execute(mut self) -> CliTypedResult<serde_json::Value> {
         let client = self.rest_options.client(&self.profile_options.profile)?;
-        let response = get_resource_migration(
-            &client,
-            CORE_CODE_ADDRESS,
-            "0x1::Stake::ValidatorSet",
-            "0x1::stake::ValidatorSet",
-        )
-        .await?;
+        let response = client
+            .get_resource(CORE_CODE_ADDRESS, "0x1::stake::ValidatorSet")
+            .await
+            .map_err(CliError::unexpected)?;
         Ok(response.into_inner())
-    }
-}
-
-async fn get_resource_migration(
-    client: &aptos_rest_client::Client,
-    address: AccountAddress,
-    original_resource: &'static str,
-    new_resource: &'static str,
-) -> CliTypedResult<Response<serde_json::Value>> {
-    if let Ok(response) = client.get_resource(address, original_resource).await {
-        Ok(response)
-    } else {
-        Ok(client.get_resource(address, new_resource).await?)
     }
 }
 

@@ -34,7 +34,9 @@ tokio-util = { version = "0.7.2", features = ["compat"] }
 toml = "0.5.9"
 uuid = { version = "1.0.0", features = ["v4", "serde"] }
 
+aptos-cli-base = { path = "../aptos-cli-base" }
 aptos-cli-common = { path = "../aptos-cli-common" }
+aptos-cli-config = { path = "../aptos-cli-config" }
 aptos-config = { path = "../../config" }
 aptos-crypto = { path = "../aptos-crypto", features = [] }
 aptos-faucet = { path = "../aptos-faucet" }

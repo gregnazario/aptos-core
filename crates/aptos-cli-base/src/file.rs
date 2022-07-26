@@ -18,6 +18,13 @@ pub fn current_dir() -> CliTypedResult<PathBuf> {
     })
 }
 
+/// Platform agnostic pull home directory
+pub fn home_dir() -> CliTypedResult<PathBuf> {
+    dirs::home_dir().ok_or(CliError::UnexpectedError(
+        "Failed to get home directory".to_string(),
+    ))
+}
+
 /// Pull directory argument, but default to current dir
 pub fn dir_default_to_current(maybe_dir: Option<PathBuf>) -> CliTypedResult<PathBuf> {
     if let Some(dir) = maybe_dir {

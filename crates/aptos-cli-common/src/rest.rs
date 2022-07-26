@@ -1,8 +1,8 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::config::{CliConfig, DEFAULT_REST_URL};
-use crate::types::{CliError, CliTypedResult};
+use aptos_cli_base::types::{CliError, CliTypedResult};
+use aptos_cli_config::config::{CliConfig, DEFAULT_REST_URL};
 use clap::Parser;
 
 /// Options specific to using the Rest endpoint

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::account::AccountAddressWrapper;
-use crate::file::dir_default_to_current;
-use crate::types::CliTypedResult;
+use aptos_cli_base::file::dir_default_to_current;
+use aptos_cli_base::types::CliTypedResult;
 use aptos_types::account_address::AccountAddress;
 use clap::Parser;
 use std::collections::BTreeMap;
@@ -25,7 +25,7 @@ pub struct MovePackageDir {
     /// Example: alice=0x1234, bob=0x5678
     ///
     /// Note: This will fail if there are duplicates in the Move.toml file remove those first.
-    #[clap(long, parse(try_from_str = crate::parse::parse_map), default_value = "")]
+    #[clap(long, parse(try_from_str = aptos_cli_base::parse::parse_map), default_value = "")]
     named_addresses: BTreeMap<String, AccountAddressWrapper>,
 }
 

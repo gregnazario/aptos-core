@@ -7,10 +7,10 @@ pub mod keys;
 mod tests;
 
 use crate::genesis::git::{Client, GitOptions, LAYOUT_NAME};
+use aptos_cli_base::file::{dir_default_to_current, write_to_file};
+use aptos_cli_base::prompts::{check_if_file_exists, PromptOptions};
+use aptos_cli_base::types::{CliError, CliResult, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::file::{dir_default_to_current, write_to_file};
-use aptos_cli_common::prompts::{check_if_file_exists, PromptOptions};
-use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
 use aptos_crypto::{bls12381, ed25519::Ed25519PublicKey, x25519, ValidCryptoMaterialStringExt};
 use aptos_genesis::{
     config::{HostAndPort, Layout, ValidatorConfiguration},
@@ -80,7 +80,9 @@ impl CliCommand<Vec<PathBuf>> for GenerateGenesis {
         )?;
 
         // Generate waypoint file
-        let waypoint = genesis_info.generate_waypoint()?;
+        let waypoint = genesis_info
+            .generate_waypoint()
+            .map_err(|err| CliError::UnexpectedError(err.to_string()))?;
         write_to_file(
             waypoint_file.as_path(),
             WAYPOINT_FILE,
@@ -125,7 +127,7 @@ pub fn fetch_genesis_info(git_options: GitOptions) -> CliTypedResult<GenesisInfo
 
     let modules = client.get_modules("framework")?;
 
-    Ok(GenesisInfo::new(
+    GenesisInfo::new(
         layout.chain_id,
         layout.root_key,
         validators,
@@ -138,7 +140,8 @@ pub fn fetch_genesis_info(git_options: GitOptions) -> CliTypedResult<GenesisInfo
         layout.max_lockup_duration_secs,
         layout.epoch_duration_secs,
         layout.initial_lockup_timestamp,
-    )?)
+    )
+    .map_err(|err| CliError::UnexpectedError(err.to_string()))
 }
 
 /// Do proper parsing so more information is known about failures

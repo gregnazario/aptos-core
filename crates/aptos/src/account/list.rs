@@ -1,10 +1,10 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::types::{CliError, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::{CliConfig, ProfileOptions};
 use aptos_cli_common::rest::RestOptions;
-use aptos_cli_common::types::{CliError, CliTypedResult};
+use aptos_cli_config::config::{CliConfig, ProfileOptions};
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;
 use clap::{ArgEnum, Parser};

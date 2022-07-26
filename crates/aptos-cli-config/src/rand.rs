@@ -1,7 +1,7 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::types::CliTypedResult;
+use aptos_cli_base::types::{CliError, CliTypedResult};
 use aptos_keygen::KeyGen;
 use clap::Parser;
 
@@ -28,7 +28,8 @@ impl RngArgs {
             let seed = seed.strip_prefix("0x").unwrap_or(seed);
             let mut seed_slice = [0u8; 32];
 
-            hex::decode_to_slice(seed, &mut seed_slice)?;
+            hex::decode_to_slice(seed, &mut seed_slice)
+                .map_err(|err| CliError::UnexpectedError(err.to_string()))?;
             Ok(KeyGen::from_seed(seed_slice))
         } else {
             Ok(KeyGen::from_os_rng())

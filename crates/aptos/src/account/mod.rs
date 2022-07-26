@@ -1,8 +1,8 @@
 // Copyright (c) Aptos
 // SPDX-License-Identifier: Apache-2.0
 
+use aptos_cli_base::types::CliResult;
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::types::CliResult;
 use clap::Subcommand;
 
 pub mod create;

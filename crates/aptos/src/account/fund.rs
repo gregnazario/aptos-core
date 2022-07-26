@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::account::create::DEFAULT_FUNDED_COINS;
+use aptos_cli_base::types::CliTypedResult;
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::ProfileOptions;
-use aptos_cli_common::faucet::FaucetOptions;
-use aptos_cli_common::types::CliTypedResult;
-use aptos_cli_common::utils::fund_account;
+use aptos_cli_common::faucet::{fund_account, FaucetOptions};
+use aptos_cli_config::config::ProfileOptions;
 use aptos_types::account_address::AccountAddress;
 use async_trait::async_trait;
 use clap::Parser;

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::Tool;
+use aptos_cli_base::types::{CliError, CliResult, CliTypedResult};
 use aptos_cli_common::command::CliCommand;
-use aptos_cli_common::config::{ConfigType, GlobalConfig};
-use aptos_cli_common::types::{CliError, CliResult, CliTypedResult};
+use aptos_cli_config::config::{ConfigType, GlobalConfig};
 use async_trait::async_trait;
 use clap::CommandFactory;
 use clap::Parser;
