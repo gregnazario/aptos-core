@@ -59,17 +59,19 @@ impl Metadata {
     }
 }
 
-static LOG_LEVEL_NAMES: &[&str] = &["ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
+static LOG_LEVEL_NAMES: &[&str] = &["OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
 
 /// Logging levels, used for stratifying logs, and disabling less important ones for performance reasons
 #[repr(usize)]
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum Level {
+    /// The level to turn off all logging
+    Off = 0,
     /// The "error" level.
     ///
     /// Designates very serious errors.
-    Error = 0,
+    Error,
     /// The "warn" level.
     ///
     /// Designates hazardous situations.
@@ -91,11 +93,12 @@ pub enum Level {
 impl Level {
     fn from_usize(idx: usize) -> Option<Self> {
         let lvl = match idx {
-            0 => Level::Error,
-            1 => Level::Warn,
-            2 => Level::Info,
-            3 => Level::Debug,
-            4 => Level::Trace,
+            0 => Level::Off,
+            1 => Level::Error,
+            2 => Level::Warn,
+            3 => Level::Info,
+            4 => Level::Debug,
+            5 => Level::Trace,
             _ => return None,
         };
 

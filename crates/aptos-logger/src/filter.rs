@@ -43,6 +43,7 @@ impl FromStr for LevelFilter {
 impl From<Level> for LevelFilter {
     fn from(level: Level) -> Self {
         match level {
+            Level::Off => LevelFilter::Off,
             Level::Error => LevelFilter::Error,
             Level::Warn => LevelFilter::Warn,
             Level::Info => LevelFilter::Info,

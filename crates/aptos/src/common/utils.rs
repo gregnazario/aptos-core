@@ -324,7 +324,7 @@ pub fn start_logger() {
     logger
         .channel_size(1000)
         .is_async(false)
-        .level(Level::Warn)
+        .level(Level::Off)
         .read_env();
     logger.build();
 }
