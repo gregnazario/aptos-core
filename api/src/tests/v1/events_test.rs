@@ -3,10 +3,11 @@
 
 use super::new_test_context;
 use crate::current_function_name;
+use aptos_types::contract_event::ContractEvent;
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 
 static EVENT_KEY: &str =
-    "0x0500000000000000000000000000000000000000000000000000000000000000000000000a550c18";
+    "0x0100000000000000000000000000000000000000000000000000000000000000000000000a550c18";
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_get_events() {
@@ -15,6 +16,30 @@ async fn test_get_events() {
     let resp = context.get(format!("/events/{}", EVENT_KEY).as_str()).await;
 
     context.check_golden_output(resp);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_events_bcs() {
+    let context = new_test_context(current_function_name!());
+    let resp = context
+        .get_bcs(format!("/events/{}", EVENT_KEY).as_str())
+        .await;
+
+    let events: Vec<ContractEvent> = bcs::from_bytes(&resp).expect("Can't deserialize events");
+
+    assert!(!events.is_empty());
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_events_by_parts_bcs() {
+    let context = new_test_context(current_function_name!());
+    let resp = context
+        .get_bcs("/accounts/0xa550c18/events/0x1::coin::DepositEvent")
+        .await;
+
+    let events: Vec<ContractEvent> = bcs::from_bytes(&resp).expect("Can't deserialize events");
+
+    assert!(!events.is_empty());
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]

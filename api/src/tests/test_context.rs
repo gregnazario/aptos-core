@@ -39,6 +39,7 @@ use hyper::{HeaderMap, Response};
 use mempool_notifications::MempoolNotificationSender;
 use storage_interface::DbReaderWriter;
 
+use aptos_api_types::mime_types::{BCS_OUTPUT, JSON};
 use aptos_config::keys::ConfigKey;
 use aptos_crypto::ed25519::Ed25519PrivateKey;
 use aptos_types::multi_signature::MultiSignature;
@@ -47,7 +48,8 @@ use serde_json::{json, Value};
 use std::{boxed::Box, iter::once, net::SocketAddr, sync::Arc};
 use storage_interface::state_view::DbStateView;
 use vm_validator::vm_validator::VMValidator;
-use warp::http::header::CONTENT_TYPE;
+use warp::http::header::{ACCEPT, CONTENT_TYPE};
+use warp::http::method::Method;
 
 #[derive(Clone, Debug)]
 pub enum ApiSpecificConfig {
@@ -72,13 +74,17 @@ impl ApiSpecificConfig {
         }
     }
 
-    pub fn assert_content_type(&self, headers: &HeaderMap) {
+    pub fn assert_content_type(&self, headers: &HeaderMap, content_type: &'static str) {
         match &self {
-            ApiSpecificConfig::V0 => assert_eq!(headers[CONTENT_TYPE], mime_types::JSON,),
-            ApiSpecificConfig::V1(_) => assert!(headers[CONTENT_TYPE]
-                .to_str()
-                .unwrap()
-                .starts_with(mime_types::JSON),),
+            ApiSpecificConfig::V0 => assert_eq!(headers[CONTENT_TYPE], content_type),
+            ApiSpecificConfig::V1(_) => assert!(
+                headers[CONTENT_TYPE]
+                    .to_str()
+                    .unwrap()
+                    .starts_with(content_type),
+                "Content type is wrong {:?}",
+                headers[CONTENT_TYPE]
+            ),
         }
     }
 
@@ -225,6 +231,22 @@ impl TestContext {
         let msg = pretty(&msg);
         let re = regex::Regex::new("hash\": \".*\"").unwrap();
         let msg = re.replace_all(&msg, "hash\": \"\"");
+
+        self.golden_output.as_ref().unwrap().log(&msg);
+    }
+
+    pub fn check_golden_output_bcs(&mut self, msg: Bytes) {
+        // Temporary while the old API still lives at /
+        let version_dir = self.api_specific_config.get_version_dir();
+        if self.golden_output.is_none() {
+            self.golden_output = Some(GoldenOutputs::new_bcs(
+                self.test_name.replace(':', "_"),
+                &version_dir,
+            ));
+        }
+
+        // TODO: Probably base64 instead
+        let msg = hex::encode(&msg);
 
         self.golden_output.as_ref().unwrap().log(&msg);
     }
@@ -458,8 +480,18 @@ impl TestContext {
     pub async fn get(&self, path: &str) -> Value {
         self.execute(
             warp::test::request()
+                .path(&self.prepend_path(path))
+                .method("GET"),
+        )
+        .await
+    }
+
+    pub async fn get_bcs(&self, path: &str) -> Bytes {
+        self.execute_bcs(
+            warp::test::request()
+                .path(&self.prepend_path(path))
                 .method("GET")
-                .path(&self.prepend_path(path)),
+                .header(ACCEPT, BCS_OUTPUT),
         )
         .await
     }
@@ -467,8 +499,19 @@ impl TestContext {
     pub async fn post(&self, path: &str, body: Value) -> Value {
         self.execute(
             warp::test::request()
-                .method("POST")
+                .method(Method::POST.as_str())
                 .path(&self.prepend_path(path))
+                .json(&body),
+        )
+        .await
+    }
+
+    pub async fn post_bcs(&self, path: &str, body: Value) -> Bytes {
+        self.execute_bcs(
+            warp::test::request()
+                .method(Method::POST.as_str())
+                .path(&self.prepend_path(path))
+                .header(ACCEPT, BCS_OUTPUT)
                 .json(&body),
         )
         .await
@@ -477,7 +520,7 @@ impl TestContext {
     pub async fn post_bcs_txn(&self, path: &str, body: impl AsRef<[u8]>) -> Value {
         self.execute(
             warp::test::request()
-                .method("POST")
+                .method(Method::POST.as_str())
                 .path(&self.prepend_path(path))
                 .header(CONTENT_TYPE, mime_types::BCS_SIGNED_TRANSACTION)
                 .body(body),
@@ -495,19 +538,30 @@ impl TestContext {
         }
     }
 
-    pub async fn execute(&self, req: warp::test::RequestBuilder) -> Value {
+    async fn execute_and_check_headers(
+        &self,
+        req: warp::test::RequestBuilder,
+        content_type: &'static str,
+    ) -> Response<Bytes> {
+        println!("Request: {:?}", req);
         let resp = self.reply(req).await;
+        println!("Response: {:?}", resp);
 
         let headers = resp.headers();
 
-        self.api_specific_config.assert_content_type(headers);
+        // Special case, errors are always JSON
+        if !resp.status().is_success() {
+            self.api_specific_config.assert_content_type(headers, JSON);
+        } else {
+            self.api_specific_config
+                .assert_content_type(headers, content_type);
+        }
 
-        let body = serde_json::from_slice(resp.body()).expect("response body is JSON");
         assert_eq!(
             self.expect_status_code,
             resp.status(),
-            "\nresponse: {}",
-            pretty(&body)
+            "\nresponse: {:?}",
+            resp
         );
 
         if self.expect_status_code < 300 {
@@ -521,9 +575,21 @@ impl TestContext {
                 headers[X_APTOS_LEDGER_TIMESTAMP],
                 ledger_info.timestamp().to_string()
             );
+
+            // TODO: Assert all headers exist
         }
 
-        body
+        resp
+    }
+
+    pub async fn execute(&self, req: warp::test::RequestBuilder) -> Value {
+        let resp = self.execute_and_check_headers(req, JSON).await;
+        serde_json::from_slice(resp.body()).expect("response body is JSON")
+    }
+
+    pub async fn execute_bcs(&self, req: warp::test::RequestBuilder) -> Bytes {
+        let resp = self.execute_and_check_headers(req, BCS_OUTPUT).await;
+        resp.into_body()
     }
 
     fn new_block_metadata(&mut self) -> BlockMetadata {

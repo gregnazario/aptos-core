@@ -3,6 +3,8 @@
 
 use super::new_test_context;
 use crate::current_function_name;
+use aptos_api_types::IndexResponse;
+use aptos_types::chain_id::ChainId;
 use serde_json::json;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -10,6 +12,15 @@ async fn test_get_index() {
     let mut context = new_test_context(current_function_name!());
     let resp = context.get("/").await;
     context.check_golden_output(resp);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_index_bcs() {
+    let context = new_test_context(current_function_name!());
+    let resp = context.get_bcs("/").await;
+
+    let ledger_info: IndexResponse = bcs::from_bytes(&resp).expect("Can't deserialize ledger info");
+    assert_eq!(ledger_info.chain_id, ChainId::test().id());
 }
 
 // TODO: Un-ignore this pending https://github.com/poem-web/poem/issues/343.

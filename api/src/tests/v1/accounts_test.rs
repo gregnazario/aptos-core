@@ -4,6 +4,8 @@
 use super::super::find_value;
 use super::new_test_context;
 use crate::current_function_name;
+use aptos_types::account_config::AccountResource;
+use move_deps::move_core_types::language_storage::StructTag;
 use serde_json::json;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -201,6 +203,41 @@ async fn test_get_core_account_data_not_found() {
     let mut context = new_test_context(current_function_name!());
     let resp = context.expect_status_code(404).get("/accounts/0xf").await;
     context.check_golden_output(resp);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_bcs_account() {
+    let context = new_test_context(current_function_name!());
+    let resp = context.get_bcs("/accounts/0x1").await;
+
+    // Ensure we can deserialize the type
+    let _: AccountResource = bcs::from_bytes(&resp).expect("Can deserialize account resource");
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_bcs_account_resources() {
+    let context = new_test_context(current_function_name!());
+    let resp = context.get_bcs(&account_resources("0x1")).await;
+
+    // Ensure we can deserialize the type
+    let resources: Vec<(StructTag, &[u8])> =
+        bcs::from_bytes(&resp).expect("Can't deserialize account resources");
+    assert!(resources.len() > 1);
+    let resource = resources.first().unwrap();
+    assert!(resource.1.len() > 1);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_bcs_account_modules() {
+    let mut context = new_test_context(current_function_name!());
+    let resp = context.get_bcs(&account_modules("0x1")).await;
+
+    // Ensure we can deserialize the type
+    let modules: Vec<Vec<u8>> = bcs::from_bytes(&resp).expect("Can't deserialize account modules");
+    assert!(modules.len() > 1);
+    assert!(modules.first().unwrap().len() > 1);
+
+    context.check_golden_output_bcs(resp);
 }
 
 fn account_resources(address: &str) -> String {

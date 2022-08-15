@@ -4,11 +4,19 @@
 use super::super::TestContext;
 use super::new_test_context;
 use crate::current_function_name;
+use aptos_sdk::move_types::value::MoveValue;
 use aptos_sdk::types::LocalAccount;
+use bytes::Bytes;
+use move_deps::move_core_types::value::MoveTypeLayout;
 use move_deps::{move_core_types::account_address::AccountAddress, move_package::BuildConfig};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::{convert::TryInto, path::PathBuf};
+
+#[derive(Deserialize)]
+struct Generator {
+    _counter: u64,
+}
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn test_get_account_resource() {
@@ -17,6 +25,17 @@ async fn test_get_account_resource() {
         .get(&get_account_resource("0xA550C18", "0x1::guid::Generator"))
         .await;
     context.check_golden_output(resp);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_account_resource_bcs() {
+    let context = new_test_context(current_function_name!());
+    let resp = context
+        .get_bcs(&get_account_resource("0xA550C18", "0x1::guid::Generator"))
+        .await;
+    println!("{:#x}", resp)
+    // FIXME
+    //let _resource: Generator = bcs::from_bytes(&resp).unwrap();
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -70,6 +89,13 @@ async fn test_get_account_module() {
     let mut context = new_test_context(current_function_name!());
     let resp = context.get(&get_account_module("0x1", "guid")).await;
     context.check_golden_output(resp);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_account_module_bcs() {
+    let context = new_test_context(current_function_name!());
+    let resp = context.get_bcs(&get_account_module("0x1", "guid")).await;
+    assert!(!resp.is_empty());
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -174,6 +200,71 @@ async fn test_get_table_item() {
     assert_table_item(ctx, &nested_table, "u8", "u8", 2, 3).await;
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn test_get_table_item_bcs() {
+    let mut context = new_test_context(current_function_name!());
+    let ctx = &mut context;
+    let mut account = ctx.gen_account();
+    let acc = &mut account;
+    let txn = ctx.create_user_account(acc);
+    ctx.commit_block(&vec![txn.clone()]).await;
+    make_test_tables(ctx, acc).await;
+
+    let tt = ctx
+        .api_get_account_resource(
+            acc,
+            &acc.address().to_hex_literal(),
+            "TableTestData",
+            "TestTables",
+        )
+        .await["data"]
+        .to_owned();
+
+    /*
+    let response = api_get_table_item_bcs(ctx, &tt["u8_table"], "u8", "u8", 1).await;
+    if let MoveValue::U8(inner) = bcs::from_bytes_seed(&MoveTypeLayout::U8, &response).unwrap() {
+        assert_eq!(1, inner);
+    }*/
+    println!(
+        "EXPECTED: {:?}",
+        &MoveValue::Address(AccountAddress::ONE)
+            .simple_serialize()
+            .unwrap()
+    );
+
+    let response =
+        api_get_table_item_bcs(ctx, &tt["address_table"], "address", "address", "0x1").await;
+    let account: AccountAddress = bcs::from_bytes(&response).unwrap();
+    println!("Account: {}", account);
+    if let MoveValue::Address(inner) =
+        bcs::from_bytes_seed(&MoveTypeLayout::Address, &response).unwrap()
+    {
+        assert_eq!(AccountAddress::ONE, inner);
+    }
+
+    let response = api_get_table_item_bcs(
+        ctx,
+        &tt["vector_u8_table"],
+        "vector<u8>",
+        "vector<u8>",
+        "0x0102",
+    )
+    .await;
+    if let MoveValue::Vector(items) = bcs::from_bytes_seed(
+        &MoveTypeLayout::Vector(Box::new(MoveTypeLayout::U8)),
+        &response,
+    )
+    .unwrap()
+    {
+        let bytes = [1u8, 2u8];
+        for (i, item) in items.iter().enumerate() {
+            if let MoveValue::U8(inner) = item {
+                assert_eq!(bytes[i], *inner);
+            }
+        }
+    }
+}
+
 fn get_account_resource(address: &str, struct_tag: &str) -> String {
     format!("/accounts/{}/resource/{}", address, struct_tag)
 }
@@ -236,6 +327,25 @@ async fn api_get_table_item<T: Serialize>(
 ) -> Value {
     let handle = table["handle"].as_str().unwrap().parse().unwrap();
     ctx.post(
+        &get_table_item(handle),
+        json!({
+            "key_type": key_type,
+            "value_type": value_type,
+            "key": key,
+        }),
+    )
+    .await
+}
+
+async fn api_get_table_item_bcs<T: Serialize>(
+    ctx: &mut TestContext,
+    table: &Value,
+    key_type: &str,
+    value_type: &str,
+    key: T,
+) -> Bytes {
+    let handle = table["handle"].as_str().unwrap().parse().unwrap();
+    ctx.post_bcs(
         &get_table_item(handle),
         json!({
             "key_type": key_type,
