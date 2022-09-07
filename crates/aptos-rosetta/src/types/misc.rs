@@ -82,7 +82,13 @@ pub enum OperationType {
     // Withdraw must come before deposit
     Withdraw,
     Deposit,
+    InitializeStakeOwner,
+    AddStake,
+    IncreaseLockup,
+    SetDelegatedVoter,
     SetOperator,
+    UnlockStake,
+    WithdrawStake,
     // Fee must always be last for ordering
     Fee,
 }
@@ -91,16 +97,29 @@ impl OperationType {
     const CREATE_ACCOUNT: &'static str = "create_account";
     const DEPOSIT: &'static str = "deposit";
     const WITHDRAW: &'static str = "withdraw";
-    const FEE: &'static str = "fee";
     const SET_OPERATOR: &'static str = "set_operator";
+    const INITIALIZE_STAKE_OWNER: &'static str = "initialize_stake_owner";
+    const ADD_STAKE: &'static str = "add_stake";
+    const INCREASE_LOCKUP: &'static str = "increase_lockup";
+    const SET_DELEGATED_VOTER: &'static str = "set_delegated_voter";
+    const UNLOCK_STAKE: &'static str = "unlock_stake";
+    const WITHDRAW_STAKE: &'static str = "withdraw_stake";
+    const FEE: &'static str = "fee";
 
     pub fn all() -> Vec<OperationType> {
+        use OperationType::*;
         vec![
-            OperationType::CreateAccount,
-            OperationType::Withdraw,
-            OperationType::Deposit,
-            OperationType::Fee,
-            OperationType::SetOperator,
+            CreateAccount,
+            Withdraw,
+            Deposit,
+            InitializeStakeOwner,
+            AddStake,
+            IncreaseLockup,
+            SetDelegatedVoter,
+            SetOperator,
+            UnlockStake,
+            WithdrawStake,
+            Fee,
         ]
     }
 }
@@ -113,8 +132,14 @@ impl FromStr for OperationType {
             Self::CREATE_ACCOUNT => Ok(OperationType::CreateAccount),
             Self::DEPOSIT => Ok(OperationType::Deposit),
             Self::WITHDRAW => Ok(OperationType::Withdraw),
-            Self::FEE => Ok(OperationType::Fee),
+            Self::INITIALIZE_STAKE_OWNER => Ok(OperationType::InitializeStakeOwner),
+            Self::ADD_STAKE => Ok(OperationType::AddStake),
+            Self::INCREASE_LOCKUP => Ok(OperationType::IncreaseLockup),
+            Self::SET_DELEGATED_VOTER => Ok(OperationType::SetDelegatedVoter),
             Self::SET_OPERATOR => Ok(OperationType::SetOperator),
+            Self::UNLOCK_STAKE => Ok(OperationType::UnlockStake),
+            Self::WITHDRAW_STAKE => Ok(OperationType::WithdrawStake),
+            Self::FEE => Ok(OperationType::Fee),
             _ => Err(ApiError::DeserializationFailed(Some(format!(
                 "Invalid OperationType: {}",
                 s
@@ -129,7 +154,13 @@ impl Display for OperationType {
             OperationType::CreateAccount => Self::CREATE_ACCOUNT,
             OperationType::Deposit => Self::DEPOSIT,
             OperationType::Withdraw => Self::WITHDRAW,
+            OperationType::InitializeStakeOwner => Self::INITIALIZE_STAKE_OWNER,
+            OperationType::AddStake => Self::ADD_STAKE,
+            OperationType::IncreaseLockup => Self::INCREASE_LOCKUP,
+            OperationType::SetDelegatedVoter => Self::SET_DELEGATED_VOTER,
             OperationType::SetOperator => Self::SET_OPERATOR,
+            OperationType::UnlockStake => Self::UNLOCK_STAKE,
+            OperationType::WithdrawStake => Self::WITHDRAW_STAKE,
             OperationType::Fee => Self::FEE,
         })
     }

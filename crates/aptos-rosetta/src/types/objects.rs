@@ -256,6 +256,26 @@ impl Operation {
         )
     }
 
+    pub fn initialize_stake_owner(
+        operation_index: u64,
+        status: Option<OperationStatusType>,
+        address: AccountAddress,
+        currency: Currency,
+        amount: u64,
+    ) -> Operation {
+        Operation::new(
+            OperationType::AddStake,
+            operation_index,
+            status,
+            address,
+            Some(Amount {
+                value: format!("-{}", amount),
+                currency,
+            }),
+            None,
+        )
+    }
+
     pub fn gas_fee(
         operation_index: u64,
         address: AccountAddress,
