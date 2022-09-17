@@ -25,6 +25,9 @@ use std::{
 pub struct AccountIdentifier {
     /// Hex encoded AccountAddress beginning with 0x
     pub address: String,
+    /// Sub account used for staking
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sub_account: Option<SubAccountIdentifier>,
 }
 
 impl AccountIdentifier {
@@ -52,9 +55,20 @@ impl From<AccountAddress> for AccountIdentifier {
     fn from(address: AccountAddress) -> Self {
         AccountIdentifier {
             address: to_hex_lower(&address),
+            sub_account: None,
         }
     }
 }
+
+pub struct SubAccountIdentifier {
+    /// Staking pool address
+    pub address: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<SubAccountMetadata>,
+}
+
+// TODO: Determine what to put in this for staking
+pub struct SubAccountMetadata {}
 
 /// Identifier for a "block".  In aptos, we use a transaction model, so the index
 /// represents multiple transactions in a "block" grouping of transactions
