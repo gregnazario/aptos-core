@@ -185,7 +185,7 @@ impl Operation {
         operation_type: OperationType,
         operation_index: u64,
         status: Option<OperationStatusType>,
-        address: AccountAddress,
+        account: AccountIdentifier,
         amount: Option<Amount>,
         metadata: Option<OperationMetadata>,
     ) -> Operation {
@@ -195,7 +195,7 @@ impl Operation {
             },
             operation_type: operation_type.to_string(),
             status: status.map(|inner| inner.to_string()),
-            account: Some(address.into()),
+            account: Some(account),
             amount,
             metadata,
         }
@@ -211,7 +211,7 @@ impl Operation {
             OperationType::CreateAccount,
             operation_index,
             status,
-            address,
+            address.into(),
             None,
             Some(OperationMetadata::create_account(sender)),
         )
@@ -228,7 +228,7 @@ impl Operation {
             OperationType::Deposit,
             operation_index,
             status,
-            address,
+            address.into(),
             Some(Amount {
                 value: amount.to_string(),
                 currency,
@@ -248,7 +248,7 @@ impl Operation {
             OperationType::Withdraw,
             operation_index,
             status,
-            address,
+            address.into(),
             Some(Amount {
                 value: format!("-{}", amount),
                 currency,
@@ -267,7 +267,7 @@ impl Operation {
             OperationType::Fee,
             operation_index,
             Some(OperationStatusType::Success),
-            address,
+            address.into(),
             Some(Amount {
                 value: format!("-{}", gas_used.saturating_mul(gas_price_per_unit)),
                 currency: native_coin(),
@@ -286,7 +286,7 @@ impl Operation {
             OperationType::SetOperator,
             operation_index,
             status,
-            address,
+            address.into(),
             None,
             Some(OperationMetadata::set_operator(operator)),
         )
