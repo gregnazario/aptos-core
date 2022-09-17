@@ -35,33 +35,33 @@ pub struct RegisterValidatorCandidateEvent {
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct SetOperatorEvent {
+pub struct SetOperatorEvent {
     pool_address: AccountAddress,
     old_operator: AccountAddress,
     new_operator: AccountAddress,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct AddStakeEvent {
+pub struct AddStakeEvent {
     pool_address: AccountAddress,
     amount_added: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct ReactivateStakeEvent {
+pub struct ReactivateStakeEvent {
     pool_address: AccountAddress,
     amount: u64,
 }
 
 #[derive(Clone, Debug, Deserialize)]
-struct RotateConsensusKeyEvent {
+pub struct RotateConsensusKeyEvent {
     pool_address: AccountAddress,
     old_consensus_pubkey: Vec<u8>,
     new_consensus_pubkey: Vec<u8>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
-struct UpdateNetworkAndFullnodeAddressesEvent {
+pub struct UpdateNetworkAndFullnodeAddressesEvent {
     pool_address: AccountAddress,
     old_network_addresses: Vec<u8>,
     new_network_addresses: Vec<u8>,
@@ -70,36 +70,36 @@ struct UpdateNetworkAndFullnodeAddressesEvent {
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct IncreaseLockupEvent {
+pub struct IncreaseLockupEvent {
     pool_address: AccountAddress,
     old_locked_until_secs: u64,
     new_locked_until_secs: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct JoinValidatorSetEvent {
+pub struct JoinValidatorSetEvent {
     pool_address: AccountAddress,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct DistributeRewardsEvent {
+pub struct DistributeRewardsEvent {
     pool_address: AccountAddress,
     rewards_amount: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct UnlockStakeEvent {
+pub struct UnlockStakeEvent {
     pool_address: AccountAddress,
     amount_unlocked: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct WithdrawStakeEvent {
+pub struct WithdrawStakeEvent {
     pool_address: AccountAddress,
     amount_withdrawn: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
-struct LeaveValidatorSetEvent {
+pub struct LeaveValidatorSetEvent {
     pool_address: AccountAddress,
 }
