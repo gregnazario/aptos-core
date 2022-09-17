@@ -95,7 +95,7 @@ async fn network_options(
         .into_iter()
         .map(|status| status.into())
         .collect();
-    let operation_types = OperationType::all()
+    let operation_types = OperationType::ALL
         .into_iter()
         .map(|op| op.to_string())
         .collect();
