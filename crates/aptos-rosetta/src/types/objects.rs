@@ -25,7 +25,9 @@ use aptos_logger::warn;
 use aptos_rest_client::aptos_api_types::TransactionOnChainData;
 use aptos_rest_client::aptos_api_types::U64;
 use aptos_sdk::move_types::language_storage::TypeTag;
-use aptos_types::account_config::{AccountResource, CoinStoreResource, WithdrawEvent};
+use aptos_types::account_config::{
+    AccountResource, CoinStoreResource, DepositEvent, WithdrawEvent,
+};
 use aptos_types::contract_event::ContractEvent;
 use aptos_types::stake_pool::StakePool;
 use aptos_types::state_store::state_key::StateKey;
@@ -34,6 +36,7 @@ use aptos_types::write_set::WriteOp;
 use aptos_types::{account_address::AccountAddress, event::EventKey};
 use cached_packages::aptos_stdlib;
 use itertools::Itertools;
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::sync::Arc;
@@ -765,20 +768,14 @@ fn parse_stakepool_changes(
     address: AccountAddress,
     data: &[u8],
     events: &[ContractEvent],
-    mut operation_index: u64,
+    operation_index: u64,
 ) -> ApiResult<Vec<Operation>> {
     let mut operations = Vec::new();
     if let Ok(stakepool) = bcs::from_bytes::<StakePool>(data) {
-        let addresses = get_set_operator_from_event(events, stakepool.set_operator_events.key());
-        for operator in addresses {
-            operations.push(Operation::set_operator(
-                operation_index,
-                Some(OperationStatusType::Success),
-                address,
-                operator,
-            ));
-            operation_index += 1;
-        }
+        // Set operator events
+        let mut set_operator_operations =
+            get_set_operator_from_event(events, &stakepool, address, operation_index);
+        operations.append(&mut set_operator_operations)
     } else {
         warn!(
             "Failed to parse stakepool for {} at version {}",
@@ -796,7 +793,7 @@ async fn parse_coinstore_changes(
     address: AccountAddress,
     data: &[u8],
     events: &[ContractEvent],
-    mut operation_index: u64,
+    operation_index: u64,
 ) -> ApiResult<Vec<Operation>> {
     let coin_store: CoinStoreResource = if let Ok(coin_store) = bcs::from_bytes(data) {
         coin_store
@@ -807,8 +804,6 @@ async fn parse_coinstore_changes(
         );
         return Ok(vec![]);
     };
-
-    let mut operations = vec![];
 
     // Retrieve the coin type
     let currency = coin_cache
@@ -823,29 +818,8 @@ async fn parse_coinstore_changes(
 
     // Skip if there is no currency that can be found
     if let Some(currency) = currency.as_ref() {
-        let withdraw_amounts = get_amount_from_event(events, coin_store.withdraw_events().key());
-        for amount in withdraw_amounts {
-            operations.push(Operation::withdraw(
-                operation_index,
-                Some(OperationStatusType::Success),
-                address,
-                currency.clone(),
-                amount,
-            ));
-            operation_index += 1;
-        }
-
-        let deposit_amounts = get_amount_from_event(events, coin_store.deposit_events().key());
-        for amount in deposit_amounts {
-            operations.push(Operation::deposit(
-                operation_index,
-                Some(OperationStatusType::Success),
-                address,
-                currency.clone(),
-                amount,
-            ));
-            operation_index += 1;
-        }
+        let operations =
+            get_balance_changes_from_event(events, &coin_store, address, operation_index, currency);
 
         if operations.is_empty() {
             warn!(
@@ -859,63 +833,115 @@ async fn parse_coinstore_changes(
                 version
             );
         }
+        Ok(operations)
     } else {
         warn!(
             "Currency {} is invalid for {} at version {}",
             coin_type, address, version
         );
+        Ok(vec![])
     }
-
-    Ok(operations)
 }
 
-/// Pulls the balance change from a withdraw or deposit event
-fn get_amount_from_event(events: &[ContractEvent], event_key: &EventKey) -> Vec<u64> {
-    filter_events(events, event_key, |event| {
-        if let Ok(event) = bcs::from_bytes::<WithdrawEvent>(event.event_data()) {
-            Some(event.amount())
-        } else {
-            // If we can't parse the withdraw event, then there's nothing
-            warn!(
-                "Failed to parse coin store withdraw event!  Skipping for {}:{}",
-                event_key.get_creator_address(),
-                event_key.get_creation_number()
-            );
-            None
-        }
-    })
+fn get_balance_changes_from_event(
+    events: &[ContractEvent],
+    coin_store: &CoinStoreResource,
+    address: AccountAddress,
+    operation_index: u64,
+    currency: &Currency,
+) -> Vec<Operation> {
+    let mut deposit_operations = events_to_operations(
+        events,
+        coin_store.deposit_events().key(),
+        "deposit",
+        operation_index,
+        |event: DepositEvent, operation_index| {
+            Operation::deposit(
+                operation_index,
+                Some(OperationStatusType::Success),
+                address,
+                currency.clone(),
+                event.amount(),
+            )
+        },
+    );
+
+    let mut withdraw_operations = events_to_operations(
+        events,
+        coin_store.withdraw_events().key(),
+        "withdraw",
+        operation_index + deposit_operations.len() as u64,
+        |event: WithdrawEvent, operation_index| {
+            Operation::withdraw(
+                operation_index,
+                Some(OperationStatusType::Success),
+                address,
+                currency.clone(),
+                event.amount(),
+            )
+        },
+    );
+
+    deposit_operations.append(&mut withdraw_operations);
+    deposit_operations
 }
 
 fn get_set_operator_from_event(
     events: &[ContractEvent],
-    event_key: &EventKey,
-) -> Vec<AccountAddress> {
-    filter_events(events, event_key, |event| {
-        if let Ok(event) = bcs::from_bytes::<SetOperatorEvent>(event.event_data()) {
-            Some(event.new_operator)
-        } else {
-            warn!(
-                "Failed to parse set operator event!  Skipping for {}:{}",
-                event_key.get_creator_address(),
-                event_key.get_creation_number()
-            );
-            None
-        }
-    })
+    stakepool: &StakePool,
+    address: AccountAddress,
+    operation_index: u64,
+) -> Vec<Operation> {
+    events_to_operations(
+        events,
+        stakepool.set_operator_events.key(),
+        "set operator",
+        operation_index,
+        |SetOperatorEvent { new_operator, .. }, operation_index| {
+            Operation::set_operator(
+                operation_index,
+                Some(OperationStatusType::Success),
+                address,
+                new_operator,
+            )
+        },
+    )
 }
 
-fn filter_events<F: FnMut(&ContractEvent) -> Option<T>, T>(
+/// Converts an event stream to operations
+fn events_to_operations<T: DeserializeOwned, F: Fn(T, u64) -> Operation>(
     events: &[ContractEvent],
     event_key: &EventKey,
-    parser: F,
-) -> Vec<T> {
+    event_type: &'static str,
+    mut operation_index: u64,
+    to_operation: F,
+) -> Vec<Operation> {
     events
         .iter()
+        // Filter only events related to this event stream
         .filter(|event| event.key() == event_key)
+        // Ensure the order is ordered by their sequence number
         .sorted_by(|a, b| a.sequence_number().cmp(&b.sequence_number()))
-        .filter_map(parser)
+        // Filter based on the conversion
+        .filter_map(|event| {
+            // Convert to the expected object
+            if let Ok(event) = bcs::from_bytes::<T>(event.event_data()) {
+                let operation = to_operation(event, operation_index);
+                operation_index += 1;
+                Some(operation)
+            } else {
+                warn!(
+                    "Failed to parse {} event!  Skipping for {}:{}",
+                    event_type,
+                    event_key.get_creator_address(),
+                    event_key.get_creation_number()
+                );
+                None
+            }
+        })
         .collect()
 }
+
 /// An enum for processing which operation is in a transaction
 pub enum OperationDetails {
     CreateAccount,
