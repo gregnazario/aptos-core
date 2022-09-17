@@ -769,8 +769,6 @@ fn parse_stakepool_changes(
 ) -> ApiResult<Vec<Operation>> {
     let mut operations = Vec::new();
     if let Ok(stakepool) = bcs::from_bytes::<StakePool>(data) {
-        stakepool.set_operator_events.key();
-
         let addresses = get_set_operator_from_event(events, stakepool.set_operator_events.key());
         for operator in addresses {
             operations.push(Operation::set_operator(
