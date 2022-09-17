@@ -775,7 +775,7 @@ fn parse_stakepool_changes(
         // Set operator events
         let mut set_operator_operations =
             get_set_operator_from_event(events, &stakepool, address, operation_index);
-        operations.append(&mut set_operator_operations)
+        operations.append(&mut set_operator_operations);
     } else {
         warn!(
             "Failed to parse stakepool for {} at version {}",
