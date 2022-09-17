@@ -82,6 +82,18 @@ pub enum OperationType {
     // Withdraw must come before deposit
     Withdraw,
     Deposit,
+    // Staking operations
+    RegisterValidatorCandidate,
+    AddStake,
+    ReactivateStake,
+    RotateConsensusKey,
+    UpdateNetworkAndFullnodeAddresses,
+    IncreaseLockup,
+    JoinValidatorSet,
+    DistributeRewards,
+    UnlockStake,
+    WithdrawStake,
+    LeaveValidatorSet,
     SetOperator,
     // Fee must always be last for ordering
     Fee,
@@ -89,32 +101,65 @@ pub enum OperationType {
 
 impl OperationType {
     const CREATE_ACCOUNT: &'static str = "create_account";
-    const DEPOSIT: &'static str = "deposit";
     const WITHDRAW: &'static str = "withdraw";
-    const FEE: &'static str = "fee";
+    const DEPOSIT: &'static str = "deposit";
+    const REGISTER_VALIDATOR_CANDIDATE: &'static str = "register_validator_candidate";
+    const ADD_STAKE: &'static str = "add_stake";
+    const REACTIVATE_STAKE: &'static str = "reactivate_stake";
+    const ROTATE_CONSENSUS_KEY: &'static str = "rotate_consensus_key";
+    const UPDATE_NETWORK_AND_FULLNODE_ADDRESSES: &'static str =
+        "update_network_and_fullnode_addresses";
+    const INCREASE_LOCKUP: &'static str = "increase_lockup";
+    const JOIN_VALIDATOR_SET: &'static str = "join_validator_set";
+    const DISTRIBUTE_REWARDS: &'static str = "distribute_rewards";
+    const UNLOCK_STAKE: &'static str = "unlock_stake";
+    const WITHDRAW_STAKE: &'static str = "withdraw_stake";
+    const LEAVE_VALIDATOR_SET: &'static str = "leave_validator_set";
     const SET_OPERATOR: &'static str = "set_operator";
+    const FEE: &'static str = "fee";
 
-    pub fn all() -> Vec<OperationType> {
-        vec![
-            OperationType::CreateAccount,
-            OperationType::Withdraw,
-            OperationType::Deposit,
-            OperationType::Fee,
-            OperationType::SetOperator,
-        ]
-    }
+    pub const ALL: &'static [&'static str] = &[
+        Self::CREATE_ACCOUNT,
+        Self::WITHDRAW,
+        Self::DEPOSIT,
+        Self::REGISTER_VALIDATOR_CANDIDATE,
+        Self::ADD_STAKE,
+        Self::REACTIVATE_STAKE,
+        Self::ROTATE_CONSENSUS_KEY,
+        Self::UPDATE_NETWORK_AND_FULLNODE_ADDRESSES,
+        Self::INCREASE_LOCKUP,
+        Self::JOIN_VALIDATOR_SET,
+        Self::DISTRIBUTE_REWARDS,
+        Self::UNLOCK_STAKE,
+        Self::WITHDRAW_STAKE,
+        Self::LEAVE_VALIDATOR_SET,
+        Self::SET_OPERATOR,
+        Self::FEE,
+    ];
 }
 
 impl FromStr for OperationType {
     type Err = ApiError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use OperationType::*;
         match s.to_lowercase().trim() {
-            Self::CREATE_ACCOUNT => Ok(OperationType::CreateAccount),
-            Self::DEPOSIT => Ok(OperationType::Deposit),
-            Self::WITHDRAW => Ok(OperationType::Withdraw),
-            Self::FEE => Ok(OperationType::Fee),
-            Self::SET_OPERATOR => Ok(OperationType::SetOperator),
+            Self::CREATE_ACCOUNT => Ok(CreateAccount),
+            Self::WITHDRAW => Ok(Withdraw),
+            Self::DEPOSIT => Ok(Deposit),
+            Self::REGISTER_VALIDATOR_CANDIDATE => Ok(RegisterValidatorCandidate),
+            Self::ADD_STAKE => Ok(AddStake),
+            Self::REACTIVATE_STAKE => Ok(ReactivateStake),
+            Self::ROTATE_CONSENSUS_KEY => Ok(RotateConsensusKey),
+            Self::UPDATE_NETWORK_AND_FULLNODE_ADDRESSES => Ok(UpdateNetworkAndFullnodeAddresses),
+            Self::INCREASE_LOCKUP => Ok(IncreaseLockup),
+            Self::JOIN_VALIDATOR_SET => Ok(JoinValidatorSet),
+            Self::DISTRIBUTE_REWARDS => Ok(DistributeRewards),
+            Self::UNLOCK_STAKE => Ok(UnlockStake),
+            Self::WITHDRAW_STAKE => Ok(WithdrawStake),
+            Self::LEAVE_VALIDATOR_SET => Ok(LeaveValidatorSet),
+            Self::SET_OPERATOR => Ok(SetOperator),
+            Self::FEE => Ok(Fee),
             _ => Err(ApiError::DeserializationFailed(Some(format!(
                 "Invalid OperationType: {}",
                 s
@@ -125,12 +170,24 @@ impl FromStr for OperationType {
 
 impl Display for OperationType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        use OperationType::*;
         f.write_str(match self {
-            OperationType::CreateAccount => Self::CREATE_ACCOUNT,
-            OperationType::Deposit => Self::DEPOSIT,
-            OperationType::Withdraw => Self::WITHDRAW,
-            OperationType::SetOperator => Self::SET_OPERATOR,
-            OperationType::Fee => Self::FEE,
+            CreateAccount => Self::CREATE_ACCOUNT,
+            Withdraw => Self::WITHDRAW,
+            Deposit => Self::DEPOSIT,
+            RegisterValidatorCandidate => Self::REGISTER_VALIDATOR_CANDIDATE,
+            AddStake => Self::ADD_STAKE,
+            ReactivateStake => Self::REACTIVATE_STAKE,
+            RotateConsensusKey => Self::ROTATE_CONSENSUS_KEY,
+            UpdateNetworkAndFullnodeAddresses => Self::UPDATE_NETWORK_AND_FULLNODE_ADDRESSES,
+            IncreaseLockup => Self::INCREASE_LOCKUP,
+            JoinValidatorSet => Self::JOIN_VALIDATOR_SET,
+            DistributeRewards => Self::DISTRIBUTE_REWARDS,
+            UnlockStake => Self::UNLOCK_STAKE,
+            WithdrawStake => Self::WITHDRAW_STAKE,
+            LeaveValidatorSet => Self::LEAVE_VALIDATOR_SET,
+            SetOperator => Self::SET_OPERATOR,
+            Fee => Self::FEE,
         })
     }
 }
