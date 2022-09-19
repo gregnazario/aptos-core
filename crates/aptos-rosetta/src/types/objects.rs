@@ -204,14 +204,14 @@ impl Operation {
     pub fn create_account(
         operation_index: u64,
         status: Option<OperationStatusType>,
-        address: AccountAddress,
+        account: AccountIdentifier,
         sender: AccountAddress,
     ) -> Operation {
         Operation::new(
             OperationType::CreateAccount,
             operation_index,
             status,
-            address.into(),
+            account,
             None,
             Some(OperationMetadata::create_account(sender)),
         )
@@ -220,7 +220,7 @@ impl Operation {
     pub fn deposit(
         operation_index: u64,
         status: Option<OperationStatusType>,
-        address: AccountAddress,
+        account: AccountIdentifier,
         currency: Currency,
         amount: u64,
     ) -> Operation {
@@ -228,7 +228,7 @@ impl Operation {
             OperationType::Deposit,
             operation_index,
             status,
-            address.into(),
+            account,
             Some(Amount {
                 value: amount.to_string(),
                 currency,
@@ -240,7 +240,7 @@ impl Operation {
     pub fn withdraw(
         operation_index: u64,
         status: Option<OperationStatusType>,
-        address: AccountAddress,
+        account: AccountIdentifier,
         currency: Currency,
         amount: u64,
     ) -> Operation {
@@ -248,7 +248,7 @@ impl Operation {
             OperationType::Withdraw,
             operation_index,
             status,
-            address.into(),
+            account,
             Some(Amount {
                 value: format!("-{}", amount),
                 currency,
@@ -259,7 +259,7 @@ impl Operation {
 
     pub fn gas_fee(
         operation_index: u64,
-        address: AccountAddress,
+        account: AccountIdentifier,
         gas_used: u64,
         gas_price_per_unit: u64,
     ) -> Operation {
@@ -267,7 +267,7 @@ impl Operation {
             OperationType::Fee,
             operation_index,
             Some(OperationStatusType::Success),
-            address.into(),
+            account,
             Some(Amount {
                 value: format!("-{}", gas_used.saturating_mul(gas_price_per_unit)),
                 currency: native_coin(),
@@ -279,14 +279,14 @@ impl Operation {
     pub fn set_operator(
         operation_index: u64,
         status: Option<OperationStatusType>,
-        address: AccountAddress,
+        account: AccountIdentifier,
         operator: AccountAddress,
     ) -> Operation {
         Operation::new(
             OperationType::SetOperator,
             operation_index,
             status,
-            address.into(),
+            account,
             None,
             Some(OperationMetadata::set_operator(operator)),
         )
@@ -523,7 +523,7 @@ impl Transaction {
         if let Some(txn) = maybe_user_txn {
             operations.push(Operation::gas_fee(
                 operation_index,
-                txn.sender(),
+                txn.sender().into(),
                 txn_info.gas_used(),
                 txn.gas_unit_price(),
             ));
@@ -588,7 +588,7 @@ fn parse_operations_from_txn_payload(
                     operations.push(Operation::create_account(
                         operation_index,
                         Some(OperationStatusType::Failure),
-                        address,
+                        address.into(),
                         sender,
                     ));
                 } else {
@@ -604,8 +604,8 @@ fn parse_operations_from_txn_payload(
                     operations.push(Operation::set_operator(
                         operation_index,
                         Some(OperationStatusType::Failure),
-                        operator,
-                        sender,
+                        sender.into(),
+                        operator.into(),
                     ));
                 } else {
                     warn!("Failed to parse set operator {:?}", inner);
@@ -637,14 +637,14 @@ fn parse_transfer_from_txn_payload(
         operations.push(Operation::withdraw(
             operation_index,
             Some(OperationStatusType::Failure),
-            sender,
+            sender.into(),
             currency.clone(),
             amount,
         ));
         operations.push(Operation::deposit(
             operation_index + 1,
             Some(OperationStatusType::Failure),
-            receiver,
+            receiver.into(),
             currency,
             amount,
         ));
@@ -749,7 +749,7 @@ fn parse_account_changes(
             operations.push(Operation::create_account(
                 operation_index,
                 Some(OperationStatusType::Success),
-                address,
+                address.into(),
                 maybe_sender.unwrap_or(AccountAddress::ONE),
             ));
         }
@@ -859,7 +859,7 @@ fn get_balance_changes_from_event(
             Operation::deposit(
                 operation_index,
                 Some(OperationStatusType::Success),
-                address,
+                address.into(),
                 currency.clone(),
                 event.amount(),
             )
@@ -875,7 +875,7 @@ fn get_balance_changes_from_event(
             Operation::withdraw(
                 operation_index,
                 Some(OperationStatusType::Success),
-                address,
+                address.into(),
                 currency.clone(),
                 event.amount(),
             )

@@ -165,7 +165,12 @@ impl RosettaClient {
         keys.insert(sender, private_key);
 
         // A create account transaction is just a Create account operation
-        let operations = vec![Operation::create_account(0, None, new_account, sender)];
+        let operations = vec![Operation::create_account(
+            0,
+            None,
+            new_account.into(),
+            sender,
+        )];
 
         self.submit_operations(
             sender,
@@ -199,8 +204,8 @@ impl RosettaClient {
 
         // A transfer operation is made up of a withdraw and a deposit
         let operations = vec![
-            Operation::withdraw(0, None, sender, native_coin(), amount),
-            Operation::deposit(1, None, receiver, native_coin(), amount),
+            Operation::withdraw(0, None, sender.into(), native_coin(), amount),
+            Operation::deposit(1, None, receiver.into(), native_coin(), amount),
         ];
 
         self.submit_operations(

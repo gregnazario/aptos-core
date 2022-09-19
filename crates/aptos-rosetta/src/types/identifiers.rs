@@ -60,6 +60,7 @@ impl From<AccountAddress> for AccountIdentifier {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct SubAccountIdentifier {
     /// Staking pool address
     pub address: String,
