@@ -60,6 +60,7 @@ impl From<AccountAddress> for AccountIdentifier {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct SubAccountIdentifier {
     /// Staking pool address
     pub address: String,
@@ -68,6 +69,7 @@ pub struct SubAccountIdentifier {
 }
 
 // TODO: Determine what to put in this for staking
+#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct SubAccountMetadata {}
 
 /// Identifier for a "block".  In aptos, we use a transaction model, so the index

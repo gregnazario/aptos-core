@@ -31,75 +31,75 @@ pub const SYMBOL_FIELD: &str = "symbol";
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct RegisterValidatorCandidateEvent {
-    pool_address: AccountAddress,
+    pub pool_address: AccountAddress,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct SetOperatorEvent {
-    pool_address: AccountAddress,
-    old_operator: AccountAddress,
-    new_operator: AccountAddress,
+    pub pool_address: AccountAddress,
+    pub old_operator: AccountAddress,
+    pub new_operator: AccountAddress,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct AddStakeEvent {
-    pool_address: AccountAddress,
-    amount_added: u64,
+    pub pool_address: AccountAddress,
+    pub amount_added: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct ReactivateStakeEvent {
-    pool_address: AccountAddress,
-    amount: u64,
+    pub pool_address: AccountAddress,
+    pub amount: u64,
 }
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct RotateConsensusKeyEvent {
-    pool_address: AccountAddress,
-    old_consensus_pubkey: Vec<u8>,
-    new_consensus_pubkey: Vec<u8>,
+    pub pool_address: AccountAddress,
+    pub old_consensus_pubkey: Vec<u8>,
+    pub new_consensus_pubkey: Vec<u8>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct UpdateNetworkAndFullnodeAddressesEvent {
-    pool_address: AccountAddress,
-    old_network_addresses: Vec<u8>,
-    new_network_addresses: Vec<u8>,
-    old_fullnode_addresses: Vec<u8>,
-    new_fullnode_addresses: Vec<u8>,
+    pub pool_address: AccountAddress,
+    pub old_network_addresses: Vec<u8>,
+    pub new_network_addresses: Vec<u8>,
+    pub old_fullnode_addresses: Vec<u8>,
+    pub new_fullnode_addresses: Vec<u8>,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct IncreaseLockupEvent {
-    pool_address: AccountAddress,
-    old_locked_until_secs: u64,
-    new_locked_until_secs: u64,
+    pub pool_address: AccountAddress,
+    pub old_locked_until_secs: u64,
+    pub new_locked_until_secs: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct JoinValidatorSetEvent {
-    pool_address: AccountAddress,
+    pub pool_address: AccountAddress,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct DistributeRewardsEvent {
-    pool_address: AccountAddress,
-    rewards_amount: u64,
+    pub pool_address: AccountAddress,
+    pub rewards_amount: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct UnlockStakeEvent {
-    pool_address: AccountAddress,
-    amount_unlocked: u64,
+    pub pool_address: AccountAddress,
+    pub amount_unlocked: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct WithdrawStakeEvent {
-    pool_address: AccountAddress,
-    amount_withdrawn: u64,
+    pub pool_address: AccountAddress,
+    pub amount_withdrawn: u64,
 }
 
 #[derive(Clone, Copy, Debug, Deserialize)]
 pub struct LeaveValidatorSetEvent {
-    pool_address: AccountAddress,
+    pub pool_address: AccountAddress,
 }

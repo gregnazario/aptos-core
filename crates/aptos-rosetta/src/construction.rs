@@ -446,7 +446,7 @@ fn parse_create_account_operation(
         Ok(vec![Operation::create_account(
             0,
             None,
-            new_address,
+            new_address.into(),
             sender,
         )])
     } else {
@@ -498,11 +498,17 @@ fn parse_transfer_operation(
     operations.push(Operation::withdraw(
         0,
         None,
-        sender,
+        sender.into(),
         currency.clone(),
         amount,
     ));
-    operations.push(Operation::deposit(1, None, receiver, currency, amount));
+    operations.push(Operation::deposit(
+        1,
+        None,
+        receiver.into(),
+        currency,
+        amount,
+    ));
     Ok(operations)
 }
 
@@ -537,8 +543,20 @@ fn parse_account_transfer_operation(
         )));
     };
 
-    operations.push(Operation::withdraw(0, None, sender, native_coin(), amount));
-    operations.push(Operation::deposit(1, None, receiver, native_coin(), amount));
+    operations.push(Operation::withdraw(
+        0,
+        None,
+        sender.into(),
+        native_coin(),
+        amount,
+    ));
+    operations.push(Operation::deposit(
+        1,
+        None,
+        receiver.into(),
+        native_coin(),
+        amount,
+    ));
     Ok(operations)
 }
 
@@ -559,7 +577,12 @@ fn parse_set_operator_operation(
     if let Some(encoded_operator) = args.first() {
         let operator: AccountAddress = bcs::from_bytes(encoded_operator)?;
 
-        Ok(vec![Operation::set_operator(0, None, sender, operator)])
+        Ok(vec![Operation::set_operator(
+            0,
+            None,
+            sender.into(),
+            operator,
+        )])
     } else {
         Err(ApiError::InvalidOperations(Some(
             "Set operator doesn't have an address argument".to_string(),
