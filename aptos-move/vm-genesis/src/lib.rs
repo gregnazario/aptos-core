@@ -553,7 +553,7 @@ fn publish_package(session: &mut SessionExt<impl MoveResolver>, pack: &ReleasePa
                 .simple_serialize()
                 .unwrap(),
             MoveValue::Signer(addr).simple_serialize().unwrap(),
-            bcs::to_bytes(pack.package_metadata()).unwrap(),
+            bcs::to_bytes(pack.package_metadata()).expect("Modules can be serialized"),
         ],
     );
 }

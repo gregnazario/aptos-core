@@ -19,7 +19,7 @@ fn get_abi_paths(dir: &Path) -> std::io::Result<Vec<String>> {
             if path.is_dir() {
                 abi_paths.append(&mut get_abi_paths(&path)?);
             } else if let Some("abi") = path.extension().and_then(OsStr::to_str) {
-                abi_paths.push(path.to_str().unwrap().to_string());
+                abi_paths.push(path.display().to_string());
             }
         }
     }

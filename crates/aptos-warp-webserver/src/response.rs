@@ -29,7 +29,7 @@ impl Response {
     pub fn new_bcs<T: Serialize>(ledger_info: LedgerInfo, body: &T) -> Result<Self> {
         Ok(Self {
             ledger_info,
-            body: bcs::to_bytes(body).unwrap(),
+            body: bcs::to_bytes(body)?,
             is_bcs_response: true,
         })
     }
