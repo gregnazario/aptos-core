@@ -11,6 +11,8 @@ pub const APTOS_ACCOUNT_MODULE: &str = "aptos_account";
 pub const APTOS_COIN_MODULE: &str = "aptos_coin";
 pub const COIN_MODULE: &str = "coin";
 pub const STAKE_MODULE: &str = "stake";
+pub const VESTING_MODULE: &str = "vesting";
+pub const STAKING_CONTRACT_MODULE: &str = "staking_contract";
 
 pub const ACCOUNT_RESOURCE: &str = "Account";
 pub const APTOS_COIN_RESOURCE: &str = "AptosCoin";
