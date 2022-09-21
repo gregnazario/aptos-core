@@ -577,7 +577,12 @@ fn parse_set_operator_operation(
     if let Some(encoded_operator) = args.first() {
         let operator: AccountAddress = bcs::from_bytes(encoded_operator)?;
 
-        Ok(vec![Operation::set_operator(0, None, sender, operator)])
+        Ok(vec![Operation::set_operator(
+            0,
+            None,
+            sender.into(),
+            operator,
+        )])
     } else {
         Err(ApiError::InvalidOperations(Some(
             "Set operator doesn't have an address argument".to_string(),

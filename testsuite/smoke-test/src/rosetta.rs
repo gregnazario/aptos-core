@@ -1093,6 +1093,7 @@ async fn parse_operations(
                     }
                 };
             }
+            _ => panic!("Unsupported operation"),
         }
     }
 

@@ -95,10 +95,7 @@ async fn network_options(
         .into_iter()
         .map(|status| status.into())
         .collect();
-    let operation_types = OperationType::ALL
-        .into_iter()
-        .map(|op| op.to_string())
-        .collect();
+    let operation_types = OperationType::ALL.iter().map(|op| op.to_string()).collect();
     let errors = ApiError::all()
         .into_iter()
         .map(|err| err.into_error())

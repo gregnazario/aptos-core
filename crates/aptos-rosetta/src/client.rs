@@ -238,7 +238,12 @@ impl RosettaClient {
         keys.insert(sender, private_key);
 
         // A transfer operation is made up of a withdraw and a deposit
-        let operations = vec![Operation::set_operator(0, None, sender, new_operator)];
+        let operations = vec![Operation::set_operator(
+            0,
+            None,
+            sender.into(),
+            new_operator,
+        )];
 
         self.submit_operations(
             sender,

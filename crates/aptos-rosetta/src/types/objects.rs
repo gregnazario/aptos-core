@@ -605,7 +605,7 @@ fn parse_operations_from_txn_payload(
                         operation_index,
                         Some(OperationStatusType::Failure),
                         sender.into(),
-                        operator.into(),
+                        operator,
                     ));
                 } else {
                     warn!("Failed to parse set operator {:?}", inner);
@@ -901,7 +901,7 @@ fn get_set_operator_from_event(
             Operation::set_operator(
                 operation_index,
                 Some(OperationStatusType::Success),
-                address,
+                address.into(),
                 new_operator,
             )
         },
