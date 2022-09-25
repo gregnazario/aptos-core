@@ -43,6 +43,7 @@ aptos-state-view = { path = "../../storage/state-view" }
 aptos-types = { path = "../../types" }
 gas-algebra-ext =  { path = "../gas-algebra-ext" }
 move-deps = { path = "../move-deps", features = ["address32"] }
+windows-support = { path = "../../crates/windows-support" }
 
 [dev-dependencies]
 claims = "0.7"

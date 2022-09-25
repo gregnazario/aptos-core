@@ -14,7 +14,8 @@ async fn main() {
     // Register hooks
     move_tool::register_package_hooks();
     // Run the corresponding tools
-    let result = Tool::parse().execute().await;
+    let tool: Tool = Tool::parse();
+    let result = windows_support::run_async_with_stack_size(|| tool.execute()).await;
 
     // At this point, we'll want to print and determine whether to exit for an error code
     match result {
