@@ -4093,7 +4093,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IndexResponse"
+                  "$ref": "#/components/schemas/JsonIndexResponse"
                 }
               },
               "application/x-bcs": {
@@ -11255,7 +11255,7 @@
       "IdentifierWrapper": {
         "type": "string"
       },
-      "IndexResponse": {
+      "JsonIndexResponse": {
         "type": "object",
         "description": "The struct holding all data returned to the client by the\nindex endpoint (i.e., GET \"/\").",
         "required": [
@@ -11294,6 +11294,9 @@
           },
           "block_height": {
             "$ref": "#/components/schemas/U64"
+          },
+          "git_hash": {
+            "type": "string"
           }
         }
       },

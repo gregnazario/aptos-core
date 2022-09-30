@@ -9,7 +9,7 @@ import type { U64 } from './U64';
  * The struct holding all data returned to the client by the
  * index endpoint (i.e., GET "/").
  */
-export type IndexResponse = {
+export type JsonIndexResponse = {
     /**
      * Chain ID of the current chain
      */
@@ -21,5 +21,6 @@ export type IndexResponse = {
     node_role: RoleType;
     oldest_block_height: U64;
     block_height: U64;
+    git_hash?: string;
 };
 

@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $IndexResponse = {
+export const $JsonIndexResponse = {
     description: `The struct holding all data returned to the client by the
     index endpoint (i.e., GET "/").`,
     properties: {
@@ -38,6 +38,9 @@ export const $IndexResponse = {
         block_height: {
             type: 'U64',
             isRequired: true,
+        },
+        git_hash: {
+            type: 'string',
         },
     },
 } as const;

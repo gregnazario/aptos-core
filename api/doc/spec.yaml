@@ -3037,7 +3037,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IndexResponse'
+                $ref: '#/components/schemas/JsonIndexResponse'
             application/x-bcs:
               schema:
                 type: array
@@ -8365,7 +8365,7 @@ components:
       example: '0x88fbd33f54e1126269769780feb24480428179f552e2313fbe571b72e62a1ca1 '
     IdentifierWrapper:
       type: string
-    IndexResponse:
+    JsonIndexResponse:
       type: object
       description: |-
         The struct holding all data returned to the client by the
@@ -8398,6 +8398,8 @@ components:
           $ref: '#/components/schemas/U64'
         block_height:
           $ref: '#/components/schemas/U64'
+        git_hash:
+          type: string
     ModuleBundlePayload:
       type: object
       required:
@@ -9358,4 +9360,3 @@ components:
           $ref: '#/components/schemas/DecodedTableData'
 externalDocs:
   url: https://github.com/aptos-labs/aptos-core
-

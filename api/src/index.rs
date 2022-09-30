@@ -7,7 +7,7 @@ use crate::accept_type::AcceptType;
 use crate::context::Context;
 use crate::response::{BasicResponse, BasicResponseStatus, BasicResult};
 use crate::ApiTags;
-use aptos_api_types::IndexResponse;
+use aptos_api_types::{IndexResponse, JsonIndexResponse};
 use poem_openapi::OpenApi;
 
 /// API for the index, to retrieve the ledger information
@@ -27,19 +27,30 @@ impl IndexApi {
         operation_id = "get_ledger_info",
         tag = "ApiTags::General"
     )]
-    async fn get_ledger_info(&self, accept_type: AcceptType) -> BasicResult<IndexResponse> {
+    async fn get_ledger_info(&self, accept_type: AcceptType) -> BasicResult<JsonIndexResponse> {
         self.context
             .check_api_output_enabled("Get ledger info", &accept_type)?;
         let ledger_info = self.context.get_latest_ledger_info()?;
 
         let node_role = self.context.node_role();
-        let index_response = IndexResponse::new(ledger_info.clone(), node_role);
 
-        BasicResponse::try_from_rust_value((
-            index_response,
-            &ledger_info,
-            BasicResponseStatus::Ok,
-            &accept_type,
-        ))
+        match accept_type {
+            AcceptType::Json => {
+                let index_response = JsonIndexResponse::new(
+                    ledger_info.clone(),
+                    node_role,
+                    Some(aptos_build_info::get_git_hash()),
+                );
+                BasicResponse::try_from_json((
+                    index_response,
+                    &ledger_info,
+                    BasicResponseStatus::Ok,
+                ))
+            }
+            AcceptType::Bcs => {
+                let index_response = IndexResponse::new(ledger_info.clone(), node_role);
+                BasicResponse::try_from_bcs((index_response, &ledger_info, BasicResponseStatus::Ok))
+            }
+        }
     }
 }

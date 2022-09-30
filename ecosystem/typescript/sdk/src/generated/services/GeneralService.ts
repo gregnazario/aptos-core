@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { HealthCheckSuccess } from '../models/HealthCheckSuccess';
-import type { IndexResponse } from '../models/IndexResponse';
+import type { JsonIndexResponse } from '../models/JsonIndexResponse';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -56,10 +56,10 @@ export class GeneralService {
      * Get ledger info
      * Get the latest ledger information, including data such as chain ID,
      * role type, ledger versions, epoch, etc.
-     * @returns IndexResponse
+     * @returns JsonIndexResponse
      * @throws ApiError
      */
-    public getLedgerInfo(): CancelablePromise<IndexResponse> {
+    public getLedgerInfo(): CancelablePromise<JsonIndexResponse> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/',
