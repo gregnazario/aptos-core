@@ -20,7 +20,7 @@ use crate::{
     },
     genesis::git::from_yaml,
 };
-use aptos_config::config::NodeConfig;
+use aptos_config::config::{NodeConfig, PeerSet};
 use aptos_crypto::bls12381::PublicKey;
 use aptos_crypto::{bls12381, x25519, ValidCryptoMaterialStringExt};
 use aptos_faucet::FaucetArgs;
@@ -70,6 +70,7 @@ const SECS_TO_MICROSECS: u64 = 1_000_000;
 pub enum NodeTool {
     GetPerformance(GetPerformance),
     GetStakePool(GetStakePool),
+    GetCurrentNetworkSeeds(GetCurrentNetworkSeeds),
     InitializeValidator(InitializeValidator),
     JoinValidatorSet(JoinValidatorSet),
     LeaveValidatorSet(LeaveValidatorSet),
@@ -822,6 +823,39 @@ impl CliCommand<ValidatorSetSummary> for ShowValidatorSet {
             .get_account_resource_bcs(CORE_CODE_ADDRESS, "0x1::stake::ValidatorSet")
             .await?
             .into_inner();
+
+        ValidatorSetSummary::try_from(&validator_set)
+            .map_err(|err| CliError::BCS("Validator Set", err))
+    }
+}
+
+
+///
+#[derive(Parser)]
+pub struct GetValidatorSetPeers {
+    #[clap(flatten)]
+    pub(crate) profile_options: ProfileOptions,
+    #[clap(flatten)]
+    pub(crate) rest_options: RestOptions,
+}
+
+#[async_trait]
+impl CliCommand<PeerSet> for GetValidatorSetPeers {
+    fn command_name(&self) -> &'static str {
+        "GetValidatorSetPeers"
+    }
+
+    async fn execute(mut self) -> CliTypedResult<PeerSet> {
+        let client = self.rest_options.client(&self.profile_options)?;
+        let validator_set: ValidatorSet = client
+            .get_account_resource_bcs(CORE_CODE_ADDRESS, "0x1::stake::ValidatorSet")
+            .await?
+            .into_inner();
+
+        let peer_set = PeerSet::new();
+        peer
+        validator_set
+        validator_set.active_validators
 
         ValidatorSetSummary::try_from(&validator_set)
             .map_err(|err| CliError::BCS("Validator Set", err))

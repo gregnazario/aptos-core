@@ -273,7 +273,7 @@ where
                                         .connection_metadata(&self.connection_metadata),
                                     error = %err,
                                     "{} Error in handling inbound message from peer: {}, error: {}",
-                                    self.network_context,
+                    t                 self.network_context,
                                     remote_peer_id.short_str(),
                                     err
                                 );
