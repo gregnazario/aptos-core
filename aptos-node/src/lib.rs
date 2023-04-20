@@ -124,6 +124,7 @@ impl AptosNodeArgs {
                 self.lazy,
                 &genesis_framework,
                 rng,
+                None,
             )
             .expect("Test node should start correctly!");
         } else {
@@ -146,7 +147,7 @@ impl AptosNodeArgs {
             });
 
             // Start the node
-            start(config, None, true).expect("Node should start correctly");
+            start(config, None, true, None).expect("Node should start correctly");
         };
     }
 }
@@ -170,6 +171,7 @@ pub fn start(
     config: NodeConfig,
     log_file: Option<PathBuf>,
     create_global_rayon_pool: bool,
+    started_callback: Option<tokio::sync::oneshot::Sender<()>>,
 ) -> anyhow::Result<()> {
     // Setup panic handler
     aptos_crash_handler::setup_panic_handler();
@@ -205,6 +207,9 @@ pub fn start(
     // Set up the node environment and start it
     let _node_handle =
         setup_environment_and_start_node(config, remote_log_receiver, Some(logger_filter_update))?;
+    if let Some(callback) = started_callback {
+        let _ = callback.send(());
+    }
     let term = Arc::new(AtomicBool::new(false));
     while !term.load(Ordering::Acquire) {
         thread::park();
@@ -221,6 +226,7 @@ pub fn setup_test_environment_and_start_node<R>(
     enable_lazy_mode: bool,
     framework: &ReleaseBundle,
     rng: R,
+    started_callback: Option<tokio::sync::oneshot::Sender<()>>,
 ) -> anyhow::Result<()>
 where
     R: rand::RngCore + rand::CryptoRng,
@@ -298,7 +304,7 @@ where
     }
     println!("\nAptos is running, press ctrl-c to exit\n");
 
-    start(config, Some(log_file), false)
+    start(config, Some(log_file), false, started_callback)
 }
 
 /// Creates a single node test config, with a few config tweaks to reduce

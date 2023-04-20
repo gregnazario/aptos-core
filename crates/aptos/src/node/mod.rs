@@ -1124,6 +1124,8 @@ impl CliCommand<()> for RunLocalTestnet {
         // Spawn the node in a separate thread
         let config_path = self.config_path.clone();
         let test_dir_copy = test_dir.clone();
+        let (started_sender, started_receiver) = tokio::sync::oneshot::channel();
+
         let node_thread_handle = thread::spawn(move || {
             let result = aptos_node::setup_test_environment_and_start_node(
                 config_path,
@@ -1132,6 +1134,7 @@ impl CliCommand<()> for RunLocalTestnet {
                 false,
                 aptos_cached_packages::head_release_bundle(),
                 rng,
+                Some(started_sender),
             );
             eprintln!("Node stopped unexpectedly {:#?}", result);
         });
@@ -1143,6 +1146,9 @@ impl CliCommand<()> for RunLocalTestnet {
 
             // Load the config to get the rest port
             let config_path = test_dir.join("0").join("node.yaml");
+
+            // First block on the node starting
+            started_receiver.await.unwrap();
 
             // We have to wait for the node to be configured above in the other thread
             let mut config = None;
