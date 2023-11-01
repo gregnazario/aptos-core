@@ -51,6 +51,10 @@ use std::{
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 use tokio::{task::JoinHandle, time::Instant};
+use aptos_rest_client::aptos_api_types::Event;
+use aptos_types::contract_event::ContractEvent;
+use aptos_types::transaction::{EntryFunction, TransactionPayload};
+use move_core_types::language_storage::ModuleId;
 
 const EPOCH_DURATION_S: u64 = 5;
 const DEFAULT_TRANSFER_AMOUNT: u64 = 20;
@@ -2710,7 +2714,7 @@ async fn test_fee_statement() {
 
     let seq_number = account_1.sequence_number();
     // test initialize a new token, mint and burn to trigger the refund
-    let res = initialize_token(
+    let res = create_collection(
         &swarm.aptos_public_info(),
         &mut account_1,
         cli.account_id(0),
@@ -2718,7 +2722,7 @@ async fn test_fee_statement() {
     )
     .await;
 
-    let res = mint_token(
+    let object_address = mint_token(
         &swarm.aptos_public_info(),
         &mut account_1,
         cli.account_id(0),
@@ -2726,53 +2730,79 @@ async fn test_fee_statement() {
         seq_number+1,
     )
     .await;
+
+    let txn = burn_token(
+        &swarm.aptos_public_info(),
+        &mut account_1,
+        cli.account_id(0),
+        100,
+        seq_number + 2,
+        object_address
+    ).await;
 }
 
 // To test FeeStatement, we create a coin and burn it to trigger a storage fee refund
-async fn initialize_token(
-    info: &AptosPublicInfo<'_>,
-    account: &mut LocalAccount,
-    initializer: AccountAddress,
-    sequence_number: u64,
-) -> Response<Transaction> {
-    let managed_coin_initialization = info
-        .transaction_factory()
-        .payload(aptos_stdlib::managed_coin_initialize(
-            TypeTag::Struct(Box::new(StructTag {
-                address: initializer,
-                module: ident_str!("aptos_coin").to_owned(),
-                name: ident_str!("AptosCoin").to_owned(),
-                type_params: vec![],
-            })),
-            "name".as_bytes().to_vec(),
-            "symbol".as_bytes().to_vec(),
-            8,
-            false,
-        ))
-        .sequence_number(sequence_number);
+const TEST_COLLECTION:&str = "test-collection";
+const TEST_TOKEN: &str = "test-token";
 
-    let txn = account.sign_with_transaction_builder(managed_coin_initialization);
-    info.client().submit_and_wait(&txn).await.unwrap()
-}
-
-async fn mint_token(
+async fn create_collection(
     info: &AptosPublicInfo<'_>,
     account: &mut LocalAccount,
     destination: AccountAddress,
     amount: u64,
     sequence_number: u64,
 ) -> Response<Transaction> {
-    let managed_coin_mint = info
-        .transaction_factory()
-        .payload(aptos_stdlib::managed_coin_mint(
-            APTOS_COIN_TYPE.clone(),
-            destination,
-            amount,
-        ))
-        .sequence_number(sequence_number);
 
-    let txn = account.sign_with_transaction_builder(managed_coin_mint);
+    let txn = account.sign_with_transaction_builder(info
+        .transaction_factory()
+        .payload(aptos_stdlib::aptos_token_objects_stdlib::aptos_token_create_collection(
+            "".as_bytes().into_vec(),
+            10000,
+            TEST_COLLECTION.as_bytes().into_vec(),
+            "".as_bytes().into_vec(),
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            0,
+            100,
+        ))
+        .sequence_number(sequence_number));
     info.client().submit_and_wait(&txn).await.unwrap()
+}
+async fn mint_token(
+    info: &AptosPublicInfo<'_>,
+    account: &mut LocalAccount,
+    destination: AccountAddress,
+    amount: u64,
+    sequence_number: u64,
+) -> AccountAddress {
+    let txn = account.sign_with_transaction_builder( = info
+        .transaction_factory()
+        .payload(aptos_stdlib::aptos_token_objects_stdlib::aptos_token_mint(
+            TEST_COLLECTION.as_bytes().into_vec(),
+            "".as_bytes().into_vec(),
+            TEST_TOKEN.as_bytes().into_vec(),
+            "".as_bytes().into_vec(),
+         vec![],
+            vec![],
+            vec![],
+        ))
+        .sequence_number(sequence_number));
+    let res = info.client().submit_and_wait(&txn).await.unwrap();
+    let txn = res.into_inner();
+    if let Transaction::UserTransaction(user_txn) = txn {
+        let event: Event = user_txn.events.iter().find(|event: Event| event.typ.to_string().as_str() == "0x4::collection::MintEvent").unwrap();
+        let address_str = event.data.get("token").unwrap().as_str().unwrap();
+        AccountAddress::from_str(address_str).unwrap()
+    } else {
+        panic!("Unexpected transaction received back")
+    }
 }
 
 async fn burn_token(
@@ -2780,16 +2810,24 @@ async fn burn_token(
     account: &mut LocalAccount,
     amount: u64,
     sequence_number: u64,
+    object_address: AccountAddress,
 ) -> Response<Transaction> {
-    let managed_coin_burn = info
-        .transaction_factory()
-        .payload(aptos_stdlib::managed_coin_burn(
-            APTOS_COIN_TYPE.clone(),
-            amount,
-        ))
-        .sequence_number(sequence_number);
+    let payload = TransactionPayload::EntryFunction(EntryFunction::new(
+        ModuleId::new(
+            AccountAddress::FOUR,
+            ident_str!("aptos_token").to_owned(),
+        ),
+        ident_str!("burn").to_owned(),
+        vec![],
+        vec![
+            bcs::to_bytes(&object_address).unwrap(),
+        ],
+    ));
 
-    let txn = account.sign_with_transaction_builder(managed_coin_burn);
+    let txn = account.sign_with_transaction_builder(info
+        .transaction_factory()
+        .payload(payload)
+        .sequence_number(sequence_number));
     info.client().submit_and_wait(&txn).await.unwrap()
 }
 
