@@ -12,7 +12,7 @@ use crate::{
         utils::{fund_account, prompt_yes_with_override, read_line},
     },
 };
-use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey, ValidCryptoMaterialStringExt};
+use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey};
 use aptos_ledger;
 use aptos_rest_client::{
     aptos_api_types::{AptosError, AptosErrorCode},
@@ -20,9 +20,12 @@ use aptos_rest_client::{
 };
 use async_trait::async_trait;
 use clap::Parser;
+use ed25519_dalek_bip32::{DerivationPath, ExtendedSecretKey};
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, str::FromStr};
+use std::any::Any;
+use bip39::{Language, Mnemonic, MnemonicType, Seed};
 
 /// 1 APT (might not actually get that much, depending on the faucet)
 const NUM_DEFAULT_OCTAS: u64 = 100000000;
@@ -128,21 +131,21 @@ impl CliCommand<()> for InitTool {
                 profile_config.rest_url =
                     Some("https://fullnode.mainnet.aptoslabs.com".to_string());
                 profile_config.faucet_url = None;
-            },
+            }
             Network::Testnet => {
                 profile_config.rest_url =
                     Some("https://fullnode.testnet.aptoslabs.com".to_string());
                 profile_config.faucet_url =
                     Some("https://faucet.testnet.aptoslabs.com".to_string());
-            },
+            }
             Network::Devnet => {
                 profile_config.rest_url = Some("https://fullnode.devnet.aptoslabs.com".to_string());
                 profile_config.faucet_url = Some("https://faucet.devnet.aptoslabs.com".to_string());
-            },
+            }
             Network::Local => {
                 profile_config.rest_url = Some("http://localhost:8080".to_string());
                 profile_config.faucet_url = Some("http://localhost:8081".to_string());
-            },
+            }
             Network::Custom => self.custom_network(&mut profile_config)?,
         }
 
@@ -197,24 +200,31 @@ impl CliCommand<()> for InitTool {
                 eprintln!("Using command line argument for private key");
                 key
             } else {
-                eprintln!("Enter your private key as a hex literal (0x...) [Current: {} | No input: Generate new key (or keep one if present)]", profile_config.private_key.as_ref().map(|_| "Redacted").unwrap_or("None"));
-                let input = read_line("Private key")?;
-                let input = input.trim();
-                if input.is_empty() {
-                    if let Some(key) = profile_config.private_key {
-                        eprintln!("No key given, keeping existing key...");
-                        key
-                    } else {
-                        eprintln!("No key given, generating key...");
-                        self.rng_args
-                            .key_generator()?
-                            .generate_ed25519_private_key()
-                    }
+                eprintln!("Enter your mnemonic (0x...) [Current: {} | No input: Generate new key (or keep one if present)]", profile_config.private_key.as_ref().map(|_| "Redacted").unwrap_or("None"));
+                let mnemonic_input = read_line("Mnemonic")?;
+                let mnemonic_input = mnemonic_input.trim();
+                let mnemonic = if mnemonic_input.is_empty() {
+                    Mnemonic::new(MnemonicType::Words12, Language::English)
                 } else {
-                    Ed25519PrivateKey::from_encoded_string(input).map_err(|err| {
-                        CliError::UnableToParse("Ed25519PrivateKey", err.to_string())
-                    })?
-                }
+                    Mnemonic::from_phrase(mnemonic_input, Language::English)?
+                };
+                println!("MNEMONIC: {}", mnemonic);
+
+                let derivation_path_input = read_line("Derivation path")?;
+                let derivation_path_input = derivation_path_input.trim();
+
+                let derivation_path_str = if derivation_path_input.is_empty() {
+                    "m/44'/637'/0'/0'/0'"
+                } else {
+                    derivation_path_input
+                };
+
+                let derivation_path = DerivationPath::from_str(derivation_path_str).unwrap();
+                let seed = Seed::new(&mnemonic, "");
+                let key = ExtendedSecretKey::from_seed(seed.as_bytes()).unwrap()
+                    .derive(&derivation_path).unwrap()
+                    .secret_key;
+                Ed25519PrivateKey::try_from(key.as_bytes().as_ref())?
             };
 
             Some(ed25519_private_key)
@@ -235,8 +245,8 @@ impl CliCommand<()> for InitTool {
                     return Err(CliError::UnexpectedError(format!(
                         "Unexpected Ledger Error: {:?}",
                         err.to_string()
-                    )))
-                },
+                    )));
+                }
             };
             pub_key
         } else {
@@ -249,7 +259,7 @@ impl CliCommand<()> for InitTool {
                 .as_ref()
                 .expect("Must have rest client as created above"),
         )
-        .map_err(|err| CliError::UnableToParse("rest_url", err.to_string()))?;
+            .map_err(|err| CliError::UnableToParse("rest_url", err.to_string()))?;
         let client = aptos_rest_client::Client::new(rest_url);
 
         // lookup the address from onchain instead of deriving it
@@ -267,21 +277,21 @@ impl CliCommand<()> for InitTool {
             Ok(_) => true,
             Err(err) => {
                 if let RestError::Api(AptosErrorResponse {
-                    error:
-                        AptosError {
-                            error_code: AptosErrorCode::ResourceNotFound,
-                            ..
-                        },
-                    ..
-                })
+                                          error:
+                                          AptosError {
+                                              error_code: AptosErrorCode::ResourceNotFound,
+                                              ..
+                                          },
+                                          ..
+                                      })
                 | RestError::Api(AptosErrorResponse {
-                    error:
-                        AptosError {
-                            error_code: AptosErrorCode::AccountNotFound,
-                            ..
-                        },
-                    ..
-                }) = err
+                                     error:
+                                     AptosError {
+                                         error_code: AptosErrorCode::AccountNotFound,
+                                         ..
+                                     },
+                                     ..
+                                 }) = err
                 {
                     false
                 } else {
@@ -290,10 +300,10 @@ impl CliCommand<()> for InitTool {
                         err
                     )));
                 }
-            },
+            }
         };
 
-        // If you want to create a private key, but not fund the account, skipping the faucet is still possible
+// If you want to create a private key, but not fund the account, skipping the faucet is still possible
         let maybe_faucet_url = if self.skip_faucet {
             None
         } else {
@@ -316,7 +326,7 @@ impl CliCommand<()> for InitTool {
                     address,
                     NUM_DEFAULT_OCTAS,
                 )
-                .await?;
+                    .await?;
                 eprintln!("Account {} funded successfully", address);
             }
         } else if account_exists {
@@ -327,7 +337,7 @@ impl CliCommand<()> for InitTool {
             eprintln!("Account {} has been initialized locally, but you must transfer coins to it to create the account onchain", address);
         }
 
-        // Ensure the loaded config has profiles setup for a possible empty file
+// Ensure the loaded config has profiles setup for a possible empty file
         if config.profiles.is_none() {
             config.profiles = Some(BTreeMap::new());
         }
@@ -352,9 +362,9 @@ impl InitTool {
         } else {
             let current = profile_config.rest_url.as_deref();
             eprintln!(
-                    "Enter your rest endpoint [Current: {} | No input: Exit (or keep the existing if present)]",
-                    current.unwrap_or("None"),
-                );
+                "Enter your rest endpoint [Current: {} | No input: Exit (or keep the existing if present)]",
+                current.unwrap_or("None"),
+            );
             let input = read_line("Rest endpoint")?;
             let input = input.trim();
             if input.is_empty() {
@@ -385,10 +395,10 @@ impl InitTool {
         } else {
             let current = profile_config.faucet_url.as_deref();
             eprintln!(
-                    "Enter your faucet endpoint [Current: {} | No input: Skip (or keep the existing one if present) | 'skip' to not use a faucet]",
-                    current
-                        .unwrap_or("None"),
-                );
+                "Enter your faucet endpoint [Current: {} | No input: Skip (or keep the existing one if present) | 'skip' to not use a faucet]",
+                current
+                    .unwrap_or("None"),
+            );
             let input = read_line("Faucet endpoint")?;
             let input = input.trim();
             if input.is_empty() {
@@ -446,7 +456,7 @@ impl FromStr for Network {
                     "Invalid network {}.  Must be one of [devnet, testnet, mainnet, local, custom]",
                     str
                 )));
-            },
+            }
         })
     }
 }
