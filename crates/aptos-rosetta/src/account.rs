@@ -7,6 +7,7 @@
 //!
 
 use crate::{
+    block::BlockRetriever,
     common::{
         check_network, get_block_index_from_request, handle_request, native_coin, native_coin_tag,
         with_context,

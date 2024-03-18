@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
-    block::BlockRetriever,
     common::{
         check_network, get_block_index_from_request, get_timestamp, handle_request, with_context,
         BlockHash, Y2K_MS,
@@ -158,7 +157,7 @@ impl BlockInfo {
 }
 
 #[async_trait]
-pub trait BlockRetriever: std::fmt::Debug + Send + Sync {
+pub trait BlockRetriever: std::fmt::Debug + Send + Sync + Clone {
     async fn get_block_info_by_height(
         &'static self,
         height: u64,
