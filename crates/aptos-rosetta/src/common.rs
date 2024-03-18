@@ -21,15 +21,16 @@ use futures::future::BoxFuture;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::{convert::Infallible, fmt::LowerHex, future::Future, str::FromStr};
 use warp::Filter;
+use crate::block::BlockRetriever;
 
 /// The year 2000 in milliseconds, as this is the lower limit for Rosetta API implementations
 pub const Y2K_MS: u64 = 946713600000;
 pub const BLOCKCHAIN: &str = "aptos";
 
 /// Checks the request network matches the server network
-pub fn check_network(
+pub fn check_network<Retriever: BlockRetriever>(
     network_identifier: NetworkIdentifier,
-    server_context: &RosettaContext,
+    server_context: &RosettaContext<Retriever>,
 ) -> ApiResult<()> {
     if network_identifier.blockchain == BLOCKCHAIN
         && ChainId::from_str(network_identifier.network.trim())
@@ -43,9 +44,9 @@ pub fn check_network(
 }
 
 /// Attaches RosettaContext to warp paths
-pub fn with_context(
-    context: RosettaContext,
-) -> impl Filter<Extract = (RosettaContext,), Error = Infallible> + Clone {
+pub fn with_context<Retriever: BlockRetriever>(
+    context: RosettaContext<Retriever>,
+) -> impl Filter<Extract = (RosettaContext<Retriever>,), Error = Infallible> + Clone {
     warp::any().map(move || context.clone())
 }
 
@@ -55,15 +56,15 @@ pub fn with_empty_request() -> impl Filter<Extract = (MetadataRequest,), Error =
 }
 
 /// Handles a generic request to warp
-pub fn handle_request<'a, F, R, Req, Resp>(
+pub fn handle_request<'a, F, R, Req, Resp, Retriever: BlockRetriever>(
     handler: F,
 ) -> impl Fn(
     Req,
-    RosettaContext,
+    RosettaContext<Retriever>,
 ) -> BoxFuture<'static, Result<warp::reply::WithStatus<warp::reply::Json>, Infallible>>
        + Clone
 where
-    F: FnOnce(Req, RosettaContext) -> R + Clone + Copy + Send + 'static,
+    F: FnOnce(Req, RosettaContext<Retriever>) -> R + Clone + Copy + Send + 'static,
     R: Future<Output = Result<Resp, ApiError>> + Send,
     Req: Deserialize<'a> + Send + 'static,
     Resp: std::fmt::Debug + Serialize,
@@ -167,8 +168,8 @@ pub fn is_native_coin(currency: &Currency) -> ApiResult<()> {
 }
 
 /// Determines which block to pull for the request
-pub async fn get_block_index_from_request(
-    server_context: &RosettaContext,
+pub async fn get_block_index_from_request<Retriever: BlockRetriever>(
+    server_context: &RosettaContext<Retriever>,
     partial_block_identifier: Option<PartialBlockIdentifier>,
 ) -> ApiResult<u64> {
     Ok(match partial_block_identifier {

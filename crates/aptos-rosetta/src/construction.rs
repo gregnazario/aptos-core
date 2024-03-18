@@ -25,6 +25,7 @@
 //!
 
 use crate::{
+    block::BlockRetriever,
     common::{
         check_network, decode_bcs, decode_key, encode_bcs, get_account, handle_request,
         native_coin, parse_currency, with_context,
@@ -57,8 +58,8 @@ use std::{
 };
 use warp::Filter;
 
-pub fn combine_route(
-    server_context: RosettaContext,
+pub fn combine_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "combine")
         .and(warp::post())
@@ -67,8 +68,8 @@ pub fn combine_route(
         .and_then(handle_request(construction_combine))
 }
 
-pub fn derive_route(
-    server_context: RosettaContext,
+pub fn derive_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "derive")
         .and(warp::post())
@@ -77,8 +78,8 @@ pub fn derive_route(
         .and_then(handle_request(construction_derive))
 }
 
-pub fn hash_route(
-    server_context: RosettaContext,
+pub fn hash_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "hash")
         .and(warp::post())
@@ -87,8 +88,8 @@ pub fn hash_route(
         .and_then(handle_request(construction_hash))
 }
 
-pub fn metadata_route(
-    server_context: RosettaContext,
+pub fn metadata_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "metadata")
         .and(warp::post())
@@ -97,8 +98,8 @@ pub fn metadata_route(
         .and_then(handle_request(construction_metadata))
 }
 
-pub fn parse_route(
-    server_context: RosettaContext,
+pub fn parse_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "parse")
         .and(warp::post())
@@ -107,8 +108,8 @@ pub fn parse_route(
         .and_then(handle_request(construction_parse))
 }
 
-pub fn payloads_route(
-    server_context: RosettaContext,
+pub fn payloads_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "payloads")
         .and(warp::post())
@@ -117,8 +118,8 @@ pub fn payloads_route(
         .and_then(handle_request(construction_payloads))
 }
 
-pub fn preprocess_route(
-    server_context: RosettaContext,
+pub fn preprocess_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "preprocess")
         .and(warp::post())
@@ -127,8 +128,8 @@ pub fn preprocess_route(
         .and_then(handle_request(construction_preprocess))
 }
 
-pub fn submit_route(
-    server_context: RosettaContext,
+pub fn submit_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("construction" / "submit")
         .and(warp::post())
@@ -142,9 +143,9 @@ pub fn submit_route(
 /// This combines signatures, and a raw txn
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructioncombine)
-async fn construction_combine(
+async fn construction_combine<Retriever: BlockRetriever>(
     request: ConstructionCombineRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionCombineResponse> {
     debug!("/construction/combine {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -186,9 +187,9 @@ async fn construction_combine(
 /// both account and key.
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionderive)
-async fn construction_derive(
+async fn construction_derive<Retriever: BlockRetriever>(
     request: ConstructionDeriveRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionDeriveResponse> {
     debug!("/construction/derive {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -207,9 +208,9 @@ async fn construction_derive(
 /// Hash a transaction to get it's identifier for lookup in mempool
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionhash)
-async fn construction_hash(
+async fn construction_hash<Retriever: BlockRetriever>(
     request: ConstructionHashRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<TransactionIdentifierResponse> {
     debug!("/construction/hash {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -427,9 +428,9 @@ async fn simulate_transaction(
 /// Retrieve sequence number for submitting transactions
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionmetadata)
-async fn construction_metadata(
+async fn construction_metadata<Retriever: BlockRetriever>(
     request: ConstructionMetadataRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionMetadataResponse> {
     debug!("/construction/metadata {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -484,9 +485,9 @@ async fn construction_metadata(
 /// Parses operations from a transaction, used for verifying transaction construction
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionparse)
-async fn construction_parse(
+async fn construction_parse<Retriever: BlockRetriever>(
     request: ConstructionParseRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionParseResponse> {
     debug!("/construction/parse {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -1002,9 +1003,9 @@ pub fn parse_delegation_pool_withdraw_operation(
 /// Constructs payloads for given known operations
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionpayloads)
-async fn construction_payloads(
+async fn construction_payloads<Retriever: BlockRetriever>(
     request: ConstructionPayloadsRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionPayloadsResponse> {
     debug!("/construction/payloads {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -1249,9 +1250,9 @@ async fn construction_payloads(
 /// This creates the request needed to fetch metadata
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionpreprocess)
-async fn construction_preprocess(
+async fn construction_preprocess<Retriever: BlockRetriever>(
     request: ConstructionPreprocessRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionPreprocessResponse> {
     debug!("/construction/preprocess {:?}", request);
     check_network(request.network_identifier, &server_context)?;
@@ -1351,9 +1352,9 @@ async fn construction_preprocess(
 /// Submits a transaction to the blockchain
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/ConstructionApi.html#constructionsubmit)
-async fn construction_submit(
+async fn construction_submit<Retriever: BlockRetriever>(
     request: ConstructionSubmitRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<ConstructionSubmitResponse> {
     debug!("/construction/submit {:?}", request);
     check_network(request.network_identifier, &server_context)?;

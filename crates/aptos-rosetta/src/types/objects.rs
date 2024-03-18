@@ -6,6 +6,7 @@
 //! [Spec](https://www.rosetta-api.org/docs/api_objects.html)
 
 use crate::{
+    block::BlockRetriever,
     common::{is_native_coin, native_coin, native_coin_tag},
     construction::{
         parse_create_stake_pool_operation, parse_delegation_pool_add_stake_operation,
@@ -873,8 +874,8 @@ impl Display for TransactionType {
 }
 
 impl Transaction {
-    pub async fn from_transaction(
-        server_context: &RosettaContext,
+    pub async fn from_transaction<Retriever: BlockRetriever>(
+        server_context: &RosettaContext<Retriever>,
         txn: TransactionOnChainData,
     ) -> ApiResult<Transaction> {
         use aptos_types::transaction::Transaction::*;
@@ -1195,8 +1196,8 @@ fn parse_transfer_from_txn_payload(
 ///
 /// This can only be done during a successful transaction because there are actual state changes.
 /// It is more accurate because untracked scripts are included in balance operations
-async fn parse_operations_from_write_set(
-    server_context: &RosettaContext,
+async fn parse_operations_from_write_set<Retriever: BlockRetriever>(
+    server_context: &RosettaContext<Retriever>,
     state_key: &StateKey,
     write_op: &WriteOp,
     events: &[ContractEvent],
@@ -1321,8 +1322,8 @@ fn parse_account_resource_changes(
     Ok(operations)
 }
 
-fn parse_stake_pool_resource_changes(
-    _server_context: &RosettaContext,
+fn parse_stake_pool_resource_changes<Retriever: BlockRetriever>(
+    _server_context: &RosettaContext<Retriever>,
     _version: u64,
     _pool_address: AccountAddress,
     _data: &[u8],

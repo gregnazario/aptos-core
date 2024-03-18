@@ -21,6 +21,7 @@ use warp::{
     http::{HeaderValue, Method, StatusCode},
     reply, Filter, Rejection, Reply,
 };
+use crate::block::{BlockRetrieverOffline, BlockRetrieverOnline};
 
 mod account;
 mod block;
@@ -32,27 +33,32 @@ pub mod common;
 pub mod error;
 pub mod types;
 
-pub const NODE_VERSION: &str = "0.1";
+#[cfg(test)]
+pub mod integration_tests;
+
+pub const NODE_VERSION: &str = "0.1.0";
 pub const ROSETTA_VERSION: &str = "1.4.12";
 
 /// Rosetta API context for use on all APIs
 #[derive(Clone, Debug)]
-pub struct RosettaContext {
+pub struct RosettaContext<Retriever: BlockRetriever> {
     /// A rest client to connect to a fullnode
     rest_client: Option<Arc<aptos_rest_client::Client>>,
     /// ChainId of the chain to connect to
     pub chain_id: ChainId,
     /// Block index cache
-    pub block_cache: Option<Arc<BlockRetriever>>,
+    pub block_cache: Option<Arc<Retriever>>,
     pub owner_addresses: Vec<AccountAddress>,
     pub pool_address_to_owner: BTreeMap<AccountAddress, AccountAddress>,
 }
 
-impl RosettaContext {
+type RosettaContextOffline = RosettaContext<BlockRetrieverOffline>;
+
+impl<Retriever: BlockRetriever> RosettaContext<Retriever> {
     pub async fn new(
         rest_client: Option<Arc<aptos_rest_client::Client>>,
         chain_id: ChainId,
-        block_cache: Option<Arc<BlockRetriever>>,
+        block_cache: Option<Arc<Retriever>>,
         owner_addresses: Vec<AccountAddress>,
     ) -> Self {
         let mut pool_address_to_owner = BTreeMap::new();
@@ -98,7 +104,7 @@ impl RosettaContext {
         }
     }
 
-    fn block_cache(&self) -> ApiResult<Arc<BlockRetriever>> {
+    fn block_cache(&self) -> ApiResult<Arc<Retriever>> {
         if let Some(ref block_cache) = self.block_cache {
             Ok(block_cache.clone())
         } else {
@@ -154,7 +160,7 @@ pub async fn bootstrap_async(
         // If it's Online mode, add the block cache
         let rest_client = rest_client.map(Arc::new);
         let block_cache = rest_client.as_ref().map(|rest_client| {
-            Arc::new(BlockRetriever::new(
+            Arc::new(BlockRetrieverOnline::new(
                 api_config.max_transactions_page_size,
                 rest_client.clone(),
             ))
@@ -168,8 +174,8 @@ pub async fn bootstrap_async(
 }
 
 /// Collection of all routes for the server
-pub fn routes(
-    context: RosettaContext,
+pub fn routes<Retriever: BlockRetriever>(
+    context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl Reply,), Error = Infallible> + Clone {
     account::routes(context.clone())
         .or(block::block_route(context.clone()))
@@ -217,8 +223,8 @@ struct HealthCheckParams {
 /// Default amount of time the fullnode is accepted to be behind (arbitrarily it's 5 minutes)
 const HEALTH_CHECK_DEFAULT_SECS: u64 = 300;
 
-pub fn health_check_route(
-    server_context: RosettaContext,
+pub fn health_check_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("-" / "healthy")
         .and(warp::path::end())
@@ -228,9 +234,9 @@ pub fn health_check_route(
 }
 
 /// Calls the underlying REST health check
-async fn health_check(
+async fn health_check<Retriever: BlockRetriever>(
     params: HealthCheckParams,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<&'static str> {
     let rest_client = server_context.rest_client()?;
     let duration_secs = params.duration_secs.unwrap_or(HEALTH_CHECK_DEFAULT_SECS);

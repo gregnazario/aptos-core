@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
+    block::BlockRetriever,
     common::{check_network, handle_request, with_context, with_empty_request},
     error::ApiError,
     types::{
@@ -13,8 +14,8 @@ use crate::{
 use aptos_logger::{debug, trace};
 use warp::Filter;
 
-pub fn list_route(
-    server_context: RosettaContext,
+pub fn list_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("network" / "list")
         .and(warp::post())
@@ -23,8 +24,8 @@ pub fn list_route(
         .and_then(handle_request(network_list))
 }
 
-pub fn options_route(
-    server_context: RosettaContext,
+pub fn options_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("network" / "options")
         .and(warp::post())
@@ -33,8 +34,8 @@ pub fn options_route(
         .and_then(handle_request(network_options))
 }
 
-pub fn status_route(
-    server_context: RosettaContext,
+pub fn status_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("network" / "status")
         .and(warp::post())
@@ -48,9 +49,9 @@ pub fn status_route(
 /// This should be able to run without a running full node connection
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/NetworkApi.html#networklist)
-async fn network_list(
+async fn network_list<Retriever: BlockRetriever>(
     _empty: MetadataRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> Result<NetworkListResponse, ApiError> {
     debug!("/network/list");
     trace!(
@@ -71,9 +72,9 @@ async fn network_list(
 /// This should be able to run without a running full node connection
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/NetworkApi.html#networkoptions)
-async fn network_options(
+async fn network_options<Retriever: BlockRetriever>(
     request: NetworkRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> Result<NetworkOptionsResponse, ApiError> {
     debug!("/network/options");
     trace!(
@@ -125,9 +126,9 @@ async fn network_options(
 /// This should respond with the latest ledger version, timestamp, and genesis information
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/NetworkApi.html#networkoptions)
-async fn network_status(
+async fn network_status<Retriever: BlockRetriever>(
     request: NetworkRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> Result<NetworkStatusResponse, ApiError> {
     debug!("/network/status");
     trace!(

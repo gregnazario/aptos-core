@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
+    block::BlockRetriever,
     common::{
         check_network, get_block_index_from_request, get_timestamp, handle_request, with_context,
         BlockHash, Y2K_MS,
@@ -14,9 +15,10 @@ use aptos_logger::{debug, trace};
 use aptos_types::chain_id::ChainId;
 use std::sync::Arc;
 use warp::Filter;
+use async_trait::async_trait;
 
-pub fn block_route(
-    server_context: RosettaContext,
+pub fn block_route<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::path!("block")
         .and(warp::post())
@@ -31,7 +33,7 @@ pub fn block_route(
 /// transaction `hash`.
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/BlockApi.html#block)
-async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResult<BlockResponse> {
+async fn block<Retriever: BlockRetriever>(request: BlockRequest, server_context: RosettaContext<Retriever>) -> ApiResult<BlockResponse> {
     debug!("/block");
     trace!(
         request = ?request,
@@ -45,7 +47,7 @@ async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResu
     let block_index =
         get_block_index_from_request(&server_context, request.block_identifier).await?;
 
-    let (parent_transaction, block) = get_block_by_index(
+    let (parent_transaction, block) = get_block_by_index::<Retriever>(
         server_context.block_cache()?.as_ref(),
         block_index,
         server_context.chain_id,
@@ -70,8 +72,8 @@ async fn block(request: BlockRequest, server_context: RosettaContext) -> ApiResu
 }
 
 /// Build up the transaction, which should contain the `operations` as the change set
-async fn build_block(
-    server_context: &RosettaContext,
+async fn build_block<Retriever: BlockRetriever>(
+    server_context: &RosettaContext<Retriever>,
     parent_block_identifier: BlockIdentifier,
     block: aptos_rest_client::aptos_api_types::BcsBlock,
     chain_id: ChainId,
@@ -105,8 +107,8 @@ async fn build_block(
 }
 
 /// Retrieves a block by its index
-async fn get_block_by_index(
-    block_cache: &BlockRetriever,
+async fn get_block_by_index<Retriever: BlockRetriever>(
+    block_cache: &Retriever,
     block_height: u64,
     chain_id: ChainId,
 ) -> ApiResult<(
@@ -155,23 +157,41 @@ impl BlockInfo {
     }
 }
 
+#[async_trait]
+pub trait BlockRetriever: std::fmt::Debug + Send + Sync {
+    async fn get_block_info_by_height(
+        &'static self,
+        height: u64,
+        chain_id: ChainId,
+    ) -> ApiResult<BlockInfo>;
+
+    async fn get_block_by_height(
+        &'static self,
+        height: u64,
+        with_transactions: bool,
+    ) -> ApiResult<aptos_rest_client::aptos_api_types::BcsBlock>;
+}
+
 /// A cache of [`BlockInfo`] to allow us to keep track of the block boundaries
 #[derive(Debug)]
-pub struct BlockRetriever {
+pub struct BlockRetrieverOnline {
     page_size: u16,
     rest_client: Arc<aptos_rest_client::Client>,
 }
 
-impl BlockRetriever {
+impl BlockRetrieverOnline {
     pub fn new(page_size: u16, rest_client: Arc<aptos_rest_client::Client>) -> Self {
-        BlockRetriever {
+        BlockRetrieverOnline {
             page_size,
             rest_client,
         }
     }
+}
 
-    pub async fn get_block_info_by_height(
-        &self,
+impl BlockRetriever for BlockRetrieverOnline {
+
+    async fn get_block_info_by_height(
+        &'static self,
         height: u64,
         chain_id: ChainId,
     ) -> ApiResult<BlockInfo> {
@@ -191,8 +211,8 @@ impl BlockRetriever {
         Ok(BlockInfo::from_block(&block, chain_id))
     }
 
-    pub async fn get_block_by_height(
-        &self,
+    async fn get_block_by_height(
+        &'static self,
         height: u64,
         with_transactions: bool,
     ) -> ApiResult<aptos_rest_client::aptos_api_types::BcsBlock> {
@@ -209,5 +229,26 @@ impl BlockRetriever {
                 .await?
                 .into_inner())
         }
+    }
+}
+#[derive(Debug)]
+pub struct BlockRetrieverOffline {
+}
+impl BlockRetriever for BlockRetrieverOffline {
+
+    async fn get_block_info_by_height(
+        &'static self,
+        height: u64,
+        chain_id: ChainId,
+    ) -> ApiResult<BlockInfo> {
+        unimplemented!("This is not supposed to be used to call blocks")
+    }
+
+    async fn get_block_by_height(
+        &'static self,
+        height: u64,
+        with_transactions: bool,
+    ) -> ApiResult<aptos_rest_client::aptos_api_types::BcsBlock> {
+        unimplemented!("This is not supposed to be used to call blocks")
     }
 }

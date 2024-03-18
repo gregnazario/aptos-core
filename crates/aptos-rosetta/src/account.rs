@@ -24,8 +24,8 @@ use std::{collections::HashSet, str::FromStr};
 use warp::Filter;
 
 /// Account routes e.g. balance
-pub fn routes(
-    server_context: RosettaContext,
+pub fn routes<Retriever: BlockRetriever>(
+    server_context: RosettaContext<Retriever>,
 ) -> impl Filter<Extract = (impl warp::Reply,), Error = warp::Rejection> + Clone {
     warp::post().and(
         warp::path!("account" / "balance")
@@ -38,9 +38,9 @@ pub fn routes(
 /// Account balance command
 ///
 /// [API Spec](https://www.rosetta-api.org/docs/AccountApi.html#accountbalance)
-async fn account_balance(
+async fn account_balance<Retriever: BlockRetriever>(
     request: AccountBalanceRequest,
-    server_context: RosettaContext,
+    server_context: RosettaContext<Retriever>,
 ) -> ApiResult<AccountBalanceResponse> {
     debug!("/account/balance");
     trace!(
