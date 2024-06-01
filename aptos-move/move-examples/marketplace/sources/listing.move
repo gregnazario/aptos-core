@@ -303,4 +303,9 @@ module marketplace::listing {
         assert!(exists<Listing>(obj_addr), error::not_found(ENO_LISTING));
         borrow_global<Listing>(obj_addr)
     }
+
+    public(friend) fun is_listing(object: Object<Listing>): bool {
+        let obj_addr = object::object_address(&object);
+        exists<Listing>(obj_addr)
+    }
 }

@@ -13,6 +13,7 @@ module coin_listing {
     use std::option::{Self, Option};
     use std::signer;
     use std::string::{Self, String};
+    use std::vector;
     use aptos_std::math64;
 
     use aptos_framework::coin::{Self, Coin};
@@ -20,8 +21,8 @@ module coin_listing {
     use aptos_framework::timestamp;
 
     use marketplace::events;
-    use marketplace::fee_schedule::{Self, FeeSchedule};
-    use marketplace::listing::{Self, Listing};
+    use marketplace::fee_schedule::{Self, FeeSchedule, is_frozen};
+    use marketplace::listing::{Self, Listing, seller, is_listing};
     use aptos_framework::aptos_account;
 
     #[test_only]
@@ -39,6 +40,10 @@ module coin_listing {
     const EAUCTION_ENDED: u64 = 5;
     /// The entity is not the seller.
     const ENOT_SELLER: u64 = 6;
+    /// This marketplace has been frozen from new listings
+    const E_MARKETPLACE_FROZEN: u64 = 7;
+    /// Cannot bulk cancel, marketplace not frozen
+    const E_MARKETPLACE_NOT_FROZEN: u64 = 8;
 
     // Core data structures
     const FIXED_PRICE_TYPE: vector<u8> = b"fixed price";
@@ -94,6 +99,9 @@ module coin_listing {
         start_time: u64,
         price: u64,
     ): Object<Listing> {
+        // Check if it is frozen
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
+
         let (listing_signer, constructor_ref) = init<CoinType>(
             seller,
             object,
@@ -153,6 +161,7 @@ module coin_listing {
         start_time: u64,
         price: u64,
     ): Object<Listing> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let object = listing::create_tokenv1_container(
             seller,
             token_creator,
@@ -204,6 +213,7 @@ module coin_listing {
         minimum_bid_time_before_end: u64,
         buy_it_now_price: Option<u64>,
     ): Object<Listing> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let (listing_signer, constructor_ref) = init<CoinType>(
             seller,
             object,
@@ -279,6 +289,7 @@ module coin_listing {
         minimum_bid_time_before_end: u64,
         buy_it_now_price: Option<u64>,
     ): Object<Listing> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let object = listing::create_tokenv1_container(
             seller,
             token_creator,
@@ -359,6 +370,72 @@ module coin_listing {
         let coins = coin::withdraw<CoinType>(purchaser, price);
 
         complete_purchase(purchaser, signer::address_of(purchaser), object, coins, type)
+    }
+
+    /// Bulk cancel both auction and fixed price listings
+    entry fun bulk_cancel<CoinType>(
+        admin_or_seller: &signer,
+        listings: vector<Object<Listing>>,
+    ) acquires FixedPriceListing, AuctionListing {
+        let caller_address = signer::address_of(admin_or_seller);
+        let is_admin = @marketplace == caller_address;
+        vector::for_each(listings, |listing| {
+            // If there's no listing skip it
+            // Note: Because you can't have return / break in lambda, this gets really nested
+            if (is_listing(listing)) {
+                // If it isn't owned / the admin skip it
+                let seller_addr = seller(listing);
+                if (is_admin || caller_address == seller_addr) {
+                    let token_metadata = listing::token_metadata(listing);
+                    let (actual_seller_addr, fee_schedule) = listing::close(admin_or_seller, listing, seller_addr);
+
+                    // This check is so that people don't force end the auctions
+                    assert!(is_frozen(&fee_schedule), E_MARKETPLACE_NOT_FROZEN);
+
+                    // Remove the appropriate type of listing
+                    let listing_addr = object::object_address(&listing);
+                    if (exists<FixedPriceListing<CoinType>>(listing_addr)) {
+                        let FixedPriceListing {
+                            price,
+                        } = move_from<FixedPriceListing<CoinType>>(listing_addr);
+
+                        events::emit_listing_canceled(
+                            fee_schedule,
+                            string::utf8(FIXED_PRICE_TYPE),
+                            listing_addr,
+                            actual_seller_addr,
+                            price,
+                            token_metadata,
+                        )
+                    } else if (exists<AuctionListing<CoinType>>(listing_addr)) {
+                        let AuctionListing {
+                            starting_bid: _,
+                            bid_increment: _,
+                            current_bid,
+                            auction_end_time: _,
+                            minimum_bid_time_before_end: _,
+                            buy_it_now_price: _,
+                        } = move_from<AuctionListing<CoinType>>(listing_addr);
+
+                        // Return the current bid
+                        if (option::is_some(&current_bid)) {
+                            let Bid { bidder, coins } = option::destroy_some(current_bid);
+                            aptos_account::deposit_coins(bidder, coins);
+                        } else {
+                            option::destroy_none(current_bid);
+                        };
+                        events::emit_listing_canceled(
+                            fee_schedule,
+                            string::utf8(AUCTION_TYPE),
+                            listing_addr,
+                            actual_seller_addr,
+                            0,
+                            token_metadata,
+                        )
+                    }
+                }
+            }
+        });
     }
 
     /// End a fixed price listing early.
@@ -1077,7 +1154,6 @@ module listing_tests {
         );
         (token, fee_schedule, listing)
     }
-
 
     inline fun auction_listing(
         marketplace: &signer,

@@ -12,6 +12,7 @@ module collection_offer {
     use std::signer;
     use std::string::String;
     use aptos_std::math64;
+    use std::vector;
 
     use aptos_framework::coin::{Self, Coin};
     use aptos_framework::object::{Self, DeleteRef, Object};
@@ -24,7 +25,7 @@ module collection_offer {
     use aptos_token_objects::token::{Self as tokenv2, Token as TokenV2};
 
     use marketplace::events;
-    use marketplace::fee_schedule::{Self, FeeSchedule};
+    use marketplace::fee_schedule::{Self, FeeSchedule, is_frozen};
     use marketplace::listing::{Self, TokenV1Container};
     use aptos_framework::aptos_account;
 
@@ -40,6 +41,8 @@ module collection_offer {
     const EINCORRECT_COLLECTION: u64 = 5;
     /// The collection offer has expired.
     const EEXPIRED: u64 = 6;
+    /// The marketplace is frozen from new collection offers
+    const E_MARKETPLACE_FROZEN: u64 = 7;
 
     // Core data structures
 
@@ -105,6 +108,7 @@ module collection_offer {
         amount: u64,
         expiration_time: u64,
     ): Object<CollectionOffer> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let offer_signer = init_offer(purchaser, fee_schedule, item_price, amount, expiration_time);
         init_coin_holder<CoinType>(purchaser, &offer_signer, fee_schedule, item_price * amount);
         move_to(&offer_signer, CollectionOfferTokenV1 { creator_address, collection_name });
@@ -149,6 +153,7 @@ module collection_offer {
         amount: u64,
         expiration_time: u64,
     ): Object<CollectionOffer> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let offer_signer = init_offer(purchaser, fee_schedule, item_price, amount, expiration_time);
         init_coin_holder<CoinType>(purchaser, &offer_signer, fee_schedule, item_price * amount);
         move_to(&offer_signer, CollectionOfferTokenV2 { collection });
@@ -206,6 +211,48 @@ module collection_offer {
     }
 
     // Mutators
+
+    /// Cancel bulk collection offers
+    entry fun cancel_bulk<CoinType>(
+        admin_or_purchaser: &signer,
+        collection_offers: vector<Object<CollectionOffer>>
+    ) acquires CoinOffer, CollectionOffer, CollectionOfferTokenV1, CollectionOfferTokenV2 {
+        let caller_address = signer::address_of(admin_or_purchaser);
+        let isAdmin = @marketplace == caller_address;
+        vector::for_each(collection_offers, |collection_offer| {
+            let collection_offer_addr = object::object_address(&collection_offer);
+            if (exists<CollectionOffer>(collection_offer_addr) && (isAdmin || object::is_owner(
+                collection_offer,
+                caller_address
+            ))) {
+                let purchaser_addr = object::owner(collection_offer);
+                let collection_offer_obj = borrow_global_mut<CollectionOffer>(collection_offer_addr);
+                let collection_metadata = if (exists<CollectionOfferTokenV2>(collection_offer_addr)) {
+                    events::collection_metadata_for_tokenv2(
+                        borrow_global<CollectionOfferTokenV2>(collection_offer_addr).collection,
+                    )
+                } else {
+                    let offer_info = borrow_global<CollectionOfferTokenV1>(collection_offer_addr);
+                    events::collection_metadata_for_tokenv1(
+                        offer_info.creator_address,
+                        offer_info.collection_name,
+                    )
+                };
+
+                events::emit_collection_offer_canceled(
+                    collection_offer_obj.fee_schedule,
+                    collection_offer_addr,
+                    purchaser_addr,
+                    collection_offer_obj.item_price,
+                    collection_offer_obj.remaining,
+                    collection_metadata,
+                );
+
+                cleanup<CoinType>(collection_offer);
+            }
+        })
+    }
+
 
     ///
     public entry fun cancel<CoinType>(

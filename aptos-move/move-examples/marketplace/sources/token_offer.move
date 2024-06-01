@@ -10,6 +10,7 @@ module token_offer {
     use std::option::{Self, Option};
     use std::signer;
     use std::string::String;
+    use std::vector;
 
     use aptos_framework::coin::{Self, Coin};
     use aptos_framework::object::{Self, DeleteRef, Object};
@@ -21,7 +22,7 @@ module token_offer {
     use aptos_token_objects::token::{Self as tokenv2, Token as TokenV2};
 
     use marketplace::events;
-    use marketplace::fee_schedule::{Self, FeeSchedule};
+    use marketplace::fee_schedule::{Self, FeeSchedule, is_frozen};
     use marketplace::listing::{Self, TokenV1Container};
     use aptos_token::token::TokenId;
     use aptos_framework::aptos_account;
@@ -34,8 +35,12 @@ module token_offer {
     const ENOT_TOKEN_OWNER: u64 = 3;
     /// This is not the owner of the token offer.
     const ENOT_OWNER: u64 = 4;
+    /// This is not the owner of the token offer or the admin
+    const ENOT_OWNER_OR_ADMIN: u64 = 5;
     /// The token offer has expired.
     const EEXPIRED: u64 = 6;
+    /// The marketplace is frozen from making new token offers
+    const E_MARKETPLACE_FROZEN: u64 = 7;
 
     // Core data structures
 
@@ -105,6 +110,7 @@ module token_offer {
         item_price: u64,
         expiration_time: u64,
     ): Object<TokenOffer> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let offer_signer = init_offer(purchaser, fee_schedule, item_price, expiration_time);
         init_coin_holder<CoinType>(purchaser, &offer_signer, fee_schedule, item_price);
         move_to(&offer_signer, TokenOfferTokenV1 { creator_address, collection_name, token_name, property_version });
@@ -149,6 +155,7 @@ module token_offer {
         item_price: u64,
         expiration_time: u64,
     ): Object<TokenOffer> {
+        assert!(!is_frozen(&fee_schedule), E_MARKETPLACE_FROZEN);
         let offer_signer = init_offer(purchaser, fee_schedule, item_price, expiration_time);
         init_coin_holder<CoinType>(purchaser, &offer_signer, fee_schedule, item_price);
         move_to(&offer_signer, TokenOfferTokenV2 { token });
@@ -203,6 +210,45 @@ module token_offer {
     }
 
     // Mutators
+
+    /// For cancelling bulk orders, to make this easier, it does not fail if token offers were already cancelled
+    /// or that you're not able to
+    entry fun bulk_cancel<CoinType>(
+        admin_or_purchaser: &signer,
+        token_offers: vector<Object<TokenOffer>>
+    ) acquires CoinOffer, TokenOffer, TokenOfferTokenV1, TokenOfferTokenV2 {
+        let caller_address = signer::address_of(admin_or_purchaser);
+        let isAdmin = @marketplace == caller_address;
+        vector::for_each(token_offers, |token_offer| {
+            let token_offer_addr = object::object_address(&token_offer);
+
+            // Only process valid ones, skip the rest
+            if (exists<TokenOffer>(token_offer_addr) && (isAdmin || object::is_owner(token_offer, caller_address))) {
+                let purchaser_addr = object::owner(token_offer);
+                let token_offer_obj = borrow_global_mut<TokenOffer>(token_offer_addr);
+                let token_metadata = if (exists<TokenOfferTokenV2>(token_offer_addr)) {
+                    events::token_metadata_for_tokenv2(
+                        borrow_global<TokenOfferTokenV2>(token_offer_addr).token,
+                    )
+                } else {
+                    let offer_info = borrow_global<TokenOfferTokenV1>(token_offer_addr);
+                    events::token_metadata_for_tokenv1(
+                        token_v1_token_id(offer_info)
+                    )
+                };
+
+                events::emit_token_offer_canceled(
+                    token_offer_obj.fee_schedule,
+                    token_offer_addr,
+                    purchaser_addr,
+                    token_offer_obj.item_price,
+                    token_metadata,
+                );
+
+                cleanup<CoinType>(token_offer);
+            }
+        })
+    }
 
     ///
     public entry fun cancel<CoinType>(
