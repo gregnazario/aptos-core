@@ -62,15 +62,15 @@ require adding the field original_name.
 -  [Function `set_max_supply`](#0x4_collection_set_max_supply)
 
 
-<pre><code><b>use</b> <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2">0x1::aggregator_v2</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../aptos-framework/doc/event.md#0x1_event">0x1::event</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="../../aptos-framework/doc/object.md#0x1_object">0x1::object</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-<b>use</b> <a href="royalty.md#0x4_royalty">0x4::royalty</a>;
+<pre><code><b>use</b> [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2](0x1::aggregator_v2);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error](0x1::error);
+<b>use</b> [../../aptos-framework/doc/event.md#0x1_event](0x1::event);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features](0x1::features);
+<b>use</b> [../../aptos-framework/doc/object.md#0x1_object](0x1::object);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option](0x1::option);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](0x1::signer);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string](0x1::string);
+<b>use</b> [royalty.md#0x4_royalty](0x4::royalty);
 </code></pre>
 
 
@@ -82,8 +82,8 @@ require adding the field original_name.
 Represents the common fields for a collection.
 
 
-<pre><code>#[resource_group_member(#[group = <a href="../../aptos-framework/doc/object.md#0x1_object_ObjectGroup">0x1::object::ObjectGroup</a>])]
-<b>struct</b> <a href="collection.md#0x4_collection_Collection">Collection</a> <b>has</b> key
+<pre><code>#[resource_group_member(#[group = [../../aptos-framework/doc/object.md#0x1_object_ObjectGroup](0x1::object::ObjectGroup)])]
+<b>struct</b> [collection.md#0x4_collection_Collection](Collection) <b>has</b> key
 </code></pre>
 
 
@@ -100,26 +100,26 @@ Represents the common fields for a collection.
  The creator of this collection.
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  A brief description of the collection.
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  An optional categorization of similar token.
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The Uniform Resource Identifier (uri) pointing to the JSON file stored in off-chain
  storage; the URL length will likely need a maximum any suggestions?
 </dd>
 <dt>
-<code>mutation_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="collection.md#0x4_collection_MutationEvent">collection::MutationEvent</a>&gt;</code>
+<code>mutation_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[collection.md#0x4_collection_MutationEvent](collection::MutationEvent)&gt;</code>
 </dt>
 <dd>
  Emitted upon any mutation of the collection.
@@ -136,7 +136,7 @@ Represents the common fields for a collection.
 This enables mutating description and URI by higher level services.
 
 
-<pre><code><b>struct</b> <a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [collection.md#0x4_collection_MutatorRef](MutatorRef) <b>has</b> drop, store
 </code></pre>
 
 
@@ -165,7 +165,7 @@ Contains the mutated fields name. This makes the life of indexers easier, so tha
 directly understand the behavior in a writeset.
 
 
-<pre><code><b>struct</b> <a href="collection.md#0x4_collection_MutationEvent">MutationEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [collection.md#0x4_collection_MutationEvent](MutationEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -176,7 +176,7 @@ directly understand the behavior in a writeset.
 
 <dl>
 <dt>
-<code>mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -194,8 +194,8 @@ Contains the mutated fields name. This makes the life of indexers easier, so tha
 directly understand the behavior in a writeset.
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="collection.md#0x4_collection_Mutation">Mutation</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [collection.md#0x4_collection_Mutation](Mutation) <b>has</b> drop, store
 </code></pre>
 
 
@@ -206,25 +206,25 @@ directly understand the behavior in a writeset.
 
 <dl>
 <dt>
-<code>mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;<a href="collection.md#0x4_collection_Collection">collection::Collection</a>&gt;</code>
+<code>[collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;[collection.md#0x4_collection_Collection](collection::Collection)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_value: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>old_value: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_value: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>new_value: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -242,8 +242,8 @@ Fixed supply tracker, this is useful for ensuring that a limited number of token
 and adding events and supply tracking to a collection.
 
 
-<pre><code>#[resource_group_member(#[group = <a href="../../aptos-framework/doc/object.md#0x1_object_ObjectGroup">0x1::object::ObjectGroup</a>])]
-<b>struct</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a> <b>has</b> key
+<pre><code>#[resource_group_member(#[group = [../../aptos-framework/doc/object.md#0x1_object_ObjectGroup](0x1::object::ObjectGroup)])]
+<b>struct</b> [collection.md#0x4_collection_FixedSupply](FixedSupply) <b>has</b> key
 </code></pre>
 
 
@@ -272,13 +272,13 @@ and adding events and supply tracking to a collection.
 
 </dd>
 <dt>
-<code>burn_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="collection.md#0x4_collection_BurnEvent">collection::BurnEvent</a>&gt;</code>
+<code>burn_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[collection.md#0x4_collection_BurnEvent](collection::BurnEvent)&gt;</code>
 </dt>
 <dd>
  Emitted upon burning a Token.
 </dd>
 <dt>
-<code>mint_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="collection.md#0x4_collection_MintEvent">collection::MintEvent</a>&gt;</code>
+<code>mint_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[collection.md#0x4_collection_MintEvent](collection::MintEvent)&gt;</code>
 </dt>
 <dd>
  Emitted upon minting an Token.
@@ -295,8 +295,8 @@ and adding events and supply tracking to a collection.
 Unlimited supply tracker, this is useful for adding events and supply tracking to a collection.
 
 
-<pre><code>#[resource_group_member(#[group = <a href="../../aptos-framework/doc/object.md#0x1_object_ObjectGroup">0x1::object::ObjectGroup</a>])]
-<b>struct</b> <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a> <b>has</b> key
+<pre><code>#[resource_group_member(#[group = [../../aptos-framework/doc/object.md#0x1_object_ObjectGroup](0x1::object::ObjectGroup)])]
+<b>struct</b> [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply) <b>has</b> key
 </code></pre>
 
 
@@ -319,13 +319,13 @@ Unlimited supply tracker, this is useful for adding events and supply tracking t
 
 </dd>
 <dt>
-<code>burn_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="collection.md#0x4_collection_BurnEvent">collection::BurnEvent</a>&gt;</code>
+<code>burn_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[collection.md#0x4_collection_BurnEvent](collection::BurnEvent)&gt;</code>
 </dt>
 <dd>
  Emitted upon burning a Token.
 </dd>
 <dt>
-<code>mint_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="collection.md#0x4_collection_MintEvent">collection::MintEvent</a>&gt;</code>
+<code>mint_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[collection.md#0x4_collection_MintEvent](collection::MintEvent)&gt;</code>
 </dt>
 <dd>
  Emitted upon minting an Token.
@@ -343,8 +343,8 @@ Supply tracker, useful for tracking amount of issued tokens.
 If max_value is not set to U64_MAX, this ensures that a limited number of tokens are minted.
 
 
-<pre><code>#[resource_group_member(#[group = <a href="../../aptos-framework/doc/object.md#0x1_object_ObjectGroup">0x1::object::ObjectGroup</a>])]
-<b>struct</b> <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> <b>has</b> key
+<pre><code>#[resource_group_member(#[group = [../../aptos-framework/doc/object.md#0x1_object_ObjectGroup](0x1::object::ObjectGroup)])]
+<b>struct</b> [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) <b>has</b> key
 </code></pre>
 
 
@@ -355,13 +355,13 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 <dl>
 <dt>
-<code>current_supply: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_Aggregator">aggregator_v2::Aggregator</a>&lt;u64&gt;</code>
+<code>current_supply: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_Aggregator](aggregator_v2::Aggregator)&lt;u64&gt;</code>
 </dt>
 <dd>
  Total minted - total burned
 </dd>
 <dt>
-<code>total_minted: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_Aggregator">aggregator_v2::Aggregator</a>&lt;u64&gt;</code>
+<code>total_minted: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_Aggregator](aggregator_v2::Aggregator)&lt;u64&gt;</code>
 </dt>
 <dd>
 
@@ -377,7 +377,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code><b>struct</b> <a href="collection.md#0x4_collection_BurnEvent">BurnEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [collection.md#0x4_collection_BurnEvent](BurnEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -394,7 +394,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -410,7 +410,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code><b>struct</b> <a href="collection.md#0x4_collection_MintEvent">MintEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [collection.md#0x4_collection_MintEvent](MintEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -427,7 +427,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -443,8 +443,8 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="collection.md#0x4_collection_Burn">Burn</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [collection.md#0x4_collection_Burn](Burn) <b>has</b> drop, store
 </code></pre>
 
 
@@ -455,7 +455,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 <dl>
 <dt>
-<code><a href="collection.md#0x4_collection">collection</a>: <b>address</b></code>
+<code>[collection.md#0x4_collection](collection): <b>address</b></code>
 </dt>
 <dd>
 
@@ -467,7 +467,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -489,8 +489,8 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="collection.md#0x4_collection_Mint">Mint</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [collection.md#0x4_collection_Mint](Mint) <b>has</b> drop, store
 </code></pre>
 
 
@@ -501,19 +501,19 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 <dl>
 <dt>
-<code><a href="collection.md#0x4_collection">collection</a>: <b>address</b></code>
+<code>[collection.md#0x4_collection](collection): <b>address</b></code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>index: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot">aggregator_v2::AggregatorSnapshot</a>&lt;u64&gt;</code>
+<code>index: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot](aggregator_v2::AggregatorSnapshot)&lt;u64&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -529,9 +529,9 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
 #[deprecated]
-<b>struct</b> <a href="collection.md#0x4_collection_ConcurrentBurnEvent">ConcurrentBurnEvent</a> <b>has</b> drop, store
+<b>struct</b> [collection.md#0x4_collection_ConcurrentBurnEvent](ConcurrentBurnEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -554,7 +554,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -570,9 +570,9 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
 #[deprecated]
-<b>struct</b> <a href="collection.md#0x4_collection_ConcurrentMintEvent">ConcurrentMintEvent</a> <b>has</b> drop, store
+<b>struct</b> [collection.md#0x4_collection_ConcurrentMintEvent](ConcurrentMintEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -589,13 +589,13 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 </dd>
 <dt>
-<code>index: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot">aggregator_v2::AggregatorSnapshot</a>&lt;u64&gt;</code>
+<code>index: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot](aggregator_v2::AggregatorSnapshot)&lt;u64&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x4_token">token</a>: <b>address</b></code>
+<code>[token.md#0x4_token](token): <b>address</b></code>
 </dt>
 <dd>
 
@@ -611,8 +611,8 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="collection.md#0x4_collection_SetMaxSupply">SetMaxSupply</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [collection.md#0x4_collection_SetMaxSupply](SetMaxSupply) <b>has</b> drop, store
 </code></pre>
 
 
@@ -623,7 +623,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 <dl>
 <dt>
-<code><a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;<a href="collection.md#0x4_collection_Collection">collection::Collection</a>&gt;</code>
+<code>[collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;[collection.md#0x4_collection_Collection](collection::Collection)&gt;</code>
 </dt>
 <dd>
 
@@ -654,7 +654,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_MAX_U64">MAX_U64</a>: u64 = 18446744073709551615;
+<pre><code><b>const</b> [collection.md#0x4_collection_MAX_U64](MAX_U64): u64 = 18446744073709551615;
 </code></pre>
 
 
@@ -664,7 +664,7 @@ If max_value is not set to U64_MAX, this ensures that a limited number of tokens
 The URI is over the maximum length
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_EURI_TOO_LONG">EURI_TOO_LONG</a>: u64 = 4;
+<pre><code><b>const</b> [collection.md#0x4_collection_EURI_TOO_LONG](EURI_TOO_LONG): u64 = 4;
 </code></pre>
 
 
@@ -673,7 +673,7 @@ The URI is over the maximum length
 
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_MAX_URI_LENGTH">MAX_URI_LENGTH</a>: u64 = 512;
+<pre><code><b>const</b> [collection.md#0x4_collection_MAX_URI_LENGTH](MAX_URI_LENGTH): u64 = 512;
 </code></pre>
 
 
@@ -683,7 +683,7 @@ The URI is over the maximum length
 Tried upgrading collection to concurrent, but collection is already concurrent
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_EALREADY_CONCURRENT">EALREADY_CONCURRENT</a>: u64 = 8;
+<pre><code><b>const</b> [collection.md#0x4_collection_EALREADY_CONCURRENT](EALREADY_CONCURRENT): u64 = 8;
 </code></pre>
 
 
@@ -693,7 +693,7 @@ Tried upgrading collection to concurrent, but collection is already concurrent
 The collection does not exist
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_ECOLLECTION_DOES_NOT_EXIST">ECOLLECTION_DOES_NOT_EXIST</a>: u64 = 1;
+<pre><code><b>const</b> [collection.md#0x4_collection_ECOLLECTION_DOES_NOT_EXIST](ECOLLECTION_DOES_NOT_EXIST): u64 = 1;
 </code></pre>
 
 
@@ -703,7 +703,7 @@ The collection does not exist
 The collection name is over the maximum length
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>: u64 = 3;
+<pre><code><b>const</b> [collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG): u64 = 3;
 </code></pre>
 
 
@@ -713,7 +713,7 @@ The collection name is over the maximum length
 The collection has reached its supply and no more tokens can be minted, unless some are burned
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED">ECOLLECTION_SUPPLY_EXCEEDED</a>: u64 = 2;
+<pre><code><b>const</b> [collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED](ECOLLECTION_SUPPLY_EXCEEDED): u64 = 2;
 </code></pre>
 
 
@@ -723,7 +723,7 @@ The collection has reached its supply and no more tokens can be minted, unless s
 Concurrent feature flag is not yet enabled, so the function cannot be performed
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_ECONCURRENT_NOT_ENABLED">ECONCURRENT_NOT_ENABLED</a>: u64 = 7;
+<pre><code><b>const</b> [collection.md#0x4_collection_ECONCURRENT_NOT_ENABLED](ECONCURRENT_NOT_ENABLED): u64 = 7;
 </code></pre>
 
 
@@ -733,7 +733,7 @@ Concurrent feature flag is not yet enabled, so the function cannot be performed
 The description is over the maximum length
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_EDESCRIPTION_TOO_LONG">EDESCRIPTION_TOO_LONG</a>: u64 = 5;
+<pre><code><b>const</b> [collection.md#0x4_collection_EDESCRIPTION_TOO_LONG](EDESCRIPTION_TOO_LONG): u64 = 5;
 </code></pre>
 
 
@@ -743,7 +743,7 @@ The description is over the maximum length
 The new max supply cannot be less than the current supply
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_EINVALID_MAX_SUPPLY">EINVALID_MAX_SUPPLY</a>: u64 = 9;
+<pre><code><b>const</b> [collection.md#0x4_collection_EINVALID_MAX_SUPPLY](EINVALID_MAX_SUPPLY): u64 = 9;
 </code></pre>
 
 
@@ -753,7 +753,7 @@ The new max supply cannot be less than the current supply
 The max supply must be positive
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_EMAX_SUPPLY_CANNOT_BE_ZERO">EMAX_SUPPLY_CANNOT_BE_ZERO</a>: u64 = 6;
+<pre><code><b>const</b> [collection.md#0x4_collection_EMAX_SUPPLY_CANNOT_BE_ZERO](EMAX_SUPPLY_CANNOT_BE_ZERO): u64 = 6;
 </code></pre>
 
 
@@ -763,7 +763,7 @@ The max supply must be positive
 The collection does not have a max supply
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_ENO_MAX_SUPPLY_IN_COLLECTION">ENO_MAX_SUPPLY_IN_COLLECTION</a>: u64 = 10;
+<pre><code><b>const</b> [collection.md#0x4_collection_ENO_MAX_SUPPLY_IN_COLLECTION](ENO_MAX_SUPPLY_IN_COLLECTION): u64 = 10;
 </code></pre>
 
 
@@ -772,7 +772,7 @@ The collection does not have a max supply
 
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>: u64 = 128;
+<pre><code><b>const</b> [collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH): u64 = 128;
 </code></pre>
 
 
@@ -781,7 +781,7 @@ The collection does not have a max supply
 
 
 
-<pre><code><b>const</b> <a href="collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH">MAX_DESCRIPTION_LENGTH</a>: u64 = 2048;
+<pre><code><b>const</b> [collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH](MAX_DESCRIPTION_LENGTH): u64 = 2048;
 </code></pre>
 
 
@@ -797,7 +797,7 @@ in data structures that prevent Aptos from parallelizing mints of this collectio
 Beyond that, it adds supply tracking with events.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_fixed_collection">create_fixed_collection</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, max_supply: u64, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="royalty.md#0x4_royalty">royalty</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="royalty.md#0x4_royalty_Royalty">royalty::Royalty</a>&gt;, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_fixed_collection](create_fixed_collection)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), max_supply: u64, name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [royalty.md#0x4_royalty](royalty): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[royalty.md#0x4_royalty_Royalty](royalty::Royalty)&gt;, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef)
 </code></pre>
 
 
@@ -806,31 +806,31 @@ Beyond that, it adds supply tracking with events.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_fixed_collection">create_fixed_collection</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_fixed_collection](create_fixed_collection)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     description: String,
     max_supply: u64,
     name: String,
-    <a href="royalty.md#0x4_royalty">royalty</a>: Option&lt;Royalty&gt;,
+    [royalty.md#0x4_royalty](royalty): Option&lt;Royalty&gt;,
     uri: String,
 ): ConstructorRef {
-    <b>assert</b>!(max_supply != 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="collection.md#0x4_collection_EMAX_SUPPLY_CANNOT_BE_ZERO">EMAX_SUPPLY_CANNOT_BE_ZERO</a>));
-    <b>let</b> collection_seed = <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(&name);
-    <b>let</b> constructor_ref = <a href="../../aptos-framework/doc/object.md#0x1_object_create_named_object">object::create_named_object</a>(creator, collection_seed);
+    <b>assert</b>!(max_supply != 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([collection.md#0x4_collection_EMAX_SUPPLY_CANNOT_BE_ZERO](EMAX_SUPPLY_CANNOT_BE_ZERO)));
+    <b>let</b> collection_seed = [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(&name);
+    <b>let</b> constructor_ref = [../../aptos-framework/doc/object.md#0x1_object_create_named_object](object::create_named_object)(creator, collection_seed);
 
-    <b>let</b> supply = <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-        current_supply: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator">aggregator_v2::create_aggregator</a>(max_supply),
-        total_minted: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
+    <b>let</b> supply = [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+        current_supply: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator](aggregator_v2::create_aggregator)(max_supply),
+        total_minted: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
     };
 
-    <a href="collection.md#0x4_collection_create_collection_internal">create_collection_internal</a>(
+    [collection.md#0x4_collection_create_collection_internal](create_collection_internal)(
         creator,
         constructor_ref,
         description,
         name,
-        <a href="royalty.md#0x4_royalty">royalty</a>,
+        [royalty.md#0x4_royalty](royalty),
         uri,
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(supply),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(supply),
     )
 }
 </code></pre>
@@ -847,7 +847,7 @@ Creates an unlimited collection. This has support for supply tracking but does n
 the supply of tokens.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_unlimited_collection">create_unlimited_collection</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="royalty.md#0x4_royalty">royalty</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="royalty.md#0x4_royalty_Royalty">royalty::Royalty</a>&gt;, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_unlimited_collection](create_unlimited_collection)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [royalty.md#0x4_royalty](royalty): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[royalty.md#0x4_royalty_Royalty](royalty::Royalty)&gt;, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef)
 </code></pre>
 
 
@@ -856,29 +856,29 @@ the supply of tokens.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_unlimited_collection">create_unlimited_collection</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_unlimited_collection](create_unlimited_collection)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     description: String,
     name: String,
-    <a href="royalty.md#0x4_royalty">royalty</a>: Option&lt;Royalty&gt;,
+    [royalty.md#0x4_royalty](royalty): Option&lt;Royalty&gt;,
     uri: String,
 ): ConstructorRef {
-    <b>let</b> collection_seed = <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(&name);
-    <b>let</b> constructor_ref = <a href="../../aptos-framework/doc/object.md#0x1_object_create_named_object">object::create_named_object</a>(creator, collection_seed);
+    <b>let</b> collection_seed = [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(&name);
+    <b>let</b> constructor_ref = [../../aptos-framework/doc/object.md#0x1_object_create_named_object](object::create_named_object)(creator, collection_seed);
 
-    <b>let</b> supply = <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-        current_supply: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
-        total_minted: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
+    <b>let</b> supply = [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+        current_supply: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
+        total_minted: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
     };
 
-    <a href="collection.md#0x4_collection_create_collection_internal">create_collection_internal</a>(
+    [collection.md#0x4_collection_create_collection_internal](create_collection_internal)(
         creator,
         constructor_ref,
         description,
         name,
-        <a href="royalty.md#0x4_royalty">royalty</a>,
+        [royalty.md#0x4_royalty](royalty),
         uri,
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(supply),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(supply),
     )
 }
 </code></pre>
@@ -896,7 +896,7 @@ tokens. This is useful for mass airdrops that fully leverage Aptos parallelizati
 TODO: Hide this until we bring back meaningful way to enforce burns
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_create_untracked_collection">create_untracked_collection</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="royalty.md#0x4_royalty">royalty</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="royalty.md#0x4_royalty_Royalty">royalty::Royalty</a>&gt;, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>
+<pre><code><b>fun</b> [collection.md#0x4_collection_create_untracked_collection](create_untracked_collection)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [royalty.md#0x4_royalty](royalty): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[royalty.md#0x4_royalty_Royalty](royalty::Royalty)&gt;, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef)
 </code></pre>
 
 
@@ -905,24 +905,24 @@ TODO: Hide this until we bring back meaningful way to enforce burns
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_create_untracked_collection">create_untracked_collection</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>fun</b> [collection.md#0x4_collection_create_untracked_collection](create_untracked_collection)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     description: String,
     name: String,
-    <a href="royalty.md#0x4_royalty">royalty</a>: Option&lt;Royalty&gt;,
+    [royalty.md#0x4_royalty](royalty): Option&lt;Royalty&gt;,
     uri: String,
 ): ConstructorRef {
-    <b>let</b> collection_seed = <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(&name);
-    <b>let</b> constructor_ref = <a href="../../aptos-framework/doc/object.md#0x1_object_create_named_object">object::create_named_object</a>(creator, collection_seed);
+    <b>let</b> collection_seed = [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(&name);
+    <b>let</b> constructor_ref = [../../aptos-framework/doc/object.md#0x1_object_create_named_object](object::create_named_object)(creator, collection_seed);
 
-    <a href="collection.md#0x4_collection_create_collection_internal">create_collection_internal</a>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(
+    [collection.md#0x4_collection_create_collection_internal](create_collection_internal)&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(
         creator,
         constructor_ref,
         description,
         name,
-        <a href="royalty.md#0x4_royalty">royalty</a>,
+        [royalty.md#0x4_royalty](royalty),
         uri,
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>(),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)(),
     )
 }
 </code></pre>
@@ -937,7 +937,7 @@ TODO: Hide this until we bring back meaningful way to enforce burns
 
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_create_collection_internal">create_collection_internal</a>&lt;Supply: key&gt;(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, constructor_ref: <a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="royalty.md#0x4_royalty">royalty</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="royalty.md#0x4_royalty_Royalty">royalty::Royalty</a>&gt;, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, supply: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;Supply&gt;): <a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>
+<pre><code><b>fun</b> [collection.md#0x4_collection_create_collection_internal](create_collection_internal)&lt;Supply: key&gt;(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), constructor_ref: [../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [royalty.md#0x4_royalty](royalty): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[royalty.md#0x4_royalty_Royalty](royalty::Royalty)&gt;, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), supply: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;Supply&gt;): [../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef)
 </code></pre>
 
 
@@ -946,42 +946,42 @@ TODO: Hide this until we bring back meaningful way to enforce burns
 <summary>Implementation</summary>
 
 
-<pre><code>inline <b>fun</b> <a href="collection.md#0x4_collection_create_collection_internal">create_collection_internal</a>&lt;Supply: key&gt;(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code>inline <b>fun</b> [collection.md#0x4_collection_create_collection_internal](create_collection_internal)&lt;Supply: key&gt;(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     constructor_ref: ConstructorRef,
     description: String,
     name: String,
-    <a href="royalty.md#0x4_royalty">royalty</a>: Option&lt;Royalty&gt;,
+    [royalty.md#0x4_royalty](royalty): Option&lt;Royalty&gt;,
     uri: String,
     supply: Option&lt;Supply&gt;,
 ): ConstructorRef {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&name) &lt;= <a href="collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="collection.md#0x4_collection_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&description) &lt;= <a href="collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH">MAX_DESCRIPTION_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EDESCRIPTION_TOO_LONG">EDESCRIPTION_TOO_LONG</a>));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&name) &lt;= [collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [collection.md#0x4_collection_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EURI_TOO_LONG](EURI_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&description) &lt;= [collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH](MAX_DESCRIPTION_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EDESCRIPTION_TOO_LONG](EDESCRIPTION_TOO_LONG)));
 
-    <b>let</b> object_signer = <a href="../../aptos-framework/doc/object.md#0x1_object_generate_signer">object::generate_signer</a>(&constructor_ref);
+    <b>let</b> object_signer = [../../aptos-framework/doc/object.md#0x1_object_generate_signer](object::generate_signer)(&constructor_ref);
 
-    <b>let</b> <a href="collection.md#0x4_collection">collection</a> = <a href="collection.md#0x4_collection_Collection">Collection</a> {
-        creator: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
+    <b>let</b> [collection.md#0x4_collection](collection) = [collection.md#0x4_collection_Collection](Collection) {
+        creator: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator),
         description,
         name,
         uri,
-        mutation_events: <a href="../../aptos-framework/doc/object.md#0x1_object_new_event_handle">object::new_event_handle</a>(&object_signer),
+        mutation_events: [../../aptos-framework/doc/object.md#0x1_object_new_event_handle](object::new_event_handle)(&object_signer),
     };
-    <b>move_to</b>(&object_signer, <a href="collection.md#0x4_collection">collection</a>);
+    <b>move_to</b>(&object_signer, [collection.md#0x4_collection](collection));
 
-    <b>if</b> (<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&supply)) {
-        <b>move_to</b>(&object_signer, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_destroy_some">option::destroy_some</a>(supply))
+    <b>if</b> ([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some](option::is_some)(&supply)) {
+        <b>move_to</b>(&object_signer, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_destroy_some](option::destroy_some)(supply))
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_destroy_none">option::destroy_none</a>(supply)
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_destroy_none](option::destroy_none)(supply)
     };
 
-    <b>if</b> (<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&<a href="royalty.md#0x4_royalty">royalty</a>)) {
-        <a href="royalty.md#0x4_royalty_init">royalty::init</a>(&constructor_ref, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_extract">option::extract</a>(&<b>mut</b> <a href="royalty.md#0x4_royalty">royalty</a>))
+    <b>if</b> ([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some](option::is_some)(&[royalty.md#0x4_royalty](royalty))) {
+        [royalty.md#0x4_royalty_init](royalty::init)(&constructor_ref, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_extract](option::extract)(&<b>mut</b> [royalty.md#0x4_royalty](royalty)))
     };
 
-    <b>let</b> transfer_ref = <a href="../../aptos-framework/doc/object.md#0x1_object_generate_transfer_ref">object::generate_transfer_ref</a>(&constructor_ref);
-    <a href="../../aptos-framework/doc/object.md#0x1_object_disable_ungated_transfer">object::disable_ungated_transfer</a>(&transfer_ref);
+    <b>let</b> transfer_ref = [../../aptos-framework/doc/object.md#0x1_object_generate_transfer_ref](object::generate_transfer_ref)(&constructor_ref);
+    [../../aptos-framework/doc/object.md#0x1_object_disable_ungated_transfer](object::disable_ungated_transfer)(&transfer_ref);
 
     constructor_ref
 }
@@ -998,7 +998,7 @@ TODO: Hide this until we bring back meaningful way to enforce burns
 Generates the collections address based upon the creators address and the collection's name
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_collection_address">create_collection_address</a>(creator: &<b>address</b>, name: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <b>address</b>
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_collection_address](create_collection_address)(creator: &<b>address</b>, name: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): <b>address</b>
 </code></pre>
 
 
@@ -1007,8 +1007,8 @@ Generates the collections address based upon the creators address and the collec
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_collection_address">create_collection_address</a>(creator: &<b>address</b>, name: &String): <b>address</b> {
-    <a href="../../aptos-framework/doc/object.md#0x1_object_create_object_address">object::create_object_address</a>(creator, <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(name))
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_collection_address](create_collection_address)(creator: &<b>address</b>, name: &String): <b>address</b> {
+    [../../aptos-framework/doc/object.md#0x1_object_create_object_address](object::create_object_address)(creator, [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(name))
 }
 </code></pre>
 
@@ -1023,7 +1023,7 @@ Generates the collections address based upon the creators address and the collec
 Named objects are derived from a seed, the collection's seed is its name.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(name: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(name: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;
 </code></pre>
 
 
@@ -1032,9 +1032,9 @@ Named objects are derived from a seed, the collection's seed is its name.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_create_collection_seed">create_collection_seed</a>(name: &String): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(name) &lt;= <a href="collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_bytes">string::bytes</a>(name)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_create_collection_seed](create_collection_seed)(name: &String): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt; {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(name) &lt;= [collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_bytes](string::bytes)(name)
 }
 </code></pre>
 
@@ -1049,7 +1049,7 @@ Named objects are derived from a seed, the collection's seed is its name.
 Called by token on mint to increment supply if there's an appropriate Supply struct.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="collection.md#0x4_collection_increment_supply">increment_supply</a>(<a href="collection.md#0x4_collection">collection</a>: &<a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;<a href="collection.md#0x4_collection_Collection">collection::Collection</a>&gt;, <a href="token.md#0x4_token">token</a>: <b>address</b>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot">aggregator_v2::AggregatorSnapshot</a>&lt;u64&gt;&gt;
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> [collection.md#0x4_collection_increment_supply](increment_supply)([collection.md#0x4_collection](collection): &[../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;[collection.md#0x4_collection_Collection](collection::Collection)&gt;, [token.md#0x4_token](token): <b>address</b>): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_AggregatorSnapshot](aggregator_v2::AggregatorSnapshot)&lt;u64&gt;&gt;
 </code></pre>
 
 
@@ -1058,73 +1058,73 @@ Called by token on mint to increment supply if there's an appropriate Supply str
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="collection.md#0x4_collection_increment_supply">increment_supply</a>(
-    <a href="collection.md#0x4_collection">collection</a>: &Object&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;,
-    <a href="token.md#0x4_token">token</a>: <b>address</b>,
-): Option&lt;AggregatorSnapshot&lt;u64&gt;&gt; <b>acquires</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>, <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>, <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-    <b>let</b> collection_addr = <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(<a href="collection.md#0x4_collection">collection</a>);
-    <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_addr);
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> [collection.md#0x4_collection_increment_supply](increment_supply)(
+    [collection.md#0x4_collection](collection): &Object&lt;[collection.md#0x4_collection_Collection](Collection)&gt;,
+    [token.md#0x4_token](token): <b>address</b>,
+): Option&lt;AggregatorSnapshot&lt;u64&gt;&gt; <b>acquires</b> [collection.md#0x4_collection_FixedSupply](FixedSupply), [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply), [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+    <b>let</b> collection_addr = [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)([collection.md#0x4_collection](collection));
+    <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_addr);
         <b>assert</b>!(
-            <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_try_add">aggregator_v2::try_add</a>(&<b>mut</b> supply.current_supply, 1),
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED">ECOLLECTION_SUPPLY_EXCEEDED</a>),
+            [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_try_add](aggregator_v2::try_add)(&<b>mut</b> supply.current_supply, 1),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED](ECOLLECTION_SUPPLY_EXCEEDED)),
         );
-        <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add">aggregator_v2::add</a>(&<b>mut</b> supply.total_minted, 1);
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="collection.md#0x4_collection_Mint">Mint</a> {
-                <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                index: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_snapshot">aggregator_v2::snapshot</a>(&supply.total_minted),
-                <a href="token.md#0x4_token">token</a>,
+        [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add](aggregator_v2::add)(&<b>mut</b> supply.total_minted, 1);
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+            [collection.md#0x4_collection_Mint](Mint) {
+                [collection.md#0x4_collection](collection): collection_addr,
+                index: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_snapshot](aggregator_v2::snapshot)(&supply.total_minted),
+                [token.md#0x4_token](token),
             },
         );
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(<a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_snapshot">aggregator_v2::snapshot</a>(&supply.total_minted))
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_addr);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)([../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_snapshot](aggregator_v2::snapshot)(&supply.total_minted))
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_addr);
         supply.current_supply = supply.current_supply + 1;
         supply.total_minted = supply.total_minted + 1;
         <b>assert</b>!(
             supply.current_supply &lt;= supply.max_supply,
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED">ECOLLECTION_SUPPLY_EXCEEDED</a>),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_ECOLLECTION_SUPPLY_EXCEEDED](ECOLLECTION_SUPPLY_EXCEEDED)),
         );
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-                <a href="collection.md#0x4_collection_Mint">Mint</a> {
-                    <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                    index: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot">aggregator_v2::create_snapshot</a>(supply.total_minted),
-                    <a href="token.md#0x4_token">token</a>,
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+                [collection.md#0x4_collection_Mint](Mint) {
+                    [collection.md#0x4_collection](collection): collection_addr,
+                    index: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot](aggregator_v2::create_snapshot)(supply.total_minted),
+                    [token.md#0x4_token](token),
                 },
             );
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(&<b>mut</b> supply.mint_events,
-            <a href="collection.md#0x4_collection_MintEvent">MintEvent</a> {
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(&<b>mut</b> supply.mint_events,
+            [collection.md#0x4_collection_MintEvent](MintEvent) {
                 index: supply.total_minted,
-                <a href="token.md#0x4_token">token</a>,
+                [token.md#0x4_token](token),
             },
         );
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(<a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot">aggregator_v2::create_snapshot</a>&lt;u64&gt;(supply.total_minted))
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_addr);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)([../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot](aggregator_v2::create_snapshot)&lt;u64&gt;(supply.total_minted))
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_addr);
         supply.current_supply = supply.current_supply + 1;
         supply.total_minted = supply.total_minted + 1;
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-                <a href="collection.md#0x4_collection_Mint">Mint</a> {
-                    <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                    index: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot">aggregator_v2::create_snapshot</a>(supply.total_minted),
-                    <a href="token.md#0x4_token">token</a>,
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+                [collection.md#0x4_collection_Mint](Mint) {
+                    [collection.md#0x4_collection](collection): collection_addr,
+                    index: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot](aggregator_v2::create_snapshot)(supply.total_minted),
+                    [token.md#0x4_token](token),
                 },
             );
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(
             &<b>mut</b> supply.mint_events,
-            <a href="collection.md#0x4_collection_MintEvent">MintEvent</a> {
+            [collection.md#0x4_collection_MintEvent](MintEvent) {
                 index: supply.total_minted,
-                <a href="token.md#0x4_token">token</a>,
+                [token.md#0x4_token](token),
             },
         );
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(<a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot">aggregator_v2::create_snapshot</a>&lt;u64&gt;(supply.total_minted))
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)([../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_snapshot](aggregator_v2::create_snapshot)&lt;u64&gt;(supply.total_minted))
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>()
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)()
     }
 }
 </code></pre>
@@ -1140,7 +1140,7 @@ Called by token on mint to increment supply if there's an appropriate Supply str
 Called by token on burn to decrement supply if there's an appropriate Supply struct.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="collection.md#0x4_collection_decrement_supply">decrement_supply</a>(<a href="collection.md#0x4_collection">collection</a>: &<a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;<a href="collection.md#0x4_collection_Collection">collection::Collection</a>&gt;, <a href="token.md#0x4_token">token</a>: <b>address</b>, index: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;, previous_owner: <b>address</b>)
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> [collection.md#0x4_collection_decrement_supply](decrement_supply)([collection.md#0x4_collection](collection): &[../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;[collection.md#0x4_collection_Collection](collection::Collection)&gt;, [token.md#0x4_token](token): <b>address</b>, index: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;, previous_owner: <b>address</b>)
 </code></pre>
 
 
@@ -1149,63 +1149,63 @@ Called by token on burn to decrement supply if there's an appropriate Supply str
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="collection.md#0x4_collection_decrement_supply">decrement_supply</a>(
-    <a href="collection.md#0x4_collection">collection</a>: &Object&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;,
-    <a href="token.md#0x4_token">token</a>: <b>address</b>,
+<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> [collection.md#0x4_collection_decrement_supply](decrement_supply)(
+    [collection.md#0x4_collection](collection): &Object&lt;[collection.md#0x4_collection_Collection](Collection)&gt;,
+    [token.md#0x4_token](token): <b>address</b>,
     index: Option&lt;u64&gt;,
     previous_owner: <b>address</b>,
-) <b>acquires</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>, <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>, <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-    <b>let</b> collection_addr = <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(<a href="collection.md#0x4_collection">collection</a>);
-    <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_addr);
-        <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_sub">aggregator_v2::sub</a>(&<b>mut</b> supply.current_supply, 1);
+) <b>acquires</b> [collection.md#0x4_collection_FixedSupply](FixedSupply), [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply), [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+    <b>let</b> collection_addr = [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)([collection.md#0x4_collection](collection));
+    <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_addr);
+        [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_sub](aggregator_v2::sub)(&<b>mut</b> supply.current_supply, 1);
 
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="collection.md#0x4_collection_Burn">Burn</a> {
-                <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                index: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow">option::borrow</a>(&index),
-                <a href="token.md#0x4_token">token</a>,
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+            [collection.md#0x4_collection_Burn](Burn) {
+                [collection.md#0x4_collection](collection): collection_addr,
+                index: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow](option::borrow)(&index),
+                [token.md#0x4_token](token),
                 previous_owner,
             },
         );
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_addr);
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_addr);
         supply.current_supply = supply.current_supply - 1;
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-                <a href="collection.md#0x4_collection_Burn">Burn</a> {
-                    <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                    index: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow">option::borrow</a>(&index),
-                    <a href="token.md#0x4_token">token</a>,
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+                [collection.md#0x4_collection_Burn](Burn) {
+                    [collection.md#0x4_collection](collection): collection_addr,
+                    index: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow](option::borrow)(&index),
+                    [token.md#0x4_token](token),
                     previous_owner,
                 },
             );
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(
             &<b>mut</b> supply.burn_events,
-            <a href="collection.md#0x4_collection_BurnEvent">BurnEvent</a> {
-                index: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow">option::borrow</a>(&index),
-                <a href="token.md#0x4_token">token</a>,
+            [collection.md#0x4_collection_BurnEvent](BurnEvent) {
+                index: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow](option::borrow)(&index),
+                [token.md#0x4_token](token),
             },
         );
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_addr)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_addr);
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_addr)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_addr);
         supply.current_supply = supply.current_supply - 1;
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-                <a href="collection.md#0x4_collection_Burn">Burn</a> {
-                    <a href="collection.md#0x4_collection">collection</a>: collection_addr,
-                    index: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow">option::borrow</a>(&index),
-                    <a href="token.md#0x4_token">token</a>,
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+                [collection.md#0x4_collection_Burn](Burn) {
+                    [collection.md#0x4_collection](collection): collection_addr,
+                    index: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow](option::borrow)(&index),
+                    [token.md#0x4_token](token),
                     previous_owner,
                 },
             );
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(
             &<b>mut</b> supply.burn_events,
-            <a href="collection.md#0x4_collection_BurnEvent">BurnEvent</a> {
-                index: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow">option::borrow</a>(&index),
-                <a href="token.md#0x4_token">token</a>,
+            [collection.md#0x4_collection_BurnEvent](BurnEvent) {
+                index: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_borrow](option::borrow)(&index),
+                [token.md#0x4_token](token),
             },
         );
     }
@@ -1223,7 +1223,7 @@ Called by token on burn to decrement supply if there's an appropriate Supply str
 Creates a MutatorRef, which gates the ability to mutate any fields that support mutation.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_generate_mutator_ref">generate_mutator_ref</a>(ref: &<a href="../../aptos-framework/doc/object.md#0x1_object_ConstructorRef">object::ConstructorRef</a>): <a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_generate_mutator_ref](generate_mutator_ref)(ref: &[../../aptos-framework/doc/object.md#0x1_object_ConstructorRef](object::ConstructorRef)): [collection.md#0x4_collection_MutatorRef](collection::MutatorRef)
 </code></pre>
 
 
@@ -1232,9 +1232,9 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_generate_mutator_ref">generate_mutator_ref</a>(ref: &ConstructorRef): <a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a> {
-    <b>let</b> <a href="../../aptos-framework/doc/object.md#0x1_object">object</a> = <a href="../../aptos-framework/doc/object.md#0x1_object_object_from_constructor_ref">object::object_from_constructor_ref</a>&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;(ref);
-    <a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a> { self: <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(&<a href="../../aptos-framework/doc/object.md#0x1_object">object</a>) }
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_generate_mutator_ref](generate_mutator_ref)(ref: &ConstructorRef): [collection.md#0x4_collection_MutatorRef](MutatorRef) {
+    <b>let</b> [../../aptos-framework/doc/object.md#0x1_object](object) = [../../aptos-framework/doc/object.md#0x1_object_object_from_constructor_ref](object::object_from_constructor_ref)&lt;[collection.md#0x4_collection_Collection](Collection)&gt;(ref);
+    [collection.md#0x4_collection_MutatorRef](MutatorRef) { self: [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)(&[../../aptos-framework/doc/object.md#0x1_object](object)) }
 }
 </code></pre>
 
@@ -1248,7 +1248,7 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_upgrade_to_concurrent">upgrade_to_concurrent</a>(ref: &<a href="../../aptos-framework/doc/object.md#0x1_object_ExtendRef">object::ExtendRef</a>)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_upgrade_to_concurrent](upgrade_to_concurrent)(ref: &[../../aptos-framework/doc/object.md#0x1_object_ExtendRef](object::ExtendRef))
 </code></pre>
 
 
@@ -1257,53 +1257,53 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_upgrade_to_concurrent">upgrade_to_concurrent</a>(
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_upgrade_to_concurrent](upgrade_to_concurrent)(
     ref: &ExtendRef,
-) <b>acquires</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>, <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a> {
-    <b>let</b> metadata_object_address = <a href="../../aptos-framework/doc/object.md#0x1_object_address_from_extend_ref">object::address_from_extend_ref</a>(ref);
-    <b>let</b> metadata_object_signer = <a href="../../aptos-framework/doc/object.md#0x1_object_generate_signer_for_extending">object::generate_signer_for_extending</a>(ref);
+) <b>acquires</b> [collection.md#0x4_collection_FixedSupply](FixedSupply), [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply) {
+    <b>let</b> metadata_object_address = [../../aptos-framework/doc/object.md#0x1_object_address_from_extend_ref](object::address_from_extend_ref)(ref);
+    <b>let</b> metadata_object_signer = [../../aptos-framework/doc/object.md#0x1_object_generate_signer_for_extending](object::generate_signer_for_extending)(ref);
 
-    <b>let</b> (supply, current_supply, total_minted, burn_events, mint_events) = <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(
+    <b>let</b> (supply, current_supply, total_minted, burn_events, mint_events) = <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(
         metadata_object_address
     )) {
-        <b>let</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a> {
+        <b>let</b> [collection.md#0x4_collection_FixedSupply](FixedSupply) {
             current_supply,
             max_supply,
             total_minted,
             burn_events,
             mint_events,
-        } = <b>move_from</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(metadata_object_address);
+        } = <b>move_from</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(metadata_object_address);
 
-        <b>let</b> supply = <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-            current_supply: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator">aggregator_v2::create_aggregator</a>(max_supply),
-            total_minted: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
+        <b>let</b> supply = [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+            current_supply: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator](aggregator_v2::create_aggregator)(max_supply),
+            total_minted: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
         };
         (supply, current_supply, total_minted, burn_events, mint_events)
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(metadata_object_address)) {
-        <b>let</b> <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a> {
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(metadata_object_address)) {
+        <b>let</b> [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply) {
             current_supply,
             total_minted,
             burn_events,
             mint_events,
-        } = <b>move_from</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(metadata_object_address);
+        } = <b>move_from</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(metadata_object_address);
 
-        <b>let</b> supply = <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-            current_supply: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
-            total_minted: <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator">aggregator_v2::create_unbounded_aggregator</a>(),
+        <b>let</b> supply = [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+            current_supply: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
+            total_minted: [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_unbounded_aggregator](aggregator_v2::create_unbounded_aggregator)(),
         };
         (supply, current_supply, total_minted, burn_events, mint_events)
     } <b>else</b> {
-        // untracked <a href="collection.md#0x4_collection">collection</a> is already concurrent, and other variants too.
-        <b>abort</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="collection.md#0x4_collection_EALREADY_CONCURRENT">EALREADY_CONCURRENT</a>)
+        // untracked [collection.md#0x4_collection](collection) is already concurrent, and other variants too.
+        <b>abort</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([collection.md#0x4_collection_EALREADY_CONCURRENT](EALREADY_CONCURRENT))
     };
 
     // <b>update</b> current state:
-    <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add">aggregator_v2::add</a>(&<b>mut</b> supply.current_supply, current_supply);
-    <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add">aggregator_v2::add</a>(&<b>mut</b> supply.total_minted, total_minted);
+    [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add](aggregator_v2::add)(&<b>mut</b> supply.current_supply, current_supply);
+    [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add](aggregator_v2::add)(&<b>mut</b> supply.total_minted, total_minted);
     <b>move_to</b>(&metadata_object_signer, supply);
 
-    <a href="../../aptos-framework/doc/event.md#0x1_event_destroy_handle">event::destroy_handle</a>(burn_events);
-    <a href="../../aptos-framework/doc/event.md#0x1_event_destroy_handle">event::destroy_handle</a>(mint_events);
+    [../../aptos-framework/doc/event.md#0x1_event_destroy_handle](event::destroy_handle)(burn_events);
+    [../../aptos-framework/doc/event.md#0x1_event_destroy_handle](event::destroy_handle)(mint_events);
 }
 </code></pre>
 
@@ -1317,7 +1317,7 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_check_collection_exists">check_collection_exists</a>(addr: <b>address</b>)
+<pre><code><b>fun</b> [collection.md#0x4_collection_check_collection_exists](check_collection_exists)(addr: <b>address</b>)
 </code></pre>
 
 
@@ -1326,10 +1326,10 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 <summary>Implementation</summary>
 
 
-<pre><code>inline <b>fun</b> <a href="collection.md#0x4_collection_check_collection_exists">check_collection_exists</a>(addr: <b>address</b>) {
+<pre><code>inline <b>fun</b> [collection.md#0x4_collection_check_collection_exists](check_collection_exists)(addr: <b>address</b>) {
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;(addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="collection.md#0x4_collection_ECOLLECTION_DOES_NOT_EXIST">ECOLLECTION_DOES_NOT_EXIST</a>),
+        <b>exists</b>&lt;[collection.md#0x4_collection_Collection](Collection)&gt;(addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([collection.md#0x4_collection_ECOLLECTION_DOES_NOT_EXIST](ECOLLECTION_DOES_NOT_EXIST)),
     );
 }
 </code></pre>
@@ -1344,7 +1344,7 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_borrow">borrow</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: &<a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): &<a href="collection.md#0x4_collection_Collection">collection::Collection</a>
+<pre><code><b>fun</b> [collection.md#0x4_collection_borrow](borrow)&lt;T: key&gt;([collection.md#0x4_collection](collection): &[../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): &[collection.md#0x4_collection_Collection](collection::Collection)
 </code></pre>
 
 
@@ -1353,10 +1353,10 @@ Creates a MutatorRef, which gates the ability to mutate any fields that support 
 <summary>Implementation</summary>
 
 
-<pre><code>inline <b>fun</b> <a href="collection.md#0x4_collection_borrow">borrow</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: &Object&lt;T&gt;): &<a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <b>let</b> collection_address = <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(<a href="collection.md#0x4_collection">collection</a>);
-    <a href="collection.md#0x4_collection_check_collection_exists">check_collection_exists</a>(collection_address);
-    <b>borrow_global</b>&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;(collection_address)
+<pre><code>inline <b>fun</b> [collection.md#0x4_collection_borrow](borrow)&lt;T: key&gt;([collection.md#0x4_collection](collection): &Object&lt;T&gt;): &[collection.md#0x4_collection_Collection](Collection) {
+    <b>let</b> collection_address = [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)([collection.md#0x4_collection](collection));
+    [collection.md#0x4_collection_check_collection_exists](check_collection_exists)(collection_address);
+    <b>borrow_global</b>&lt;[collection.md#0x4_collection_Collection](Collection)&gt;(collection_address)
 }
 </code></pre>
 
@@ -1375,7 +1375,7 @@ it from being parallelized.
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_count">count</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
+<b>public</b> <b>fun</b> [collection.md#0x4_collection_count](count)&lt;T: key&gt;([collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;
 </code></pre>
 
 
@@ -1384,23 +1384,23 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_count">count</a>&lt;T: key&gt;(
-    <a href="collection.md#0x4_collection">collection</a>: Object&lt;T&gt;
-): Option&lt;u64&gt; <b>acquires</b> <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>, <a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>, <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a> {
-    <b>let</b> collection_address = <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(&<a href="collection.md#0x4_collection">collection</a>);
-    <a href="collection.md#0x4_collection_check_collection_exists">check_collection_exists</a>(collection_address);
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_count](count)&lt;T: key&gt;(
+    [collection.md#0x4_collection](collection): Object&lt;T&gt;
+): Option&lt;u64&gt; <b>acquires</b> [collection.md#0x4_collection_FixedSupply](FixedSupply), [collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply), [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply) {
+    <b>let</b> collection_address = [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)(&[collection.md#0x4_collection](collection));
+    [collection.md#0x4_collection_check_collection_exists](check_collection_exists)(collection_address);
 
-    <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_address)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_address);
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(<a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_read">aggregator_v2::read</a>(&supply.current_supply))
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_address)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_address);
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(supply.current_supply)
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_address)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_UnlimitedSupply">UnlimitedSupply</a>&gt;(collection_address);
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(supply.current_supply)
+    <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_address)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_address);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)([../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_read](aggregator_v2::read)(&supply.current_supply))
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_address)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_address);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(supply.current_supply)
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_address)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_UnlimitedSupply](UnlimitedSupply)&gt;(collection_address);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(supply.current_supply)
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>()
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)()
     }
 }
 </code></pre>
@@ -1416,7 +1416,7 @@ it from being parallelized.
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_creator">creator</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): <b>address</b>
+<b>public</b> <b>fun</b> [collection.md#0x4_collection_creator](creator)&lt;T: key&gt;([collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): <b>address</b>
 </code></pre>
 
 
@@ -1425,8 +1425,8 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_creator">creator</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: Object&lt;T&gt;): <b>address</b> <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <a href="collection.md#0x4_collection_borrow">borrow</a>(&<a href="collection.md#0x4_collection">collection</a>).creator
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_creator](creator)&lt;T: key&gt;([collection.md#0x4_collection](collection): Object&lt;T&gt;): <b>address</b> <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    [collection.md#0x4_collection_borrow](borrow)(&[collection.md#0x4_collection](collection)).creator
 }
 </code></pre>
 
@@ -1441,7 +1441,7 @@ it from being parallelized.
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_description">description</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<b>public</b> <b>fun</b> [collection.md#0x4_collection_description](description)&lt;T: key&gt;([collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -1450,8 +1450,8 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_description">description</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: Object&lt;T&gt;): String <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <a href="collection.md#0x4_collection_borrow">borrow</a>(&<a href="collection.md#0x4_collection">collection</a>).description
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_description](description)&lt;T: key&gt;([collection.md#0x4_collection](collection): Object&lt;T&gt;): String <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    [collection.md#0x4_collection_borrow](borrow)(&[collection.md#0x4_collection](collection)).description
 }
 </code></pre>
 
@@ -1466,7 +1466,7 @@ it from being parallelized.
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_name">name</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<b>public</b> <b>fun</b> [collection.md#0x4_collection_name](name)&lt;T: key&gt;([collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -1475,8 +1475,8 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_name">name</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: Object&lt;T&gt;): String <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <a href="collection.md#0x4_collection_borrow">borrow</a>(&<a href="collection.md#0x4_collection">collection</a>).name
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_name](name)&lt;T: key&gt;([collection.md#0x4_collection](collection): Object&lt;T&gt;): String <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    [collection.md#0x4_collection_borrow](borrow)(&[collection.md#0x4_collection](collection)).name
 }
 </code></pre>
 
@@ -1491,7 +1491,7 @@ it from being parallelized.
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_uri">uri</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_Object">object::Object</a>&lt;T&gt;): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<b>public</b> <b>fun</b> [collection.md#0x4_collection_uri](uri)&lt;T: key&gt;([collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_Object](object::Object)&lt;T&gt;): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -1500,8 +1500,8 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_uri">uri</a>&lt;T: key&gt;(<a href="collection.md#0x4_collection">collection</a>: Object&lt;T&gt;): String <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <a href="collection.md#0x4_collection_borrow">borrow</a>(&<a href="collection.md#0x4_collection">collection</a>).uri
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_uri](uri)&lt;T: key&gt;([collection.md#0x4_collection](collection): Object&lt;T&gt;): String <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    [collection.md#0x4_collection_borrow](borrow)(&[collection.md#0x4_collection](collection)).uri
 }
 </code></pre>
 
@@ -1515,7 +1515,7 @@ it from being parallelized.
 
 
 
-<pre><code><b>fun</b> <a href="collection.md#0x4_collection_borrow_mut">borrow_mut</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>): &<b>mut</b> <a href="collection.md#0x4_collection_Collection">collection::Collection</a>
+<pre><code><b>fun</b> [collection.md#0x4_collection_borrow_mut](borrow_mut)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](collection::MutatorRef)): &<b>mut</b> [collection.md#0x4_collection_Collection](collection::Collection)
 </code></pre>
 
 
@@ -1524,9 +1524,9 @@ it from being parallelized.
 <summary>Implementation</summary>
 
 
-<pre><code>inline <b>fun</b> <a href="collection.md#0x4_collection_borrow_mut">borrow_mut</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a>): &<b>mut</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <a href="collection.md#0x4_collection_check_collection_exists">check_collection_exists</a>(mutator_ref.self);
-    <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;(mutator_ref.self)
+<pre><code>inline <b>fun</b> [collection.md#0x4_collection_borrow_mut](borrow_mut)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](MutatorRef)): &<b>mut</b> [collection.md#0x4_collection_Collection](Collection) {
+    [collection.md#0x4_collection_check_collection_exists](check_collection_exists)(mutator_ref.self);
+    <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_Collection](Collection)&gt;(mutator_ref.self)
 }
 </code></pre>
 
@@ -1546,7 +1546,7 @@ Once the collection has been created, the collection address should be saved for
 After changing the collection's name, to create tokens - only call functions that accept the collection object as an argument.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_name">set_name</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_name](set_name)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](collection::MutatorRef), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -1555,16 +1555,16 @@ After changing the collection's name, to create tokens - only call functions tha
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_name">set_name</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a>, name: String) <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&name) &lt;= <a href="collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    <b>let</b> <a href="collection.md#0x4_collection">collection</a> = <a href="collection.md#0x4_collection_borrow_mut">borrow_mut</a>(mutator_ref);
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="collection.md#0x4_collection_Mutation">Mutation</a> {
-        mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"name") ,
-        <a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_address_to_object">object::address_to_object</a>(mutator_ref.self),
-        old_value: <a href="collection.md#0x4_collection">collection</a>.name,
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_name](set_name)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](MutatorRef), name: String) <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&name) &lt;= [collection.md#0x4_collection_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    <b>let</b> [collection.md#0x4_collection](collection) = [collection.md#0x4_collection_borrow_mut](borrow_mut)(mutator_ref);
+    [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([collection.md#0x4_collection_Mutation](Mutation) {
+        mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"name") ,
+        [collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_address_to_object](object::address_to_object)(mutator_ref.self),
+        old_value: [collection.md#0x4_collection](collection).name,
         new_value: name,
     });
-    <a href="collection.md#0x4_collection">collection</a>.name = name;
+    [collection.md#0x4_collection](collection).name = name;
 }
 </code></pre>
 
@@ -1578,7 +1578,7 @@ After changing the collection's name, to create tokens - only call functions tha
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_description">set_description</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_description](set_description)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](collection::MutatorRef), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -1587,21 +1587,21 @@ After changing the collection's name, to create tokens - only call functions tha
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_description">set_description</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a>, description: String) <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&description) &lt;= <a href="collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH">MAX_DESCRIPTION_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EDESCRIPTION_TOO_LONG">EDESCRIPTION_TOO_LONG</a>));
-    <b>let</b> <a href="collection.md#0x4_collection">collection</a> = <a href="collection.md#0x4_collection_borrow_mut">borrow_mut</a>(mutator_ref);
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_description](set_description)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](MutatorRef), description: String) <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&description) &lt;= [collection.md#0x4_collection_MAX_DESCRIPTION_LENGTH](MAX_DESCRIPTION_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EDESCRIPTION_TOO_LONG](EDESCRIPTION_TOO_LONG)));
+    <b>let</b> [collection.md#0x4_collection](collection) = [collection.md#0x4_collection_borrow_mut](borrow_mut)(mutator_ref);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="collection.md#0x4_collection_Mutation">Mutation</a> {
-            mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"description"),
-            <a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_address_to_object">object::address_to_object</a>(mutator_ref.self),
-            old_value: <a href="collection.md#0x4_collection">collection</a>.description,
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([collection.md#0x4_collection_Mutation](Mutation) {
+            mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"description"),
+            [collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_address_to_object](object::address_to_object)(mutator_ref.self),
+            old_value: [collection.md#0x4_collection](collection).description,
             new_value: description,
         });
     };
-    <a href="collection.md#0x4_collection">collection</a>.description = description;
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(
-        &<b>mut</b> <a href="collection.md#0x4_collection">collection</a>.mutation_events,
-        <a href="collection.md#0x4_collection_MutationEvent">MutationEvent</a> { mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"description") },
+    [collection.md#0x4_collection](collection).description = description;
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(
+        &<b>mut</b> [collection.md#0x4_collection](collection).mutation_events,
+        [collection.md#0x4_collection_MutationEvent](MutationEvent) { mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"description") },
     );
 }
 </code></pre>
@@ -1616,7 +1616,7 @@ After changing the collection's name, to create tokens - only call functions tha
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_uri">set_uri</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_uri](set_uri)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](collection::MutatorRef), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -1625,21 +1625,21 @@ After changing the collection's name, to create tokens - only call functions tha
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_uri">set_uri</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a>, uri: String) <b>acquires</b> <a href="collection.md#0x4_collection_Collection">Collection</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="collection.md#0x4_collection_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <b>let</b> <a href="collection.md#0x4_collection">collection</a> = <a href="collection.md#0x4_collection_borrow_mut">borrow_mut</a>(mutator_ref);
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_uri](set_uri)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](MutatorRef), uri: String) <b>acquires</b> [collection.md#0x4_collection_Collection](Collection) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [collection.md#0x4_collection_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EURI_TOO_LONG](EURI_TOO_LONG)));
+    <b>let</b> [collection.md#0x4_collection](collection) = [collection.md#0x4_collection_borrow_mut](borrow_mut)(mutator_ref);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="collection.md#0x4_collection_Mutation">Mutation</a> {
-            mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"uri"),
-            <a href="collection.md#0x4_collection">collection</a>: <a href="../../aptos-framework/doc/object.md#0x1_object_address_to_object">object::address_to_object</a>(mutator_ref.self),
-            old_value: <a href="collection.md#0x4_collection">collection</a>.uri,
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([collection.md#0x4_collection_Mutation](Mutation) {
+            mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"uri"),
+            [collection.md#0x4_collection](collection): [../../aptos-framework/doc/object.md#0x1_object_address_to_object](object::address_to_object)(mutator_ref.self),
+            old_value: [collection.md#0x4_collection](collection).uri,
             new_value: uri,
         });
     };
-    <a href="collection.md#0x4_collection">collection</a>.uri = uri;
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>(
-        &<b>mut</b> <a href="collection.md#0x4_collection">collection</a>.mutation_events,
-        <a href="collection.md#0x4_collection_MutationEvent">MutationEvent</a> { mutated_field_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"uri") },
+    [collection.md#0x4_collection](collection).uri = uri;
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)(
+        &<b>mut</b> [collection.md#0x4_collection](collection).mutation_events,
+        [collection.md#0x4_collection_MutationEvent](MutationEvent) { mutated_field_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"uri") },
     );
 }
 </code></pre>
@@ -1654,7 +1654,7 @@ After changing the collection's name, to create tokens - only call functions tha
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_max_supply">set_max_supply</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">collection::MutatorRef</a>, max_supply: u64)
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_max_supply](set_max_supply)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](collection::MutatorRef), max_supply: u64)
 </code></pre>
 
 
@@ -1663,34 +1663,34 @@ After changing the collection's name, to create tokens - only call functions tha
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="collection.md#0x4_collection_set_max_supply">set_max_supply</a>(mutator_ref: &<a href="collection.md#0x4_collection_MutatorRef">MutatorRef</a>, max_supply: u64) <b>acquires</b> <a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>, <a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a> {
-    <b>let</b> <a href="collection.md#0x4_collection">collection</a> = <a href="../../aptos-framework/doc/object.md#0x1_object_address_to_object">object::address_to_object</a>&lt;<a href="collection.md#0x4_collection_Collection">Collection</a>&gt;(mutator_ref.self);
-    <b>let</b> collection_address = <a href="../../aptos-framework/doc/object.md#0x1_object_object_address">object::object_address</a>(&<a href="collection.md#0x4_collection">collection</a>);
+<pre><code><b>public</b> <b>fun</b> [collection.md#0x4_collection_set_max_supply](set_max_supply)(mutator_ref: &[collection.md#0x4_collection_MutatorRef](MutatorRef), max_supply: u64) <b>acquires</b> [collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply), [collection.md#0x4_collection_FixedSupply](FixedSupply) {
+    <b>let</b> [collection.md#0x4_collection](collection) = [../../aptos-framework/doc/object.md#0x1_object_address_to_object](object::address_to_object)&lt;[collection.md#0x4_collection_Collection](Collection)&gt;(mutator_ref.self);
+    <b>let</b> collection_address = [../../aptos-framework/doc/object.md#0x1_object_object_address](object::object_address)(&[collection.md#0x4_collection](collection));
     <b>let</b> old_max_supply;
 
-    <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_address)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_ConcurrentSupply">ConcurrentSupply</a>&gt;(collection_address);
-        <b>let</b> current_supply = <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_read">aggregator_v2::read</a>(&supply.current_supply);
+    <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_address)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_ConcurrentSupply](ConcurrentSupply)&gt;(collection_address);
+        <b>let</b> current_supply = [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_read](aggregator_v2::read)(&supply.current_supply);
         <b>assert</b>!(
             max_supply &gt;= current_supply,
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EINVALID_MAX_SUPPLY">EINVALID_MAX_SUPPLY</a>),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EINVALID_MAX_SUPPLY](EINVALID_MAX_SUPPLY)),
         );
-        old_max_supply = <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_max_value">aggregator_v2::max_value</a>(&supply.current_supply);
-        supply.current_supply = <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator">aggregator_v2::create_aggregator</a>(max_supply);
-        <a href="../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add">aggregator_v2::add</a>(&<b>mut</b> supply.current_supply, current_supply);
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_address)) {
-        <b>let</b> supply = <b>borrow_global_mut</b>&lt;<a href="collection.md#0x4_collection_FixedSupply">FixedSupply</a>&gt;(collection_address);
+        old_max_supply = [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_max_value](aggregator_v2::max_value)(&supply.current_supply);
+        supply.current_supply = [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_create_aggregator](aggregator_v2::create_aggregator)(max_supply);
+        [../../aptos-framework/doc/aggregator_v2.md#0x1_aggregator_v2_add](aggregator_v2::add)(&<b>mut</b> supply.current_supply, current_supply);
+    } <b>else</b> <b>if</b> (<b>exists</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_address)) {
+        <b>let</b> supply = <b>borrow_global_mut</b>&lt;[collection.md#0x4_collection_FixedSupply](FixedSupply)&gt;(collection_address);
         <b>assert</b>!(
             max_supply &gt;= supply.current_supply,
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range">error::out_of_range</a>(<a href="collection.md#0x4_collection_EINVALID_MAX_SUPPLY">EINVALID_MAX_SUPPLY</a>),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_out_of_range](error::out_of_range)([collection.md#0x4_collection_EINVALID_MAX_SUPPLY](EINVALID_MAX_SUPPLY)),
         );
         old_max_supply = supply.max_supply;
         supply.max_supply = max_supply;
     } <b>else</b> {
-        <b>abort</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="collection.md#0x4_collection_ENO_MAX_SUPPLY_IN_COLLECTION">ENO_MAX_SUPPLY_IN_COLLECTION</a>)
+        <b>abort</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([collection.md#0x4_collection_ENO_MAX_SUPPLY_IN_COLLECTION](ENO_MAX_SUPPLY_IN_COLLECTION))
     };
 
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="collection.md#0x4_collection_SetMaxSupply">SetMaxSupply</a> { <a href="collection.md#0x4_collection">collection</a>, old_max_supply, new_max_supply: max_supply });
+    [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([collection.md#0x4_collection_SetMaxSupply](SetMaxSupply) { [collection.md#0x4_collection](collection), old_max_supply, new_max_supply: max_supply });
 }
 </code></pre>
 

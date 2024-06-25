@@ -58,7 +58,7 @@ error codes here are a bit richer than HTTP codes.
 Concurrency conflict, such as read-modify-write conflict (http: 409)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_ABORTED">ABORTED</a>: u64 = 7;
+<pre><code><b>const</b> [error.md#0x1_error_ABORTED](ABORTED): u64 = 7;
 </code></pre>
 
 
@@ -68,7 +68,7 @@ Concurrency conflict, such as read-modify-write conflict (http: 409)
 The resource that a client tried to create already exists (http: 409)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_ALREADY_EXISTS">ALREADY_EXISTS</a>: u64 = 8;
+<pre><code><b>const</b> [error.md#0x1_error_ALREADY_EXISTS](ALREADY_EXISTS): u64 = 8;
 </code></pre>
 
 
@@ -78,7 +78,7 @@ The resource that a client tried to create already exists (http: 409)
 Request cancelled by the client (http: 499)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_CANCELLED">CANCELLED</a>: u64 = 10;
+<pre><code><b>const</b> [error.md#0x1_error_CANCELLED](CANCELLED): u64 = 10;
 </code></pre>
 
 
@@ -88,7 +88,7 @@ Request cancelled by the client (http: 499)
 Internal error (http: 500)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_INTERNAL">INTERNAL</a>: u64 = 11;
+<pre><code><b>const</b> [error.md#0x1_error_INTERNAL](INTERNAL): u64 = 11;
 </code></pre>
 
 
@@ -98,7 +98,7 @@ Internal error (http: 500)
 Caller specified an invalid argument (http: 400)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_INVALID_ARGUMENT">INVALID_ARGUMENT</a>: u64 = 1;
+<pre><code><b>const</b> [error.md#0x1_error_INVALID_ARGUMENT](INVALID_ARGUMENT): u64 = 1;
 </code></pre>
 
 
@@ -108,7 +108,7 @@ Caller specified an invalid argument (http: 400)
 The system is not in a state where the operation can be performed (http: 400)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_INVALID_STATE">INVALID_STATE</a>: u64 = 3;
+<pre><code><b>const</b> [error.md#0x1_error_INVALID_STATE](INVALID_STATE): u64 = 3;
 </code></pre>
 
 
@@ -118,7 +118,7 @@ The system is not in a state where the operation can be performed (http: 400)
 A specified resource is not found (http: 404)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_NOT_FOUND">NOT_FOUND</a>: u64 = 6;
+<pre><code><b>const</b> [error.md#0x1_error_NOT_FOUND](NOT_FOUND): u64 = 6;
 </code></pre>
 
 
@@ -128,7 +128,7 @@ A specified resource is not found (http: 404)
 Feature not implemented (http: 501)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_NOT_IMPLEMENTED">NOT_IMPLEMENTED</a>: u64 = 12;
+<pre><code><b>const</b> [error.md#0x1_error_NOT_IMPLEMENTED](NOT_IMPLEMENTED): u64 = 12;
 </code></pre>
 
 
@@ -138,7 +138,7 @@ Feature not implemented (http: 501)
 An input or result of a computation is out of range (http: 400)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_OUT_OF_RANGE">OUT_OF_RANGE</a>: u64 = 2;
+<pre><code><b>const</b> [error.md#0x1_error_OUT_OF_RANGE](OUT_OF_RANGE): u64 = 2;
 </code></pre>
 
 
@@ -148,7 +148,7 @@ An input or result of a computation is out of range (http: 400)
 client does not have sufficient permission (http: 403)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_PERMISSION_DENIED">PERMISSION_DENIED</a>: u64 = 5;
+<pre><code><b>const</b> [error.md#0x1_error_PERMISSION_DENIED](PERMISSION_DENIED): u64 = 5;
 </code></pre>
 
 
@@ -158,7 +158,7 @@ client does not have sufficient permission (http: 403)
 Out of gas or other forms of quota (http: 429)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_RESOURCE_EXHAUSTED">RESOURCE_EXHAUSTED</a>: u64 = 9;
+<pre><code><b>const</b> [error.md#0x1_error_RESOURCE_EXHAUSTED](RESOURCE_EXHAUSTED): u64 = 9;
 </code></pre>
 
 
@@ -168,7 +168,7 @@ Out of gas or other forms of quota (http: 429)
 Request not authenticated due to missing, invalid, or expired auth token (http: 401)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_UNAUTHENTICATED">UNAUTHENTICATED</a>: u64 = 4;
+<pre><code><b>const</b> [error.md#0x1_error_UNAUTHENTICATED](UNAUTHENTICATED): u64 = 4;
 </code></pre>
 
 
@@ -178,7 +178,7 @@ Request not authenticated due to missing, invalid, or expired auth token (http: 
 The service is currently unavailable. Indicates that a retry could solve the issue (http: 503)
 
 
-<pre><code><b>const</b> <a href="error.md#0x1_error_UNAVAILABLE">UNAVAILABLE</a>: u64 = 13;
+<pre><code><b>const</b> [error.md#0x1_error_UNAVAILABLE](UNAVAILABLE): u64 = 13;
 </code></pre>
 
 
@@ -190,7 +190,7 @@ The service is currently unavailable. Indicates that a retry could solve the iss
 Construct a canonical error code from a category and a reason.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_canonical">canonical</a>(category: u64, reason: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_canonical](canonical)(category: u64, reason: u64): u64
 </code></pre>
 
 
@@ -199,7 +199,7 @@ Construct a canonical error code from a category and a reason.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_canonical">canonical</a>(category: u64, reason: u64): u64 {
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_canonical](canonical)(category: u64, reason: u64): u64 {
   (category &lt;&lt; 16) + reason
 }
 </code></pre>
@@ -215,7 +215,7 @@ Construct a canonical error code from a category and a reason.
 Functions to construct a canonical error code of the given category.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_invalid_argument">invalid_argument</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_invalid_argument](invalid_argument)(r: u64): u64
 </code></pre>
 
 
@@ -224,7 +224,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_invalid_argument">invalid_argument</a>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_INVALID_ARGUMENT">INVALID_ARGUMENT</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_invalid_argument](invalid_argument)(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_INVALID_ARGUMENT](INVALID_ARGUMENT), r) }
 </code></pre>
 
 
@@ -237,7 +237,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_out_of_range">out_of_range</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_out_of_range](out_of_range)(r: u64): u64
 </code></pre>
 
 
@@ -246,7 +246,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_out_of_range">out_of_range</a>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_OUT_OF_RANGE">OUT_OF_RANGE</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_out_of_range](out_of_range)(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_OUT_OF_RANGE](OUT_OF_RANGE), r) }
 </code></pre>
 
 
@@ -259,7 +259,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_invalid_state">invalid_state</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_invalid_state](invalid_state)(r: u64): u64
 </code></pre>
 
 
@@ -268,7 +268,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_invalid_state">invalid_state</a>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_INVALID_STATE">INVALID_STATE</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_invalid_state](invalid_state)(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_INVALID_STATE](INVALID_STATE), r) }
 </code></pre>
 
 
@@ -281,7 +281,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_unauthenticated">unauthenticated</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_unauthenticated](unauthenticated)(r: u64): u64
 </code></pre>
 
 
@@ -290,7 +290,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_unauthenticated">unauthenticated</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_UNAUTHENTICATED">UNAUTHENTICATED</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_unauthenticated](unauthenticated)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_UNAUTHENTICATED](UNAUTHENTICATED), r) }
 </code></pre>
 
 
@@ -303,7 +303,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_permission_denied">permission_denied</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_permission_denied](permission_denied)(r: u64): u64
 </code></pre>
 
 
@@ -312,7 +312,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_permission_denied">permission_denied</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_PERMISSION_DENIED">PERMISSION_DENIED</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_permission_denied](permission_denied)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_PERMISSION_DENIED](PERMISSION_DENIED), r) }
 </code></pre>
 
 
@@ -325,7 +325,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_not_found">not_found</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_not_found](not_found)(r: u64): u64
 </code></pre>
 
 
@@ -334,7 +334,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_not_found">not_found</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_NOT_FOUND">NOT_FOUND</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_not_found](not_found)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_NOT_FOUND](NOT_FOUND), r) }
 </code></pre>
 
 
@@ -347,7 +347,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_aborted">aborted</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_aborted](aborted)(r: u64): u64
 </code></pre>
 
 
@@ -356,7 +356,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_aborted">aborted</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_ABORTED">ABORTED</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_aborted](aborted)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_ABORTED](ABORTED), r) }
 </code></pre>
 
 
@@ -369,7 +369,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_already_exists">already_exists</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_already_exists](already_exists)(r: u64): u64
 </code></pre>
 
 
@@ -378,7 +378,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_already_exists">already_exists</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_ALREADY_EXISTS">ALREADY_EXISTS</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_already_exists](already_exists)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_ALREADY_EXISTS](ALREADY_EXISTS), r) }
 </code></pre>
 
 
@@ -391,7 +391,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_resource_exhausted">resource_exhausted</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_resource_exhausted](resource_exhausted)(r: u64): u64
 </code></pre>
 
 
@@ -400,7 +400,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_resource_exhausted">resource_exhausted</a>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_RESOURCE_EXHAUSTED">RESOURCE_EXHAUSTED</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_resource_exhausted](resource_exhausted)(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_RESOURCE_EXHAUSTED](RESOURCE_EXHAUSTED), r) }
 </code></pre>
 
 
@@ -422,7 +422,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <b>internal</b>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_INTERNAL">INTERNAL</a>, r) }
+<pre><code><b>public</b> <b>fun</b> <b>internal</b>(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_INTERNAL](INTERNAL), r) }
 </code></pre>
 
 
@@ -435,7 +435,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_not_implemented">not_implemented</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_not_implemented](not_implemented)(r: u64): u64
 </code></pre>
 
 
@@ -444,7 +444,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_not_implemented">not_implemented</a>(r: u64): u64 {  <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_NOT_IMPLEMENTED">NOT_IMPLEMENTED</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_not_implemented](not_implemented)(r: u64): u64 {  [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_NOT_IMPLEMENTED](NOT_IMPLEMENTED), r) }
 </code></pre>
 
 
@@ -457,7 +457,7 @@ Functions to construct a canonical error code of the given category.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_unavailable">unavailable</a>(r: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_unavailable](unavailable)(r: u64): u64
 </code></pre>
 
 
@@ -466,7 +466,7 @@ Functions to construct a canonical error code of the given category.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_unavailable">unavailable</a>(r: u64): u64 { <a href="error.md#0x1_error_canonical">canonical</a>(<a href="error.md#0x1_error_UNAVAILABLE">UNAVAILABLE</a>, r) }
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_unavailable](unavailable)(r: u64): u64 { [error.md#0x1_error_canonical](canonical)([error.md#0x1_error_UNAVAILABLE](UNAVAILABLE), r) }
 </code></pre>
 
 
@@ -483,7 +483,7 @@ Functions to construct a canonical error code of the given category.
 ### Function `canonical`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="error.md#0x1_error_canonical">canonical</a>(category: u64, reason: u64): u64
+<pre><code><b>public</b> <b>fun</b> [error.md#0x1_error_canonical](canonical)(category: u64, reason: u64): u64
 </code></pre>
 
 

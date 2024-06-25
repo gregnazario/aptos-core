@@ -13,17 +13,17 @@ Gas parameters for global storage.
 
 [Definitions](#definitions)
 
-* [Utilization dimensions](#utilization-dimensions)
-* [Utilization ratios](#utilization-ratios)
-* [Gas curve lookup](#gas-curve-lookup)
-* [Item-wise operations](#item-wise-operations)
-* [Byte-wise operations](#byte-wise-operations)
+&#42; [Utilization dimensions](#utilization&#45;dimensions)
+&#42; [Utilization ratios](#utilization&#45;ratios)
+&#42; [Gas curve lookup](#gas&#45;curve&#45;lookup)
+&#42; [Item&#45;wise operations](#item&#45;wise&#45;operations)
+&#42; [Byte&#45;wise operations](#byte&#45;wise&#45;operations)
 
-[Function dependencies](#function-dependencies)
+[Function dependencies](#function&#45;dependencies)
 
-* [Initialization](#initialization)
-* [Reconfiguration](#reconfiguration)
-* [Setting configurations](#setting-configurations)
+&#42; [Initialization](#initialization)
+&#42; [Reconfiguration](#reconfiguration)
+&#42; [Setting configurations](#setting&#45;configurations)
 
 
 <a id="@Definitions_1"></a>
@@ -40,13 +40,13 @@ Gas parameters for global storage.
 Global storage gas fluctuates each epoch based on total utilization,
 which is defined across two dimensions:
 
-1. The number of "items" in global storage.
+1. The number of &quot;items&quot; in global storage.
 2. The number of bytes in global storage.
 
-"Items" include:
+&quot;Items&quot; include:
 
-1. Resources having the <code>key</code> attribute, which have been moved into
-global storage via a <code><b>move_to</b>()</code> operation.
+1. Resources having the `key` attribute, which have been moved into
+global storage via a `move_to()` operation.
 2.  Table entries.
 
 
@@ -55,16 +55,16 @@ global storage via a <code><b>move_to</b>()</code> operation.
 ### Utilization ratios
 
 
-<code><a href="storage_gas.md#0x1_storage_gas_initialize">initialize</a>()</code> sets an arbitrary "target" utilization for both
-item-wise and byte-wise storage, then each epoch, gas parameters are
-reconfigured based on the "utilization ratio" for each of the two
+`initialize()` sets an arbitrary &quot;target&quot; utilization for both
+item&#45;wise and byte&#45;wise storage, then each epoch, gas parameters are
+reconfigured based on the &quot;utilization ratio&quot; for each of the two
 utilization dimensions. The utilization ratio for a given dimension,
-either item-wise or byte-wise, is taken as the quotient of actual
+either item&#45;wise or byte&#45;wise, is taken as the quotient of actual
 utilization and target utilization. For example, given a 500 GB
-target and 250 GB actual utilization, the byte-wise utilization
+target and 250 GB actual utilization, the byte&#45;wise utilization
 ratio is 50%.
 
-See <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code> for mathematical definitions.
+See `base_8192_exponential_curve()` for mathematical definitions.
 
 
 <a id="@Gas_curve_lookup_4"></a>
@@ -74,55 +74,55 @@ See <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">b
 
 The utilization ratio in a given epoch is used as a lookup value in
 a Eulerian approximation to an exponential curve, known as a
-<code><a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a></code>, which is defined in <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>,
+`GasCurve`, which is defined in `base_8192_exponential_curve()`,
 based on a minimum gas charge and a maximum gas charge.
 
 The minimum gas charge and maximum gas charge at the endpoints of
-the curve are set in <code><a href="storage_gas.md#0x1_storage_gas_initialize">initialize</a>()</code>, and correspond to the following
-operations defined in <code><a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a></code>:
+the curve are set in `initialize()`, and correspond to the following
+operations defined in `StorageGas`:
 
-1. Per-item read
-2. Per-item create
-3. Per-item write
-4. Per-byte read
-5. Per-byte create
-6. Per-byte write
+1. Per&#45;item read
+2. Per&#45;item create
+3. Per&#45;item write
+4. Per&#45;byte read
+5. Per&#45;byte create
+6. Per&#45;byte write
 
-For example, if the byte-wise utilization ratio is 50%, then
-per-byte reads will charge the minimum per-byte gas cost, plus
+For example, if the byte&#45;wise utilization ratio is 50%, then
+per&#45;byte reads will charge the minimum per&#45;byte gas cost, plus
 1.09% of the difference between the maximum and the minimum cost.
-See <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code> for a supporting calculation.
+See `base_8192_exponential_curve()` for a supporting calculation.
 
 
-<a id="@Item-wise_operations_5"></a>
+<a id="@Item&#45;wise_operations_5"></a>
 
-### Item-wise operations
+### Item&#45;wise operations
 
 
-1. Per-item read gas is assessed whenever an item is read from
-global storage via <code><b>borrow_global</b>&lt;T&gt;()</code> or via a table entry read
+1. Per&#45;item read gas is assessed whenever an item is read from
+global storage via `borrow_global<T>()` or via a table entry read
 operation.
-2. Per-item create gas is assessed whenever an item is created in
-global storage via <code><b>move_to</b>&lt;T&gt;()</code> or via a table entry creation
+2. Per&#45;item create gas is assessed whenever an item is created in
+global storage via `move_to<T>()` or via a table entry creation
 operation.
-3. Per-item write gas is assessed whenever an item is overwritten in
-global storage via <code><b>borrow_global_mut</b>&lt;T&gt;</code> or via a table entry
+3. Per&#45;item write gas is assessed whenever an item is overwritten in
+global storage via `borrow_global_mut<T>` or via a table entry
 mutation operation.
 
 
-<a id="@Byte-wise_operations_6"></a>
+<a id="@Byte&#45;wise_operations_6"></a>
 
-### Byte-wise operations
+### Byte&#45;wise operations
 
 
-Byte-wise operations are assessed in a manner similar to per-item
+Byte&#45;wise operations are assessed in a manner similar to per&#45;item
 operations, but account for the number of bytes affected by the
 given operation. Notably, this number denotes the total number of
-bytes in an *entire item*.
+bytes in an &#42;entire item&#42;.
 
-For example, if an operation mutates a <code>u8</code> field in a resource that
-has 5 other <code>u128</code> fields, the per-byte gas write cost will account
-for $(5 * 128) / 8 + 1 = 81$ bytes. Vectors are similarly treated
+For example, if an operation mutates a `u8` field in a resource that
+has 5 other `u128` fields, the per&#45;byte gas write cost will account
+for $(5 &#42; 128) / 8 &#43; 1 &#61; 81$ bytes. Vectors are similarly treated
 as fields.
 
 
@@ -131,7 +131,7 @@ as fields.
 ## Function dependencies
 
 
-The below dependency chart uses <code>mermaid.js</code> syntax, which can be
+The below dependency chart uses `mermaid.js` syntax, which can be
 automatically rendered into a diagram (depending on the browser)
 when viewing the documentation file generated from source code. If
 a browser renders the diagrams with coloring that makes it difficult
@@ -147,10 +147,10 @@ to read, try a different browser.
 
 flowchart LR
 
-initialize --> base_8192_exponential_curve
-base_8192_exponential_curve --> new_gas_curve
-base_8192_exponential_curve --> new_point
-new_gas_curve --> validate_points
+initialize &#45;&#45;&gt; base_8192_exponential_curve
+base_8192_exponential_curve &#45;&#45;&gt; new_gas_curve
+base_8192_exponential_curve &#45;&#45;&gt; new_point
+new_gas_curve &#45;&#45;&gt; validate_points
 
 ```
 
@@ -164,19 +164,19 @@ new_gas_curve --> validate_points
 
 flowchart LR
 
-calculate_gas --> Interpolate %% capitalized
-calculate_read_gas --> calculate_gas
-calculate_create_gas --> calculate_gas
-calculate_write_gas --> calculate_gas
-on_reconfig --> calculate_read_gas
-on_reconfig --> calculate_create_gas
-on_reconfig --> calculate_write_gas
-reconfiguration::reconfigure --> on_reconfig
+calculate_gas &#45;&#45;&gt; Interpolate %% capitalized
+calculate_read_gas &#45;&#45;&gt; calculate_gas
+calculate_create_gas &#45;&#45;&gt; calculate_gas
+calculate_write_gas &#45;&#45;&gt; calculate_gas
+on_reconfig &#45;&#45;&gt; calculate_read_gas
+on_reconfig &#45;&#45;&gt; calculate_create_gas
+on_reconfig &#45;&#45;&gt; calculate_write_gas
+reconfiguration::reconfigure &#45;&#45;&gt; on_reconfig
 
 ```
 
-Here, the function <code><a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>()</code> is spelled <code>Interpolate</code> because
-<code>interpolate</code> is a reserved word in <code>mermaid.js</code>.
+Here, the function `interpolate()` is spelled `Interpolate` because
+`interpolate` is a reserved word in `mermaid.js`.
 
 
 <a id="@Setting_configurations_10"></a>
@@ -188,7 +188,7 @@ Here, the function <code><a href="storage_gas.md#0x1_storage_gas_interpolate">in
 
 flowchart LR
 
-gas_schedule::set_storage_gas_config --> set_config
+gas_schedule::set_storage_gas_config &#45;&#45;&gt; set_config
 
 ```
 
@@ -206,8 +206,8 @@ The below index is automatically generated from source code:
     -  [Utilization dimensions](#@Utilization_dimensions_2)
     -  [Utilization ratios](#@Utilization_ratios_3)
     -  [Gas curve lookup](#@Gas_curve_lookup_4)
-    -  [Item-wise operations](#@Item-wise_operations_5)
-    -  [Byte-wise operations](#@Byte-wise_operations_6)
+    -  [Item&#45;wise operations](#@Item&#45;wise_operations_5)
+    -  [Byte&#45;wise operations](#@Byte&#45;wise_operations_6)
 -  [Function dependencies](#@Function_dependencies_7)
     -  [Initialization](#@Initialization_8)
     -  [Reconfiguration](#@Reconfiguration_9)
@@ -229,37 +229,16 @@ The below index is automatically generated from source code:
 -  [Function `new_storage_gas_config`](#0x1_storage_gas_new_storage_gas_config)
 -  [Function `set_config`](#0x1_storage_gas_set_config)
 -  [Function `initialize`](#0x1_storage_gas_initialize)
--  [Function `validate_points`](#0x1_storage_gas_validate_points)
--  [Function `calculate_gas`](#0x1_storage_gas_calculate_gas)
--  [Function `interpolate`](#0x1_storage_gas_interpolate)
--  [Function `calculate_read_gas`](#0x1_storage_gas_calculate_read_gas)
--  [Function `calculate_create_gas`](#0x1_storage_gas_calculate_create_gas)
--  [Function `calculate_write_gas`](#0x1_storage_gas_calculate_write_gas)
 -  [Function `on_reconfig`](#0x1_storage_gas_on_reconfig)
--  [Specification](#@Specification_16)
-    -  [Struct `Point`](#@Specification_16_Point)
-    -  [Struct `UsageGasConfig`](#@Specification_16_UsageGasConfig)
-    -  [High-level Requirements](#high-level-req)
-    -  [Module-level Specification](#module-level-spec)
-    -  [Struct `GasCurve`](#@Specification_16_GasCurve)
-    -  [Function `base_8192_exponential_curve`](#@Specification_16_base_8192_exponential_curve)
-    -  [Function `new_point`](#@Specification_16_new_point)
-    -  [Function `new_gas_curve`](#@Specification_16_new_gas_curve)
-    -  [Function `new_usage_gas_config`](#@Specification_16_new_usage_gas_config)
-    -  [Function `new_storage_gas_config`](#@Specification_16_new_storage_gas_config)
-    -  [Function `set_config`](#@Specification_16_set_config)
-    -  [Function `initialize`](#@Specification_16_initialize)
-    -  [Function `validate_points`](#@Specification_16_validate_points)
-    -  [Function `calculate_gas`](#@Specification_16_calculate_gas)
-    -  [Function `interpolate`](#@Specification_16_interpolate)
-    -  [Function `on_reconfig`](#@Specification_16_on_reconfig)
 
 
-<pre><code><b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="state_storage.md#0x1_state_storage">0x1::state_storage</a>;
-<b>use</b> <a href="system_addresses.md#0x1_system_addresses">0x1::system_addresses</a>;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    use 0x1::error;
+    use 0x1::state_storage;
+    use 0x1::system_addresses;
+}
+```
 
 
 <a id="0x1_storage_gas_StorageGas"></a>
@@ -269,7 +248,7 @@ The below index is automatically generated from source code:
 Storage parameters, reconfigured each epoch.
 
 Parameters are updated during reconfiguration via
-<code><a href="storage_gas.md#0x1_storage_gas_on_reconfig">on_reconfig</a>()</code>, based on storage utilization at the beginning
+`on_reconfig()`, based on storage utilization at the beginning
 of the epoch in which the reconfiguration transaction is
 executed. The gas schedule derived from these parameters will
 then be used to calculate gas for the entirety of the
@@ -279,56 +258,12 @@ does not need to reload gas parameters after the
 first transaction of an epoch.
 
 
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::storage_gas {
+    struct StorageGas has key
+}
+```
 
-
-
-<details>
-<summary>Fields</summary>
-
-
-<dl>
-<dt>
-<code>per_item_read: u64</code>
-</dt>
-<dd>
- Cost to read an item from global storage.
-</dd>
-<dt>
-<code>per_item_create: u64</code>
-</dt>
-<dd>
- Cost to create an item in global storage.
-</dd>
-<dt>
-<code>per_item_write: u64</code>
-</dt>
-<dd>
- Cost to overwrite an item in global storage.
-</dd>
-<dt>
-<code>per_byte_read: u64</code>
-</dt>
-<dd>
- Cost to read a byte from global storage.
-</dd>
-<dt>
-<code>per_byte_create: u64</code>
-</dt>
-<dd>
- Cost to create a byte in global storage.
-</dd>
-<dt>
-<code>per_byte_write: u64</code>
-</dt>
-<dd>
- Cost to overwrite a byte in global storage.
-</dd>
-</dl>
-
-
-</details>
 
 <a id="0x1_storage_gas_Point"></a>
 
@@ -337,92 +272,38 @@ first transaction of an epoch.
 A point in a Eulerian curve approximation, with each coordinate
 given in basis points:
 
-| Field value | Percentage |
-|-------------|------------|
-| <code>1</code>         | 00.01 %    |
-| <code>10</code>        | 00.10 %    |
-| <code>100</code>       | 01.00 %    |
-| <code>1000</code>      | 10.00 %    |
+&#124; Field value &#124; Percentage &#124;
+&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;
+&#124; `1`         &#124; 00.01 %    &#124;
+&#124; `10`        &#124; 00.10 %    &#124;
+&#124; `100`       &#124; 01.00 %    &#124;
+&#124; `1000`      &#124; 10.00 %    &#124;
 
 
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::storage_gas {
+    struct Point has copy, drop, store
+}
+```
 
-
-
-<details>
-<summary>Fields</summary>
-
-
-<dl>
-<dt>
-<code>x: u64</code>
-</dt>
-<dd>
- x-coordinate basis points, corresponding to utilization
- ratio in <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>.
-</dd>
-<dt>
-<code>y: u64</code>
-</dt>
-<dd>
- y-coordinate basis points, corresponding to utilization
- multiplier in <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>.
-</dd>
-</dl>
-
-
-</details>
 
 <a id="0x1_storage_gas_UsageGasConfig"></a>
 
 ## Struct `UsageGasConfig`
 
-A gas configuration for either per-item or per-byte costs.
+A gas configuration for either per&#45;item or per&#45;byte costs.
 
 Contains a target usage amount, as well as a Eulerian
 approximation of an exponential curve for reads, creations, and
-overwrites. See <code><a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a></code>.
+overwrites. See `StorageGasConfig`.
 
 
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::storage_gas {
+    struct UsageGasConfig has copy, drop, store
+}
+```
 
-
-
-<details>
-<summary>Fields</summary>
-
-
-<dl>
-<dt>
-<code>target_usage: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>read_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>create_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>write_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-</dl>
-
-
-</details>
 
 <a id="0x1_storage_gas_GasCurve"></a>
 
@@ -432,89 +313,43 @@ Eulerian approximation of an exponential curve.
 
 Assumes the following endpoints:
 
-* $(x_0, y_0) = (0, 0)$
-* $(x_f, y_f) = (10000, 10000)$
+&#42; $(x_0, y_0) &#61; (0, 0)$
+&#42; $(x_f, y_f) &#61; (10000, 10000)$
 
 Intermediate points must satisfy:
 
-1. $x_i > x_{i - 1}$ ( $x$ is strictly increasing).
+1. $x_i &gt; x_&#123;i &#45; 1&#125;$ ( $x$ is strictly increasing).
 2. $0 \leq x_i \leq 10000$ ( $x$ is between 0 and 10000).
-3. $y_i \geq y_{i - 1}$ ( $y$ is non-decreasing).
+3. $y_i \geq y_&#123;i &#45; 1&#125;$ ( $y$ is non&#45;decreasing).
 4. $0 \leq y_i \leq 10000$ ( $y$ is between 0 and 10000).
 
 Lookup between two successive points is calculated via linear
 interpolation, e.g., as if there were a straight line between
 them.
 
-See <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>.
+See `base_8192_exponential_curve()`.
 
 
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::storage_gas {
+    struct GasCurve has copy, drop, store
+}
+```
 
-
-
-<details>
-<summary>Fields</summary>
-
-
-<dl>
-<dt>
-<code>min_gas: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>max_gas: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;</code>
-</dt>
-<dd>
-
-</dd>
-</dl>
-
-
-</details>
 
 <a id="0x1_storage_gas_StorageGasConfig"></a>
 
 ## Resource `StorageGasConfig`
 
-Gas configurations for per-item and per-byte prices.
+Gas configurations for per&#45;item and per&#45;byte prices.
 
 
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> <b>has</b> <b>copy</b>, drop, key
-</code></pre>
+```move
+module 0x1::storage_gas {
+    struct StorageGasConfig has copy, drop, key
+}
+```
 
-
-
-<details>
-<summary>Fields</summary>
-
-
-<dl>
-<dt>
-<code>item_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a></code>
-</dt>
-<dd>
- Per-item gas configuration.
-</dd>
-<dt>
-<code>byte_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a></code>
-</dt>
-<dd>
- Per-byte gas configuration.
-</dd>
-</dl>
-
-
-</details>
 
 <a id="@Constants_12"></a>
 
@@ -525,81 +360,99 @@ Gas configurations for per-item and per-byte prices.
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a>: u64 = 18446744073709551615;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const MAX_U64: u64 = 18446744073709551615;
+}
+```
 
 
 <a id="0x1_storage_gas_BASIS_POINT_DENOMINATION"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>: u64 = 10000;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const BASIS_POINT_DENOMINATION: u64 = 10000;
+}
+```
 
 
 <a id="0x1_storage_gas_EINVALID_GAS_RANGE"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_EINVALID_GAS_RANGE">EINVALID_GAS_RANGE</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const EINVALID_GAS_RANGE: u64 = 2;
+}
+```
 
 
 <a id="0x1_storage_gas_EINVALID_MONOTONICALLY_NON_DECREASING_CURVE"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_EINVALID_MONOTONICALLY_NON_DECREASING_CURVE">EINVALID_MONOTONICALLY_NON_DECREASING_CURVE</a>: u64 = 5;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const EINVALID_MONOTONICALLY_NON_DECREASING_CURVE: u64 = 5;
+}
+```
 
 
 <a id="0x1_storage_gas_EINVALID_POINT_RANGE"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_EINVALID_POINT_RANGE">EINVALID_POINT_RANGE</a>: u64 = 6;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const EINVALID_POINT_RANGE: u64 = 6;
+}
+```
 
 
 <a id="0x1_storage_gas_ESTORAGE_GAS"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS">ESTORAGE_GAS</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const ESTORAGE_GAS: u64 = 1;
+}
+```
 
 
 <a id="0x1_storage_gas_ESTORAGE_GAS_CONFIG"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS_CONFIG">ESTORAGE_GAS_CONFIG</a>: u64 = 0;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const ESTORAGE_GAS_CONFIG: u64 = 0;
+}
+```
 
 
 <a id="0x1_storage_gas_ETARGET_USAGE_TOO_BIG"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_ETARGET_USAGE_TOO_BIG">ETARGET_USAGE_TOO_BIG</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const ETARGET_USAGE_TOO_BIG: u64 = 4;
+}
+```
 
 
 <a id="0x1_storage_gas_EZERO_TARGET_USAGE"></a>
 
 
 
-<pre><code><b>const</b> <a href="storage_gas.md#0x1_storage_gas_EZERO_TARGET_USAGE">EZERO_TARGET_USAGE</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::storage_gas {
+    const EZERO_TARGET_USAGE: u64 = 3;
+}
+```
 
 
 <a id="0x1_storage_gas_base_8192_exponential_curve"></a>
@@ -616,20 +469,20 @@ Default exponential curve having base 8192.
 
 Gas price as a function of utilization ratio is defined as:
 
-$$g(u_r) = g_{min} + \frac{(b^{u_r} - 1)}{b - 1} \Delta_g$$
+$$g(u_r) &#61; g_&#123;min&#125; &#43; \frac&#123;(b^&#123;u_r&#125; &#45; 1)&#125;&#123;b &#45; 1&#125; \Delta_g$$
 
-$$g(u_r) = g_{min} + u_m \Delta_g$$
+$$g(u_r) &#61; g_&#123;min&#125; &#43; u_m \Delta_g$$
 
-| Variable                            | Description            |
-|-------------------------------------|------------------------|
-| $g_{min}$                           | <code>min_gas</code>              |
-| $g_{max}$                           | <code>max_gas</code>              |
-| $\Delta_{g} = g_{max} - g_{min}$    | Gas delta              |
-| $u$                                 | Utilization            |
-| $u_t$                               | Target utilization     |
-| $u_r = u / u_t$                     | Utilization ratio      |
-| $u_m = \frac{(b^{u_r} - 1)}{b - 1}$ | Utilization multiplier |
-| $b = 8192$                          | Exponent base          |
+&#124; Variable                            &#124; Description            &#124;
+&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;
+&#124; $g_&#123;min&#125;$                           &#124; `min_gas`              &#124;
+&#124; $g_&#123;max&#125;$                           &#124; `max_gas`              &#124;
+&#124; $\Delta_&#123;g&#125; &#61; g_&#123;max&#125; &#45; g_&#123;min&#125;$    &#124; Gas delta              &#124;
+&#124; $u$                                 &#124; Utilization            &#124;
+&#124; $u_t$                               &#124; Target utilization     &#124;
+&#124; $u_r &#61; u / u_t$                     &#124; Utilization ratio      &#124;
+&#124; $u_m &#61; \frac&#123;(b^&#123;u_r&#125; &#45; 1)&#125;&#123;b &#45; 1&#125;$ &#124; Utilization multiplier &#124;
+&#124; $b &#61; 8192$                          &#124; Exponent base          &#124;
 
 
 <a id="@Example_14"></a>
@@ -637,14 +490,14 @@ $$g(u_r) = g_{min} + u_m \Delta_g$$
 ### Example
 
 
-Hence for a utilization ratio of 50% ( $u_r = 0.5$ ):
+Hence for a utilization ratio of 50% ( $u_r &#61; 0.5$ ):
 
-$$g(0.5) = g_{min} + \frac{8192^{0.5} - 1}{8192 - 1} \Delta_g$$
+$$g(0.5) &#61; g_&#123;min&#125; &#43; \frac&#123;8192^&#123;0.5&#125; &#45; 1&#125;&#123;8192 &#45; 1&#125; \Delta_g$$
 
-$$g(0.5) \approx g_{min} + 0.0109 \Delta_g$$
+$$g(0.5) \approx g_&#123;min&#125; &#43; 0.0109 \Delta_g$$
 
-Which means that the price above <code>min_gas</code> is approximately
-1.09% of the difference between <code>max_gas</code> and <code>min_gas</code>.
+Which means that the price above `min_gas` is approximately
+1.09% of the difference between `max_gas` and `min_gas`.
 
 
 <a id="@Utilization_multipliers_15"></a>
@@ -652,52 +505,27 @@ Which means that the price above <code>min_gas</code> is approximately
 ### Utilization multipliers
 
 
-| $u_r$ | $u_m$ (approximate) |
-|-------|---------------------|
-| 10%   | 0.02%               |
-| 20%   | 0.06%               |
-| 30%   | 0.17%               |
-| 40%   | 0.44%               |
-| 50%   | 1.09%               |
-| 60%   | 2.71%               |
-| 70%   | 6.69%               |
-| 80%   | 16.48%              |
-| 90%   | 40.61%              |
-| 95%   | 63.72%              |
-| 99%   | 91.38%              |
+&#124; $u_r$ &#124; $u_m$ (approximate) &#124;
+&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;
+&#124; 10%   &#124; 0.02%               &#124;
+&#124; 20%   &#124; 0.06%               &#124;
+&#124; 30%   &#124; 0.17%               &#124;
+&#124; 40%   &#124; 0.44%               &#124;
+&#124; 50%   &#124; 1.09%               &#124;
+&#124; 60%   &#124; 2.71%               &#124;
+&#124; 70%   &#124; 6.69%               &#124;
+&#124; 80%   &#124; 16.48%              &#124;
+&#124; 90%   &#124; 40.61%              &#124;
+&#124; 95%   &#124; 63.72%              &#124;
+&#124; 99%   &#124; 91.38%              &#124;
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(min_gas: u64, max_gas: u64): <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(min_gas: u64, max_gas: u64): <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> {
-    <a href="storage_gas.md#0x1_storage_gas_new_gas_curve">new_gas_curve</a>(min_gas, max_gas,
-        <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>[
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(1000, 2),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(2000, 6),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(3000, 17),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(4000, 44),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(5000, 109),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(6000, 271),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(7000, 669),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(8000, 1648),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(9000, 4061),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(9500, 6372),
-            <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(9900, 9138),
-        ]
-    )
+```move
+module 0x1::storage_gas {
+    public fun base_8192_exponential_curve(min_gas: u64, max_gas: u64): storage_gas::GasCurve
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_new_point"></a>
 
@@ -705,27 +533,12 @@ Which means that the price above <code>min_gas</code> is approximately
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(x: u64, y: u64): <a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(x: u64, y: u64): <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> {
-    <b>assert</b>!(
-        x &lt;= <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> && y &lt;= <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>,
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_EINVALID_POINT_RANGE">EINVALID_POINT_RANGE</a>)
-    );
-    <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x, y }
+```move
+module 0x1::storage_gas {
+    public fun new_point(x: u64, y: u64): storage_gas::Point
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_new_gas_curve"></a>
 
@@ -733,30 +546,12 @@ Which means that the price above <code>min_gas</code> is approximately
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_gas_curve">new_gas_curve</a>(min_gas: u64, max_gas: u64, points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;): <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_gas_curve">new_gas_curve</a>(min_gas: u64, max_gas: u64, points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">Point</a>&gt;): <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> {
-    <b>assert</b>!(max_gas &gt;= min_gas, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_EINVALID_GAS_RANGE">EINVALID_GAS_RANGE</a>));
-    <b>assert</b>!(max_gas &lt;= <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_EINVALID_GAS_RANGE">EINVALID_GAS_RANGE</a>));
-    <a href="storage_gas.md#0x1_storage_gas_validate_points">validate_points</a>(&points);
-    <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> {
-        min_gas,
-        max_gas,
-        points
-    }
+```move
+module 0x1::storage_gas {
+    public fun new_gas_curve(min_gas: u64, max_gas: u64, points: vector<storage_gas::Point>): storage_gas::GasCurve
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_new_usage_gas_config"></a>
 
@@ -764,30 +559,12 @@ Which means that the price above <code>min_gas</code> is approximately
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_usage_gas_config">new_usage_gas_config</a>(target_usage: u64, read_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>, create_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>, write_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>): <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_usage_gas_config">new_usage_gas_config</a>(target_usage: u64, read_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a>, create_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a>, write_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a>): <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> {
-    <b>assert</b>!(target_usage &gt; 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_EZERO_TARGET_USAGE">EZERO_TARGET_USAGE</a>));
-    <b>assert</b>!(target_usage &lt;= <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_ETARGET_USAGE_TOO_BIG">ETARGET_USAGE_TOO_BIG</a>));
-    <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> {
-        target_usage,
-        read_curve,
-        create_curve,
-        write_curve,
-    }
+```move
+module 0x1::storage_gas {
+    public fun new_usage_gas_config(target_usage: u64, read_curve: storage_gas::GasCurve, create_curve: storage_gas::GasCurve, write_curve: storage_gas::GasCurve): storage_gas::UsageGasConfig
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_new_storage_gas_config"></a>
 
@@ -795,26 +572,12 @@ Which means that the price above <code>min_gas</code> is approximately
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_storage_gas_config">new_storage_gas_config</a>(item_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>, byte_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>): <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">storage_gas::StorageGasConfig</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_storage_gas_config">new_storage_gas_config</a>(item_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a>, byte_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a>): <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> {
-    <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> {
-        item_config,
-        byte_config
-    }
+```move
+module 0x1::storage_gas {
+    public fun new_storage_gas_config(item_config: storage_gas::UsageGasConfig, byte_config: storage_gas::UsageGasConfig): storage_gas::StorageGasConfig
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_set_config"></a>
 
@@ -822,310 +585,46 @@ Which means that the price above <code>min_gas</code> is approximately
 
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_set_config">set_config</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">storage_gas::StorageGasConfig</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_set_config">set_config</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>) <b>acquires</b> <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-    *<b>borrow_global_mut</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework) = config;
+```move
+module 0x1::storage_gas {
+    public(friend) fun set_config(aptos_framework: &signer, config: storage_gas::StorageGasConfig)
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_storage_gas_initialize"></a>
 
 ## Function `initialize`
 
-Initialize per-item and per-byte gas prices.
+Initialize per&#45;item and per&#45;byte gas prices.
 
 Target utilization is set to 2 billion items and 1 TB.
 
-<code><a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a></code> endpoints are initialized as follows:
+`GasCurve` endpoints are initialized as follows:
 
-| Data style | Operation | Minimum gas | Maximum gas |
-|------------|-----------|-------------|-------------|
-| Per item   | Read      | 300K        | 300K * 100  |
-| Per item   | Create    | 300k        | 300k * 100    |
-| Per item   | Write     | 300K        | 300K * 100  |
-| Per byte   | Read      | 300         | 300 * 100   |
-| Per byte   | Create    | 5K          | 5K * 100    |
-| Per byte   | Write     | 5K          | 5K * 100    |
+&#124; Data style &#124; Operation &#124; Minimum gas &#124; Maximum gas &#124;
+&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#124;
+&#124; Per item   &#124; Read      &#124; 300K        &#124; 300K &#42; 100  &#124;
+&#124; Per item   &#124; Create    &#124; 300k        &#124; 300k &#42; 100    &#124;
+&#124; Per item   &#124; Write     &#124; 300K        &#124; 300K &#42; 100  &#124;
+&#124; Per byte   &#124; Read      &#124; 300         &#124; 300 &#42; 100   &#124;
+&#124; Per byte   &#124; Create    &#124; 5K          &#124; 5K &#42; 100    &#124;
+&#124; Per byte   &#124; Write     &#124; 5K          &#124; 5K &#42; 100    &#124;
 
-<code><a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a></code> values are additionally initialized, but per
-<code><a href="storage_gas.md#0x1_storage_gas_on_reconfig">on_reconfig</a>()</code>, they will be reconfigured for each subsequent
+`StorageGas` values are additionally initialized, but per
+`on_reconfig()`, they will be reconfigured for each subsequent
 epoch after initialization.
 
-See <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code> fore more information on
+See `base_8192_exponential_curve()` fore more information on
 target utilization.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-    <b>assert</b>!(
-        !<b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists">error::already_exists</a>(<a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS_CONFIG">ESTORAGE_GAS_CONFIG</a>)
-    );
-
-    <b>let</b> k: u64 = 1000;
-    <b>let</b> m: u64 = 1000 * 1000;
-
-    <b>let</b> item_config = <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> {
-        target_usage: 2 * k * m, // 2 billion
-        read_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(300 * k, 300 * k * 100),
-        create_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(300 * k, 300 * k * 100),
-        write_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(300 * k, 300 * k * 100),
-    };
-    <b>let</b> byte_config = <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> {
-        target_usage: 1 * m * m, // 1TB
-        read_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(300, 300 * 100),
-        create_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(5 * k,  5 * k * 100),
-        write_curve: <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(5 * k,  5 * k * 100),
-    };
-    <b>move_to</b>(aptos_framework, <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> {
-        item_config,
-        byte_config,
-    });
-
-    <b>assert</b>!(
-        !<b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists">error::already_exists</a>(<a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS">ESTORAGE_GAS</a>)
-    );
-    <b>move_to</b>(aptos_framework, <a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a> {
-        per_item_read: 300 * k,
-        per_item_create: 5 * m,
-        per_item_write: 300 * k,
-        per_byte_read: 300,
-        per_byte_create: 5 * k,
-        per_byte_write: 5 * k,
-    });
+```move
+module 0x1::storage_gas {
+    public fun initialize(aptos_framework: &signer)
 }
-</code></pre>
+```
 
-
-
-</details>
-
-<a id="0x1_storage_gas_validate_points"></a>
-
-## Function `validate_points`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_validate_points">validate_points</a>(points: &<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_validate_points">validate_points</a>(points: &<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">Point</a>&gt;) {
-    <b>let</b> len = <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(points);
-    <b>spec</b> {
-        <b>assume</b> len &lt; <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a>;
-    };
-    <b>let</b> i = 0;
-    <b>while</b> ({
-        <b>spec</b> {
-            <b>invariant</b> <b>forall</b> j in 0..i: {
-                <b>let</b> cur = <b>if</b> (j == 0) { <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: 0, y: 0 } } <b>else</b> { points[j - 1] };
-                <b>let</b> next = <b>if</b> (j == len) { <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, y: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> } } <b>else</b> { points[j] };
-                cur.x &lt; next.x && cur.y &lt;= next.y
-            };
-        };
-        i &lt;= len
-    }) {
-        <b>let</b> cur = <b>if</b> (i == 0) { &<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: 0, y: 0 } } <b>else</b> { <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, i - 1) };
-        <b>let</b> next = <b>if</b> (i == len) { &<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, y: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> } } <b>else</b> { <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, i) };
-        <b>assert</b>!(cur.x &lt; next.x && cur.y &lt;= next.y, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="storage_gas.md#0x1_storage_gas_EINVALID_MONOTONICALLY_NON_DECREASING_CURVE">EINVALID_MONOTONICALLY_NON_DECREASING_CURVE</a>));
-        i = i + 1;
-    }
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_storage_gas_calculate_gas"></a>
-
-## Function `calculate_gas`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(max_usage: u64, current_usage: u64, curve: &<a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(max_usage: u64, current_usage: u64, curve: &<a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a>): u64 {
-    <b>let</b> capped_current_usage = <b>if</b> (current_usage &gt; max_usage) max_usage <b>else</b> current_usage;
-    <b>let</b> points = &curve.points;
-    <b>let</b> num_points = <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(points);
-    <b>let</b> current_usage_bps = capped_current_usage * <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> / max_usage;
-
-    // Check the corner case that current_usage_bps drops before the first point.
-    <b>let</b> (left, right) = <b>if</b> (num_points == 0) {
-        (&<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: 0, y: 0 }, &<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, y: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> })
-    } <b>else</b> <b>if</b> (current_usage_bps &lt; <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, 0).x) {
-        (&<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: 0, y: 0 }, <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, 0))
-    } <b>else</b> <b>if</b> (<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, num_points - 1).x &lt;= current_usage_bps) {
-        (<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, num_points - 1), &<a href="storage_gas.md#0x1_storage_gas_Point">Point</a> { x: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, y: <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> })
-    } <b>else</b> {
-        <b>let</b> (i, j) = (0, num_points - 2);
-        <b>while</b> ({
-            <b>spec</b> {
-                <b>invariant</b> i &lt;= j;
-                <b>invariant</b> j &lt; num_points - 1;
-                <b>invariant</b> points[i].x &lt;= current_usage_bps;
-                <b>invariant</b> current_usage_bps &lt; points[j + 1].x;
-            };
-            i &lt; j
-        }) {
-            <b>let</b> mid = j - (j - i) / 2;
-            <b>if</b> (current_usage_bps &lt; <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, mid).x) {
-                <b>spec</b> {
-                    // j is strictly decreasing.
-                    <b>assert</b> mid - 1 &lt; j;
-                };
-                j = mid - 1;
-            } <b>else</b> {
-                <b>spec</b> {
-                    // i is strictly increasing.
-                    <b>assert</b> i &lt; mid;
-                };
-                i = mid;
-            };
-        };
-        (<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, i), <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(points, i + 1))
-    };
-    <b>let</b> y_interpolated = <a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>(left.x, right.x, left.y, right.y, current_usage_bps);
-    <a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>(0, <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>, curve.min_gas, curve.max_gas, y_interpolated)
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_storage_gas_interpolate"></a>
-
-## Function `interpolate`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>(x0: u64, x1: u64, y0: u64, y1: u64, x: u64): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>(x0: u64, x1: u64, y0: u64, y1: u64, x: u64): u64 {
-    y0 + (x - x0) * (y1 - y0) / (x1 - x0)
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_storage_gas_calculate_read_gas"></a>
-
-## Function `calculate_read_gas`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_read_gas">calculate_read_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>, usage: u64): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_read_gas">calculate_read_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a>, usage: u64): u64 {
-    <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(config.target_usage, usage, &config.read_curve)
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_storage_gas_calculate_create_gas"></a>
-
-## Function `calculate_create_gas`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_create_gas">calculate_create_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>, usage: u64): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_create_gas">calculate_create_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a>, usage: u64): u64 {
-    <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(config.target_usage, usage, &config.create_curve)
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_storage_gas_calculate_write_gas"></a>
-
-## Function `calculate_write_gas`
-
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_write_gas">calculate_write_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>, usage: u64): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_write_gas">calculate_write_gas</a>(config: &<a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a>, usage: u64): u64 {
-    <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(config.target_usage, usage, &config.write_curve)
-}
-</code></pre>
-
-
-
-</details>
 
 <a id="0x1_storage_gas_on_reconfig"></a>
 
@@ -1133,504 +632,8 @@ target utilization.
 
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_on_reconfig">on_reconfig</a>()
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_on_reconfig">on_reconfig</a>() <b>acquires</b> <a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>, <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a> {
-    <b>assert</b>!(
-        <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS_CONFIG">ESTORAGE_GAS_CONFIG</a>)
-    );
-    <b>assert</b>!(
-        <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="storage_gas.md#0x1_storage_gas_ESTORAGE_GAS">ESTORAGE_GAS</a>)
-    );
-    <b>let</b> (items, bytes) = <a href="state_storage.md#0x1_state_storage_current_items_and_bytes">state_storage::current_items_and_bytes</a>();
-    <b>let</b> gas_config = <b>borrow_global</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-    <b>let</b> gas = <b>borrow_global_mut</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework);
-    gas.per_item_read = <a href="storage_gas.md#0x1_storage_gas_calculate_read_gas">calculate_read_gas</a>(&gas_config.item_config, items);
-    gas.per_item_create = <a href="storage_gas.md#0x1_storage_gas_calculate_create_gas">calculate_create_gas</a>(&gas_config.item_config, items);
-    gas.per_item_write = <a href="storage_gas.md#0x1_storage_gas_calculate_write_gas">calculate_write_gas</a>(&gas_config.item_config, items);
-    gas.per_byte_read = <a href="storage_gas.md#0x1_storage_gas_calculate_read_gas">calculate_read_gas</a>(&gas_config.byte_config, bytes);
-    gas.per_byte_create = <a href="storage_gas.md#0x1_storage_gas_calculate_create_gas">calculate_create_gas</a>(&gas_config.byte_config, bytes);
-    gas.per_byte_write = <a href="storage_gas.md#0x1_storage_gas_calculate_write_gas">calculate_write_gas</a>(&gas_config.byte_config, bytes);
+```move
+module 0x1::storage_gas {
+    public(friend) fun on_reconfig()
 }
-</code></pre>
-
-
-
-</details>
-
-<a id="@Specification_16"></a>
-
-## Specification
-
-
-
-<a id="0x1_storage_gas_spec_calculate_gas"></a>
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_spec_calculate_gas">spec_calculate_gas</a>(max_usage: u64, current_usage: u64, curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a>): u64;
-</code></pre>
-
-
-
-
-<a id="0x1_storage_gas_NewGasCurveAbortsIf"></a>
-
-
-<pre><code><b>schema</b> <a href="storage_gas.md#0x1_storage_gas_NewGasCurveAbortsIf">NewGasCurveAbortsIf</a> {
-    min_gas: u64;
-    max_gas: u64;
-    <b>aborts_if</b> max_gas &lt; min_gas;
-    <b>aborts_if</b> max_gas &gt; <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-}
-</code></pre>
-
-
-A non decreasing curve must ensure that next is greater than cur.
-
-
-<a id="0x1_storage_gas_ValidatePointsAbortsIf"></a>
-
-
-<pre><code><b>schema</b> <a href="storage_gas.md#0x1_storage_gas_ValidatePointsAbortsIf">ValidatePointsAbortsIf</a> {
-    points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">Point</a>&gt;;
-    // This enforces <a id="high-level-req-2" href="#high-level-req">high-level requirement 2</a>:
-    <b>aborts_if</b> <b>exists</b> i in 0..len(points) - 1: (
-        points[i].x &gt;= points[i + 1].x || points[i].y &gt; points[i + 1].y
-    );
-    <b>aborts_if</b> len(points) &gt; 0 && points[0].x == 0;
-    <b>aborts_if</b> len(points) &gt; 0 && points[len(points) - 1].x == <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-}
-</code></pre>
-
-
-
-<a id="@Specification_16_Point"></a>
-
-### Struct `Point`
-
-
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_Point">Point</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
-
-
-
-<dl>
-<dt>
-<code>x: u64</code>
-</dt>
-<dd>
- x-coordinate basis points, corresponding to utilization
- ratio in <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>.
-</dd>
-<dt>
-<code>y: u64</code>
-</dt>
-<dd>
- y-coordinate basis points, corresponding to utilization
- multiplier in <code><a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>()</code>.
-</dd>
-</dl>
-
-
-
-<pre><code><b>invariant</b> x &lt;= <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-<b>invariant</b> y &lt;= <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-</code></pre>
-
-
-
-<a id="@Specification_16_UsageGasConfig"></a>
-
-### Struct `UsageGasConfig`
-
-
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
-
-
-
-<dl>
-<dt>
-<code>target_usage: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>read_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>create_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>write_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a></code>
-</dt>
-<dd>
-
-</dd>
-</dl>
-
-
-
-<pre><code><b>invariant</b> target_usage &gt; 0;
-<b>invariant</b> target_usage &lt;= <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-</code></pre>
-
-
-
-
-
-<a id="high-level-req"></a>
-
-### High-level Requirements
-
-<table>
-<tr>
-<th>No.</th><th>Requirement</th><th>Criticality</th><th>Implementation</th><th>Enforcement</th>
-</tr>
-
-<tr>
-<td>1</td>
-<td>The module's initialization guarantees the creation of the StorageGasConfig resource with a precise configuration, including accurate gas curves for per-item and per-byte operations.</td>
-<td>Medium</td>
-<td>The initialize function is responsible for setting up the initial state of the module, ensuring the fulfillment of the following conditions: (1) the creation of the StorageGasConfig resource, indicating its existence witqhin the module's context, and (2) the configuration of the StorageGasConfig resource includes the precise gas curves that define the behavior of per-item and per-byte operations.</td>
-<td>Formally verified via <a href="#high-level-req-1">initialize</a>. Moreover, the native gas logic has been manually audited.</td>
-</tr>
-
-<tr>
-<td>2</td>
-<td>The gas curve approximates an exponential curve based on a minimum and maximum gas charge.</td>
-<td>High</td>
-<td>The validate_points function ensures that the provided vector of points represents a monotonically non-decreasing curve.</td>
-<td>Formally verified via <a href="#high-level-req-2">validate_points</a>. Moreover, the configuration logic has been manually audited.</td>
-</tr>
-
-<tr>
-<td>3</td>
-<td>The initialized gas curve structure has values set according to the provided parameters.</td>
-<td>Low</td>
-<td>The new_gas_curve function initializes the GasCurve structure with values provided as parameters.</td>
-<td>Formally verified via <a href="#high-level-req-3">new_gas_curve</a>.</td>
-</tr>
-
-<tr>
-<td>4</td>
-<td>The initialized usage gas configuration structure has values set according to the provided parameters.</td>
-<td>Low</td>
-<td>The new_usage_gas_config function initializes the UsageGasConfig structure with values provided as parameters.</td>
-<td>Formally verified via <a href="#high-level-req-4">new_usage_gas_config</a>.</td>
-</tr>
-
-</table>
-
-
-
-
-<a id="module-level-spec"></a>
-
-### Module-level Specification
-
-
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-<b>invariant</b> [suspendable] <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>() ==&gt; <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-<b>invariant</b> [suspendable] <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>() ==&gt; <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework);
-</code></pre>
-
-
-
-<a id="@Specification_16_GasCurve"></a>
-
-### Struct `GasCurve`
-
-
-<pre><code><b>struct</b> <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
-
-
-
-<dl>
-<dt>
-<code>min_gas: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>max_gas: u64</code>
-</dt>
-<dd>
-
-</dd>
-<dt>
-<code>points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;</code>
-</dt>
-<dd>
-
-</dd>
-</dl>
-
-
-Invariant 1: The minimum gas charge does not exceed the maximum gas charge.
-
-
-<pre><code><b>invariant</b> min_gas &lt;= max_gas;
-</code></pre>
-
-
-Invariant 2: The maximum gas charge is capped by MAX_U64 scaled down by the basis point denomination.
-
-
-<pre><code><b>invariant</b> max_gas &lt;= <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-</code></pre>
-
-
-Invariant 3: The x-coordinate increases monotonically and the y-coordinate increasing strictly monotonically,
-that is, the gas-curve is a monotonically increasing function.
-
-
-<pre><code><b>invariant</b> (len(points) &gt; 0 ==&gt; points[0].x &gt; 0)
-    && (len(points) &gt; 0 ==&gt; points[len(points) - 1].x &lt; <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>)
-    && (<b>forall</b> i in 0..len(points) - 1: (points[i].x &lt; points[i + 1].x && points[i].y &lt;= points[i + 1].y));
-</code></pre>
-
-
-
-<a id="@Specification_16_base_8192_exponential_curve"></a>
-
-### Function `base_8192_exponential_curve`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_base_8192_exponential_curve">base_8192_exponential_curve</a>(min_gas: u64, max_gas: u64): <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>
-</code></pre>
-
-
-
-
-<pre><code><b>include</b> <a href="storage_gas.md#0x1_storage_gas_NewGasCurveAbortsIf">NewGasCurveAbortsIf</a>;
-</code></pre>
-
-
-
-<a id="@Specification_16_new_point"></a>
-
-### Function `new_point`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_point">new_point</a>(x: u64, y: u64): <a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>
-</code></pre>
-
-
-
-
-<pre><code><b>aborts_if</b> x &gt; <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a> || y &gt; <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-<b>ensures</b> result.x == x;
-<b>ensures</b> result.y == y;
-</code></pre>
-
-
-
-<a id="@Specification_16_new_gas_curve"></a>
-
-### Function `new_gas_curve`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_gas_curve">new_gas_curve</a>(min_gas: u64, max_gas: u64, points: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;): <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>
-</code></pre>
-
-
-A non decreasing curve must ensure that next is greater than cur.
-
-
-<pre><code><b>pragma</b> verify_duration_estimate = 120;
-<b>include</b> <a href="storage_gas.md#0x1_storage_gas_NewGasCurveAbortsIf">NewGasCurveAbortsIf</a>;
-<b>include</b> <a href="storage_gas.md#0x1_storage_gas_ValidatePointsAbortsIf">ValidatePointsAbortsIf</a>;
-// This enforces <a id="high-level-req-3" href="#high-level-req">high-level requirement 3</a>:
-<b>ensures</b> result == <a href="storage_gas.md#0x1_storage_gas_GasCurve">GasCurve</a> {
-    min_gas,
-    max_gas,
-    points
-};
-</code></pre>
-
-
-
-<a id="@Specification_16_new_usage_gas_config"></a>
-
-### Function `new_usage_gas_config`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_usage_gas_config">new_usage_gas_config</a>(target_usage: u64, read_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>, create_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>, write_curve: <a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>): <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>
-</code></pre>
-
-
-
-
-<pre><code><b>aborts_if</b> target_usage == 0;
-<b>aborts_if</b> target_usage &gt; <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-// This enforces <a id="high-level-req-4" href="#high-level-req">high-level requirement 4</a>:
-<b>ensures</b> result == <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">UsageGasConfig</a> {
-    target_usage,
-    read_curve,
-    create_curve,
-    write_curve,
-};
-</code></pre>
-
-
-
-<a id="@Specification_16_new_storage_gas_config"></a>
-
-### Function `new_storage_gas_config`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_new_storage_gas_config">new_storage_gas_config</a>(item_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>, byte_config: <a href="storage_gas.md#0x1_storage_gas_UsageGasConfig">storage_gas::UsageGasConfig</a>): <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">storage_gas::StorageGasConfig</a>
-</code></pre>
-
-
-
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result.item_config == item_config;
-<b>ensures</b> result.byte_config == byte_config;
-</code></pre>
-
-
-
-<a id="@Specification_16_set_config"></a>
-
-### Function `set_config`
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_set_config">set_config</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">storage_gas::StorageGasConfig</a>)
-</code></pre>
-
-
-Signer address must be @aptos_framework and StorageGasConfig exists.
-
-
-<pre><code><b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotAptosFramework">system_addresses::AbortsIfNotAptosFramework</a>{ <a href="account.md#0x1_account">account</a>: aptos_framework };
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-</code></pre>
-
-
-
-<a id="@Specification_16_initialize"></a>
-
-### Function `initialize`
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-Signer address must be @aptos_framework.
-Address @aptos_framework does not exist StorageGasConfig and StorageGas before the function call is restricted
-and exists after the function is executed.
-
-
-<pre><code><b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotAptosFramework">system_addresses::AbortsIfNotAptosFramework</a>{ <a href="account.md#0x1_account">account</a>: aptos_framework };
-<b>pragma</b> verify_duration_estimate = 120;
-<b>aborts_if</b> <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-<b>aborts_if</b> <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework);
-// This enforces <a id="high-level-req-1" href="#high-level-req">high-level requirement 1</a>:
-<b>ensures</b> <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-<b>ensures</b> <b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework);
-</code></pre>
-
-
-
-<a id="@Specification_16_validate_points"></a>
-
-### Function `validate_points`
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_validate_points">validate_points</a>(points: &<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="storage_gas.md#0x1_storage_gas_Point">storage_gas::Point</a>&gt;)
-</code></pre>
-
-
-A non decreasing curve must ensure that next is greater than cur.
-
-
-<pre><code><b>pragma</b> aborts_if_is_strict = <b>false</b>;
-<b>pragma</b> verify = <b>false</b>;
-<b>pragma</b> opaque;
-<b>include</b> <a href="storage_gas.md#0x1_storage_gas_ValidatePointsAbortsIf">ValidatePointsAbortsIf</a>;
-</code></pre>
-
-
-
-<a id="@Specification_16_calculate_gas"></a>
-
-### Function `calculate_gas`
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_calculate_gas">calculate_gas</a>(max_usage: u64, current_usage: u64, curve: &<a href="storage_gas.md#0x1_storage_gas_GasCurve">storage_gas::GasCurve</a>): u64
-</code></pre>
-
-
-
-
-<pre><code><b>pragma</b> opaque;
-<b>pragma</b> verify_duration_estimate = 120;
-<b>requires</b> max_usage &gt; 0;
-<b>requires</b> max_usage &lt;= <a href="storage_gas.md#0x1_storage_gas_MAX_U64">MAX_U64</a> / <a href="storage_gas.md#0x1_storage_gas_BASIS_POINT_DENOMINATION">BASIS_POINT_DENOMINATION</a>;
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="storage_gas.md#0x1_storage_gas_spec_calculate_gas">spec_calculate_gas</a>(max_usage, current_usage, curve);
-</code></pre>
-
-
-
-<a id="@Specification_16_interpolate"></a>
-
-### Function `interpolate`
-
-
-<pre><code><b>fun</b> <a href="storage_gas.md#0x1_storage_gas_interpolate">interpolate</a>(x0: u64, x1: u64, y0: u64, y1: u64, x: u64): u64
-</code></pre>
-
-
-
-
-<pre><code><b>pragma</b> opaque;
-<b>pragma</b> intrinsic;
-<b>aborts_if</b> <b>false</b>;
-</code></pre>
-
-
-
-<a id="@Specification_16_on_reconfig"></a>
-
-### Function `on_reconfig`
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="storage_gas.md#0x1_storage_gas_on_reconfig">on_reconfig</a>()
-</code></pre>
-
-
-Address @aptos_framework must exist StorageGasConfig and StorageGas and StateStorageUsage.
-
-
-<pre><code><b>requires</b> <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>();
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGasConfig">StorageGasConfig</a>&gt;(@aptos_framework);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="storage_gas.md#0x1_storage_gas_StorageGas">StorageGas</a>&gt;(@aptos_framework);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="state_storage.md#0x1_state_storage_StateStorageUsage">state_storage::StateStorageUsage</a>&gt;(@aptos_framework);
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```

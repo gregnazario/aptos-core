@@ -182,17 +182,17 @@ Checkout our developer doc on our token standard https://aptos.dev/standards
     -  [Function `initialize_token`](#@Specification_1_initialize_token)
 
 
-<pre><code><b>use</b> <a href="../../aptos-framework/doc/account.md#0x1_account">0x1::account</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../aptos-framework/doc/event.md#0x1_event">0x1::event</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table">0x1::table</a>;
-<b>use</b> <a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp">0x1::timestamp</a>;
-<b>use</b> <a href="property_map.md#0x3_property_map">0x3::property_map</a>;
-<b>use</b> <a href="token_event_store.md#0x3_token_event_store">0x3::token_event_store</a>;
+<pre><code><b>use</b> [../../aptos-framework/doc/account.md#0x1_account](0x1::account);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error](0x1::error);
+<b>use</b> [../../aptos-framework/doc/event.md#0x1_event](0x1::event);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features](0x1::features);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option](0x1::option);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](0x1::signer);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string](0x1::string);
+<b>use</b> [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table](0x1::table);
+<b>use</b> [../../aptos-framework/doc/timestamp.md#0x1_timestamp](0x1::timestamp);
+<b>use</b> [property_map.md#0x3_property_map](0x3::property_map);
+<b>use</b> [token_event_store.md#0x3_token_event_store](0x3::token_event_store);
 </code></pre>
 
 
@@ -203,7 +203,7 @@ Checkout our developer doc on our token standard https://aptos.dev/standards
 
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_Token">Token</a> <b>has</b> store
+<pre><code><b>struct</b> [token.md#0x3_token_Token](Token) <b>has</b> store
 </code></pre>
 
 
@@ -214,7 +214,7 @@ Checkout our developer doc on our token standard https://aptos.dev/standards
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -226,7 +226,7 @@ Checkout our developer doc on our token standard https://aptos.dev/standards
  the amount of tokens. Only property_version = 0 can have a value bigger than 1.
 </dd>
 <dt>
-<code>token_properties: <a href="property_map.md#0x3_property_map_PropertyMap">property_map::PropertyMap</a></code>
+<code>token_properties: [property_map.md#0x3_property_map_PropertyMap](property_map::PropertyMap)</code>
 </dt>
 <dd>
  The properties with this token.
@@ -245,7 +245,7 @@ Checkout our developer doc on our token standard https://aptos.dev/standards
 global unique identifier of a token
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_TokenId">TokenId</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_TokenId](TokenId) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -256,7 +256,7 @@ global unique identifier of a token
 
 <dl>
 <dt>
-<code>token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a></code>
+<code>token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)</code>
 </dt>
 <dd>
  the id to the common token data shared by token with different property_version
@@ -279,7 +279,7 @@ global unique identifier of a token
 globally unique identifier of tokendata
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_TokenDataId](TokenDataId) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -296,13 +296,13 @@ globally unique identifier of tokendata
  The address of the creator, eg: 0xcafe
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The name of collection; this is unique under the same account, eg: "Aptos Animal Collection"
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The name of the token; this is the same as the name field of TokenData
@@ -319,7 +319,7 @@ globally unique identifier of tokendata
 The shared TokenData by tokens with different property_version
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_TokenData">TokenData</a> <b>has</b> store
+<pre><code><b>struct</b> [token.md#0x3_token_TokenData](TokenData) <b>has</b> store
 </code></pre>
 
 
@@ -348,37 +348,37 @@ The shared TokenData by tokens with different property_version
  The number of tokens with this TokenData. Supply is only tracked for the limited token whose maximum is not 0
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The Uniform Resource Identifier (uri) pointing to the JSON file stored in off-chain storage; the URL length should be less than 512 characters, eg: https://arweave.net/Fmmn4ul-7Mv6vzm7JwE69O-I-vd6Bz2QriJO1niwCh4
 </dd>
 <dt>
-<code>royalty: <a href="token.md#0x3_token_Royalty">token::Royalty</a></code>
+<code>royalty: [token.md#0x3_token_Royalty](token::Royalty)</code>
 </dt>
 <dd>
  The denominator and numerator for calculating the royalty fee; it also contains payee account address for depositing the Royalty
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The name of the token, which should be unique within the collection; the length of name should be smaller than 128, characters, eg: "Aptos Animal #1234"
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  Describes this Token
 </dd>
 <dt>
-<code>default_properties: <a href="property_map.md#0x3_property_map_PropertyMap">property_map::PropertyMap</a></code>
+<code>default_properties: [property_map.md#0x3_property_map_PropertyMap](property_map::PropertyMap)</code>
 </dt>
 <dd>
  The properties are stored in the TokenData that are shared by all tokens
 </dd>
 <dt>
-<code>mutability_config: <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a></code>
+<code>mutability_config: [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)</code>
 </dt>
 <dd>
  Control the TokenData field mutability
@@ -395,7 +395,7 @@ The shared TokenData by tokens with different property_version
 The royalty of a token
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_Royalty">Royalty</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_Royalty](Royalty) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -436,7 +436,7 @@ The royalty of a token
 This config specifies which fields in the TokenData are mutable
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -488,7 +488,7 @@ This config specifies which fields in the TokenData are mutable
 Represents token resources owned by token owner
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> <b>has</b> key
+<pre><code><b>struct</b> [token.md#0x3_token_TokenStore](TokenStore) <b>has</b> key
 </code></pre>
 
 
@@ -499,7 +499,7 @@ Represents token resources owned by token owner
 
 <dl>
 <dt>
-<code>tokens: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table">table::Table</a>&lt;<a href="token.md#0x3_token_TokenId">token::TokenId</a>, <a href="token.md#0x3_token_Token">token::Token</a>&gt;</code>
+<code>tokens: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table](table::Table)&lt;[token.md#0x3_token_TokenId](token::TokenId), [token.md#0x3_token_Token](token::Token)&gt;</code>
 </dt>
 <dd>
  the tokens owned by a token owner
@@ -511,25 +511,25 @@ Represents token resources owned by token owner
 
 </dd>
 <dt>
-<code>deposit_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_DepositEvent">token::DepositEvent</a>&gt;</code>
+<code>deposit_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_DepositEvent](token::DepositEvent)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>withdraw_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_WithdrawEvent">token::WithdrawEvent</a>&gt;</code>
+<code>withdraw_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_WithdrawEvent](token::WithdrawEvent)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>burn_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_BurnTokenEvent">token::BurnTokenEvent</a>&gt;</code>
+<code>burn_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_BurnTokenEvent](token::BurnTokenEvent)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>mutate_token_property_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_MutateTokenPropertyMapEvent">token::MutateTokenPropertyMapEvent</a>&gt;</code>
+<code>mutate_token_property_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_MutateTokenPropertyMapEvent](token::MutateTokenPropertyMapEvent)&gt;</code>
 </dt>
 <dd>
 
@@ -546,7 +546,7 @@ Represents token resources owned by token owner
 This config specifies which fields in the Collection are mutable
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -586,7 +586,7 @@ This config specifies which fields in the Collection are mutable
 Represent collection and token metadata for a creator
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_Collections">Collections</a> <b>has</b> key
+<pre><code><b>struct</b> [token.md#0x3_token_Collections](Collections) <b>has</b> key
 </code></pre>
 
 
@@ -597,31 +597,31 @@ Represent collection and token metadata for a creator
 
 <dl>
 <dt>
-<code>collection_data: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table">table::Table</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token_CollectionData">token::CollectionData</a>&gt;</code>
+<code>collection_data: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table](table::Table)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [token.md#0x3_token_CollectionData](token::CollectionData)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>token_data: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table">table::Table</a>&lt;<a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, <a href="token.md#0x3_token_TokenData">token::TokenData</a>&gt;</code>
+<code>token_data: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_Table](table::Table)&lt;[token.md#0x3_token_TokenDataId](token::TokenDataId), [token.md#0x3_token_TokenData](token::TokenData)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>create_collection_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_CreateCollectionEvent">token::CreateCollectionEvent</a>&gt;</code>
+<code>create_collection_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_CreateCollectionEvent](token::CreateCollectionEvent)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>create_token_data_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_CreateTokenDataEvent">token::CreateTokenDataEvent</a>&gt;</code>
+<code>create_token_data_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_CreateTokenDataEvent](token::CreateTokenDataEvent)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>mint_token_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token.md#0x3_token_MintTokenEvent">token::MintTokenEvent</a>&gt;</code>
+<code>mint_token_events: [../../aptos-framework/doc/event.md#0x1_event_EventHandle](event::EventHandle)&lt;[token.md#0x3_token_MintTokenEvent](token::MintTokenEvent)&gt;</code>
 </dt>
 <dd>
 
@@ -638,7 +638,7 @@ Represent collection and token metadata for a creator
 Represent the collection metadata
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_CollectionData">CollectionData</a> <b>has</b> store
+<pre><code><b>struct</b> [token.md#0x3_token_CollectionData](CollectionData) <b>has</b> store
 </code></pre>
 
 
@@ -649,19 +649,19 @@ Represent the collection metadata
 
 <dl>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  A description for the token collection Eg: "Aptos Toad Overload"
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The collection name, which should be unique among all collections by the creator; the name should also be smaller than 128 characters, eg: "Animal Collection"
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
  The URI for the collection; its length should be smaller than 512 characters
@@ -680,7 +680,7 @@ Represent the collection metadata
  If maximal is 0, Aptos doesn't track the supply of this collection, and there is no limit
 </dd>
 <dt>
-<code>mutability_config: <a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a></code>
+<code>mutability_config: [token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)</code>
 </dt>
 <dd>
  control which collectionData field is mutable
@@ -697,7 +697,7 @@ Represent the collection metadata
 capability to withdraw without signer, this struct should be non-copyable
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_WithdrawCapability](WithdrawCapability) <b>has</b> drop, store
 </code></pre>
 
 
@@ -714,7 +714,7 @@ capability to withdraw without signer, this struct should be non-copyable
 
 </dd>
 <dt>
-<code>token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>token_id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -743,7 +743,7 @@ capability to withdraw without signer, this struct should be non-copyable
 Set of data sent to the event stream during a receive
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_DepositEvent">DepositEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_DepositEvent](DepositEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -754,7 +754,7 @@ Set of data sent to the event stream during a receive
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -777,8 +777,8 @@ Set of data sent to the event stream during a receive
 Set of data sent to the event stream during a receive
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_Deposit">Deposit</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_Deposit](Deposit) <b>has</b> drop, store
 </code></pre>
 
 
@@ -789,7 +789,7 @@ Set of data sent to the event stream during a receive
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -812,7 +812,7 @@ Set of data sent to the event stream during a receive
 Set of data sent to the event stream during a withdrawal
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_WithdrawEvent">WithdrawEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_WithdrawEvent](WithdrawEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -823,7 +823,7 @@ Set of data sent to the event stream during a withdrawal
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -846,8 +846,8 @@ Set of data sent to the event stream during a withdrawal
 Set of data sent to the event stream during a withdrawal
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_Withdraw">Withdraw</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_Withdraw](Withdraw) <b>has</b> drop, store
 </code></pre>
 
 
@@ -858,7 +858,7 @@ Set of data sent to the event stream during a withdrawal
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -881,7 +881,7 @@ Set of data sent to the event stream during a withdrawal
 token creation event id of token created
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_CreateTokenDataEvent">CreateTokenDataEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_CreateTokenDataEvent](CreateTokenDataEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -892,13 +892,13 @@ token creation event id of token created
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a></code>
+<code>id: [token.md#0x3_token_TokenDataId](token::TokenDataId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -910,7 +910,7 @@ token creation event id of token created
 
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -934,31 +934,31 @@ token creation event id of token created
 
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>mutability_config: <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a></code>
+<code>mutability_config: [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;</code>
+<code>property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
@@ -974,8 +974,8 @@ token creation event id of token created
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_CreateTokenData">CreateTokenData</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_CreateTokenData](CreateTokenData) <b>has</b> drop, store
 </code></pre>
 
 
@@ -986,13 +986,13 @@ token creation event id of token created
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a></code>
+<code>id: [token.md#0x3_token_TokenDataId](token::TokenDataId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -1004,7 +1004,7 @@ token creation event id of token created
 
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -1028,31 +1028,31 @@ token creation event id of token created
 
 </dd>
 <dt>
-<code>name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>mutability_config: <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a></code>
+<code>mutability_config: [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;</code>
+<code>property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
@@ -1069,7 +1069,7 @@ token creation event id of token created
 mint token event. This event triggered when creator adds more supply to existing token
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_MintTokenEvent](MintTokenEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1080,7 +1080,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a></code>
+<code>id: [token.md#0x3_token_TokenDataId](token::TokenDataId)</code>
 </dt>
 <dd>
 
@@ -1102,8 +1102,8 @@ mint token event. This event triggered when creator adds more supply to existing
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_MintToken">MintToken</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_MintToken](MintToken) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1114,7 +1114,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a></code>
+<code>id: [token.md#0x3_token_TokenDataId](token::TokenDataId)</code>
 </dt>
 <dd>
 
@@ -1136,7 +1136,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_BurnTokenEvent](BurnTokenEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1147,7 +1147,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -1169,8 +1169,8 @@ mint token event. This event triggered when creator adds more supply to existing
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_BurnToken">BurnToken</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_BurnToken](BurnToken) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1181,7 +1181,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
@@ -1203,7 +1203,7 @@ mint token event. This event triggered when creator adds more supply to existing
 
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1214,31 +1214,31 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>old_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>old_id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>new_id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;</code>
+<code>values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
@@ -1254,8 +1254,8 @@ mint token event. This event triggered when creator adds more supply to existing
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_MutateTokenPropertyMap">MutateTokenPropertyMap</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_MutateTokenPropertyMap](MutateTokenPropertyMap) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1266,31 +1266,31 @@ mint token event. This event triggered when creator adds more supply to existing
 
 <dl>
 <dt>
-<code>old_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>old_id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a></code>
+<code>new_id: [token.md#0x3_token_TokenId](token::TokenId)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;</code>
+<code>values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+<code>types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;</code>
 </dt>
 <dd>
 
@@ -1307,7 +1307,7 @@ mint token event. This event triggered when creator adds more supply to existing
 create collection event with creator address and collection name
 
 
-<pre><code><b>struct</b> <a href="token.md#0x3_token_CreateCollectionEvent">CreateCollectionEvent</a> <b>has</b> drop, store
+<pre><code><b>struct</b> [token.md#0x3_token_CreateCollectionEvent](CreateCollectionEvent) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1324,19 +1324,19 @@ create collection event with creator address and collection name
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -1358,8 +1358,8 @@ create collection event with creator address and collection name
 
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token.md#0x3_token_CreateCollection">CreateCollection</a> <b>has</b> drop, store
+<pre><code>#[[../../aptos-framework/doc/event.md#0x1_event](event)]
+<b>struct</b> [token.md#0x3_token_CreateCollection](CreateCollection) <b>has</b> drop, store
 </code></pre>
 
 
@@ -1376,19 +1376,19 @@ create collection event with creator address and collection name
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+<code>description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)</code>
 </dt>
 <dd>
 
@@ -1414,7 +1414,7 @@ create collection event with creator address and collection name
 Insufficient token balance
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EINSUFFICIENT_BALANCE">EINSUFFICIENT_BALANCE</a>: u64 = 5;
+<pre><code><b>const</b> [token.md#0x3_token_EINSUFFICIENT_BALANCE](EINSUFFICIENT_BALANCE): u64 = 5;
 </code></pre>
 
 
@@ -1424,7 +1424,7 @@ Insufficient token balance
 The URI is too long
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EURI_TOO_LONG">EURI_TOO_LONG</a>: u64 = 27;
+<pre><code><b>const</b> [token.md#0x3_token_EURI_TOO_LONG](EURI_TOO_LONG): u64 = 27;
 </code></pre>
 
 
@@ -1433,7 +1433,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>: u64 = 512;
+<pre><code><b>const</b> [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH): u64 = 512;
 </code></pre>
 
 
@@ -1442,7 +1442,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_BURNABLE_BY_CREATOR">BURNABLE_BY_CREATOR</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 66, 85, 82, 78, 65, 66, 76, 69, 95, 66, 89, 95, 67, 82, 69, 65, 84, 79, 82];
+<pre><code><b>const</b> [token.md#0x3_token_BURNABLE_BY_CREATOR](BURNABLE_BY_CREATOR): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 66, 85, 82, 78, 65, 66, 76, 69, 95, 66, 89, 95, 67, 82, 69, 65, 84, 79, 82];
 </code></pre>
 
 
@@ -1451,7 +1451,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_BURNABLE_BY_OWNER">BURNABLE_BY_OWNER</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 66, 85, 82, 78, 65, 66, 76, 69, 95, 66, 89, 95, 79, 87, 78, 69, 82];
+<pre><code><b>const</b> [token.md#0x3_token_BURNABLE_BY_OWNER](BURNABLE_BY_OWNER): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 66, 85, 82, 78, 65, 66, 76, 69, 95, 66, 89, 95, 79, 87, 78, 69, 82];
 </code></pre>
 
 
@@ -1460,7 +1460,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND">COLLECTION_DESCRIPTION_MUTABLE_IND</a>: u64 = 0;
+<pre><code><b>const</b> [token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND](COLLECTION_DESCRIPTION_MUTABLE_IND): u64 = 0;
 </code></pre>
 
 
@@ -1469,7 +1469,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND">COLLECTION_MAX_MUTABLE_IND</a>: u64 = 2;
+<pre><code><b>const</b> [token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND](COLLECTION_MAX_MUTABLE_IND): u64 = 2;
 </code></pre>
 
 
@@ -1478,7 +1478,7 @@ The URI is too long
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_COLLECTION_URI_MUTABLE_IND">COLLECTION_URI_MUTABLE_IND</a>: u64 = 1;
+<pre><code><b>const</b> [token.md#0x3_token_COLLECTION_URI_MUTABLE_IND](COLLECTION_URI_MUTABLE_IND): u64 = 1;
 </code></pre>
 
 
@@ -1488,7 +1488,7 @@ The URI is too long
 The token has balance and cannot be initialized
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EALREADY_HAS_BALANCE">EALREADY_HAS_BALANCE</a>: u64 = 0;
+<pre><code><b>const</b> [token.md#0x3_token_EALREADY_HAS_BALANCE](EALREADY_HAS_BALANCE): u64 = 0;
 </code></pre>
 
 
@@ -1499,7 +1499,7 @@ Reserved fields for token contract
 Cannot be updated by user
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECANNOT_UPDATE_RESERVED_PROPERTY">ECANNOT_UPDATE_RESERVED_PROPERTY</a>: u64 = 32;
+<pre><code><b>const</b> [token.md#0x3_token_ECANNOT_UPDATE_RESERVED_PROPERTY](ECANNOT_UPDATE_RESERVED_PROPERTY): u64 = 32;
 </code></pre>
 
 
@@ -1509,7 +1509,7 @@ Cannot be updated by user
 There isn't any collection under this account
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>: u64 = 1;
+<pre><code><b>const</b> [token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED): u64 = 1;
 </code></pre>
 
 
@@ -1519,7 +1519,7 @@ There isn't any collection under this account
 The collection already exists
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECOLLECTION_ALREADY_EXISTS">ECOLLECTION_ALREADY_EXISTS</a>: u64 = 3;
+<pre><code><b>const</b> [token.md#0x3_token_ECOLLECTION_ALREADY_EXISTS](ECOLLECTION_ALREADY_EXISTS): u64 = 3;
 </code></pre>
 
 
@@ -1529,7 +1529,7 @@ The collection already exists
 The collection name is too long
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>: u64 = 25;
+<pre><code><b>const</b> [token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG): u64 = 25;
 </code></pre>
 
 
@@ -1539,7 +1539,7 @@ The collection name is too long
 Cannot find collection in creator's account
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED">ECOLLECTION_NOT_PUBLISHED</a>: u64 = 2;
+<pre><code><b>const</b> [token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED](ECOLLECTION_NOT_PUBLISHED): u64 = 2;
 </code></pre>
 
 
@@ -1549,7 +1549,7 @@ Cannot find collection in creator's account
 Exceeds the collection's maximal number of token_data
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM">ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM</a>: u64 = 4;
+<pre><code><b>const</b> [token.md#0x3_token_ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM](ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM): u64 = 4;
 </code></pre>
 
 
@@ -1559,7 +1559,7 @@ Exceeds the collection's maximal number of token_data
 Token is not burnable by creator
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN">ECREATOR_CANNOT_BURN_TOKEN</a>: u64 = 31;
+<pre><code><b>const</b> [token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN](ECREATOR_CANNOT_BURN_TOKEN): u64 = 31;
 </code></pre>
 
 
@@ -1569,7 +1569,7 @@ Token is not burnable by creator
 The field is not mutable
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>: u64 = 13;
+<pre><code><b>const</b> [token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE): u64 = 13;
 </code></pre>
 
 
@@ -1579,7 +1579,7 @@ The field is not mutable
 Withdraw capability doesn't have sufficient amount
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT">EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT</a>: u64 = 38;
+<pre><code><b>const</b> [token.md#0x3_token_EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT](EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT): u64 = 38;
 </code></pre>
 
 
@@ -1589,7 +1589,7 @@ Withdraw capability doesn't have sufficient amount
 Collection or tokendata maximum must be larger than supply
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EINVALID_MAXIMUM">EINVALID_MAXIMUM</a>: u64 = 36;
+<pre><code><b>const</b> [token.md#0x3_token_EINVALID_MAXIMUM](EINVALID_MAXIMUM): u64 = 36;
 </code></pre>
 
 
@@ -1599,7 +1599,7 @@ Collection or tokendata maximum must be larger than supply
 Royalty invalid if the numerator is larger than the denominator
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR">EINVALID_ROYALTY_NUMERATOR_DENOMINATOR</a>: u64 = 34;
+<pre><code><b>const</b> [token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR](EINVALID_ROYALTY_NUMERATOR_DENOMINATOR): u64 = 34;
 </code></pre>
 
 
@@ -1609,7 +1609,7 @@ Royalty invalid if the numerator is larger than the denominator
 Cannot merge the two tokens with different token id
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EINVALID_TOKEN_MERGE">EINVALID_TOKEN_MERGE</a>: u64 = 6;
+<pre><code><b>const</b> [token.md#0x3_token_EINVALID_TOKEN_MERGE](EINVALID_TOKEN_MERGE): u64 = 6;
 </code></pre>
 
 
@@ -1619,7 +1619,7 @@ Cannot merge the two tokens with different token id
 Exceed the token data maximal allowed
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM">EMINT_WOULD_EXCEED_TOKEN_MAXIMUM</a>: u64 = 7;
+<pre><code><b>const</b> [token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM](EMINT_WOULD_EXCEED_TOKEN_MAXIMUM): u64 = 7;
 </code></pre>
 
 
@@ -1629,7 +1629,7 @@ Exceed the token data maximal allowed
 The NFT name is too long
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENFT_NAME_TOO_LONG">ENFT_NAME_TOO_LONG</a>: u64 = 26;
+<pre><code><b>const</b> [token.md#0x3_token_ENFT_NAME_TOO_LONG](ENFT_NAME_TOO_LONG): u64 = 26;
 </code></pre>
 
 
@@ -1639,7 +1639,7 @@ The NFT name is too long
 Cannot split a token that only has 1 amount
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENFT_NOT_SPLITABLE">ENFT_NOT_SPLITABLE</a>: u64 = 18;
+<pre><code><b>const</b> [token.md#0x3_token_ENFT_NOT_SPLITABLE](ENFT_NOT_SPLITABLE): u64 = 18;
 </code></pre>
 
 
@@ -1649,7 +1649,7 @@ Cannot split a token that only has 1 amount
 No burn capability
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_BURN_CAPABILITY">ENO_BURN_CAPABILITY</a>: u64 = 8;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_BURN_CAPABILITY](ENO_BURN_CAPABILITY): u64 = 8;
 </code></pre>
 
 
@@ -1659,7 +1659,7 @@ No burn capability
 Cannot burn 0 Token
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT">ENO_BURN_TOKEN_WITH_ZERO_AMOUNT</a>: u64 = 29;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT](ENO_BURN_TOKEN_WITH_ZERO_AMOUNT): u64 = 29;
 </code></pre>
 
 
@@ -1669,7 +1669,7 @@ Cannot burn 0 Token
 Cannot deposit a Token with 0 amount
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_DEPOSIT_TOKEN_WITH_ZERO_AMOUNT">ENO_DEPOSIT_TOKEN_WITH_ZERO_AMOUNT</a>: u64 = 28;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_DEPOSIT_TOKEN_WITH_ZERO_AMOUNT](ENO_DEPOSIT_TOKEN_WITH_ZERO_AMOUNT): u64 = 28;
 </code></pre>
 
 
@@ -1679,7 +1679,7 @@ Cannot deposit a Token with 0 amount
 No mint capability
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_MINT_CAPABILITY">ENO_MINT_CAPABILITY</a>: u64 = 19;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_MINT_CAPABILITY](ENO_MINT_CAPABILITY): u64 = 19;
 </code></pre>
 
 
@@ -1689,7 +1689,7 @@ No mint capability
 Not authorized to mutate
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_MUTATE_CAPABILITY">ENO_MUTATE_CAPABILITY</a>: u64 = 14;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_MUTATE_CAPABILITY](ENO_MUTATE_CAPABILITY): u64 = 14;
 </code></pre>
 
 
@@ -1699,7 +1699,7 @@ Not authorized to mutate
 Token not in the token store
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE">ENO_TOKEN_IN_TOKEN_STORE</a>: u64 = 15;
+<pre><code><b>const</b> [token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE](ENO_TOKEN_IN_TOKEN_STORE): u64 = 15;
 </code></pre>
 
 
@@ -1709,7 +1709,7 @@ Token not in the token store
 Token is not burnable by owner
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN">EOWNER_CANNOT_BURN_TOKEN</a>: u64 = 30;
+<pre><code><b>const</b> [token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN](EOWNER_CANNOT_BURN_TOKEN): u64 = 30;
 </code></pre>
 
 
@@ -1719,7 +1719,7 @@ Token is not burnable by owner
 The property is reserved by token standard
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EPROPERTY_RESERVED_BY_STANDARD">EPROPERTY_RESERVED_BY_STANDARD</a>: u64 = 40;
+<pre><code><b>const</b> [token.md#0x3_token_EPROPERTY_RESERVED_BY_STANDARD](EPROPERTY_RESERVED_BY_STANDARD): u64 = 40;
 </code></pre>
 
 
@@ -1729,7 +1729,7 @@ The property is reserved by token standard
 Royalty payee account does not exist
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST">EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST</a>: u64 = 35;
+<pre><code><b>const</b> [token.md#0x3_token_EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST](EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST): u64 = 35;
 </code></pre>
 
 
@@ -1739,7 +1739,7 @@ Royalty payee account does not exist
 TOKEN with 0 amount is not allowed
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT">ETOKEN_CANNOT_HAVE_ZERO_AMOUNT</a>: u64 = 33;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT](ETOKEN_CANNOT_HAVE_ZERO_AMOUNT): u64 = 33;
 </code></pre>
 
 
@@ -1749,7 +1749,7 @@ TOKEN with 0 amount is not allowed
 TokenData already exists
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_DATA_ALREADY_EXISTS">ETOKEN_DATA_ALREADY_EXISTS</a>: u64 = 9;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_DATA_ALREADY_EXISTS](ETOKEN_DATA_ALREADY_EXISTS): u64 = 9;
 </code></pre>
 
 
@@ -1759,7 +1759,7 @@ TokenData already exists
 TokenData not published
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>: u64 = 10;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED): u64 = 10;
 </code></pre>
 
 
@@ -1769,7 +1769,7 @@ TokenData not published
 Token Properties count doesn't match
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH">ETOKEN_PROPERTIES_COUNT_NOT_MATCH</a>: u64 = 37;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH](ETOKEN_PROPERTIES_COUNT_NOT_MATCH): u64 = 37;
 </code></pre>
 
 
@@ -1779,7 +1779,7 @@ Token Properties count doesn't match
 Cannot split token to an amount larger than its amount
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT">ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT</a>: u64 = 12;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT](ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT): u64 = 12;
 </code></pre>
 
 
@@ -1789,7 +1789,7 @@ Cannot split token to an amount larger than its amount
 TokenStore doesn't exist
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED">ETOKEN_STORE_NOT_PUBLISHED</a>: u64 = 11;
+<pre><code><b>const</b> [token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED](ETOKEN_STORE_NOT_PUBLISHED): u64 = 11;
 </code></pre>
 
 
@@ -1799,7 +1799,7 @@ TokenStore doesn't exist
 User didn't opt-in direct transfer
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER">EUSER_NOT_OPT_IN_DIRECT_TRANSFER</a>: u64 = 16;
+<pre><code><b>const</b> [token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER](EUSER_NOT_OPT_IN_DIRECT_TRANSFER): u64 = 16;
 </code></pre>
 
 
@@ -1809,7 +1809,7 @@ User didn't opt-in direct transfer
 Withdraw proof expires
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES">EWITHDRAW_PROOF_EXPIRES</a>: u64 = 39;
+<pre><code><b>const</b> [token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES](EWITHDRAW_PROOF_EXPIRES): u64 = 39;
 </code></pre>
 
 
@@ -1819,7 +1819,7 @@ Withdraw proof expires
 Cannot withdraw 0 token
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_EWITHDRAW_ZERO">EWITHDRAW_ZERO</a>: u64 = 17;
+<pre><code><b>const</b> [token.md#0x3_token_EWITHDRAW_ZERO](EWITHDRAW_ZERO): u64 = 17;
 </code></pre>
 
 
@@ -1828,7 +1828,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>: u64 = 128;
+<pre><code><b>const</b> [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH): u64 = 128;
 </code></pre>
 
 
@@ -1837,7 +1837,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_MAX_NFT_NAME_LENGTH">MAX_NFT_NAME_LENGTH</a>: u64 = 128;
+<pre><code><b>const</b> [token.md#0x3_token_MAX_NFT_NAME_LENGTH](MAX_NFT_NAME_LENGTH): u64 = 128;
 </code></pre>
 
 
@@ -1846,7 +1846,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND">TOKEN_DESCRIPTION_MUTABLE_IND</a>: u64 = 3;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND](TOKEN_DESCRIPTION_MUTABLE_IND): u64 = 3;
 </code></pre>
 
 
@@ -1855,7 +1855,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_MAX_MUTABLE_IND">TOKEN_MAX_MUTABLE_IND</a>: u64 = 0;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_MAX_MUTABLE_IND](TOKEN_MAX_MUTABLE_IND): u64 = 0;
 </code></pre>
 
 
@@ -1864,7 +1864,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE">TOKEN_PROPERTY_MUTABLE</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 80, 82, 79, 80, 69, 82, 84, 89, 95, 77, 85, 84, 65, 84, 66, 76, 69];
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_PROPERTY_MUTABLE](TOKEN_PROPERTY_MUTABLE): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt; = [84, 79, 75, 69, 78, 95, 80, 82, 79, 80, 69, 82, 84, 89, 95, 77, 85, 84, 65, 84, 66, 76, 69];
 </code></pre>
 
 
@@ -1873,7 +1873,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND">TOKEN_PROPERTY_MUTABLE_IND</a>: u64 = 4;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND](TOKEN_PROPERTY_MUTABLE_IND): u64 = 4;
 </code></pre>
 
 
@@ -1882,7 +1882,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_PROPERTY_VALUE_MUTABLE_IND">TOKEN_PROPERTY_VALUE_MUTABLE_IND</a>: u64 = 5;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_PROPERTY_VALUE_MUTABLE_IND](TOKEN_PROPERTY_VALUE_MUTABLE_IND): u64 = 5;
 </code></pre>
 
 
@@ -1891,7 +1891,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND">TOKEN_ROYALTY_MUTABLE_IND</a>: u64 = 2;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND](TOKEN_ROYALTY_MUTABLE_IND): u64 = 2;
 </code></pre>
 
 
@@ -1900,7 +1900,7 @@ Cannot withdraw 0 token
 
 
 
-<pre><code><b>const</b> <a href="token.md#0x3_token_TOKEN_URI_MUTABLE_IND">TOKEN_URI_MUTABLE_IND</a>: u64 = 1;
+<pre><code><b>const</b> [token.md#0x3_token_TOKEN_URI_MUTABLE_IND](TOKEN_URI_MUTABLE_IND): u64 = 1;
 </code></pre>
 
 
@@ -1912,7 +1912,7 @@ Cannot withdraw 0 token
 create a empty token collection with parameters
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_collection_script">create_collection_script</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_collection_script](create_collection_script)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;)
 </code></pre>
 
 
@@ -1921,15 +1921,15 @@ create a empty token collection with parameters
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_collection_script">create_collection_script</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_collection_script](create_collection_script)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     name: String,
     description: String,
     uri: String,
     maximum: u64,
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_create_collection">create_collection</a>(
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;,
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_create_collection](create_collection)(
         creator,
         name,
         description,
@@ -1951,7 +1951,7 @@ create a empty token collection with parameters
 create token with raw inputs
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_token_script">create_token_script</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, balance: u64, maximum: u64, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;, property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_token_script](create_token_script)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), balance: u64, maximum: u64, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;, property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -1960,8 +1960,8 @@ create token with raw inputs
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_token_script">create_token_script</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_token_script](create_token_script)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     collection: String,
     name: String,
     description: String,
@@ -1971,14 +1971,14 @@ create token with raw inputs
     royalty_payee_address: <b>address</b>,
     royalty_points_denominator: u64,
     royalty_points_numerator: u64,
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;,
-    property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> token_mut_config = <a href="token.md#0x3_token_create_token_mutability_config">create_token_mutability_config</a>(&mutate_setting);
-    <b>let</b> tokendata_id = <a href="token.md#0x3_token_create_tokendata">create_tokendata</a>(
-        <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>,
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;,
+    property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> token_mut_config = [token.md#0x3_token_create_token_mutability_config](create_token_mutability_config)(&mutate_setting);
+    <b>let</b> tokendata_id = [token.md#0x3_token_create_tokendata](create_tokendata)(
+        [../../aptos-framework/doc/account.md#0x1_account](account),
         collection,
         name,
         description,
@@ -1993,8 +1993,8 @@ create token with raw inputs
         property_types
     );
 
-    <a href="token.md#0x3_token_mint_token">mint_token</a>(
-        <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>,
+    [token.md#0x3_token_mint_token](mint_token)(
+        [../../aptos-framework/doc/account.md#0x1_account](account),
         tokendata_id,
         balance,
     );
@@ -2012,7 +2012,7 @@ create token with raw inputs
 Mint more token from an existing token_data. Mint only adds more token to property_version 0
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mint_script">mint_script</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mint_script](mint_script)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), amount: u64)
 </code></pre>
 
 
@@ -2021,22 +2021,22 @@ Mint more token from an existing token_data. Mint only adds more token to proper
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mint_script">mint_script</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mint_script](mint_script)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     token_data_address: <b>address</b>,
     collection: String,
     name: String,
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> token_data_id = <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> token_data_id = [token.md#0x3_token_create_token_data_id](create_token_data_id)(
         token_data_address,
         collection,
         name,
     );
     // only creator of the tokendata can mint more tokens for now
-    <b>assert</b>!(token_data_id.creator == <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ENO_MINT_CAPABILITY">ENO_MINT_CAPABILITY</a>));
-    <a href="token.md#0x3_token_mint_token">mint_token</a>(
-        <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>,
+    <b>assert</b>!(token_data_id.creator == [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ENO_MINT_CAPABILITY](ENO_MINT_CAPABILITY)));
+    [token.md#0x3_token_mint_token](mint_token)(
+        [../../aptos-framework/doc/account.md#0x1_account](account),
         token_data_id,
         amount,
     );
@@ -2056,7 +2056,7 @@ if the token property_version is 0, we will create a new property_version per to
 if the token property_version is not 0, we will just update the propertyMap and use the existing token_id (property_version)
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mutate_token_properties">mutate_token_properties</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_owner: <b>address</b>, creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_property_version: u64, amount: u64, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mutate_token_properties](mutate_token_properties)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_owner: <b>address</b>, creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_property_version: u64, amount: u64, keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -2065,29 +2065,29 @@ if the token property_version is not 0, we will just update the propertyMap and 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mutate_token_properties">mutate_token_properties</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mutate_token_properties](mutate_token_properties)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     token_owner: <b>address</b>,
     creator: <b>address</b>,
     collection_name: String,
     token_name: String,
     token_property_version: u64,
     amount: u64,
-    keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>) == creator, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ENO_MUTATE_CAPABILITY">ENO_MUTATE_CAPABILITY</a>));
+    keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)) == creator, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ENO_MUTATE_CAPABILITY](ENO_MUTATE_CAPABILITY)));
     <b>let</b> i = 0;
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(
         creator,
         collection_name,
         token_name,
         token_property_version,
     );
-    // give a new property_version for each <a href="token.md#0x3_token">token</a>
+    // give a new property_version for each [token.md#0x3_token](token)
     <b>while</b> (i &lt; amount) {
-        <a href="token.md#0x3_token_mutate_one_token">mutate_one_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>, token_owner, token_id, keys, values, types);
+        [token.md#0x3_token_mutate_one_token](mutate_one_token)([../../aptos-framework/doc/account.md#0x1_account](account), token_owner, token_id, keys, values, types);
         i = i + 1;
     };
 }
@@ -2103,7 +2103,7 @@ if the token property_version is not 0, we will just update the propertyMap and 
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_direct_transfer_script">direct_transfer_script</a>(sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creators_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_direct_transfer_script](direct_transfer_script)(sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creators_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
@@ -2112,17 +2112,17 @@ if the token property_version is not 0, we will just update the propertyMap and 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_direct_transfer_script">direct_transfer_script</a>(
-    sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_direct_transfer_script](direct_transfer_script)(
+    sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     creators_address: <b>address</b>,
     collection: String,
     name: String,
     property_version: u64,
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creators_address, collection, name, property_version);
-    <a href="token.md#0x3_token_direct_transfer">direct_transfer</a>(sender, receiver, token_id, amount);
+) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creators_address, collection, name, property_version);
+    [token.md#0x3_token_direct_transfer](direct_transfer)(sender, receiver, token_id, amount);
 }
 </code></pre>
 
@@ -2136,7 +2136,7 @@ if the token property_version is not 0, we will just update the propertyMap and 
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_opt_in_direct_transfer">opt_in_direct_transfer</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_opt_in_direct_transfer](opt_in_direct_transfer)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), opt_in: bool)
 </code></pre>
 
 
@@ -2145,12 +2145,12 @@ if the token property_version is not 0, we will just update the propertyMap and 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_opt_in_direct_transfer">opt_in_direct_transfer</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <a href="token.md#0x3_token_initialize_token_store">initialize_token_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <b>let</b> opt_in_flag = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr).direct_transfer;
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_opt_in_direct_transfer](opt_in_direct_transfer)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), opt_in: bool) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+    [token.md#0x3_token_initialize_token_store](initialize_token_store)([../../aptos-framework/doc/account.md#0x1_account](account));
+    <b>let</b> opt_in_flag = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr).direct_transfer;
     *opt_in_flag = opt_in;
-    <a href="token_event_store.md#0x3_token_event_store_emit_token_opt_in_event">token_event_store::emit_token_opt_in_event</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>, opt_in);
+    [token_event_store.md#0x3_token_event_store_emit_token_opt_in_event](token_event_store::emit_token_opt_in_event)([../../aptos-framework/doc/account.md#0x1_account](account), opt_in);
 }
 </code></pre>
 
@@ -2166,7 +2166,7 @@ Transfers <code>amount</code> of tokens from <code>from</code> to <code><b>to</b
 The receiver <code><b>to</b></code> has to opt-in direct transfer first
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_transfer_with_opt_in">transfer_with_opt_in</a>(from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_property_version: u64, <b>to</b>: <b>address</b>, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_transfer_with_opt_in](transfer_with_opt_in)(from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_property_version: u64, <b>to</b>: <b>address</b>, amount: u64)
 </code></pre>
 
 
@@ -2175,17 +2175,17 @@ The receiver <code><b>to</b></code> has to opt-in direct transfer first
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_transfer_with_opt_in">transfer_with_opt_in</a>(
-    from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_transfer_with_opt_in](transfer_with_opt_in)(
+    from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     creator: <b>address</b>,
     collection_name: String,
     token_name: String,
     token_property_version: u64,
     <b>to</b>: <b>address</b>,
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creator, collection_name, token_name, token_property_version);
-    <a href="token.md#0x3_token_transfer">transfer</a>(from, token_id, <b>to</b>, amount);
+) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creator, collection_name, token_name, token_property_version);
+    [token.md#0x3_token_transfer](transfer)(from, token_id, <b>to</b>, amount);
 }
 </code></pre>
 
@@ -2201,7 +2201,7 @@ Burn a token by creator when the token's BURNABLE_BY_CREATOR is true
 The token is owned at address owner
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn_by_creator">burn_by_creator</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, owner: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn_by_creator](burn_by_creator)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), owner: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
@@ -2210,52 +2210,52 @@ The token is owned at address owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn_by_creator">burn_by_creator</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn_by_creator](burn_by_creator)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     owner: <b>address</b>,
     collection: String,
     name: String,
     property_version: u64,
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> creator_address = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>assert</b>!(amount &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT">ENO_BURN_TOKEN_WITH_ZERO_AMOUNT</a>));
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creator_address, collection, name, property_version);
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> creator_address = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    <b>assert</b>!(amount &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT](ENO_BURN_TOKEN_WITH_ZERO_AMOUNT)));
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creator_address, collection, name, property_version);
     <b>let</b> creator_addr = token_id.token_data_id.creator;
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)),
     );
 
-    <b>let</b> collections = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
+    <b>let</b> collections = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
     <b>assert</b>!(
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&collections.token_data, token_id.token_data_id),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>),
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&collections.token_data, token_id.token_data_id),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)),
     );
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(
         &<b>mut</b> collections.token_data,
         token_id.token_data_id,
     );
 
-    // The property should be explicitly set in the <a href="property_map.md#0x3_property_map">property_map</a> for creator <b>to</b> burn the <a href="token.md#0x3_token">token</a>
+    // The property should be explicitly set in the [property_map.md#0x3_property_map](property_map) for creator <b>to</b> burn the [token.md#0x3_token](token)
     <b>assert</b>!(
-        <a href="property_map.md#0x3_property_map_contains_key">property_map::contains_key</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_BURNABLE_BY_CREATOR">BURNABLE_BY_CREATOR</a>)),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN">ECREATOR_CANNOT_BURN_TOKEN</a>)
+        [property_map.md#0x3_property_map_contains_key](property_map::contains_key)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_BURNABLE_BY_CREATOR](BURNABLE_BY_CREATOR))),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN](ECREATOR_CANNOT_BURN_TOKEN))
     );
 
-    <b>let</b> burn_by_creator_flag = <a href="property_map.md#0x3_property_map_read_bool">property_map::read_bool</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_BURNABLE_BY_CREATOR">BURNABLE_BY_CREATOR</a>));
-    <b>assert</b>!(burn_by_creator_flag, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN">ECREATOR_CANNOT_BURN_TOKEN</a>));
+    <b>let</b> burn_by_creator_flag = [property_map.md#0x3_property_map_read_bool](property_map::read_bool)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_BURNABLE_BY_CREATOR](BURNABLE_BY_CREATOR)));
+    <b>assert</b>!(burn_by_creator_flag, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ECREATOR_CANNOT_BURN_TOKEN](ECREATOR_CANNOT_BURN_TOKEN)));
 
     // Burn the tokens.
-    <b>let</b> <a href="token.md#0x3_token_Token">Token</a> { id: _, amount: burned_amount, token_properties: _ } = <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(owner, token_id, amount);
-    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner);
+    <b>let</b> [token.md#0x3_token_Token](Token) { id: _, amount: burned_amount, token_properties: _ } = [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(owner, token_id, amount);
+    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_BurnToken">BurnToken</a> { id: token_id, amount: burned_amount });
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_BurnToken](BurnToken) { id: token_id, amount: burned_amount });
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_BurnTokenEvent](BurnTokenEvent)&gt;(
         &<b>mut</b> token_store.burn_events,
-        <a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a> { id: token_id, amount: burned_amount }
+        [token.md#0x3_token_BurnTokenEvent](BurnTokenEvent) { id: token_id, amount: burned_amount }
     );
 
     <b>if</b> (token_data.maximum &gt; 0) {
@@ -2263,10 +2263,10 @@ The token is owned at address owner
 
         // Delete the token_data <b>if</b> supply drops <b>to</b> 0.
         <b>if</b> (token_data.supply == 0) {
-            <a href="token.md#0x3_token_destroy_token_data">destroy_token_data</a>(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove">table::remove</a>(&<b>mut</b> collections.token_data, token_id.token_data_id));
+            [token.md#0x3_token_destroy_token_data](destroy_token_data)([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove](table::remove)(&<b>mut</b> collections.token_data, token_id.token_data_id));
 
             // <b>update</b> the collection supply
-            <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(
+            <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(
                 &<b>mut</b> collections.collection_data,
                 token_id.token_data_id.collection
             );
@@ -2274,7 +2274,7 @@ The token is owned at address owner
                 collection_data.supply = collection_data.supply - 1;
                 // delete the collection data <b>if</b> the collection supply equals 0
                 <b>if</b> (collection_data.supply == 0) {
-                    <a href="token.md#0x3_token_destroy_collection_data">destroy_collection_data</a>(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove">table::remove</a>(&<b>mut</b> collections.collection_data, collection_data.name));
+                    [token.md#0x3_token_destroy_collection_data](destroy_collection_data)([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove](table::remove)(&<b>mut</b> collections.collection_data, collection_data.name));
                 };
             };
         };
@@ -2293,7 +2293,7 @@ The token is owned at address owner
 Burn a token by the token owner
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn">burn</a>(owner: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creators_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn](burn)(owner: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creators_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
@@ -2302,68 +2302,68 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn">burn</a>(
-    owner: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn](burn)(
+    owner: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     creators_address: <b>address</b>,
     collection: String,
     name: String,
     property_version: u64,
     amount: u64
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(amount &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT">ENO_BURN_TOKEN_WITH_ZERO_AMOUNT</a>));
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creators_address, collection, name, property_version);
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!(amount &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ENO_BURN_TOKEN_WITH_ZERO_AMOUNT](ENO_BURN_TOKEN_WITH_ZERO_AMOUNT)));
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creators_address, collection, name, property_version);
     <b>let</b> creator_addr = token_id.token_data_id.creator;
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)),
     );
 
-    <b>let</b> collections = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
+    <b>let</b> collections = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
     <b>assert</b>!(
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&collections.token_data, token_id.token_data_id),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>),
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&collections.token_data, token_id.token_data_id),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)),
     );
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(
         &<b>mut</b> collections.token_data,
         token_id.token_data_id,
     );
 
     <b>assert</b>!(
-        <a href="property_map.md#0x3_property_map_contains_key">property_map::contains_key</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_BURNABLE_BY_OWNER">BURNABLE_BY_OWNER</a>)),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN">EOWNER_CANNOT_BURN_TOKEN</a>)
+        [property_map.md#0x3_property_map_contains_key](property_map::contains_key)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_BURNABLE_BY_OWNER](BURNABLE_BY_OWNER))),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN](EOWNER_CANNOT_BURN_TOKEN))
     );
-    <b>let</b> burn_by_owner_flag = <a href="property_map.md#0x3_property_map_read_bool">property_map::read_bool</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_BURNABLE_BY_OWNER">BURNABLE_BY_OWNER</a>));
-    <b>assert</b>!(burn_by_owner_flag, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN">EOWNER_CANNOT_BURN_TOKEN</a>));
+    <b>let</b> burn_by_owner_flag = [property_map.md#0x3_property_map_read_bool](property_map::read_bool)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_BURNABLE_BY_OWNER](BURNABLE_BY_OWNER)));
+    <b>assert</b>!(burn_by_owner_flag, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EOWNER_CANNOT_BURN_TOKEN](EOWNER_CANNOT_BURN_TOKEN)));
 
     // Burn the tokens.
-    <b>let</b> <a href="token.md#0x3_token_Token">Token</a> { id: _, amount: burned_amount, token_properties: _ } = <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(owner, token_id, amount);
-    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner));
+    <b>let</b> [token.md#0x3_token_Token](Token) { id: _, amount: burned_amount, token_properties: _ } = [token.md#0x3_token_withdraw_token](withdraw_token)(owner, token_id, amount);
+    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(owner));
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_BurnToken">BurnToken</a> { id: token_id, amount: burned_amount });
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_BurnToken](BurnToken) { id: token_id, amount: burned_amount });
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_BurnTokenEvent](BurnTokenEvent)&gt;(
         &<b>mut</b> token_store.burn_events,
-        <a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a> { id: token_id, amount: burned_amount }
+        [token.md#0x3_token_BurnTokenEvent](BurnTokenEvent) { id: token_id, amount: burned_amount }
     );
 
     // Decrease the supply correspondingly by the amount of tokens burned.
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(
         &<b>mut</b> collections.token_data,
         token_id.token_data_id,
     );
 
     // only <b>update</b> the supply <b>if</b> we tracking the supply and maximal
-    // maximal == 0 is reserved for unlimited <a href="token.md#0x3_token">token</a> and collection <b>with</b> no tracking info.
+    // maximal == 0 is reserved for unlimited [token.md#0x3_token](token) and collection <b>with</b> no tracking info.
     <b>if</b> (token_data.maximum &gt; 0) {
         token_data.supply = token_data.supply - burned_amount;
 
         // Delete the token_data <b>if</b> supply drops <b>to</b> 0.
         <b>if</b> (token_data.supply == 0) {
-            <a href="token.md#0x3_token_destroy_token_data">destroy_token_data</a>(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove">table::remove</a>(&<b>mut</b> collections.token_data, token_id.token_data_id));
+            [token.md#0x3_token_destroy_token_data](destroy_token_data)([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove](table::remove)(&<b>mut</b> collections.token_data, token_id.token_data_id));
 
             // <b>update</b> the collection supply
-            <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(
+            <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(
                 &<b>mut</b> collections.collection_data,
                 token_id.token_data_id.collection
             );
@@ -2373,7 +2373,7 @@ Burn a token by the token owner
                 collection_data.supply = collection_data.supply - 1;
                 // delete the collection data <b>if</b> the collection supply equals 0
                 <b>if</b> (collection_data.supply == 0) {
-                    <a href="token.md#0x3_token_destroy_collection_data">destroy_collection_data</a>(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove">table::remove</a>(&<b>mut</b> collections.collection_data, collection_data.name));
+                    [token.md#0x3_token_destroy_collection_data](destroy_collection_data)([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove](table::remove)(&<b>mut</b> collections.collection_data, collection_data.name));
                 };
             };
         };
@@ -2391,7 +2391,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_description">mutate_collection_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_description](mutate_collection_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -2400,12 +2400,12 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_description">mutate_collection_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: String, description: String) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>let</b> creator_address = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
-    <b>assert</b>!(collection_data.mutability_config.description, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_collection_description_mutate_event">token_event_store::emit_collection_description_mutate_event</a>(creator, collection_name, collection_data.description, description);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_description](mutate_collection_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: String, description: String) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>let</b> creator_address = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
+    <b>assert</b>!(collection_data.mutability_config.description, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_collection_description_mutate_event](token_event_store::emit_collection_description_mutate_event)(creator, collection_name, collection_data.description, description);
     collection_data.description = description;
 }
 </code></pre>
@@ -2420,7 +2420,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_uri">mutate_collection_uri</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_uri](mutate_collection_uri)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -2429,13 +2429,13 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_uri">mutate_collection_uri</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: String, uri: String) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <b>let</b> creator_address = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
-    <b>assert</b>!(collection_data.mutability_config.uri, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_collection_uri_mutate_event">token_event_store::emit_collection_uri_mutate_event</a>(creator, collection_name, collection_data.uri , uri);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_uri](mutate_collection_uri)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: String, uri: String) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EURI_TOO_LONG](EURI_TOO_LONG)));
+    <b>let</b> creator_address = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
+    <b>assert</b>!(collection_data.mutability_config.uri, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_collection_uri_mutate_event](token_event_store::emit_collection_uri_mutate_event)(creator, collection_name, collection_data.uri , uri);
     collection_data.uri = uri;
 }
 </code></pre>
@@ -2450,7 +2450,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_maximum">mutate_collection_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_maximum](mutate_collection_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64)
 </code></pre>
 
 
@@ -2459,15 +2459,15 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_maximum">mutate_collection_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: String, maximum: u64) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>let</b> creator_address = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_maximum](mutate_collection_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: String, maximum: u64) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>let</b> creator_address = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
     // cannot change maximum from 0 and cannot change maximum <b>to</b> 0
-    <b>assert</b>!(collection_data.maximum != 0 && maximum != 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_MAXIMUM">EINVALID_MAXIMUM</a>));
-    <b>assert</b>!(maximum &gt;= collection_data.supply, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_MAXIMUM">EINVALID_MAXIMUM</a>));
-    <b>assert</b>!(collection_data.mutability_config.maximum, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_collection_maximum_mutate_event">token_event_store::emit_collection_maximum_mutate_event</a>(creator, collection_name, collection_data.maximum, maximum);
+    <b>assert</b>!(collection_data.maximum != 0 && maximum != 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_MAXIMUM](EINVALID_MAXIMUM)));
+    <b>assert</b>!(maximum &gt;= collection_data.supply, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_MAXIMUM](EINVALID_MAXIMUM)));
+    <b>assert</b>!(collection_data.mutability_config.maximum, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_collection_maximum_mutate_event](token_event_store::emit_collection_maximum_mutate_event)(creator, collection_name, collection_data.maximum, maximum);
     collection_data.maximum = maximum;
 }
 </code></pre>
@@ -2482,7 +2482,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_maximum">mutate_tokendata_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, maximum: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_maximum](mutate_tokendata_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), maximum: u64)
 </code></pre>
 
 
@@ -2491,15 +2491,15 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_maximum">mutate_tokendata_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>, maximum: u64) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator, token_data_id);
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_maximum](mutate_tokendata_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId), maximum: u64) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator, token_data_id);
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
     // cannot change maximum from 0 and cannot change maximum <b>to</b> 0
-    <b>assert</b>!(token_data.maximum != 0 && maximum != 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_MAXIMUM">EINVALID_MAXIMUM</a>));
-    <b>assert</b>!(maximum &gt;= token_data.supply, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_MAXIMUM">EINVALID_MAXIMUM</a>));
-    <b>assert</b>!(token_data.mutability_config.maximum, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_token_maximum_mutate_event">token_event_store::emit_token_maximum_mutate_event</a>(creator, token_data_id.collection, token_data_id.name, token_data.maximum, maximum);
+    <b>assert</b>!(token_data.maximum != 0 && maximum != 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_MAXIMUM](EINVALID_MAXIMUM)));
+    <b>assert</b>!(maximum &gt;= token_data.supply, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_MAXIMUM](EINVALID_MAXIMUM)));
+    <b>assert</b>!(token_data.mutability_config.maximum, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_token_maximum_mutate_event](token_event_store::emit_token_maximum_mutate_event)(creator, token_data_id.collection, token_data_id.name, token_data.maximum, maximum);
     token_data.maximum = maximum;
 }
 </code></pre>
@@ -2514,7 +2514,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_uri">mutate_tokendata_uri</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_uri](mutate_tokendata_uri)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -2523,18 +2523,18 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_uri">mutate_tokendata_uri</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_uri](mutate_tokendata_uri)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId),
     uri: String
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator, token_data_id);
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EURI_TOO_LONG](EURI_TOO_LONG)));
+    [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator, token_data_id);
 
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
-    <b>assert</b>!(token_data.mutability_config.uri, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_token_uri_mutate_event">token_event_store::emit_token_uri_mutate_event</a>(creator, token_data_id.collection, token_data_id.name, token_data.uri ,uri);
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
+    <b>assert</b>!(token_data.mutability_config.uri, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_token_uri_mutate_event](token_event_store::emit_token_uri_mutate_event)(creator, token_data_id.collection, token_data_id.name, token_data.uri ,uri);
     token_data.uri = uri;
 }
 </code></pre>
@@ -2549,7 +2549,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_royalty">mutate_tokendata_royalty</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, royalty: <a href="token.md#0x3_token_Royalty">token::Royalty</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_royalty](mutate_tokendata_royalty)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), royalty: [token.md#0x3_token_Royalty](token::Royalty))
 </code></pre>
 
 
@@ -2558,14 +2558,14 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_royalty">mutate_tokendata_royalty</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>, royalty: <a href="token.md#0x3_token_Royalty">Royalty</a>) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator, token_data_id);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_royalty](mutate_tokendata_royalty)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId), royalty: [token.md#0x3_token_Royalty](Royalty)) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator, token_data_id);
 
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
-    <b>assert</b>!(token_data.mutability_config.royalty, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
+    <b>assert</b>!(token_data.mutability_config.royalty, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
 
-    <a href="token_event_store.md#0x3_token_event_store_emit_token_royalty_mutate_event">token_event_store::emit_token_royalty_mutate_event</a>(
+    [token_event_store.md#0x3_token_event_store_emit_token_royalty_mutate_event](token_event_store::emit_token_royalty_mutate_event)(
         creator,
         token_data_id.collection,
         token_data_id.name,
@@ -2590,7 +2590,7 @@ Burn a token by the token owner
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_description">mutate_tokendata_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_description](mutate_tokendata_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -2599,13 +2599,13 @@ Burn a token by the token owner
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_description">mutate_tokendata_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>, description: String) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator, token_data_id);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_description](mutate_tokendata_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId), description: String) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator, token_data_id);
 
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
-    <b>assert</b>!(token_data.mutability_config.description, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
-    <a href="token_event_store.md#0x3_token_event_store_emit_token_descrition_mutate_event">token_event_store::emit_token_descrition_mutate_event</a>(creator, token_data_id.collection, token_data_id.name, token_data.description, description);
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
+    <b>assert</b>!(token_data.mutability_config.description, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
+    [token_event_store.md#0x3_token_event_store_emit_token_descrition_mutate_event](token_event_store::emit_token_descrition_mutate_event)(creator, token_data_id.collection, token_data_id.name, token_data.description, description);
     token_data.description = description;
 }
 </code></pre>
@@ -2621,7 +2621,7 @@ Burn a token by the token owner
 Allow creator to mutate the default properties in TokenData
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_property">mutate_tokendata_property</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_property](mutate_tokendata_property)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -2630,45 +2630,45 @@ Allow creator to mutate the default properties in TokenData
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_property">mutate_tokendata_property</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>,
-    keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator, token_data_id);
-    <b>let</b> key_len = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&keys);
-    <b>let</b> val_len = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&values);
-    <b>let</b> typ_len = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&types);
-    <b>assert</b>!(key_len == val_len, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH">ETOKEN_PROPERTIES_COUNT_NOT_MATCH</a>));
-    <b>assert</b>!(key_len == typ_len, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH">ETOKEN_PROPERTIES_COUNT_NOT_MATCH</a>));
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_property](mutate_tokendata_property)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId),
+    keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator, token_data_id);
+    <b>let</b> key_len = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length](vector::length)(&keys);
+    <b>let</b> val_len = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length](vector::length)(&values);
+    <b>let</b> typ_len = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length](vector::length)(&types);
+    <b>assert</b>!(key_len == val_len, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state](error::invalid_state)([token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH](ETOKEN_PROPERTIES_COUNT_NOT_MATCH)));
+    <b>assert</b>!(key_len == typ_len, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state](error::invalid_state)([token.md#0x3_token_ETOKEN_PROPERTIES_COUNT_NOT_MATCH](ETOKEN_PROPERTIES_COUNT_NOT_MATCH)));
 
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
-    <b>assert</b>!(token_data.mutability_config.properties, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
+    <b>assert</b>!(token_data.mutability_config.properties, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
     <b>let</b> i: u64 = 0;
-    <b>let</b> old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Option&lt;PropertyValue&gt;&gt; = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>();
-    <b>let</b> new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;PropertyValue&gt; = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>();
-    <a href="token.md#0x3_token_assert_non_standard_reserved_property">assert_non_standard_reserved_property</a>(&keys);
-    <b>while</b> (i &lt; <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&keys)){
-        <b>let</b> key = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&keys, i);
-        <b>let</b> old_pv = <b>if</b> (<a href="property_map.md#0x3_property_map_contains_key">property_map::contains_key</a>(&token_data.default_properties, key)) {
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(*<a href="property_map.md#0x3_property_map_borrow">property_map::borrow</a>(&token_data.default_properties, key))
+    <b>let</b> old_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;Option&lt;PropertyValue&gt;&gt; = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty](vector::empty)();
+    <b>let</b> new_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;PropertyValue&gt; = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty](vector::empty)();
+    [token.md#0x3_token_assert_non_standard_reserved_property](assert_non_standard_reserved_property)(&keys);
+    <b>while</b> (i &lt; [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length](vector::length)(&keys)){
+        <b>let</b> key = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(&keys, i);
+        <b>let</b> old_pv = <b>if</b> ([property_map.md#0x3_property_map_contains_key](property_map::contains_key)(&token_data.default_properties, key)) {
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(*[property_map.md#0x3_property_map_borrow](property_map::borrow)(&token_data.default_properties, key))
         } <b>else</b> {
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>&lt;PropertyValue&gt;()
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)&lt;PropertyValue&gt;()
         };
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> old_values, old_pv);
-        <b>let</b> new_pv = <a href="property_map.md#0x3_property_map_create_property_value_raw">property_map::create_property_value_raw</a>(*<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&values, i), *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&types, i));
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> new_values, new_pv);
-        <b>if</b> (<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&old_pv)) {
-            <a href="property_map.md#0x3_property_map_update_property_value">property_map::update_property_value</a>(&<b>mut</b> token_data.default_properties, key, new_pv);
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_push_back](vector::push_back)(&<b>mut</b> old_values, old_pv);
+        <b>let</b> new_pv = [property_map.md#0x3_property_map_create_property_value_raw](property_map::create_property_value_raw)(*[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(&values, i), *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(&types, i));
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_push_back](vector::push_back)(&<b>mut</b> new_values, new_pv);
+        <b>if</b> ([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_is_some](option::is_some)(&old_pv)) {
+            [property_map.md#0x3_property_map_update_property_value](property_map::update_property_value)(&<b>mut</b> token_data.default_properties, key, new_pv);
         } <b>else</b> {
-            <a href="property_map.md#0x3_property_map_add">property_map::add</a>(&<b>mut</b> token_data.default_properties, *key, new_pv);
+            [property_map.md#0x3_property_map_add](property_map::add)(&<b>mut</b> token_data.default_properties, *key, new_pv);
         };
         i = i + 1;
     };
-    <a href="token_event_store.md#0x3_token_event_store_emit_default_property_mutate_event">token_event_store::emit_default_property_mutate_event</a>(creator, token_data_id.collection, token_data_id.name, keys, old_values, new_values);
+    [token_event_store.md#0x3_token_event_store_emit_default_property_mutate_event](token_event_store::emit_default_property_mutate_event)(creator, token_data_id.collection, token_data_id.name, keys, old_values, new_values);
 }
 </code></pre>
 
@@ -2683,7 +2683,7 @@ Allow creator to mutate the default properties in TokenData
 Mutate the token_properties of one token.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_one_token">mutate_one_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_one_token](mutate_one_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -2692,52 +2692,52 @@ Mutate the token_properties of one token.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_one_token">mutate_one_token</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_one_token](mutate_one_token)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     token_owner: <b>address</b>,
-    token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
-    keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-): <a href="token.md#0x3_token_TokenId">TokenId</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
+    token_id: [token.md#0x3_token_TokenId](TokenId),
+    keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+): [token.md#0x3_token_TokenId](TokenId) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
     <b>let</b> creator = token_id.token_data_id.creator;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>) == creator, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ENO_MUTATE_CAPABILITY">ENO_MUTATE_CAPABILITY</a>));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)) == creator, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ENO_MUTATE_CAPABILITY](ENO_MUTATE_CAPABILITY)));
     // validate <b>if</b> the properties is mutable
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(
         creator
     ).token_data;
 
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_id.token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_id.token_data_id);
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_id.token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_id.token_data_id);
 
-    // <b>if</b> default property is mutatable, <a href="token.md#0x3_token">token</a> property is alwasy mutable
-    // we only need <b>to</b> check <a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE">TOKEN_PROPERTY_MUTABLE</a> when default property is immutable
+    // <b>if</b> default property is mutatable, [token.md#0x3_token](token) property is alwasy mutable
+    // we only need <b>to</b> check [token.md#0x3_token_TOKEN_PROPERTY_MUTABLE](TOKEN_PROPERTY_MUTABLE) when default property is immutable
     <b>if</b> (!token_data.mutability_config.properties) {
         <b>assert</b>!(
-            <a href="property_map.md#0x3_property_map_contains_key">property_map::contains_key</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE">TOKEN_PROPERTY_MUTABLE</a>)),
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>)
+            [property_map.md#0x3_property_map_contains_key](property_map::contains_key)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_TOKEN_PROPERTY_MUTABLE](TOKEN_PROPERTY_MUTABLE))),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE))
         );
 
-        <b>let</b> token_prop_mutable = <a href="property_map.md#0x3_property_map_read_bool">property_map::read_bool</a>(&token_data.default_properties, &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(<a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE">TOKEN_PROPERTY_MUTABLE</a>));
-        <b>assert</b>!(token_prop_mutable, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EFIELD_NOT_MUTABLE">EFIELD_NOT_MUTABLE</a>));
+        <b>let</b> token_prop_mutable = [property_map.md#0x3_property_map_read_bool](property_map::read_bool)(&token_data.default_properties, &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)([token.md#0x3_token_TOKEN_PROPERTY_MUTABLE](TOKEN_PROPERTY_MUTABLE)));
+        <b>assert</b>!(token_prop_mutable, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EFIELD_NOT_MUTABLE](EFIELD_NOT_MUTABLE)));
     };
 
     // check <b>if</b> the property_version is 0 <b>to</b> determine <b>if</b> we need <b>to</b> <b>update</b> the property_version
     <b>if</b> (token_id.property_version == 0) {
-        <b>let</b> <a href="token.md#0x3_token">token</a> = <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(token_owner, token_id, 1);
-        // give a new property_version for each <a href="token.md#0x3_token">token</a>
+        <b>let</b> [token.md#0x3_token](token) = [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(token_owner, token_id, 1);
+        // give a new property_version for each [token.md#0x3_token](token)
         <b>let</b> cur_property_version = token_data.largest_property_version + 1;
-        <b>let</b> new_token_id = <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_id.token_data_id, cur_property_version);
-        <b>let</b> new_token = <a href="token.md#0x3_token_Token">Token</a> {
+        <b>let</b> new_token_id = [token.md#0x3_token_create_token_id](create_token_id)(token_id.token_data_id, cur_property_version);
+        <b>let</b> new_token = [token.md#0x3_token_Token](Token) {
             id: new_token_id,
             amount: 1,
             token_properties: token_data.default_properties,
         };
-        <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(token_owner, new_token);
-        <a href="token.md#0x3_token_update_token_property_internal">update_token_property_internal</a>(token_owner, new_token_id, keys, values, types);
+        [token.md#0x3_token_direct_deposit](direct_deposit)(token_owner, new_token);
+        [token.md#0x3_token_update_token_property_internal](update_token_property_internal)(token_owner, new_token_id, keys, values, types);
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_MutateTokenPropertyMap">MutateTokenPropertyMap</a> {
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_MutateTokenPropertyMap](MutateTokenPropertyMap) {
                 old_id: token_id,
                 new_id: new_token_id,
                 keys,
@@ -2745,9 +2745,9 @@ Mutate the token_properties of one token.
                 types
             });
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a>&gt;(
-            &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(token_owner).mutate_token_property_events,
-            <a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a> {
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent)&gt;(
+            &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(token_owner).mutate_token_property_events,
+            [token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent) {
                 old_id: token_id,
                 new_id: new_token_id,
                 keys,
@@ -2757,14 +2757,14 @@ Mutate the token_properties of one token.
         );
 
         token_data.largest_property_version = cur_property_version;
-        // burn the orignial property_version 0 <a href="token.md#0x3_token">token</a> after mutation
-        <b>let</b> <a href="token.md#0x3_token_Token">Token</a> { id: _, amount: _, token_properties: _ } = <a href="token.md#0x3_token">token</a>;
+        // burn the orignial property_version 0 [token.md#0x3_token](token) after mutation
+        <b>let</b> [token.md#0x3_token_Token](Token) { id: _, amount: _, token_properties: _ } = [token.md#0x3_token](token);
         new_token_id
     } <b>else</b> {
-        // only 1 <b>copy</b> for the <a href="token.md#0x3_token">token</a> <b>with</b> property verion bigger than 0
-        <a href="token.md#0x3_token_update_token_property_internal">update_token_property_internal</a>(token_owner, token_id, keys, values, types);
+        // only 1 <b>copy</b> for the [token.md#0x3_token](token) <b>with</b> property verion bigger than 0
+        [token.md#0x3_token_update_token_property_internal](update_token_property_internal)(token_owner, token_id, keys, values, types);
         <b>if</b> (std::features::module_event_migration_enabled()) {
-            <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_MutateTokenPropertyMap">MutateTokenPropertyMap</a> {
+            [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_MutateTokenPropertyMap](MutateTokenPropertyMap) {
                 old_id: token_id,
                 new_id: token_id,
                 keys,
@@ -2772,9 +2772,9 @@ Mutate the token_properties of one token.
                 types
             });
         };
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a>&gt;(
-            &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(token_owner).mutate_token_property_events,
-            <a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a> {
+        [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent)&gt;(
+            &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(token_owner).mutate_token_property_events,
+            [token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent) {
                 old_id: token_id,
                 new_id: token_id,
                 keys,
@@ -2797,7 +2797,7 @@ Mutate the token_properties of one token.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_royalty">create_royalty</a>(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_royalty](create_royalty)(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
@@ -2806,10 +2806,10 @@ Mutate the token_properties of one token.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_royalty">create_royalty</a>(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): <a href="token.md#0x3_token_Royalty">Royalty</a> {
-    <b>assert</b>!(royalty_points_numerator &lt;= royalty_points_denominator, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR">EINVALID_ROYALTY_NUMERATOR_DENOMINATOR</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/doc/account.md#0x1_account_exists_at">account::exists_at</a>(payee_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST">EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST</a>));
-    <a href="token.md#0x3_token_Royalty">Royalty</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_royalty](create_royalty)(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): [token.md#0x3_token_Royalty](Royalty) {
+    <b>assert</b>!(royalty_points_numerator &lt;= royalty_points_denominator, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR](EINVALID_ROYALTY_NUMERATOR_DENOMINATOR)));
+    <b>assert</b>!([../../aptos-framework/doc/account.md#0x1_account_exists_at](account::exists_at)(payee_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST](EROYALTY_PAYEE_ACCOUNT_DOES_NOT_EXIST)));
+    [token.md#0x3_token_Royalty](Royalty) {
         royalty_points_numerator,
         royalty_points_denominator,
         payee_address
@@ -2828,7 +2828,7 @@ Mutate the token_properties of one token.
 Deposit the token balance into the owner's account and emit an event.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_deposit_token">deposit_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_deposit_token](deposit_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -2837,10 +2837,10 @@ Deposit the token balance into the owner's account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_deposit_token">deposit_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">Token</a>) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <a href="token.md#0x3_token_initialize_token_store">initialize_token_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(account_addr, <a href="token.md#0x3_token">token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_deposit_token](deposit_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), [token.md#0x3_token](token): [token.md#0x3_token_Token](Token)) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+    [token.md#0x3_token_initialize_token_store](initialize_token_store)([../../aptos-framework/doc/account.md#0x1_account](account));
+    [token.md#0x3_token_direct_deposit](direct_deposit)(account_addr, [token.md#0x3_token](token))
 }
 </code></pre>
 
@@ -2855,7 +2855,7 @@ Deposit the token balance into the owner's account and emit an event.
 direct deposit if user opt in direct transfer
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_deposit_with_opt_in">direct_deposit_with_opt_in</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_deposit_with_opt_in](direct_deposit_with_opt_in)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -2864,10 +2864,10 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_deposit_with_opt_in">direct_deposit_with_opt_in</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">Token</a>) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr).direct_transfer;
-    <b>assert</b>!(opt_in_transfer, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER">EUSER_NOT_OPT_IN_DIRECT_TRANSFER</a>));
-    <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(account_addr, <a href="token.md#0x3_token">token</a>);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_deposit_with_opt_in](direct_deposit_with_opt_in)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](Token)) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr).direct_transfer;
+    <b>assert</b>!(opt_in_transfer, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER](EUSER_NOT_OPT_IN_DIRECT_TRANSFER)));
+    [token.md#0x3_token_direct_deposit](direct_deposit)(account_addr, [token.md#0x3_token](token));
 }
 </code></pre>
 
@@ -2881,7 +2881,7 @@ direct deposit if user opt in direct transfer
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_transfer">direct_transfer</a>(sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_transfer](direct_transfer)(sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64)
 </code></pre>
 
 
@@ -2890,14 +2890,14 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_transfer">direct_transfer</a>(
-    sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_transfer](direct_transfer)(
+    sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    token_id: [token.md#0x3_token_TokenId](TokenId),
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> <a href="token.md#0x3_token">token</a> = <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(sender, token_id, amount);
-    <a href="token.md#0x3_token_deposit_token">deposit_token</a>(receiver, <a href="token.md#0x3_token">token</a>);
+) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> [token.md#0x3_token](token) = [token.md#0x3_token_withdraw_token](withdraw_token)(sender, token_id, amount);
+    [token.md#0x3_token_deposit_token](deposit_token)(receiver, [token.md#0x3_token](token));
 }
 </code></pre>
 
@@ -2911,7 +2911,7 @@ direct deposit if user opt in direct transfer
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token_store">initialize_token_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token_store](initialize_token_store)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer))
 </code></pre>
 
 
@@ -2920,17 +2920,17 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token_store">initialize_token_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <b>if</b> (!<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>))) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token_store](initialize_token_store)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer)) {
+    <b>if</b> (!<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)))) {
         <b>move_to</b>(
-            <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>,
-            <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-                tokens: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new">table::new</a>(),
+            [../../aptos-framework/doc/account.md#0x1_account](account),
+            [token.md#0x3_token_TokenStore](TokenStore) {
+                tokens: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new](table::new)(),
                 direct_transfer: <b>false</b>,
-                deposit_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_DepositEvent">DepositEvent</a>&gt;(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>),
-                withdraw_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_WithdrawEvent">WithdrawEvent</a>&gt;(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>),
-                burn_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_BurnTokenEvent">BurnTokenEvent</a>&gt;(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>),
-                mutate_token_property_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_MutateTokenPropertyMapEvent">MutateTokenPropertyMapEvent</a>&gt;(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>),
+                deposit_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_DepositEvent](DepositEvent)&gt;([../../aptos-framework/doc/account.md#0x1_account](account)),
+                withdraw_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_WithdrawEvent](WithdrawEvent)&gt;([../../aptos-framework/doc/account.md#0x1_account](account)),
+                burn_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_BurnTokenEvent](BurnTokenEvent)&gt;([../../aptos-framework/doc/account.md#0x1_account](account)),
+                mutate_token_property_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_MutateTokenPropertyMapEvent](MutateTokenPropertyMapEvent)&gt;([../../aptos-framework/doc/account.md#0x1_account](account)),
             },
         );
     }
@@ -2947,7 +2947,7 @@ direct deposit if user opt in direct transfer
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_merge">merge</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">token::Token</a>, source_token: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_merge](merge)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](token::Token), source_token: [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -2956,10 +2956,10 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_merge">merge</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">Token</a>, source_token: <a href="token.md#0x3_token_Token">Token</a>) {
-    <b>assert</b>!(&dst_token.id == &source_token.id, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_TOKEN_MERGE">EINVALID_TOKEN_MERGE</a>));
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_merge](merge)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](Token), source_token: [token.md#0x3_token_Token](Token)) {
+    <b>assert</b>!(&dst_token.id == &source_token.id, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_TOKEN_MERGE](EINVALID_TOKEN_MERGE)));
     dst_token.amount = dst_token.amount + source_token.amount;
-    <b>let</b> <a href="token.md#0x3_token_Token">Token</a> { id: _, amount: _, token_properties: _ } = source_token;
+    <b>let</b> [token.md#0x3_token_Token](Token) { id: _, amount: _, token_properties: _ } = source_token;
 }
 </code></pre>
 
@@ -2973,7 +2973,7 @@ direct deposit if user opt in direct transfer
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_split">split</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">token::Token</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_split](split)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](token::Token), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -2982,15 +2982,15 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_split">split</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">Token</a>, amount: u64): <a href="token.md#0x3_token_Token">Token</a> {
-    <b>assert</b>!(dst_token.id.property_version == 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="token.md#0x3_token_ENFT_NOT_SPLITABLE">ENFT_NOT_SPLITABLE</a>));
-    <b>assert</b>!(dst_token.amount &gt; amount, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT">ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT</a>));
-    <b>assert</b>!(amount &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT">ETOKEN_CANNOT_HAVE_ZERO_AMOUNT</a>));
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_split](split)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](Token), amount: u64): [token.md#0x3_token_Token](Token) {
+    <b>assert</b>!(dst_token.id.property_version == 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state](error::invalid_state)([token.md#0x3_token_ENFT_NOT_SPLITABLE](ENFT_NOT_SPLITABLE)));
+    <b>assert</b>!(dst_token.amount &gt; amount, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT](ETOKEN_SPLIT_AMOUNT_LARGER_OR_EQUAL_TO_TOKEN_AMOUNT)));
+    <b>assert</b>!(amount &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT](ETOKEN_CANNOT_HAVE_ZERO_AMOUNT)));
     dst_token.amount = dst_token.amount - amount;
-    <a href="token.md#0x3_token_Token">Token</a> {
+    [token.md#0x3_token_Token](Token) {
         id: dst_token.id,
         amount,
-        token_properties: <a href="property_map.md#0x3_property_map_empty">property_map::empty</a>(),
+        token_properties: [property_map.md#0x3_property_map_empty](property_map::empty)(),
     }
 }
 </code></pre>
@@ -3005,7 +3005,7 @@ direct deposit if user opt in direct transfer
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_token_id">token_id</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">token::Token</a>): &<a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_token_id](token_id)([token.md#0x3_token](token): &[token.md#0x3_token_Token](token::Token)): &[token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -3014,8 +3014,8 @@ direct deposit if user opt in direct transfer
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_token_id">token_id</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">Token</a>): &<a href="token.md#0x3_token_TokenId">TokenId</a> {
-    &<a href="token.md#0x3_token">token</a>.id
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_token_id](token_id)([token.md#0x3_token](token): &[token.md#0x3_token_Token](Token)): &[token.md#0x3_token_TokenId](TokenId) {
+    &[token.md#0x3_token](token).id
 }
 </code></pre>
 
@@ -3030,7 +3030,7 @@ direct deposit if user opt in direct transfer
 Transfers <code>amount</code> of tokens from <code>from</code> to <code><b>to</b></code>.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_transfer">transfer</a>(from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, <b>to</b>: <b>address</b>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_transfer](transfer)(from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), id: [token.md#0x3_token_TokenId](token::TokenId), <b>to</b>: <b>address</b>, amount: u64)
 </code></pre>
 
 
@@ -3039,16 +3039,16 @@ Transfers <code>amount</code> of tokens from <code>from</code> to <code><b>to</b
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_transfer">transfer</a>(
-    from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_transfer](transfer)(
+    from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    id: [token.md#0x3_token_TokenId](TokenId),
     <b>to</b>: <b>address</b>,
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(<b>to</b>).direct_transfer;
-    <b>assert</b>!(opt_in_transfer, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER">EUSER_NOT_OPT_IN_DIRECT_TRANSFER</a>));
-    <b>let</b> <a href="token.md#0x3_token">token</a> = <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(from, id, amount);
-    <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(<b>to</b>, <a href="token.md#0x3_token">token</a>);
+) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(<b>to</b>).direct_transfer;
+    <b>assert</b>!(opt_in_transfer, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER](EUSER_NOT_OPT_IN_DIRECT_TRANSFER)));
+    <b>let</b> [token.md#0x3_token](token) = [token.md#0x3_token_withdraw_token](withdraw_token)(from, id, amount);
+    [token.md#0x3_token_direct_deposit](direct_deposit)(<b>to</b>, [token.md#0x3_token](token));
 }
 </code></pre>
 
@@ -3063,7 +3063,7 @@ Transfers <code>amount</code> of tokens from <code>from</code> to <code><b>to</b
 Token owner can create this one-time withdraw capability with an expiration time
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_withdraw_capability">create_withdraw_capability</a>(owner: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64, expiration_sec: u64): <a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_withdraw_capability](create_withdraw_capability)(owner: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64, expiration_sec: u64): [token.md#0x3_token_WithdrawCapability](token::WithdrawCapability)
 </code></pre>
 
 
@@ -3072,14 +3072,14 @@ Token owner can create this one-time withdraw capability with an expiration time
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_withdraw_capability">create_withdraw_capability</a>(
-    owner: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_withdraw_capability](create_withdraw_capability)(
+    owner: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    token_id: [token.md#0x3_token_TokenId](TokenId),
     amount: u64,
     expiration_sec: u64,
-): <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a> {
-    <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a> {
-        token_owner: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner),
+): [token.md#0x3_token_WithdrawCapability](WithdrawCapability) {
+    [token.md#0x3_token_WithdrawCapability](WithdrawCapability) {
+        token_owner: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(owner),
         token_id,
         amount,
         expiration_sec,
@@ -3098,7 +3098,7 @@ Token owner can create this one-time withdraw capability with an expiration time
 Withdraw the token with a capability
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_with_capability">withdraw_with_capability</a>(withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_with_capability](withdraw_with_capability)(withdraw_proof: [token.md#0x3_token_WithdrawCapability](token::WithdrawCapability)): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -3107,13 +3107,13 @@ Withdraw the token with a capability
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_with_capability">withdraw_with_capability</a>(
-    withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a>,
-): <a href="token.md#0x3_token_Token">Token</a> <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_with_capability](withdraw_with_capability)(
+    withdraw_proof: [token.md#0x3_token_WithdrawCapability](WithdrawCapability),
+): [token.md#0x3_token_Token](Token) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
     // verify the delegation hasn't expired yet
-    <b>assert</b>!(<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_now_seconds">timestamp::now_seconds</a>() &lt;= withdraw_proof.expiration_sec, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES">EWITHDRAW_PROOF_EXPIRES</a>));
+    <b>assert</b>!([../../aptos-framework/doc/timestamp.md#0x1_timestamp_now_seconds](timestamp::now_seconds)() &lt;= withdraw_proof.expiration_sec, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES](EWITHDRAW_PROOF_EXPIRES)));
 
-    <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(
+    [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(
         withdraw_proof.token_owner,
         withdraw_proof.token_id,
         withdraw_proof.amount,
@@ -3132,7 +3132,7 @@ Withdraw the token with a capability
 Withdraw the token with a capability.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_partial_withdraw_with_capability">partial_withdraw_with_capability</a>(withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>, withdraw_amount: u64): (<a href="token.md#0x3_token_Token">token::Token</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_partial_withdraw_with_capability](partial_withdraw_with_capability)(withdraw_proof: [token.md#0x3_token_WithdrawCapability](token::WithdrawCapability), withdraw_amount: u64): ([token.md#0x3_token_Token](token::Token), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[token.md#0x3_token_WithdrawCapability](token::WithdrawCapability)&gt;)
 </code></pre>
 
 
@@ -3141,20 +3141,20 @@ Withdraw the token with a capability.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_partial_withdraw_with_capability">partial_withdraw_with_capability</a>(
-    withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_partial_withdraw_with_capability](partial_withdraw_with_capability)(
+    withdraw_proof: [token.md#0x3_token_WithdrawCapability](WithdrawCapability),
     withdraw_amount: u64,
-): (<a href="token.md#0x3_token_Token">Token</a>, Option&lt;<a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a>&gt;) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
+): ([token.md#0x3_token_Token](Token), Option&lt;[token.md#0x3_token_WithdrawCapability](WithdrawCapability)&gt;) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
     // verify the delegation hasn't expired yet
-    <b>assert</b>!(<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_now_seconds">timestamp::now_seconds</a>() &lt;= withdraw_proof.expiration_sec, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES">EWITHDRAW_PROOF_EXPIRES</a>));
+    <b>assert</b>!([../../aptos-framework/doc/timestamp.md#0x1_timestamp_now_seconds](timestamp::now_seconds)() &lt;= withdraw_proof.expiration_sec, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EWITHDRAW_PROOF_EXPIRES](EWITHDRAW_PROOF_EXPIRES)));
 
-    <b>assert</b>!(withdraw_amount &lt;= withdraw_proof.amount, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT">EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT</a>));
+    <b>assert</b>!(withdraw_amount &lt;= withdraw_proof.amount, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT](EINSUFFICIENT_WITHDRAW_CAPABILITY_AMOUNT)));
 
-    <b>let</b> res: Option&lt;<a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a>&gt; = <b>if</b> (withdraw_amount == withdraw_proof.amount) {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>&lt;<a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a>&gt;()
+    <b>let</b> res: Option&lt;[token.md#0x3_token_WithdrawCapability](WithdrawCapability)&gt; = <b>if</b> (withdraw_amount == withdraw_proof.amount) {
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)&lt;[token.md#0x3_token_WithdrawCapability](WithdrawCapability)&gt;()
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(
-            <a href="token.md#0x3_token_WithdrawCapability">WithdrawCapability</a> {
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(
+            [token.md#0x3_token_WithdrawCapability](WithdrawCapability) {
                 token_owner: withdraw_proof.token_owner,
                 token_id: withdraw_proof.token_id,
                 amount: withdraw_proof.amount - withdraw_amount,
@@ -3164,7 +3164,7 @@ Withdraw the token with a capability.
     };
 
     (
-        <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(
+        [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(
             withdraw_proof.token_owner,
             withdraw_proof.token_id,
             withdraw_amount,
@@ -3185,7 +3185,7 @@ Withdraw the token with a capability.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_token](withdraw_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -3194,13 +3194,13 @@ Withdraw the token with a capability.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_token](withdraw_token)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    id: [token.md#0x3_token_TokenId](TokenId),
     amount: u64,
-): <a href="token.md#0x3_token_Token">Token</a> <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(account_addr, id, amount)
+): [token.md#0x3_token_Token](Token) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+    [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(account_addr, id, amount)
 }
 </code></pre>
 
@@ -3215,7 +3215,7 @@ Withdraw the token with a capability.
 Create a new collection to hold tokens
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection">create_collection</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection](create_collection)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;)
 </code></pre>
 
 
@@ -3224,39 +3224,39 @@ Create a new collection to hold tokens
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection">create_collection</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection](create_collection)(
+    creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     name: String,
     description: String,
     uri: String,
     maximum: u64,
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&name) &lt;= <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>if</b> (!<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr)) {
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&name) &lt;= [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EURI_TOO_LONG](EURI_TOO_LONG)));
+    <b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    <b>if</b> (!<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr)) {
         <b>move_to</b>(
             creator,
-            <a href="token.md#0x3_token_Collections">Collections</a> {
-                collection_data: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new">table::new</a>(),
-                token_data: <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new">table::new</a>(),
-                create_collection_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_CreateCollectionEvent">CreateCollectionEvent</a>&gt;(creator),
-                create_token_data_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_CreateTokenDataEvent">CreateTokenDataEvent</a>&gt;(creator),
-                mint_token_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a>&gt;(creator),
+            [token.md#0x3_token_Collections](Collections) {
+                collection_data: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new](table::new)(),
+                token_data: [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_new](table::new)(),
+                create_collection_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_CreateCollectionEvent](CreateCollectionEvent)&gt;(creator),
+                create_token_data_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_CreateTokenDataEvent](CreateTokenDataEvent)&gt;(creator),
+                mint_token_events: [../../aptos-framework/doc/account.md#0x1_account_new_event_handle](account::new_event_handle)&lt;[token.md#0x3_token_MintTokenEvent](MintTokenEvent)&gt;(creator),
             },
         )
     };
 
-    <b>let</b> collection_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr).collection_data;
+    <b>let</b> collection_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr).collection_data;
 
     <b>assert</b>!(
-        !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(collection_data, name),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists">error::already_exists</a>(<a href="token.md#0x3_token_ECOLLECTION_ALREADY_EXISTS">ECOLLECTION_ALREADY_EXISTS</a>),
+        ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(collection_data, name),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists](error::already_exists)([token.md#0x3_token_ECOLLECTION_ALREADY_EXISTS](ECOLLECTION_ALREADY_EXISTS)),
     );
 
-    <b>let</b> mutability_config = <a href="token.md#0x3_token_create_collection_mutability_config">create_collection_mutability_config</a>(&mutate_setting);
-    <b>let</b> collection = <a href="token.md#0x3_token_CollectionData">CollectionData</a> {
+    <b>let</b> mutability_config = [token.md#0x3_token_create_collection_mutability_config](create_collection_mutability_config)(&mutate_setting);
+    <b>let</b> collection = [token.md#0x3_token_CollectionData](CollectionData) {
         description,
         name: name,
         uri,
@@ -3265,11 +3265,11 @@ Create a new collection to hold tokens
         mutability_config
     };
 
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add">table::add</a>(collection_data, name, collection);
-    <b>let</b> collection_handle = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr);
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add](table::add)(collection_data, name, collection);
+    <b>let</b> collection_handle = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token.md#0x3_token_CreateCollection">CreateCollection</a> {
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+            [token.md#0x3_token_CreateCollection](CreateCollection) {
                 creator: account_addr,
                 collection_name: name,
                 uri,
@@ -3278,9 +3278,9 @@ Create a new collection to hold tokens
             }
         );
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_CreateCollectionEvent">CreateCollectionEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_CreateCollectionEvent](CreateCollectionEvent)&gt;(
         &<b>mut</b> collection_handle.create_collection_events,
-        <a href="token.md#0x3_token_CreateCollectionEvent">CreateCollectionEvent</a> {
+        [token.md#0x3_token_CreateCollectionEvent](CreateCollectionEvent) {
             creator: account_addr,
             collection_name: name,
             uri,
@@ -3301,7 +3301,7 @@ Create a new collection to hold tokens
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_collection_exists">check_collection_exists</a>(creator: <b>address</b>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_collection_exists](check_collection_exists)(creator: <b>address</b>, name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): bool
 </code></pre>
 
 
@@ -3310,14 +3310,14 @@ Create a new collection to hold tokens
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_collection_exists">check_collection_exists</a>(creator: <b>address</b>, name: String): bool <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_collection_exists](check_collection_exists)(creator: <b>address</b>, name: String): bool <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)),
     );
 
-    <b>let</b> collection_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).collection_data;
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(collection_data, name)
+    <b>let</b> collection_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).collection_data;
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(collection_data, name)
 }
 </code></pre>
 
@@ -3331,7 +3331,7 @@ Create a new collection to hold tokens
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_tokendata_exists">check_tokendata_exists</a>(creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_tokendata_exists](check_tokendata_exists)(creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): bool
 </code></pre>
 
 
@@ -3340,15 +3340,15 @@ Create a new collection to hold tokens
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_tokendata_exists">check_tokendata_exists</a>(creator: <b>address</b>, collection_name: String, token_name: String): bool <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_tokendata_exists](check_tokendata_exists)(creator: <b>address</b>, collection_name: String, token_name: String): bool <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)),
     );
 
-    <b>let</b> token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).token_data;
-    <b>let</b> token_data_id = <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(creator, collection_name, token_name);
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(token_data, token_data_id)
+    <b>let</b> token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).token_data;
+    <b>let</b> token_data_id = [token.md#0x3_token_create_token_data_id](create_token_data_id)(creator, collection_name, token_name);
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(token_data, token_data_id)
 }
 </code></pre>
 
@@ -3362,7 +3362,7 @@ Create a new collection to hold tokens
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_tokendata">create_tokendata</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, token_mutate_config: <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>, property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;): <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_tokendata](create_tokendata)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, token_mutate_config: [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig), property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;): [token.md#0x3_token_TokenDataId](token::TokenDataId)
 </code></pre>
 
 
@@ -3371,8 +3371,8 @@ Create a new collection to hold tokens
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_tokendata">create_tokendata</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_tokendata](create_tokendata)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     collection: String,
     name: String,
     description: String,
@@ -3381,62 +3381,62 @@ Create a new collection to hold tokens
     royalty_payee_address: <b>address</b>,
     royalty_points_denominator: u64,
     royalty_points_numerator: u64,
-    token_mutate_config: <a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>,
-    property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;
-): <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&name) &lt;= <a href="token.md#0x3_token_MAX_NFT_NAME_LENGTH">MAX_NFT_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ENFT_NAME_TOO_LONG">ENFT_NAME_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&collection) &lt;= <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&uri) &lt;= <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EURI_TOO_LONG">EURI_TOO_LONG</a>));
-    <b>assert</b>!(royalty_points_numerator &lt;= royalty_points_denominator, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR">EINVALID_ROYALTY_NUMERATOR_DENOMINATOR</a>));
+    token_mutate_config: [token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig),
+    property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;
+): [token.md#0x3_token_TokenDataId](TokenDataId) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&name) &lt;= [token.md#0x3_token_MAX_NFT_NAME_LENGTH](MAX_NFT_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ENFT_NAME_TOO_LONG](ENFT_NAME_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&collection) &lt;= [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&uri) &lt;= [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EURI_TOO_LONG](EURI_TOO_LONG)));
+    <b>assert</b>!(royalty_points_numerator &lt;= royalty_points_denominator, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINVALID_ROYALTY_NUMERATOR_DENOMINATOR](EINVALID_ROYALTY_NUMERATOR_DENOMINATOR)));
 
-    <b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
+    <b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)),
     );
-    <b>let</b> collections = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr);
+    <b>let</b> collections = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr);
 
-    <b>let</b> token_data_id = <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(account_addr, collection, name);
+    <b>let</b> token_data_id = [token.md#0x3_token_create_token_data_id](create_token_data_id)(account_addr, collection, name);
 
     <b>assert</b>!(
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&collections.collection_data, token_data_id.collection),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED">ECOLLECTION_NOT_PUBLISHED</a>),
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&collections.collection_data, token_data_id.collection),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED](ECOLLECTION_NOT_PUBLISHED)),
     );
     <b>assert</b>!(
-        !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&collections.token_data, token_data_id),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists">error::already_exists</a>(<a href="token.md#0x3_token_ETOKEN_DATA_ALREADY_EXISTS">ETOKEN_DATA_ALREADY_EXISTS</a>),
+        ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&collections.token_data, token_data_id),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_already_exists](error::already_exists)([token.md#0x3_token_ETOKEN_DATA_ALREADY_EXISTS](ETOKEN_DATA_ALREADY_EXISTS)),
     );
 
-    <b>let</b> collection = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> collections.collection_data, token_data_id.collection);
+    <b>let</b> collection = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> collections.collection_data, token_data_id.collection);
 
     // <b>if</b> collection maximum == 0, user don't want <b>to</b> enforce supply constraint.
-    // we don't track supply <b>to</b> make <a href="token.md#0x3_token">token</a> creation parallelizable
+    // we don't track supply <b>to</b> make [token.md#0x3_token](token) creation parallelizable
     <b>if</b> (collection.maximum &gt; 0) {
         collection.supply = collection.supply + 1;
         <b>assert</b>!(
             collection.maximum &gt;= collection.supply,
-            <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM">ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM</a>),
+            [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM](ECREATE_WOULD_EXCEED_COLLECTION_MAXIMUM)),
         );
     };
 
-    <b>let</b> token_data = <a href="token.md#0x3_token_TokenData">TokenData</a> {
+    <b>let</b> token_data = [token.md#0x3_token_TokenData](TokenData) {
         maximum,
         largest_property_version: 0,
         supply: 0,
         uri,
-        royalty: <a href="token.md#0x3_token_create_royalty">create_royalty</a>(royalty_points_numerator, royalty_points_denominator, royalty_payee_address),
+        royalty: [token.md#0x3_token_create_royalty](create_royalty)(royalty_points_numerator, royalty_points_denominator, royalty_payee_address),
         name,
         description,
-        default_properties: <a href="property_map.md#0x3_property_map_new">property_map::new</a>(property_keys, property_values, property_types),
+        default_properties: [property_map.md#0x3_property_map_new](property_map::new)(property_keys, property_values, property_types),
         mutability_config: token_mutate_config,
     };
 
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add">table::add</a>(&<b>mut</b> collections.token_data, token_data_id, token_data);
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add](table::add)(&<b>mut</b> collections.token_data, token_data_id, token_data);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token.md#0x3_token_CreateTokenData">CreateTokenData</a> {
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)(
+            [token.md#0x3_token_CreateTokenData](CreateTokenData) {
                 id: token_data_id,
                 description,
                 maximum,
@@ -3453,9 +3453,9 @@ Create a new collection to hold tokens
         );
     };
 
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_CreateTokenDataEvent">CreateTokenDataEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_CreateTokenDataEvent](CreateTokenDataEvent)&gt;(
         &<b>mut</b> collections.create_token_data_events,
-        <a href="token.md#0x3_token_CreateTokenDataEvent">CreateTokenDataEvent</a> {
+        [token.md#0x3_token_CreateTokenDataEvent](CreateTokenDataEvent) {
             id: token_data_id,
             description,
             maximum,
@@ -3485,7 +3485,7 @@ Create a new collection to hold tokens
 return the number of distinct token_data_id created under this collection
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_supply">get_collection_supply</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_supply](get_collection_supply)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;
 </code></pre>
 
 
@@ -3494,14 +3494,14 @@ return the number of distinct token_data_id created under this collection
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_supply">get_collection_supply</a>(creator_address: <b>address</b>, collection_name: String): Option&lt;u64&gt; <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_supply](get_collection_supply)(creator_address: <b>address</b>, collection_name: String): Option&lt;u64&gt; <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
 
     <b>if</b> (collection_data.maximum &gt; 0) {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(collection_data.supply)
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(collection_data.supply)
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>()
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)()
     }
 }
 </code></pre>
@@ -3516,7 +3516,7 @@ return the number of distinct token_data_id created under this collection
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_description">get_collection_description</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_description](get_collection_description)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -3525,9 +3525,9 @@ return the number of distinct token_data_id created under this collection
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_description">get_collection_description</a>(creator_address: <b>address</b>, collection_name: String): String <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_description](get_collection_description)(creator_address: <b>address</b>, collection_name: String): String <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
     collection_data.description
 }
 </code></pre>
@@ -3542,7 +3542,7 @@ return the number of distinct token_data_id created under this collection
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_uri">get_collection_uri</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_uri](get_collection_uri)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -3551,9 +3551,9 @@ return the number of distinct token_data_id created under this collection
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_uri">get_collection_uri</a>(creator_address: <b>address</b>, collection_name: String): String <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_uri](get_collection_uri)(creator_address: <b>address</b>, collection_name: String): String <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
     collection_data.uri
 }
 </code></pre>
@@ -3568,7 +3568,7 @@ return the number of distinct token_data_id created under this collection
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_maximum">get_collection_maximum</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_maximum](get_collection_maximum)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): u64
 </code></pre>
 
 
@@ -3577,9 +3577,9 @@ return the number of distinct token_data_id created under this collection
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_maximum">get_collection_maximum</a>(creator_address: <b>address</b>, collection_name: String): u64 <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address, collection_name);
-    <b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data, collection_name);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_maximum](get_collection_maximum)(creator_address: <b>address</b>, collection_name: String): u64 <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address, collection_name);
+    <b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data, collection_name);
     collection_data.maximum
 }
 </code></pre>
@@ -3595,7 +3595,7 @@ return the number of distinct token_data_id created under this collection
 return the number of distinct token_id created under this TokenData
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_supply">get_token_supply</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_supply](get_token_supply)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;
 </code></pre>
 
 
@@ -3604,16 +3604,16 @@ return the number of distinct token_id created under this TokenData
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_supply">get_token_supply</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): Option&lt;u64&gt; <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id);
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_supply](get_token_supply)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): Option&lt;u64&gt; <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id);
 
     <b>if</b> (token_data.maximum &gt; 0) {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(token_data.supply)
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some](option::some)(token_data.supply)
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>&lt;u64&gt;()
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none](option::none)&lt;u64&gt;()
     }
 }
 </code></pre>
@@ -3629,7 +3629,7 @@ return the number of distinct token_id created under this TokenData
 return the largest_property_version of this TokenData
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_largest_property_version">get_tokendata_largest_property_version</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_largest_property_version](get_tokendata_largest_property_version)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): u64
 </code></pre>
 
 
@@ -3638,11 +3638,11 @@ return the largest_property_version of this TokenData
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_largest_property_version">get_tokendata_largest_property_version</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): u64 <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id).largest_property_version
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_largest_property_version](get_tokendata_largest_property_version)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): u64 <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id).largest_property_version
 }
 </code></pre>
 
@@ -3657,7 +3657,7 @@ return the largest_property_version of this TokenData
 return the TokenId for a given Token
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_id">get_token_id</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">token::Token</a>): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_id](get_token_id)([token.md#0x3_token](token): &[token.md#0x3_token_Token](token::Token)): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -3666,8 +3666,8 @@ return the TokenId for a given Token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_id">get_token_id</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">Token</a>): <a href="token.md#0x3_token_TokenId">TokenId</a> {
-    <a href="token.md#0x3_token">token</a>.id
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_id](get_token_id)([token.md#0x3_token](token): &[token.md#0x3_token_Token](Token)): [token.md#0x3_token_TokenId](TokenId) {
+    [token.md#0x3_token](token).id
 }
 </code></pre>
 
@@ -3681,7 +3681,7 @@ return the TokenId for a given Token
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_direct_transfer">get_direct_transfer</a>(receiver: <b>address</b>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_direct_transfer](get_direct_transfer)(receiver: <b>address</b>): bool
 </code></pre>
 
 
@@ -3690,12 +3690,12 @@ return the TokenId for a given Token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_direct_transfer">get_direct_transfer</a>(receiver: <b>address</b>): bool <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>if</b> (!<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver)) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_direct_transfer](get_direct_transfer)(receiver: <b>address</b>): bool <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>if</b> (!<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver)) {
         <b>return</b> <b>false</b>
     };
 
-    <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver).direct_transfer
+    <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver).direct_transfer
 }
 </code></pre>
 
@@ -3709,7 +3709,7 @@ return the TokenId for a given Token
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_mutability_config">create_token_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_mutability_config](create_token_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)
 </code></pre>
 
 
@@ -3718,13 +3718,13 @@ return the TokenId for a given Token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_mutability_config">create_token_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a> {
-    <a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a> {
-        maximum: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_TOKEN_MAX_MUTABLE_IND">TOKEN_MAX_MUTABLE_IND</a>),
-        uri: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_TOKEN_URI_MUTABLE_IND">TOKEN_URI_MUTABLE_IND</a>),
-        royalty: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND">TOKEN_ROYALTY_MUTABLE_IND</a>),
-        description: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND">TOKEN_DESCRIPTION_MUTABLE_IND</a>),
-        properties: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND">TOKEN_PROPERTY_MUTABLE_IND</a>),
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_mutability_config](create_token_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig) {
+    [token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig) {
+        maximum: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_TOKEN_MAX_MUTABLE_IND](TOKEN_MAX_MUTABLE_IND)),
+        uri: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_TOKEN_URI_MUTABLE_IND](TOKEN_URI_MUTABLE_IND)),
+        royalty: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND](TOKEN_ROYALTY_MUTABLE_IND)),
+        description: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND](TOKEN_DESCRIPTION_MUTABLE_IND)),
+        properties: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND](TOKEN_PROPERTY_MUTABLE_IND)),
     }
 }
 </code></pre>
@@ -3739,7 +3739,7 @@ return the TokenId for a given Token
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection_mutability_config">create_collection_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection_mutability_config](create_collection_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)
 </code></pre>
 
 
@@ -3748,11 +3748,11 @@ return the TokenId for a given Token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection_mutability_config">create_collection_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a> {
-    <a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a> {
-        description: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND">COLLECTION_DESCRIPTION_MUTABLE_IND</a>),
-        uri: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_COLLECTION_URI_MUTABLE_IND">COLLECTION_URI_MUTABLE_IND</a>),
-        maximum: *<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(mutate_setting, <a href="token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND">COLLECTION_MAX_MUTABLE_IND</a>),
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection_mutability_config](create_collection_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig) {
+    [token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig) {
+        description: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND](COLLECTION_DESCRIPTION_MUTABLE_IND)),
+        uri: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_COLLECTION_URI_MUTABLE_IND](COLLECTION_URI_MUTABLE_IND)),
+        maximum: *[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_borrow](vector::borrow)(mutate_setting, [token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND](COLLECTION_MAX_MUTABLE_IND)),
     }
 }
 </code></pre>
@@ -3767,7 +3767,7 @@ return the TokenId for a given Token
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token">mint_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, amount: u64): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token](mint_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), amount: u64): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -3776,40 +3776,40 @@ return the TokenId for a given Token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token">mint_token</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token](mint_token)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId),
     amount: u64,
-): <a href="token.md#0x3_token_TokenId">TokenId</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(token_data_id.creator == <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ENO_MINT_CAPABILITY">ENO_MINT_CAPABILITY</a>));
+): [token.md#0x3_token_TokenId](TokenId) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!(token_data_id.creator == [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ENO_MINT_CAPABILITY](ENO_MINT_CAPABILITY)));
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
 
     <b>if</b> (token_data.maximum &gt; 0) {
-        <b>assert</b>!(token_data.supply + amount &lt;= token_data.maximum, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM">EMINT_WOULD_EXCEED_TOKEN_MAXIMUM</a>));
+        <b>assert</b>!(token_data.supply + amount &lt;= token_data.maximum, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM](EMINT_WOULD_EXCEED_TOKEN_MAXIMUM)));
         token_data.supply = token_data.supply + amount;
     };
 
     // we add more tokens <b>with</b> property_version 0
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id, 0);
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id](create_token_id)(token_data_id, 0);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_MintToken">MintToken</a> { id: token_data_id, amount })
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_MintToken](MintToken) { id: token_data_id, amount })
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a>&gt;(
-        &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).mint_token_events,
-        <a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a> {
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_MintTokenEvent](MintTokenEvent)&gt;(
+        &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).mint_token_events,
+        [token.md#0x3_token_MintTokenEvent](MintTokenEvent) {
             id: token_data_id,
             amount,
         }
     );
 
-    <a href="token.md#0x3_token_deposit_token">deposit_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>,
-        <a href="token.md#0x3_token_Token">Token</a> {
+    [token.md#0x3_token_deposit_token](deposit_token)([../../aptos-framework/doc/account.md#0x1_account](account),
+        [token.md#0x3_token_Token](Token) {
             id: token_id,
             amount,
-            token_properties: <a href="property_map.md#0x3_property_map_empty">property_map::empty</a>(), // same <b>as</b> default properties no need <b>to</b> store
+            token_properties: [property_map.md#0x3_property_map_empty](property_map::empty)(), // same <b>as</b> default properties no need <b>to</b> store
         }
     );
 
@@ -3828,7 +3828,7 @@ return the TokenId for a given Token
 create tokens and directly deposite to receiver's address. The receiver should opt-in direct transfer
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token_to">mint_token_to</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token_to](mint_token_to)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), amount: u64)
 </code></pre>
 
 
@@ -3837,46 +3837,46 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token_to">mint_token_to</a>(
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token_to](mint_token_to)(
+    [../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer),
     receiver: <b>address</b>,
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>,
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId),
     amount: u64,
-) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED">ETOKEN_STORE_NOT_PUBLISHED</a>));
-    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver).direct_transfer;
-    <b>assert</b>!(opt_in_transfer, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER">EUSER_NOT_OPT_IN_DIRECT_TRANSFER</a>));
+) <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED](ETOKEN_STORE_NOT_PUBLISHED)));
+    <b>let</b> opt_in_transfer = <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver).direct_transfer;
+    <b>assert</b>!(opt_in_transfer, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EUSER_NOT_OPT_IN_DIRECT_TRANSFER](EUSER_NOT_OPT_IN_DIRECT_TRANSFER)));
 
-    <b>assert</b>!(token_data_id.creator == <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ENO_MINT_CAPABILITY">ENO_MINT_CAPABILITY</a>));
+    <b>assert</b>!(token_data_id.creator == [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account)), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ENO_MINT_CAPABILITY](ENO_MINT_CAPABILITY)));
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(all_token_data, token_data_id);
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(all_token_data, token_data_id);
 
     <b>if</b> (token_data.maximum &gt; 0) {
-        <b>assert</b>!(token_data.supply + amount &lt;= token_data.maximum, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM">EMINT_WOULD_EXCEED_TOKEN_MAXIMUM</a>));
+        <b>assert</b>!(token_data.supply + amount &lt;= token_data.maximum, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EMINT_WOULD_EXCEED_TOKEN_MAXIMUM](EMINT_WOULD_EXCEED_TOKEN_MAXIMUM)));
         token_data.supply = token_data.supply + amount;
     };
 
     // we add more tokens <b>with</b> property_version 0
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id, 0);
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id](create_token_id)(token_data_id, 0);
 
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_MintToken">MintToken</a> { id: token_data_id, amount })
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_MintToken](MintToken) { id: token_data_id, amount })
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a>&gt;(
-        &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).mint_token_events,
-        <a href="token.md#0x3_token_MintTokenEvent">MintTokenEvent</a> {
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_MintTokenEvent](MintTokenEvent)&gt;(
+        &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).mint_token_events,
+        [token.md#0x3_token_MintTokenEvent](MintTokenEvent) {
             id: token_data_id,
             amount,
         }
     );
 
-    <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(receiver,
-        <a href="token.md#0x3_token_Token">Token</a> {
+    [token.md#0x3_token_direct_deposit](direct_deposit)(receiver,
+        [token.md#0x3_token_Token](Token) {
             id: token_id,
             amount,
-            token_properties: <a href="property_map.md#0x3_property_map_empty">property_map::empty</a>(), // same <b>as</b> default properties no need <b>to</b> store
+            token_properties: [property_map.md#0x3_property_map_empty](property_map::empty)(), // same <b>as</b> default properties no need <b>to</b> store
         }
     );
 }
@@ -3892,7 +3892,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, property_version: u64): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_id](create_token_id)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), property_version: u64): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -3901,8 +3901,8 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>, property_version: u64): <a href="token.md#0x3_token_TokenId">TokenId</a> {
-    <a href="token.md#0x3_token_TokenId">TokenId</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_id](create_token_id)(token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId), property_version: u64): [token.md#0x3_token_TokenId](TokenId) {
+    [token.md#0x3_token_TokenId](TokenId) {
         token_data_id,
         property_version,
     }
@@ -3919,7 +3919,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(creator: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_data_id](create_token_data_id)(creator: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [token.md#0x3_token_TokenDataId](token::TokenDataId)
 </code></pre>
 
 
@@ -3928,14 +3928,14 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_data_id](create_token_data_id)(
     creator: <b>address</b>,
     collection: String,
     name: String,
-): <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> {
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&collection) &lt;= <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG">ECOLLECTION_NAME_TOO_LONG</a>));
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(&name) &lt;= <a href="token.md#0x3_token_MAX_NFT_NAME_LENGTH">MAX_NFT_NAME_LENGTH</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ENFT_NAME_TOO_LONG">ENFT_NAME_TOO_LONG</a>));
-    <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> { creator, collection, name }
+): [token.md#0x3_token_TokenDataId](TokenDataId) {
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&collection) &lt;= [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ECOLLECTION_NAME_TOO_LONG](ECOLLECTION_NAME_TOO_LONG)));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(&name) &lt;= [token.md#0x3_token_MAX_NFT_NAME_LENGTH](MAX_NFT_NAME_LENGTH), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ENFT_NAME_TOO_LONG](ENFT_NAME_TOO_LONG)));
+    [token.md#0x3_token_TokenDataId](TokenDataId) { creator, collection, name }
 }
 </code></pre>
 
@@ -3949,7 +3949,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creator: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creator: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -3958,14 +3958,14 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(
     creator: <b>address</b>,
     collection: String,
     name: String,
     property_version: u64,
-): <a href="token.md#0x3_token_TokenId">TokenId</a> {
-    <a href="token.md#0x3_token_TokenId">TokenId</a> {
-        token_data_id: <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(creator, collection, name),
+): [token.md#0x3_token_TokenId](TokenId) {
+    [token.md#0x3_token_TokenId](TokenId) {
+        token_data_id: [token.md#0x3_token_create_token_data_id](create_token_data_id)(creator, collection, name),
         property_version,
     }
 }
@@ -3981,7 +3981,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_balance_of">balance_of</a>(owner: <b>address</b>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_balance_of](balance_of)(owner: <b>address</b>, id: [token.md#0x3_token_TokenId](token::TokenId)): u64
 </code></pre>
 
 
@@ -3990,13 +3990,13 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_balance_of">balance_of</a>(owner: <b>address</b>, id: <a href="token.md#0x3_token_TokenId">TokenId</a>): u64 <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>if</b> (!<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner)) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_balance_of](balance_of)(owner: <b>address</b>, id: [token.md#0x3_token_TokenId](TokenId)): u64 <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>if</b> (!<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner)) {
         <b>return</b> 0
     };
-    <b>let</b> token_store = <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner);
-    <b>if</b> (<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&token_store.tokens, id)) {
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(&token_store.tokens, id).amount
+    <b>let</b> token_store = <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner);
+    <b>if</b> ([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&token_store.tokens, id)) {
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(&token_store.tokens, id).amount
     } <b>else</b> {
         0
     }
@@ -4013,7 +4013,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_has_token_store">has_token_store</a>(owner: <b>address</b>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_has_token_store](has_token_store)(owner: <b>address</b>): bool
 </code></pre>
 
 
@@ -4022,8 +4022,8 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_has_token_store">has_token_store</a>(owner: <b>address</b>): bool {
-    <b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_has_token_store](has_token_store)(owner: <b>address</b>): bool {
+    <b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner)
 }
 </code></pre>
 
@@ -4037,7 +4037,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty">get_royalty</a>(token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty](get_royalty)(token_id: [token.md#0x3_token_TokenId](token::TokenId)): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
@@ -4046,9 +4046,9 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty">get_royalty</a>(token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>): <a href="token.md#0x3_token_Royalty">Royalty</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty](get_royalty)(token_id: [token.md#0x3_token_TokenId](TokenId)): [token.md#0x3_token_Royalty](Royalty) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> token_data_id = token_id.token_data_id;
-    <a href="token.md#0x3_token_get_tokendata_royalty">get_tokendata_royalty</a>(token_data_id)
+    [token.md#0x3_token_get_tokendata_royalty](get_tokendata_royalty)(token_data_id)
 }
 </code></pre>
 
@@ -4062,7 +4062,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_numerator">get_royalty_numerator</a>(royalty: &<a href="token.md#0x3_token_Royalty">token::Royalty</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_numerator](get_royalty_numerator)(royalty: &[token.md#0x3_token_Royalty](token::Royalty)): u64
 </code></pre>
 
 
@@ -4071,7 +4071,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_numerator">get_royalty_numerator</a>(royalty: &<a href="token.md#0x3_token_Royalty">Royalty</a>): u64 {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_numerator](get_royalty_numerator)(royalty: &[token.md#0x3_token_Royalty](Royalty)): u64 {
     royalty.royalty_points_numerator
 }
 </code></pre>
@@ -4086,7 +4086,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_denominator">get_royalty_denominator</a>(royalty: &<a href="token.md#0x3_token_Royalty">token::Royalty</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_denominator](get_royalty_denominator)(royalty: &[token.md#0x3_token_Royalty](token::Royalty)): u64
 </code></pre>
 
 
@@ -4095,7 +4095,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_denominator">get_royalty_denominator</a>(royalty: &<a href="token.md#0x3_token_Royalty">Royalty</a>): u64 {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_denominator](get_royalty_denominator)(royalty: &[token.md#0x3_token_Royalty](Royalty)): u64 {
     royalty.royalty_points_denominator
 }
 </code></pre>
@@ -4110,7 +4110,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_payee">get_royalty_payee</a>(royalty: &<a href="token.md#0x3_token_Royalty">token::Royalty</a>): <b>address</b>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_payee](get_royalty_payee)(royalty: &[token.md#0x3_token_Royalty](token::Royalty)): <b>address</b>
 </code></pre>
 
 
@@ -4119,7 +4119,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty_payee">get_royalty_payee</a>(royalty: &<a href="token.md#0x3_token_Royalty">Royalty</a>): <b>address</b> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty_payee](get_royalty_payee)(royalty: &[token.md#0x3_token_Royalty](Royalty)): <b>address</b> {
     royalty.payee_address
 }
 </code></pre>
@@ -4134,7 +4134,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_amount">get_token_amount</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">token::Token</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_amount](get_token_amount)([token.md#0x3_token](token): &[token.md#0x3_token_Token](token::Token)): u64
 </code></pre>
 
 
@@ -4143,8 +4143,8 @@ create tokens and directly deposite to receiver's address. The receiver should o
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_amount">get_token_amount</a>(<a href="token.md#0x3_token">token</a>: &<a href="token.md#0x3_token_Token">Token</a>): u64 {
-    <a href="token.md#0x3_token">token</a>.amount
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_amount](get_token_amount)([token.md#0x3_token](token): &[token.md#0x3_token_Token](Token)): u64 {
+    [token.md#0x3_token](token).amount
 }
 </code></pre>
 
@@ -4159,7 +4159,7 @@ create tokens and directly deposite to receiver's address. The receiver should o
 return the creator address, collection name, token name and property_version
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_id_fields">get_token_id_fields</a>(token_id: &<a href="token.md#0x3_token_TokenId">token::TokenId</a>): (<b>address</b>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_id_fields](get_token_id_fields)(token_id: &[token.md#0x3_token_TokenId](token::TokenId)): (<b>address</b>, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), u64)
 </code></pre>
 
 
@@ -4168,7 +4168,7 @@ return the creator address, collection name, token name and property_version
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_id_fields">get_token_id_fields</a>(token_id: &<a href="token.md#0x3_token_TokenId">TokenId</a>): (<b>address</b>, String, String, u64) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_id_fields](get_token_id_fields)(token_id: &[token.md#0x3_token_TokenId](TokenId)): (<b>address</b>, String, String, u64) {
     (
         token_id.token_data_id.creator,
         token_id.token_data_id.collection,
@@ -4188,7 +4188,7 @@ return the creator address, collection name, token name and property_version
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_data_id_fields">get_token_data_id_fields</a>(token_data_id: &<a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): (<b>address</b>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_data_id_fields](get_token_data_id_fields)(token_data_id: &[token.md#0x3_token_TokenDataId](token::TokenDataId)): (<b>address</b>, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -4197,7 +4197,7 @@ return the creator address, collection name, token name and property_version
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_data_id_fields">get_token_data_id_fields</a>(token_data_id: &<a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): (<b>address</b>, String, String) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_data_id_fields](get_token_data_id_fields)(token_data_id: &[token.md#0x3_token_TokenDataId](TokenDataId)): (<b>address</b>, String, String) {
     (
         token_data_id.creator,
         token_data_id.collection,
@@ -4219,7 +4219,7 @@ if property_version = 0, return the default property map
 if property_version > 0, return the property value stored at owner's token store
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_property_map">get_property_map</a>(owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): <a href="property_map.md#0x3_property_map_PropertyMap">property_map::PropertyMap</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_property_map](get_property_map)(owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId)): [property_map.md#0x3_property_map_PropertyMap](property_map::PropertyMap)
 </code></pre>
 
 
@@ -4228,18 +4228,18 @@ if property_version > 0, return the property value stored at owner's token store
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_property_map">get_property_map</a>(owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>): PropertyMap <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a>, <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(<a href="token.md#0x3_token_balance_of">balance_of</a>(owner, token_id) &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_EINSUFFICIENT_BALANCE">EINSUFFICIENT_BALANCE</a>));
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_property_map](get_property_map)(owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](TokenId)): PropertyMap <b>acquires</b> [token.md#0x3_token_Collections](Collections), [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!([token.md#0x3_token_balance_of](balance_of)(owner, token_id) &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_EINSUFFICIENT_BALANCE](EINSUFFICIENT_BALANCE)));
     // <b>if</b> property_version = 0, <b>return</b> default property map
     <b>if</b> (token_id.property_version == 0) {
         <b>let</b> creator_addr = token_id.token_data_id.creator;
-        <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-        <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_id.token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-        <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_id.token_data_id);
+        <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+        <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_id.token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+        <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_id.token_data_id);
         token_data.default_properties
     } <b>else</b> {
-        <b>let</b> tokens = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner).tokens;
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(tokens, token_id).token_properties
+        <b>let</b> tokens = &<b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner).tokens;
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(tokens, token_id).token_properties
     }
 }
 </code></pre>
@@ -4254,7 +4254,7 @@ if property_version > 0, return the property value stored at owner's token store
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_maximum">get_tokendata_maximum</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_maximum](get_tokendata_maximum)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): u64
 </code></pre>
 
 
@@ -4263,13 +4263,13 @@ if property_version > 0, return the property value stored at owner's token store
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_maximum">get_tokendata_maximum</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): u64 <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_maximum](get_tokendata_maximum)(token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): u64 <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> creator_address = token_data_id.creator;
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id);
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id);
     token_data.maximum
 }
 </code></pre>
@@ -4284,7 +4284,7 @@ if property_version > 0, return the property value stored at owner's token store
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_uri">get_tokendata_uri</a>(creator: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_uri](get_tokendata_uri)(creator: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -4293,12 +4293,12 @@ if property_version > 0, return the property value stored at owner's token store
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_uri">get_tokendata_uri</a>(creator: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): String <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_uri](get_tokendata_uri)(creator: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): String <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id);
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id);
     token_data.uri
 }
 </code></pre>
@@ -4313,7 +4313,7 @@ if property_version > 0, return the property value stored at owner's token store
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_description">get_tokendata_description</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_description](get_tokendata_description)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
@@ -4322,13 +4322,13 @@ if property_version > 0, return the property value stored at owner's token store
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_description">get_tokendata_description</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): String <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_description](get_tokendata_description)(token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): String <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> creator_address = token_data_id.creator;
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id);
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id);
     token_data.description
 }
 </code></pre>
@@ -4343,7 +4343,7 @@ if property_version > 0, return the property value stored at owner's token store
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_royalty">get_tokendata_royalty</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_royalty](get_tokendata_royalty)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
@@ -4352,13 +4352,13 @@ if property_version > 0, return the property value stored at owner's token store
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_royalty">get_tokendata_royalty</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): <a href="token.md#0x3_token_Royalty">Royalty</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_royalty](get_tokendata_royalty)(token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): [token.md#0x3_token_Royalty](Royalty) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> creator_address = token_data_id.creator;
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
 
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id);
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id);
     token_data.royalty
 }
 </code></pre>
@@ -4374,7 +4374,7 @@ if property_version > 0, return the property value stored at owner's token store
 return the token_data_id from the token_id
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_id">get_tokendata_id</a>(token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_id](get_tokendata_id)(token_id: [token.md#0x3_token_TokenId](token::TokenId)): [token.md#0x3_token_TokenDataId](token::TokenDataId)
 </code></pre>
 
 
@@ -4383,7 +4383,7 @@ return the token_data_id from the token_id
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_id">get_tokendata_id</a>(token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>): <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_id](get_tokendata_id)(token_id: [token.md#0x3_token_TokenId](TokenId)): [token.md#0x3_token_TokenDataId](TokenDataId) {
     token_id.token_data_id
 }
 </code></pre>
@@ -4399,7 +4399,7 @@ return the token_data_id from the token_id
 return the mutation setting of the token
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_mutability_config">get_tokendata_mutability_config</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_mutability_config](get_tokendata_mutability_config)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)
 </code></pre>
 
 
@@ -4408,12 +4408,12 @@ return the mutation setting of the token
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_mutability_config">get_tokendata_mutability_config</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>): <a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_mutability_config](get_tokendata_mutability_config)(token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)): [token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_token_data, token_data_id).mutability_config
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_token_data, token_data_id).mutability_config
 }
 </code></pre>
 
@@ -4428,7 +4428,7 @@ return the mutation setting of the token
 return if the token's maximum is mutable
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_maximum">get_token_mutability_maximum</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_maximum](get_token_mutability_maximum)(config: &[token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4437,7 +4437,7 @@ return if the token's maximum is mutable
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_maximum">get_token_mutability_maximum</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_maximum](get_token_mutability_maximum)(config: &[token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig)): bool {
     config.maximum
 }
 </code></pre>
@@ -4453,7 +4453,7 @@ return if the token's maximum is mutable
 return if the token royalty is mutable with a token mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_royalty">get_token_mutability_royalty</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_royalty](get_token_mutability_royalty)(config: &[token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4462,7 +4462,7 @@ return if the token royalty is mutable with a token mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_royalty">get_token_mutability_royalty</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_royalty](get_token_mutability_royalty)(config: &[token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig)): bool {
     config.royalty
 }
 </code></pre>
@@ -4478,7 +4478,7 @@ return if the token royalty is mutable with a token mutability config
 return if the token uri is mutable with a token mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_uri">get_token_mutability_uri</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_uri](get_token_mutability_uri)(config: &[token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4487,7 +4487,7 @@ return if the token uri is mutable with a token mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_uri">get_token_mutability_uri</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_uri](get_token_mutability_uri)(config: &[token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig)): bool {
     config.uri
 }
 </code></pre>
@@ -4503,7 +4503,7 @@ return if the token uri is mutable with a token mutability config
 return if the token description is mutable with a token mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_description">get_token_mutability_description</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_description](get_token_mutability_description)(config: &[token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4512,7 +4512,7 @@ return if the token description is mutable with a token mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_description">get_token_mutability_description</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_description](get_token_mutability_description)(config: &[token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig)): bool {
     config.description
 }
 </code></pre>
@@ -4528,7 +4528,7 @@ return if the token description is mutable with a token mutability config
 return if the tokendata's default properties is mutable with a token mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_default_properties">get_token_mutability_default_properties</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_default_properties](get_token_mutability_default_properties)(config: &[token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4537,7 +4537,7 @@ return if the tokendata's default properties is mutable with a token mutability 
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_mutability_default_properties">get_token_mutability_default_properties</a>(config: &<a href="token.md#0x3_token_TokenMutabilityConfig">TokenMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_mutability_default_properties](get_token_mutability_default_properties)(config: &[token.md#0x3_token_TokenMutabilityConfig](TokenMutabilityConfig)): bool {
     config.properties
 }
 </code></pre>
@@ -4554,7 +4554,7 @@ return the collection mutation setting
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_config">get_collection_mutability_config</a>(creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>
+<b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_config](get_collection_mutability_config)(creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)
 </code></pre>
 
 
@@ -4563,14 +4563,14 @@ return the collection mutation setting
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_config">get_collection_mutability_config</a>(
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_config](get_collection_mutability_config)(
     creator: <b>address</b>,
     collection_name: String
-): <a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a> <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_collection_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).collection_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_collection_data, collection_name), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED">ECOLLECTION_NOT_PUBLISHED</a>));
-    <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow">table::borrow</a>(all_collection_data, collection_name).mutability_config
+): [token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_collection_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).collection_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_collection_data, collection_name), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED](ECOLLECTION_NOT_PUBLISHED)));
+    [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow](table::borrow)(all_collection_data, collection_name).mutability_config
 }
 </code></pre>
 
@@ -4585,7 +4585,7 @@ return the collection mutation setting
 return if the collection description is mutable with a collection mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_description">get_collection_mutability_description</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_description](get_collection_mutability_description)(config: &[token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4594,7 +4594,7 @@ return if the collection description is mutable with a collection mutability con
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_description">get_collection_mutability_description</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_description](get_collection_mutability_description)(config: &[token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig)): bool {
     config.description
 }
 </code></pre>
@@ -4610,7 +4610,7 @@ return if the collection description is mutable with a collection mutability con
 return if the collection uri is mutable with a collection mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_uri">get_collection_mutability_uri</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_uri](get_collection_mutability_uri)(config: &[token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4619,7 +4619,7 @@ return if the collection uri is mutable with a collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_uri">get_collection_mutability_uri</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_uri](get_collection_mutability_uri)(config: &[token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig)): bool {
     config.uri
 }
 </code></pre>
@@ -4635,7 +4635,7 @@ return if the collection uri is mutable with a collection mutability config
 return if the collection maximum is mutable with collection mutability config
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_maximum">get_collection_mutability_maximum</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_maximum](get_collection_mutability_maximum)(config: &[token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)): bool
 </code></pre>
 
 
@@ -4644,7 +4644,7 @@ return if the collection maximum is mutable with collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_maximum">get_collection_mutability_maximum</a>(config: &<a href="token.md#0x3_token_CollectionMutabilityConfig">CollectionMutabilityConfig</a>): bool {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_maximum](get_collection_mutability_maximum)(config: &[token.md#0x3_token_CollectionMutabilityConfig](CollectionMutabilityConfig)): bool {
     config.maximum
 }
 </code></pre>
@@ -4659,7 +4659,7 @@ return if the collection maximum is mutable with collection mutability config
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_destroy_token_data">destroy_token_data</a>(token_data: <a href="token.md#0x3_token_TokenData">token::TokenData</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_destroy_token_data](destroy_token_data)(token_data: [token.md#0x3_token_TokenData](token::TokenData))
 </code></pre>
 
 
@@ -4668,8 +4668,8 @@ return if the collection maximum is mutable with collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_destroy_token_data">destroy_token_data</a>(token_data: <a href="token.md#0x3_token_TokenData">TokenData</a>) {
-    <b>let</b> <a href="token.md#0x3_token_TokenData">TokenData</a> {
+<pre><code><b>fun</b> [token.md#0x3_token_destroy_token_data](destroy_token_data)(token_data: [token.md#0x3_token_TokenData](TokenData)) {
+    <b>let</b> [token.md#0x3_token_TokenData](TokenData) {
         maximum: _,
         largest_property_version: _,
         supply: _,
@@ -4693,7 +4693,7 @@ return if the collection maximum is mutable with collection mutability config
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_destroy_collection_data">destroy_collection_data</a>(collection_data: <a href="token.md#0x3_token_CollectionData">token::CollectionData</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_destroy_collection_data](destroy_collection_data)(collection_data: [token.md#0x3_token_CollectionData](token::CollectionData))
 </code></pre>
 
 
@@ -4702,8 +4702,8 @@ return if the collection maximum is mutable with collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_destroy_collection_data">destroy_collection_data</a>(collection_data: <a href="token.md#0x3_token_CollectionData">CollectionData</a>) {
-    <b>let</b> <a href="token.md#0x3_token_CollectionData">CollectionData</a> {
+<pre><code><b>fun</b> [token.md#0x3_token_destroy_collection_data](destroy_collection_data)(collection_data: [token.md#0x3_token_CollectionData](CollectionData)) {
+    <b>let</b> [token.md#0x3_token_CollectionData](CollectionData) {
         description: _,
         name: _,
         uri: _,
@@ -4724,7 +4724,7 @@ return if the collection maximum is mutable with collection mutability config
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(account_addr: <b>address</b>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>fun</b> [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(account_addr: <b>address</b>, id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -4733,41 +4733,41 @@ return if the collection maximum is mutable with collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(
+<pre><code><b>fun</b> [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(
     account_addr: <b>address</b>,
-    id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
+    id: [token.md#0x3_token_TokenId](TokenId),
     amount: u64,
-): <a href="token.md#0x3_token_Token">Token</a> <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
+): [token.md#0x3_token_Token](Token) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
     // It does not make sense <b>to</b> withdraw 0 tokens.
-    <b>assert</b>!(amount &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EWITHDRAW_ZERO">EWITHDRAW_ZERO</a>));
-    // Make sure the <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> <b>has</b> sufficient tokens <b>to</b> withdraw.
-    <b>assert</b>!(<a href="token.md#0x3_token_balance_of">balance_of</a>(account_addr, id) &gt;= amount, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_EINSUFFICIENT_BALANCE">EINSUFFICIENT_BALANCE</a>));
+    <b>assert</b>!(amount &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EWITHDRAW_ZERO](EWITHDRAW_ZERO)));
+    // Make sure the [../../aptos-framework/doc/account.md#0x1_account](account) <b>has</b> sufficient tokens <b>to</b> withdraw.
+    <b>assert</b>!([token.md#0x3_token_balance_of](balance_of)(account_addr, id) &gt;= amount, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_EINSUFFICIENT_BALANCE](EINSUFFICIENT_BALANCE)));
 
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED">ETOKEN_STORE_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED](ETOKEN_STORE_NOT_PUBLISHED)),
     );
 
-    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
+    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_Withdraw">Withdraw</a> { id, amount })
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_Withdraw](Withdraw) { id, amount })
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_WithdrawEvent">WithdrawEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_WithdrawEvent](WithdrawEvent)&gt;(
         &<b>mut</b> token_store.withdraw_events,
-        <a href="token.md#0x3_token_WithdrawEvent">WithdrawEvent</a> { id, amount }
+        [token.md#0x3_token_WithdrawEvent](WithdrawEvent) { id, amount }
     );
-    <b>let</b> tokens = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr).tokens;
+    <b>let</b> tokens = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr).tokens;
     <b>assert</b>!(
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(tokens, id),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE">ENO_TOKEN_IN_TOKEN_STORE</a>),
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(tokens, id),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE](ENO_TOKEN_IN_TOKEN_STORE)),
     );
     // balance &gt; amount and amount &gt; 0 indirectly asserted that balance &gt; 0.
-    <b>let</b> balance = &<b>mut</b> <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(tokens, id).amount;
+    <b>let</b> balance = &<b>mut</b> [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(tokens, id).amount;
     <b>if</b> (*balance &gt; amount) {
         *balance = *balance - amount;
-        <a href="token.md#0x3_token_Token">Token</a> { id, amount, token_properties: <a href="property_map.md#0x3_property_map_empty">property_map::empty</a>() }
+        [token.md#0x3_token_Token](Token) { id, amount, token_properties: [property_map.md#0x3_property_map_empty](property_map::empty)() }
     } <b>else</b> {
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove">table::remove</a>(tokens, id)
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_remove](table::remove)(tokens, id)
     }
 }
 </code></pre>
@@ -4782,7 +4782,7 @@ return if the collection maximum is mutable with collection mutability config
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_update_token_property_internal">update_token_property_internal</a>(token_owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>fun</b> [token.md#0x3_token_update_token_property_internal](update_token_property_internal)(token_owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -4791,19 +4791,19 @@ return if the collection maximum is mutable with collection mutability config
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_update_token_property_internal">update_token_property_internal</a>(
+<pre><code><b>fun</b> [token.md#0x3_token_update_token_property_internal](update_token_property_internal)(
     token_owner: <b>address</b>,
-    token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>,
-    keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
-    types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>let</b> tokens = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(token_owner).tokens;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(tokens, token_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE">ENO_TOKEN_IN_TOKEN_STORE</a>));
+    token_id: [token.md#0x3_token_TokenId](TokenId),
+    keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+    values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;,
+    types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;,
+) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>let</b> tokens = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(token_owner).tokens;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(tokens, token_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ENO_TOKEN_IN_TOKEN_STORE](ENO_TOKEN_IN_TOKEN_STORE)));
 
-    <b>let</b> value = &<b>mut</b> <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(tokens, token_id).token_properties;
-    <a href="token.md#0x3_token_assert_non_standard_reserved_property">assert_non_standard_reserved_property</a>(&keys);
-    <a href="property_map.md#0x3_property_map_update_property_map">property_map::update_property_map</a>(value, keys, values, types);
+    <b>let</b> value = &<b>mut</b> [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(tokens, token_id).token_properties;
+    [token.md#0x3_token_assert_non_standard_reserved_property](assert_non_standard_reserved_property)(&keys);
+    [property_map.md#0x3_property_map_update_property_map](property_map::update_property_map)(value, keys, values, types);
 }
 </code></pre>
 
@@ -4818,7 +4818,7 @@ return if the collection maximum is mutable with collection mutability config
 Deposit the token balance into the recipients account and emit an event.
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_direct_deposit](direct_deposit)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -4827,28 +4827,28 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">Token</a>) <b>acquires</b> <a href="token.md#0x3_token_TokenStore">TokenStore</a> {
-    <b>assert</b>!(<a href="token.md#0x3_token">token</a>.amount &gt; 0, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT">ETOKEN_CANNOT_HAVE_ZERO_AMOUNT</a>));
-    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
+<pre><code><b>fun</b> [token.md#0x3_token_direct_deposit](direct_deposit)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](Token)) <b>acquires</b> [token.md#0x3_token_TokenStore](TokenStore) {
+    <b>assert</b>!([token.md#0x3_token](token).amount &gt; 0, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument](error::invalid_argument)([token.md#0x3_token_ETOKEN_CANNOT_HAVE_ZERO_AMOUNT](ETOKEN_CANNOT_HAVE_ZERO_AMOUNT)));
+    <b>let</b> token_store = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
 
     <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(<a href="token.md#0x3_token_Deposit">Deposit</a> { id: <a href="token.md#0x3_token">token</a>.id, amount: <a href="token.md#0x3_token">token</a>.amount });
+        [../../aptos-framework/doc/event.md#0x1_event_emit](event::emit)([token.md#0x3_token_Deposit](Deposit) { id: [token.md#0x3_token](token).id, amount: [token.md#0x3_token](token).amount });
     };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token.md#0x3_token_DepositEvent">DepositEvent</a>&gt;(
+    [../../aptos-framework/doc/event.md#0x1_event_emit_event](event::emit_event)&lt;[token.md#0x3_token_DepositEvent](DepositEvent)&gt;(
         &<b>mut</b> token_store.deposit_events,
-        <a href="token.md#0x3_token_DepositEvent">DepositEvent</a> { id: <a href="token.md#0x3_token">token</a>.id, amount: <a href="token.md#0x3_token">token</a>.amount },
+        [token.md#0x3_token_DepositEvent](DepositEvent) { id: [token.md#0x3_token](token).id, amount: [token.md#0x3_token](token).amount },
     );
 
     <b>assert</b>!(
-        <b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr),
-        <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED">ETOKEN_STORE_NOT_PUBLISHED</a>),
+        <b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr),
+        [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_STORE_NOT_PUBLISHED](ETOKEN_STORE_NOT_PUBLISHED)),
     );
 
-    <b>if</b> (!<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(&token_store.tokens, <a href="token.md#0x3_token">token</a>.id)) {
-        <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add">table::add</a>(&<b>mut</b> token_store.tokens, <a href="token.md#0x3_token">token</a>.id, <a href="token.md#0x3_token">token</a>);
+    <b>if</b> (![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(&token_store.tokens, [token.md#0x3_token](token).id)) {
+        [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_add](table::add)(&<b>mut</b> token_store.tokens, [token.md#0x3_token](token).id, [token.md#0x3_token](token));
     } <b>else</b> {
-        <b>let</b> recipient_token = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> token_store.tokens, <a href="token.md#0x3_token">token</a>.id);
-        <a href="token.md#0x3_token_merge">merge</a>(recipient_token, <a href="token.md#0x3_token">token</a>);
+        <b>let</b> recipient_token = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_borrow_mut](table::borrow_mut)(&<b>mut</b> token_store.tokens, [token.md#0x3_token](token).id);
+        [token.md#0x3_token_merge](merge)(recipient_token, [token.md#0x3_token](token));
     };
 }
 </code></pre>
@@ -4863,7 +4863,7 @@ Deposit the token balance into the recipients account and emit an event.
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -4872,10 +4872,10 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address: <b>address</b>, collection_name: String) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_collection_data = &<b>borrow_global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_collection_data, collection_name), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED">ECOLLECTION_NOT_PUBLISHED</a>));
+<pre><code><b>fun</b> [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address: <b>address</b>, collection_name: String) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_collection_data = &<b>borrow_global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_collection_data, collection_name), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTION_NOT_PUBLISHED](ECOLLECTION_NOT_PUBLISHED)));
 }
 </code></pre>
 
@@ -4889,7 +4889,7 @@ Deposit the token balance into the recipients account and emit an event.
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId))
 </code></pre>
 
 
@@ -4898,12 +4898,12 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>) <b>acquires</b> <a href="token.md#0x3_token_Collections">Collections</a> {
+<pre><code><b>fun</b> [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId)) <b>acquires</b> [token.md#0x3_token_Collections](Collections) {
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator) == creator_addr, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_ENO_MUTATE_CAPABILITY">ENO_MUTATE_CAPABILITY</a>));
-    <b>assert</b>!(<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED">ECOLLECTIONS_NOT_PUBLISHED</a>));
-    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>assert</b>!(<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains">table::contains</a>(all_token_data, token_data_id), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED">ETOKEN_DATA_NOT_PUBLISHED</a>));
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator) == creator_addr, [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_ENO_MUTATE_CAPABILITY](ENO_MUTATE_CAPABILITY)));
+    <b>assert</b>!(<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ECOLLECTIONS_NOT_PUBLISHED](ECOLLECTIONS_NOT_PUBLISHED)));
+    <b>let</b> all_token_data = &<b>mut</b> <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>assert</b>!([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_contains](table::contains)(all_token_data, token_data_id), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found](error::not_found)([token.md#0x3_token_ETOKEN_DATA_NOT_PUBLISHED](ETOKEN_DATA_NOT_PUBLISHED)));
 }
 </code></pre>
 
@@ -4917,7 +4917,7 @@ Deposit the token balance into the recipients account and emit an event.
 
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_non_standard_reserved_property">assert_non_standard_reserved_property</a>(keys: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_non_standard_reserved_property](assert_non_standard_reserved_property)(keys: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -4926,13 +4926,13 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_non_standard_reserved_property">assert_non_standard_reserved_property</a>(keys: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;) {
-    <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_for_each_ref">vector::for_each_ref</a>(keys, |key| {
+<pre><code><b>fun</b> [token.md#0x3_token_assert_non_standard_reserved_property](assert_non_standard_reserved_property)(keys: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;String&gt;) {
+    [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_for_each_ref](vector::for_each_ref)(keys, |key| {
         <b>let</b> key: &String = key;
-        <b>let</b> length = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length">string::length</a>(key);
+        <b>let</b> length = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_length](string::length)(key);
         <b>if</b> (length &gt;= 6) {
-            <b>let</b> prefix = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_sub_string">string::sub_string</a>(&*key, 0, 6);
-            <b>assert</b>!(prefix != <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8">string::utf8</a>(b"TOKEN_"), <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="token.md#0x3_token_EPROPERTY_RESERVED_BY_STANDARD">EPROPERTY_RESERVED_BY_STANDARD</a>));
+            <b>let</b> prefix = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_sub_string](string::sub_string)(&*key, 0, 6);
+            <b>assert</b>!(prefix != [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_utf8](string::utf8)(b"TOKEN_"), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied](error::permission_denied)([token.md#0x3_token_EPROPERTY_RESERVED_BY_STANDARD](EPROPERTY_RESERVED_BY_STANDARD)));
         };
     });
 }
@@ -4948,7 +4948,7 @@ Deposit the token balance into the recipients account and emit an event.
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_initialize_token_script">initialize_token_script</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_initialize_token_script](initialize_token_script)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer))
 </code></pre>
 
 
@@ -4957,7 +4957,7 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_initialize_token_script">initialize_token_script</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_initialize_token_script](initialize_token_script)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer)) {
     <b>abort</b> 0
 }
 </code></pre>
@@ -4972,7 +4972,7 @@ Deposit the token balance into the recipients account and emit an event.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token">initialize_token</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, _token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token](initialize_token)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), _token_id: [token.md#0x3_token_TokenId](token::TokenId))
 </code></pre>
 
 
@@ -4981,7 +4981,7 @@ Deposit the token balance into the recipients account and emit an event.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token">initialize_token</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, _token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>) {
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token](initialize_token)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), _token_id: [token.md#0x3_token_TokenId](TokenId)) {
     <b>abort</b> 0
 }
 </code></pre>
@@ -5007,7 +5007,7 @@ Deposit the token balance into the recipients account and emit an event.
 ### Function `create_collection_script`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_collection_script">create_collection_script</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_collection_script](create_collection_script)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;)
 </code></pre>
 
 
@@ -5016,7 +5016,7 @@ The length of the uri is up to MAX_URI_LENGTH;
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="token.md#0x3_token_CreateCollectionAbortsIf">CreateCollectionAbortsIf</a>;
+<b>include</b> [token.md#0x3_token_CreateCollectionAbortsIf](CreateCollectionAbortsIf);
 </code></pre>
 
 
@@ -5026,7 +5026,7 @@ The length of the uri is up to MAX_URI_LENGTH;
 ### Function `create_token_script`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_create_token_script">create_token_script</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, balance: u64, maximum: u64, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;, property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_create_token_script](create_token_script)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), balance: u64, maximum: u64, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;, property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -5037,16 +5037,16 @@ The sum of supply and mint Token is less than maximum.
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>let</b> token_data_id = <a href="token.md#0x3_token_spec_create_tokendata">spec_create_tokendata</a>(addr, collection, name);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>let</b> token_data_id = [token.md#0x3_token_spec_create_tokendata](spec_create_tokendata)(addr, collection, name);
 <b>let</b> creator_addr = token_data_id.creator;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
 <b>aborts_if</b> token_data_id.creator != addr;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
 <b>aborts_if</b> balance &lt;= 0;
-<b>include</b> <a href="token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf">CreateTokenMutabilityConfigAbortsIf</a>;
-<b>include</b> <a href="token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf">CreateTokenMutabilityConfigAbortsIf</a>;
+<b>include</b> [token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf](CreateTokenMutabilityConfigAbortsIf);
+<b>include</b> [token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf](CreateTokenMutabilityConfigAbortsIf);
 </code></pre>
 
 
@@ -5055,11 +5055,11 @@ The sum of supply and mint Token is less than maximum.
 <a id="0x3_token_spec_create_tokendata"></a>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_spec_create_tokendata">spec_create_tokendata</a>(
+<pre><code><b>fun</b> [token.md#0x3_token_spec_create_tokendata](spec_create_tokendata)(
    creator: <b>address</b>,
    collection: String,
-   name: String): <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> {
-   <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> { creator, collection, name }
+   name: String): [token.md#0x3_token_TokenDataId](TokenDataId) {
+   [token.md#0x3_token_TokenDataId](TokenDataId) { creator, collection, name }
 }
 </code></pre>
 
@@ -5070,7 +5070,7 @@ The sum of supply and mint Token is less than maximum.
 ### Function `mint_script`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mint_script">mint_script</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mint_script](mint_script)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), amount: u64)
 </code></pre>
 
 
@@ -5078,22 +5078,22 @@ only creator of the tokendata can mint tokens
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> token_data_id = <a href="token.md#0x3_token_spec_create_token_data_id">spec_create_token_data_id</a>(
+<b>let</b> token_data_id = [token.md#0x3_token_spec_create_token_data_id](spec_create_token_data_id)(
     token_data_address,
     collection,
     name,
 );
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
 <b>let</b> creator_addr = token_data_id.creator;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
-<b>aborts_if</b> token_data_id.creator != <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a>{
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
+<b>aborts_if</b> token_data_id.creator != [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf){
 creator: token_data_address,
 collection: collection,
 name: name
 };
-<b>include</b> <a href="token.md#0x3_token_MintTokenAbortsIf">MintTokenAbortsIf</a> {
+<b>include</b> [token.md#0x3_token_MintTokenAbortsIf](MintTokenAbortsIf) {
 token_data_id: token_data_id
 };
 </code></pre>
@@ -5105,7 +5105,7 @@ token_data_id: token_data_id
 ### Function `mutate_token_properties`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_mutate_token_properties">mutate_token_properties</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_owner: <b>address</b>, creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_property_version: u64, amount: u64, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_mutate_token_properties](mutate_token_properties)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_owner: <b>address</b>, creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_property_version: u64, amount: u64, keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -5113,9 +5113,9 @@ The signer is creator.
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
 <b>aborts_if</b> addr != creator;
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a> {
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf) {
     creator: creator,
     collection: collection_name,
     name: token_name
@@ -5129,14 +5129,14 @@ The signer is creator.
 ### Function `direct_transfer_script`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_direct_transfer_script">direct_transfer_script</a>(sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creators_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_direct_transfer_script](direct_transfer_script)(sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creators_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a>{
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf){
     creator: creators_address,
     collection: collection,
     name: name
@@ -5150,21 +5150,21 @@ The signer is creator.
 ### Function `opt_in_direct_transfer`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_opt_in_direct_transfer">opt_in_direct_transfer</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_opt_in_direct_transfer](opt_in_direct_transfer)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), opt_in: bool)
 </code></pre>
 
 
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>let</b> account_addr = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && account_addr.guid_creation_num + 4 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && account_addr.guid_creation_num + 4 &gt; MAX_U64;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && account_addr.guid_creation_num + 9 &gt; <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && account_addr.guid_creation_num + 9 &gt; MAX_U64;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>let</b> account_addr = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && account_addr.guid_creation_num + 4 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && account_addr.guid_creation_num + 4 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && account_addr.guid_creation_num + 9 &gt; [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && account_addr.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
 </code></pre>
 
 
@@ -5174,14 +5174,14 @@ The signer is creator.
 ### Function `transfer_with_opt_in`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_transfer_with_opt_in">transfer_with_opt_in</a>(from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_property_version: u64, <b>to</b>: <b>address</b>, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_transfer_with_opt_in](transfer_with_opt_in)(from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_property_version: u64, <b>to</b>: <b>address</b>, amount: u64)
 </code></pre>
 
 
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a>{
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf){
     creator: creator,
     collection: collection_name,
     name: token_name
@@ -5195,25 +5195,25 @@ The signer is creator.
 ### Function `burn_by_creator`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn_by_creator">burn_by_creator</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, owner: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn_by_creator](burn_by_creator)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), owner: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> creator_address = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> token_id = <a href="token.md#0x3_token_spec_create_token_id_raw">spec_create_token_id_raw</a>(creator_address, collection, name, property_version);
+<b>let</b> creator_address = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> token_id = [token.md#0x3_token_spec_create_token_id_raw](spec_create_token_id_raw)(creator_address, collection, name, property_version);
 <b>let</b> creator_addr = token_id.token_data_id.creator;
-<b>let</b> collections = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(
+<b>let</b> collections = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(
     collections.token_data,
     token_id.token_data_id,
 );
 <b>aborts_if</b> amount &lt;= 0;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(collections.token_data, token_id.token_data_id);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(token_data.default_properties.map, std::string::spec_utf8(<a href="token.md#0x3_token_BURNABLE_BY_CREATOR">BURNABLE_BY_CREATOR</a>));
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(collections.token_data, token_id.token_data_id);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key](simple_map::spec_contains_key)(token_data.default_properties.map, std::string::spec_utf8([token.md#0x3_token_BURNABLE_BY_CREATOR](BURNABLE_BY_CREATOR)));
 </code></pre>
 
 
@@ -5223,7 +5223,7 @@ The signer is creator.
 ### Function `burn`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_burn">burn</a>(owner: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, creators_address: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64, amount: u64)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_burn](burn)(owner: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), creators_address: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64, amount: u64)
 </code></pre>
 
 
@@ -5231,21 +5231,21 @@ The token_data_id should exist in token_data.
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> token_id = <a href="token.md#0x3_token_spec_create_token_id_raw">spec_create_token_id_raw</a>(creators_address, collection, name, property_version);
+<b>let</b> token_id = [token.md#0x3_token_spec_create_token_id_raw](spec_create_token_id_raw)(creators_address, collection, name, property_version);
 <b>let</b> creator_addr = token_id.token_data_id.creator;
-<b>let</b> collections = <b>borrow_global_mut</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(
+<b>let</b> collections = <b>borrow_global_mut</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(
     collections.token_data,
     token_id.token_data_id,
 );
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a> {
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf) {
 creator: creators_address
 };
 <b>aborts_if</b> amount &lt;= 0;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(collections.token_data, token_id.token_data_id);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(token_data.default_properties.map, std::string::spec_utf8(<a href="token.md#0x3_token_BURNABLE_BY_OWNER">BURNABLE_BY_OWNER</a>));
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_spec_internal_check_utf8">string::spec_internal_check_utf8</a>(<a href="token.md#0x3_token_BURNABLE_BY_OWNER">BURNABLE_BY_OWNER</a>);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(collections.token_data, token_id.token_data_id);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key](simple_map::spec_contains_key)(token_data.default_properties.map, std::string::spec_utf8([token.md#0x3_token_BURNABLE_BY_OWNER](BURNABLE_BY_OWNER)));
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_spec_internal_check_utf8](string::spec_internal_check_utf8)([token.md#0x3_token_BURNABLE_BY_OWNER](BURNABLE_BY_OWNER));
 </code></pre>
 
 
@@ -5254,14 +5254,14 @@ creator: creators_address
 <a id="0x3_token_spec_create_token_id_raw"></a>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_spec_create_token_id_raw">spec_create_token_id_raw</a>(
+<pre><code><b>fun</b> [token.md#0x3_token_spec_create_token_id_raw](spec_create_token_id_raw)(
    creator: <b>address</b>,
    collection: String,
    name: String,
    property_version: u64,
-): <a href="token.md#0x3_token_TokenId">TokenId</a> {
-   <b>let</b> token_data_id = <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> { creator, collection, name };
-   <a href="token.md#0x3_token_TokenId">TokenId</a> {
+): [token.md#0x3_token_TokenId](TokenId) {
+   <b>let</b> token_data_id = [token.md#0x3_token_TokenDataId](TokenDataId) { creator, collection, name };
+   [token.md#0x3_token_TokenId](TokenId) {
        token_data_id,
        property_version
    }
@@ -5275,24 +5275,24 @@ creator: creators_address
 ### Function `mutate_collection_description`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_description">mutate_collection_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_description](mutate_collection_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
 The description of Collection is mutable.
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(<b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr).collection_data, collection_name);
-<b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a> {
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(<b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr).collection_data, collection_name);
+<b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf) {
     creator_address: addr,
     collection_name: collection_name
 };
 <b>aborts_if</b> !collection_data.mutability_config.description;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5302,25 +5302,25 @@ The description of Collection is mutable.
 ### Function `mutate_collection_uri`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_uri">mutate_collection_uri</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_uri](mutate_collection_uri)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
 The uri of Collection is mutable.
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(<b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr).collection_data, collection_name);
-<b>aborts_if</b> len(uri.bytes) &gt; <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>;
-<b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a> {
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(<b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr).collection_data, collection_name);
+<b>aborts_if</b> len(uri.bytes) &gt; [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH);
+<b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf) {
     creator_address: addr,
     collection_name: collection_name
 };
 <b>aborts_if</b> !collection_data.mutability_config.uri;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5330,7 +5330,7 @@ The uri of Collection is mutable.
 ### Function `mutate_collection_maximum`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_collection_maximum">mutate_collection_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_collection_maximum](mutate_collection_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64)
 </code></pre>
 
 
@@ -5339,19 +5339,19 @@ The maximum should more than suply.
 The maxium of Collection is mutable.
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> collection_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(<b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr).collection_data, collection_name);
-<b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a> {
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> collection_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(<b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr).collection_data, collection_name);
+<b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf) {
     creator_address: addr,
     collection_name: collection_name
 };
 <b>aborts_if</b> collection_data.maximum == 0 || maximum == 0;
 <b>aborts_if</b> maximum &lt; collection_data.supply;
 <b>aborts_if</b> !collection_data.mutability_config.maximum;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5361,7 +5361,7 @@ The maxium of Collection is mutable.
 ### Function `mutate_tokendata_maximum`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_maximum">mutate_tokendata_maximum</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, maximum: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_maximum](mutate_tokendata_maximum)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), maximum: u64)
 </code></pre>
 
 
@@ -5370,17 +5370,17 @@ The maximum should more than suply.
 The token maximum is mutable
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
-<b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
+<b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
 <b>aborts_if</b> token_data.maximum == 0 || maximum == 0;
 <b>aborts_if</b> maximum &lt; token_data.supply;
 <b>aborts_if</b> !token_data.mutability_config.maximum;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5390,7 +5390,7 @@ The token maximum is mutable
 ### Function `mutate_tokendata_uri`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_uri">mutate_tokendata_uri</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_uri](mutate_tokendata_uri)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
@@ -5399,16 +5399,16 @@ The  creator of token_data_id should exist in Collections.
 The token uri is mutable
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
-<b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
-<b>aborts_if</b> len(uri.bytes) &gt; <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>;
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
+<b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
+<b>aborts_if</b> len(uri.bytes) &gt; [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH);
 <b>aborts_if</b> !token_data.mutability_config.uri;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5418,22 +5418,22 @@ The token uri is mutable
 ### Function `mutate_tokendata_royalty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_royalty">mutate_tokendata_royalty</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, royalty: <a href="token.md#0x3_token_Royalty">token::Royalty</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_royalty](mutate_tokendata_royalty)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), royalty: [token.md#0x3_token_Royalty](token::Royalty))
 </code></pre>
 
 
 The token royalty is mutable
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
+<pre><code><b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
 <b>aborts_if</b> !token_data.mutability_config.royalty;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5443,22 +5443,22 @@ The token royalty is mutable
 ### Function `mutate_tokendata_description`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_description">mutate_tokendata_description</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_description](mutate_tokendata_description)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
 The token description is mutable
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-<b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
+<pre><code><b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+<b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
 <b>aborts_if</b> !token_data.mutability_config.description;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">token_event_store::TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+<b>aborts_if</b> !<b>exists</b>&lt;[token_event_store.md#0x3_token_event_store_TokenEventStoreV1](token_event_store::TokenEventStoreV1)&gt;(addr) && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 9 &gt; MAX_U64;
 </code></pre>
 
 
@@ -5468,7 +5468,7 @@ The token description is mutable
 ### Function `mutate_tokendata_property`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_tokendata_property">mutate_tokendata_property</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_tokendata_property](mutate_tokendata_property)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -5476,9 +5476,9 @@ The property map is mutable
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(token_data_id.creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
-<b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(token_data_id.creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
+<b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
 <b>aborts_if</b> len(keys) != len(values);
 <b>aborts_if</b> len(keys) != len(types);
 <b>aborts_if</b> !token_data.mutability_config.properties;
@@ -5491,7 +5491,7 @@ The property map is mutable
 ### Function `mutate_one_token`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mutate_one_token">mutate_one_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mutate_one_token](mutate_one_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -5502,13 +5502,13 @@ The property map is mutable.
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
 <b>let</b> creator = token_id.token_data_id.creator;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_id.token_data_id);
+<b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_id.token_data_id);
 <b>aborts_if</b> addr != creator;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_id.token_data_id);
-<b>aborts_if</b> !token_data.mutability_config.properties && !<a href="../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(token_data.default_properties.map, std::string::spec_utf8(<a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE">TOKEN_PROPERTY_MUTABLE</a>));
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_id.token_data_id);
+<b>aborts_if</b> !token_data.mutability_config.properties && ![../../aptos-framework/../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key](simple_map::spec_contains_key)(token_data.default_properties.map, std::string::spec_utf8([token.md#0x3_token_TOKEN_PROPERTY_MUTABLE](TOKEN_PROPERTY_MUTABLE)));
 </code></pre>
 
 
@@ -5518,13 +5518,13 @@ The property map is mutable.
 ### Function `create_royalty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_royalty">create_royalty</a>(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_royalty](create_royalty)(royalty_points_numerator: u64, royalty_points_denominator: u64, payee_address: <b>address</b>): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_CreateRoyaltyAbortsIf">CreateRoyaltyAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_CreateRoyaltyAbortsIf](CreateRoyaltyAbortsIf);
 </code></pre>
 
 
@@ -5534,12 +5534,12 @@ The royalty_points_numerator should less than royalty_points_denominator.
 <a id="0x3_token_CreateRoyaltyAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_CreateRoyaltyAbortsIf">CreateRoyaltyAbortsIf</a> {
+<pre><code><b>schema</b> [token.md#0x3_token_CreateRoyaltyAbortsIf](CreateRoyaltyAbortsIf) {
     royalty_points_numerator: u64;
     royalty_points_denominator: u64;
     payee_address: <b>address</b>;
     <b>aborts_if</b> royalty_points_numerator &gt; royalty_points_denominator;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(payee_address);
+    <b>aborts_if</b> !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(payee_address);
 }
 </code></pre>
 
@@ -5550,7 +5550,7 @@ The royalty_points_numerator should less than royalty_points_denominator.
 ### Function `deposit_token`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_deposit_token">deposit_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_deposit_token](deposit_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -5558,11 +5558,11 @@ The royalty_points_numerator should less than royalty_points_denominator.
 
 <pre><code><b>pragma</b> verify = <b>false</b>;
 <b>pragma</b> aborts_if_is_partial;
-<b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>include</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr) ==&gt; <a href="token.md#0x3_token_InitializeTokenStore">InitializeTokenStore</a>;
-<b>let</b> token_id = <a href="token.md#0x3_token">token</a>.id;
-<b>let</b> token_amount = <a href="token.md#0x3_token">token</a>.amount;
-<b>include</b> <a href="token.md#0x3_token_DirectDepositAbortsIf">DirectDepositAbortsIf</a>;
+<b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>include</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr) ==&gt; [token.md#0x3_token_InitializeTokenStore](InitializeTokenStore);
+<b>let</b> token_id = [token.md#0x3_token](token).id;
+<b>let</b> token_amount = [token.md#0x3_token](token).amount;
+<b>include</b> [token.md#0x3_token_DirectDepositAbortsIf](DirectDepositAbortsIf);
 </code></pre>
 
 
@@ -5572,19 +5572,19 @@ The royalty_points_numerator should less than royalty_points_denominator.
 ### Function `direct_deposit_with_opt_in`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_deposit_with_opt_in">direct_deposit_with_opt_in</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_deposit_with_opt_in](direct_deposit_with_opt_in)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
 The token can direct_transfer.
 
 
-<pre><code><b>let</b> opt_in_transfer = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr).direct_transfer;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
+<pre><code><b>let</b> opt_in_transfer = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr).direct_transfer;
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
 <b>aborts_if</b> !opt_in_transfer;
-<b>let</b> token_id = <a href="token.md#0x3_token">token</a>.id;
-<b>let</b> token_amount = <a href="token.md#0x3_token">token</a>.amount;
-<b>include</b> <a href="token.md#0x3_token_DirectDepositAbortsIf">DirectDepositAbortsIf</a>;
+<b>let</b> token_id = [token.md#0x3_token](token).id;
+<b>let</b> token_amount = [token.md#0x3_token](token).amount;
+<b>include</b> [token.md#0x3_token_DirectDepositAbortsIf](DirectDepositAbortsIf);
 </code></pre>
 
 
@@ -5594,7 +5594,7 @@ The token can direct_transfer.
 ### Function `direct_transfer`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_direct_transfer">direct_transfer</a>(sender: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_direct_transfer](direct_transfer)(sender: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64)
 </code></pre>
 
 
@@ -5612,13 +5612,13 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `initialize_token_store`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token_store">initialize_token_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token_store](initialize_token_store)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer))
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_InitializeTokenStore">InitializeTokenStore</a>;
+<pre><code><b>include</b> [token.md#0x3_token_InitializeTokenStore](InitializeTokenStore);
 </code></pre>
 
 
@@ -5627,13 +5627,13 @@ Make sure the account has sufficient tokens to withdraw.
 <a id="0x3_token_InitializeTokenStore"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_InitializeTokenStore">InitializeTokenStore</a> {
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <b>let</b> account_addr = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && account_addr.guid_creation_num + 4 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(addr) && account_addr.guid_creation_num + 4 &gt; MAX_U64;
+<pre><code><b>schema</b> [token.md#0x3_token_InitializeTokenStore](InitializeTokenStore) {
+    [../../aptos-framework/doc/account.md#0x1_account](account): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer);
+    <b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+    <b>let</b> account_addr = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && account_addr.guid_creation_num + 4 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(addr) && account_addr.guid_creation_num + 4 &gt; MAX_U64;
 }
 </code></pre>
 
@@ -5644,7 +5644,7 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `merge`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_merge">merge</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">token::Token</a>, source_token: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_merge](merge)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](token::Token), source_token: [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
@@ -5661,7 +5661,7 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `split`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_split">split</a>(dst_token: &<b>mut</b> <a href="token.md#0x3_token_Token">token::Token</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_split](split)(dst_token: &<b>mut</b> [token.md#0x3_token_Token](token::Token), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -5679,17 +5679,17 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `transfer`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_transfer">transfer</a>(from: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, <b>to</b>: <b>address</b>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_transfer](transfer)(from: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), id: [token.md#0x3_token_TokenId](token::TokenId), <b>to</b>: <b>address</b>, amount: u64)
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> opt_in_transfer = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(<b>to</b>).direct_transfer;
-<b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(from);
+<pre><code><b>let</b> opt_in_transfer = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(<b>to</b>).direct_transfer;
+<b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(from);
 <b>aborts_if</b> !opt_in_transfer;
 <b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a>;
+<b>include</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf);
 </code></pre>
 
 
@@ -5699,16 +5699,16 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `withdraw_with_capability`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_with_capability">withdraw_with_capability</a>(withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_with_capability](withdraw_with_capability)(withdraw_proof: [token.md#0x3_token_WithdrawCapability](token::WithdrawCapability)): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> now_seconds = <b>global</b>&lt;<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds">timestamp::CurrentTimeMicroseconds</a>&gt;(@aptos_framework).microseconds;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds">timestamp::CurrentTimeMicroseconds</a>&gt;(@aptos_framework);
-<b>aborts_if</b> now_seconds / <a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_MICRO_CONVERSION_FACTOR">timestamp::MICRO_CONVERSION_FACTOR</a> &gt; withdraw_proof.expiration_sec;
-<b>include</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a>{
+<pre><code><b>let</b> now_seconds = <b>global</b>&lt;[../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds](timestamp::CurrentTimeMicroseconds)&gt;(@aptos_framework).microseconds;
+<b>aborts_if</b> !<b>exists</b>&lt;[../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds](timestamp::CurrentTimeMicroseconds)&gt;(@aptos_framework);
+<b>aborts_if</b> now_seconds / [../../aptos-framework/doc/timestamp.md#0x1_timestamp_MICRO_CONVERSION_FACTOR](timestamp::MICRO_CONVERSION_FACTOR) &gt; withdraw_proof.expiration_sec;
+<b>include</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf){
 account_addr: withdraw_proof.token_owner,
 id: withdraw_proof.token_id,
 amount: withdraw_proof.amount};
@@ -5721,17 +5721,17 @@ amount: withdraw_proof.amount};
 ### Function `partial_withdraw_with_capability`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_partial_withdraw_with_capability">partial_withdraw_with_capability</a>(withdraw_proof: <a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>, withdraw_amount: u64): (<a href="token.md#0x3_token_Token">token::Token</a>, <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="token.md#0x3_token_WithdrawCapability">token::WithdrawCapability</a>&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_partial_withdraw_with_capability](partial_withdraw_with_capability)(withdraw_proof: [token.md#0x3_token_WithdrawCapability](token::WithdrawCapability), withdraw_amount: u64): ([token.md#0x3_token_Token](token::Token), [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;[token.md#0x3_token_WithdrawCapability](token::WithdrawCapability)&gt;)
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> now_seconds = <b>global</b>&lt;<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds">timestamp::CurrentTimeMicroseconds</a>&gt;(@aptos_framework).microseconds;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds">timestamp::CurrentTimeMicroseconds</a>&gt;(@aptos_framework);
-<b>aborts_if</b> now_seconds / <a href="../../aptos-framework/doc/timestamp.md#0x1_timestamp_MICRO_CONVERSION_FACTOR">timestamp::MICRO_CONVERSION_FACTOR</a> &gt; withdraw_proof.expiration_sec;
+<pre><code><b>let</b> now_seconds = <b>global</b>&lt;[../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds](timestamp::CurrentTimeMicroseconds)&gt;(@aptos_framework).microseconds;
+<b>aborts_if</b> !<b>exists</b>&lt;[../../aptos-framework/doc/timestamp.md#0x1_timestamp_CurrentTimeMicroseconds](timestamp::CurrentTimeMicroseconds)&gt;(@aptos_framework);
+<b>aborts_if</b> now_seconds / [../../aptos-framework/doc/timestamp.md#0x1_timestamp_MICRO_CONVERSION_FACTOR](timestamp::MICRO_CONVERSION_FACTOR) &gt; withdraw_proof.expiration_sec;
 <b>aborts_if</b> withdraw_amount &gt; withdraw_proof.amount;
-<b>include</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a>{
+<b>include</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf){
     account_addr: withdraw_proof.token_owner,
     id: withdraw_proof.token_id,
     amount: withdraw_amount
@@ -5745,7 +5745,7 @@ amount: withdraw_proof.amount};
 ### Function `withdraw_token`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_withdraw_token">withdraw_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_withdraw_token](withdraw_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
@@ -5753,8 +5753,8 @@ Cannot withdraw 0 tokens.
 Make sure the account has sufficient tokens to withdraw.
 
 
-<pre><code><b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>include</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a>;
+<pre><code><b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>include</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf);
 </code></pre>
 
 
@@ -5764,7 +5764,7 @@ Make sure the account has sufficient tokens to withdraw.
 ### Function `create_collection`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection">create_collection</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection](create_collection)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;)
 </code></pre>
 
 
@@ -5774,10 +5774,10 @@ The collection_data should not exist before you create it.
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
+<b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
 <b>aborts_if</b> len(name.bytes) &gt; 128;
 <b>aborts_if</b> len(uri.bytes) &gt; 512;
-<b>include</b> <a href="token.md#0x3_token_CreateCollectionAbortsIf">CreateCollectionAbortsIf</a>;
+<b>include</b> [token.md#0x3_token_CreateCollectionAbortsIf](CreateCollectionAbortsIf);
 </code></pre>
 
 
@@ -5786,24 +5786,24 @@ The collection_data should not exist before you create it.
 <a id="0x3_token_CreateCollectionAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_CreateCollectionAbortsIf">CreateCollectionAbortsIf</a> {
-    creator: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
+<pre><code><b>schema</b> [token.md#0x3_token_CreateCollectionAbortsIf](CreateCollectionAbortsIf) {
+    creator: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer);
     name: String;
     description: String;
     uri: String;
     maximum: u64;
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-    <b>let</b> collection = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr);
-    <b>let</b> b = !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr);
-    <b>let</b> collection_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(addr).collection_data;
-    <b>aborts_if</b> b && !<b>exists</b>&lt;<a href="../../aptos-framework/doc/account.md#0x1_account_Account">account::Account</a>&gt;(addr);
-    <b>aborts_if</b> len(name.bytes) &gt; <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>;
-    <b>aborts_if</b> len(uri.bytes) &gt; <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>;
-    <b>aborts_if</b> b && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 3 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-    <b>aborts_if</b> b && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 3 &gt; MAX_U64;
-    <b>include</b> <a href="token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf">CreateCollectionMutabilityConfigAbortsIf</a>;
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;;
+    <b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
+    <b>let</b> [../../aptos-framework/doc/account.md#0x1_account](account) = <b>global</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+    <b>let</b> collection = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr);
+    <b>let</b> b = !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr);
+    <b>let</b> collection_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(addr).collection_data;
+    <b>aborts_if</b> b && !<b>exists</b>&lt;[../../aptos-framework/doc/account.md#0x1_account_Account](account::Account)&gt;(addr);
+    <b>aborts_if</b> len(name.bytes) &gt; [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH);
+    <b>aborts_if</b> len(uri.bytes) &gt; [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH);
+    <b>aborts_if</b> b && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 3 &gt;= [../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM](account::MAX_GUID_CREATION_NUM);
+    <b>aborts_if</b> b && [../../aptos-framework/doc/account.md#0x1_account](account).guid_creation_num + 3 &gt; MAX_U64;
+    <b>include</b> [token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf](CreateCollectionMutabilityConfigAbortsIf);
 }
 </code></pre>
 
@@ -5814,13 +5814,13 @@ The collection_data should not exist before you create it.
 ### Function `check_collection_exists`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_collection_exists">check_collection_exists</a>(creator: <b>address</b>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_collection_exists](check_collection_exists)(creator: <b>address</b>, name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): bool
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator);
+<pre><code><b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator);
 </code></pre>
 
 
@@ -5830,7 +5830,7 @@ The collection_data should not exist before you create it.
 ### Function `check_tokendata_exists`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_check_tokendata_exists">check_tokendata_exists</a>(creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, token_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): bool
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_check_tokendata_exists](check_tokendata_exists)(creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), token_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): bool
 </code></pre>
 
 
@@ -5838,8 +5838,8 @@ The length of collection should less than MAX_COLLECTION_NAME_LENGTH
 The length of name should less than MAX_NFT_NAME_LENGTH
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator);
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a> {
+<pre><code><b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator);
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf) {
     creator: creator,
     collection: collection_name,
     name: token_name
@@ -5853,7 +5853,7 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `create_tokendata`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_tokendata">create_tokendata</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, maximum: u64, uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, token_mutate_config: <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>, property_keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, property_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, property_types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;): <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_tokendata](create_tokendata)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), description: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), maximum: u64, uri: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), royalty_payee_address: <b>address</b>, royalty_points_denominator: u64, royalty_points_numerator: u64, token_mutate_config: [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig), property_keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, property_values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, property_types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;): [token.md#0x3_token_TokenDataId](token::TokenDataId)
 </code></pre>
 
 
@@ -5863,29 +5863,29 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 
 <pre><code><b>pragma</b> verify = <b>false</b>;
 <b>pragma</b> aborts_if_is_partial;
-<b>let</b> account_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>let</b> collections = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr);
-<b>let</b> token_data_id = <a href="token.md#0x3_token_spec_create_token_data_id">spec_create_token_data_id</a>(account_addr, collection, name);
-<b>let</b> Collection = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(collections.collection_data, token_data_id.collection);
+<b>let</b> account_addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>let</b> collections = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr);
+<b>let</b> token_data_id = [token.md#0x3_token_spec_create_token_data_id](spec_create_token_data_id)(account_addr, collection, name);
+<b>let</b> Collection = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(collections.collection_data, token_data_id.collection);
 <b>let</b> length = len(property_keys);
-<b>aborts_if</b> len(name.bytes) &gt; <a href="token.md#0x3_token_MAX_NFT_NAME_LENGTH">MAX_NFT_NAME_LENGTH</a>;
-<b>aborts_if</b> len(collection.bytes) &gt; <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>;
-<b>aborts_if</b> len(uri.bytes) &gt; <a href="token.md#0x3_token_MAX_URI_LENGTH">MAX_URI_LENGTH</a>;
+<b>aborts_if</b> len(name.bytes) &gt; [token.md#0x3_token_MAX_NFT_NAME_LENGTH](MAX_NFT_NAME_LENGTH);
+<b>aborts_if</b> len(collection.bytes) &gt; [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH);
+<b>aborts_if</b> len(uri.bytes) &gt; [token.md#0x3_token_MAX_URI_LENGTH](MAX_URI_LENGTH);
 <b>aborts_if</b> royalty_points_numerator &gt; royalty_points_denominator;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(account_addr);
-<b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a> {
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(account_addr);
+<b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf) {
     creator: account_addr,
     collection: collection,
     name: name
 };
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(collections.collection_data, collection);
-<b>aborts_if</b> <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(collections.token_data, token_data_id);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(collections.collection_data, collection);
+<b>aborts_if</b> [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(collections.token_data, token_data_id);
 <b>aborts_if</b> Collection.maximum &gt; 0 && Collection.supply + 1 &gt; MAX_U64;
 <b>aborts_if</b> Collection.maximum &gt; 0 && Collection.maximum &lt; Collection.supply + 1;
-<b>include</b> <a href="token.md#0x3_token_CreateRoyaltyAbortsIf">CreateRoyaltyAbortsIf</a> {
+<b>include</b> [token.md#0x3_token_CreateRoyaltyAbortsIf](CreateRoyaltyAbortsIf) {
     payee_address: royalty_payee_address
 };
-<b>aborts_if</b> length &gt; <a href="property_map.md#0x3_property_map_MAX_PROPERTY_MAP_SIZE">property_map::MAX_PROPERTY_MAP_SIZE</a>;
+<b>aborts_if</b> length &gt; [property_map.md#0x3_property_map_MAX_PROPERTY_MAP_SIZE](property_map::MAX_PROPERTY_MAP_SIZE);
 <b>aborts_if</b> length != len(property_values);
 <b>aborts_if</b> length != len(property_types);
 </code></pre>
@@ -5896,12 +5896,12 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_spec_create_token_data_id"></a>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_spec_create_token_data_id">spec_create_token_data_id</a>(
+<pre><code><b>fun</b> [token.md#0x3_token_spec_create_token_data_id](spec_create_token_data_id)(
    creator: <b>address</b>,
    collection: String,
    name: String,
-): <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> {
-   <a href="token.md#0x3_token_TokenDataId">TokenDataId</a> { creator, collection, name }
+): [token.md#0x3_token_TokenDataId](TokenDataId) {
+   [token.md#0x3_token_TokenDataId](TokenDataId) { creator, collection, name }
 }
 </code></pre>
 
@@ -5912,13 +5912,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_collection_supply`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_supply">get_collection_supply</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_supply](get_collection_supply)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf);
 </code></pre>
 
 
@@ -5928,13 +5928,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_collection_description`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_description">get_collection_description</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_description](get_collection_description)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf);
 </code></pre>
 
 
@@ -5944,13 +5944,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_collection_uri`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_uri">get_collection_uri</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_uri](get_collection_uri)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf);
 </code></pre>
 
 
@@ -5960,13 +5960,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_collection_maximum`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_maximum">get_collection_maximum</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_maximum](get_collection_maximum)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): u64
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf);
 </code></pre>
 
 
@@ -5976,15 +5976,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_token_supply`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_token_supply">get_token_supply</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_token_supply](get_token_supply)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option](option::Option)&lt;u64&gt;
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<pre><code><b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -5994,15 +5994,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_largest_property_version`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_largest_property_version">get_tokendata_largest_property_version</a>(creator_address: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_largest_property_version](get_tokendata_largest_property_version)(creator_address: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): u64
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<pre><code><b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -6012,7 +6012,7 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `create_token_mutability_config`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_mutability_config">create_token_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_mutability_config](create_token_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)
 </code></pre>
 
 
@@ -6020,7 +6020,7 @@ The length of 'mutate_setting' should more than five.
 The mutate_setting shuold have a value.
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf">CreateTokenMutabilityConfigAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf](CreateTokenMutabilityConfigAbortsIf);
 </code></pre>
 
 
@@ -6029,14 +6029,14 @@ The mutate_setting shuold have a value.
 <a id="0x3_token_CreateTokenMutabilityConfigAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf">CreateTokenMutabilityConfigAbortsIf</a> {
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;;
+<pre><code><b>schema</b> [token.md#0x3_token_CreateTokenMutabilityConfigAbortsIf](CreateTokenMutabilityConfigAbortsIf) {
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;;
     <b>aborts_if</b> len(mutate_setting) &lt; 5;
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_TOKEN_MAX_MUTABLE_IND">TOKEN_MAX_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_TOKEN_URI_MUTABLE_IND">TOKEN_URI_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND">TOKEN_ROYALTY_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND">TOKEN_DESCRIPTION_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND">TOKEN_PROPERTY_MUTABLE_IND</a>]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_TOKEN_MAX_MUTABLE_IND](TOKEN_MAX_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_TOKEN_URI_MUTABLE_IND](TOKEN_URI_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_TOKEN_ROYALTY_MUTABLE_IND](TOKEN_ROYALTY_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_TOKEN_DESCRIPTION_MUTABLE_IND](TOKEN_DESCRIPTION_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_TOKEN_PROPERTY_MUTABLE_IND](TOKEN_PROPERTY_MUTABLE_IND)]);
 }
 </code></pre>
 
@@ -6047,13 +6047,13 @@ The mutate_setting shuold have a value.
 ### Function `create_collection_mutability_config`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_collection_mutability_config">create_collection_mutability_config</a>(mutate_setting: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;): <a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_collection_mutability_config](create_collection_mutability_config)(mutate_setting: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;): [token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf">CreateCollectionMutabilityConfigAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf](CreateCollectionMutabilityConfigAbortsIf);
 </code></pre>
 
 
@@ -6062,12 +6062,12 @@ The mutate_setting shuold have a value.
 <a id="0x3_token_CreateCollectionMutabilityConfigAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf">CreateCollectionMutabilityConfigAbortsIf</a> {
-    mutate_setting: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;bool&gt;;
+<pre><code><b>schema</b> [token.md#0x3_token_CreateCollectionMutabilityConfigAbortsIf](CreateCollectionMutabilityConfigAbortsIf) {
+    mutate_setting: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;bool&gt;;
     <b>aborts_if</b> len(mutate_setting) &lt; 3;
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND">COLLECTION_DESCRIPTION_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_COLLECTION_URI_MUTABLE_IND">COLLECTION_URI_MUTABLE_IND</a>]);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(mutate_setting, mutate_setting[<a href="token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND">COLLECTION_MAX_MUTABLE_IND</a>]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_COLLECTION_DESCRIPTION_MUTABLE_IND](COLLECTION_DESCRIPTION_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_COLLECTION_URI_MUTABLE_IND](COLLECTION_URI_MUTABLE_IND)]);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_spec_contains](vector::spec_contains)(mutate_setting, mutate_setting[[token.md#0x3_token_COLLECTION_MAX_MUTABLE_IND](COLLECTION_MAX_MUTABLE_IND)]);
 }
 </code></pre>
 
@@ -6078,7 +6078,7 @@ The mutate_setting shuold have a value.
 ### Function `mint_token`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token">mint_token</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, amount: u64): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token](mint_token)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), amount: u64): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -6096,21 +6096,21 @@ The sum of supply and the amount of mint Token is less than maximum.
 <a id="0x3_token_MintTokenAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_MintTokenAbortsIf">MintTokenAbortsIf</a> {
-    <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>;
+<pre><code><b>schema</b> [token.md#0x3_token_MintTokenAbortsIf](MintTokenAbortsIf) {
+    [../../aptos-framework/doc/account.md#0x1_account](account): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer);
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId);
     amount: u64;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
+    <b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
+    <b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
     <b>aborts_if</b> token_data_id.creator != addr;
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
     <b>aborts_if</b> token_data.maximum &gt; 0 && token_data.supply + amount &gt; token_data.maximum;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
     <b>aborts_if</b> amount &lt;= 0;
-    <b>include</b> <a href="token.md#0x3_token_InitializeTokenStore">InitializeTokenStore</a>;
-    <b>let</b> token_id = <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id, 0);
+    <b>include</b> [token.md#0x3_token_InitializeTokenStore](InitializeTokenStore);
+    <b>let</b> token_id = [token.md#0x3_token_create_token_id](create_token_id)(token_data_id, 0);
 }
 </code></pre>
 
@@ -6121,26 +6121,26 @@ The sum of supply and the amount of mint Token is less than maximum.
 ### Function `mint_token_to`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_mint_token_to">mint_token_to</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, receiver: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>, amount: u64)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_mint_token_to](mint_token_to)([../../aptos-framework/doc/account.md#0x1_account](account): &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), receiver: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId), amount: u64)
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-<b>let</b> opt_in_transfer = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver).direct_transfer;
+<pre><code><b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)([../../aptos-framework/doc/account.md#0x1_account](account));
+<b>let</b> opt_in_transfer = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver).direct_transfer;
 <b>let</b> creator_addr = token_data_id.creator;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-<b>let</b> token_data = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(all_token_data, token_data_id);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(receiver);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+<b>let</b> token_data = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(all_token_data, token_data_id);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(receiver);
 <b>aborts_if</b> !opt_in_transfer;
 <b>aborts_if</b> token_data_id.creator != addr;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 <b>aborts_if</b> token_data.maximum &gt; 0 && token_data.supply + amount &gt; token_data.maximum;
 <b>aborts_if</b> amount &lt;= 0;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-<b>let</b> token_id = <a href="token.md#0x3_token_create_token_id">create_token_id</a>(token_data_id, 0);
-<b>include</b> <a href="token.md#0x3_token_DirectDepositAbortsIf">DirectDepositAbortsIf</a> {
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+<b>let</b> token_id = [token.md#0x3_token_create_token_id](create_token_id)(token_data_id, 0);
+<b>include</b> [token.md#0x3_token_DirectDepositAbortsIf](DirectDepositAbortsIf) {
     account_addr: receiver,
     token_id: token_id,
     token_amount: amount,
@@ -6154,7 +6154,7 @@ The sum of supply and the amount of mint Token is less than maximum.
 ### Function `create_token_data_id`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_data_id">create_token_data_id</a>(creator: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_data_id](create_token_data_id)(creator: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [token.md#0x3_token_TokenDataId](token::TokenDataId)
 </code></pre>
 
 
@@ -6162,7 +6162,7 @@ The length of collection should less than MAX_COLLECTION_NAME_LENGTH
 The length of name should less than MAX_NFT_NAME_LENGTH
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf);
 </code></pre>
 
 
@@ -6171,12 +6171,12 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_CreateTokenDataIdAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a> {
+<pre><code><b>schema</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf) {
     creator: <b>address</b>;
     collection: String;
     name: String;
-    <b>aborts_if</b> len(collection.bytes) &gt; <a href="token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH">MAX_COLLECTION_NAME_LENGTH</a>;
-    <b>aborts_if</b> len(name.bytes) &gt; <a href="token.md#0x3_token_MAX_NFT_NAME_LENGTH">MAX_NFT_NAME_LENGTH</a>;
+    <b>aborts_if</b> len(collection.bytes) &gt; [token.md#0x3_token_MAX_COLLECTION_NAME_LENGTH](MAX_COLLECTION_NAME_LENGTH);
+    <b>aborts_if</b> len(name.bytes) &gt; [token.md#0x3_token_MAX_NFT_NAME_LENGTH](MAX_NFT_NAME_LENGTH);
 }
 </code></pre>
 
@@ -6187,7 +6187,7 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `create_token_id_raw`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_create_token_id_raw">create_token_id_raw</a>(creator: <b>address</b>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, property_version: u64): <a href="token.md#0x3_token_TokenId">token::TokenId</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_create_token_id_raw](create_token_id_raw)(creator: <b>address</b>, collection: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String), property_version: u64): [token.md#0x3_token_TokenId](token::TokenId)
 </code></pre>
 
 
@@ -6195,7 +6195,7 @@ The length of collection should less than MAX_COLLECTION_NAME_LENGTH
 The length of name should less than MAX_NFT_NAME_LENGTH
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_CreateTokenDataIdAbortsIf">CreateTokenDataIdAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_CreateTokenDataIdAbortsIf](CreateTokenDataIdAbortsIf);
 </code></pre>
 
 
@@ -6204,13 +6204,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_spec_balance_of"></a>
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_spec_balance_of">spec_balance_of</a>(owner: <b>address</b>, id: <a href="token.md#0x3_token_TokenId">TokenId</a>): u64 {
-   <b>let</b> token_store = <b>borrow_global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner);
-   <b>if</b> (!<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(owner)) {
+<pre><code><b>fun</b> [token.md#0x3_token_spec_balance_of](spec_balance_of)(owner: <b>address</b>, id: [token.md#0x3_token_TokenId](TokenId)): u64 {
+   <b>let</b> token_store = <b>borrow_global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner);
+   <b>if</b> (!<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(owner)) {
        0
    }
-   <b>else</b> <b>if</b> (<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(token_store.tokens, id)) {
-       <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(token_store.tokens, id).amount
+   <b>else</b> <b>if</b> ([../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(token_store.tokens, id)) {
+       [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(token_store.tokens, id).amount
    } <b>else</b> {
        0
    }
@@ -6224,13 +6224,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_royalty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_royalty">get_royalty</a>(token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_royalty](get_royalty)(token_id: [token.md#0x3_token_TokenId](token::TokenId)): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_GetTokendataRoyaltyAbortsIf">GetTokendataRoyaltyAbortsIf</a> {
+<pre><code><b>include</b> [token.md#0x3_token_GetTokendataRoyaltyAbortsIf](GetTokendataRoyaltyAbortsIf) {
     token_data_id: token_id.token_data_id
 };
 </code></pre>
@@ -6242,17 +6242,17 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_property_map`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_property_map">get_property_map</a>(owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>): <a href="property_map.md#0x3_property_map_PropertyMap">property_map::PropertyMap</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_property_map](get_property_map)(owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId)): [property_map.md#0x3_property_map_PropertyMap](property_map::PropertyMap)
 </code></pre>
 
 
 
 
 <pre><code><b>let</b> creator_addr = token_id.token_data_id.creator;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-<b>aborts_if</b> <a href="token.md#0x3_token_spec_balance_of">spec_balance_of</a>(owner, token_id) &lt;= 0;
-<b>aborts_if</b> token_id.property_version == 0 && !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_id.token_data_id);
-<b>aborts_if</b> token_id.property_version == 0 && !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+<b>aborts_if</b> [token.md#0x3_token_spec_balance_of](spec_balance_of)(owner, token_id) &lt;= 0;
+<b>aborts_if</b> token_id.property_version == 0 && ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_id.token_data_id);
+<b>aborts_if</b> token_id.property_version == 0 && !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
 </code></pre>
 
 
@@ -6262,16 +6262,16 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_maximum`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_maximum">get_tokendata_maximum</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): u64
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_maximum](get_tokendata_maximum)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): u64
 </code></pre>
 
 
 
 
 <pre><code><b>let</b> creator_address = token_data_id.creator;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -6281,15 +6281,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_uri`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_uri">get_tokendata_uri</a>(creator: <b>address</b>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_uri](get_tokendata_uri)(creator: <b>address</b>, token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).token_data;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<pre><code><b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).token_data;
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -6299,16 +6299,16 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_description`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_description">get_tokendata_description</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_description](get_tokendata_description)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)
 </code></pre>
 
 
 
 
 <pre><code><b>let</b> creator_address = token_data_id.creator;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -6318,13 +6318,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_royalty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_royalty">get_tokendata_royalty</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="token.md#0x3_token_Royalty">token::Royalty</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_royalty](get_tokendata_royalty)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [token.md#0x3_token_Royalty](token::Royalty)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_GetTokendataRoyaltyAbortsIf">GetTokendataRoyaltyAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_GetTokendataRoyaltyAbortsIf](GetTokendataRoyaltyAbortsIf);
 </code></pre>
 
 
@@ -6333,12 +6333,12 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_GetTokendataRoyaltyAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_GetTokendataRoyaltyAbortsIf">GetTokendataRoyaltyAbortsIf</a> {
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>;
+<pre><code><b>schema</b> [token.md#0x3_token_GetTokendataRoyaltyAbortsIf](GetTokendataRoyaltyAbortsIf) {
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId);
     <b>let</b> creator_address = token_data_id.creator;
-    <b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).token_data;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+    <b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).token_data;
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 }
 </code></pre>
 
@@ -6349,16 +6349,16 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `get_tokendata_mutability_config`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_tokendata_mutability_config">get_tokendata_mutability_config</a>(token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>): <a href="token.md#0x3_token_TokenMutabilityConfig">token::TokenMutabilityConfig</a>
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_get_tokendata_mutability_config](get_tokendata_mutability_config)(token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId)): [token.md#0x3_token_TokenMutabilityConfig](token::TokenMutabilityConfig)
 </code></pre>
 
 
 
 
 <pre><code><b>let</b> creator_addr = token_data_id.creator;
-<b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+<b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 </code></pre>
 
 
@@ -6369,15 +6369,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 
 
 <pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="token.md#0x3_token_get_collection_mutability_config">get_collection_mutability_config</a>(creator: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>): <a href="token.md#0x3_token_CollectionMutabilityConfig">token::CollectionMutabilityConfig</a>
+<b>public</b> <b>fun</b> [token.md#0x3_token_get_collection_mutability_config](get_collection_mutability_config)(creator: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)): [token.md#0x3_token_CollectionMutabilityConfig](token::CollectionMutabilityConfig)
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> all_collection_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator).collection_data;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_collection_data, collection_name);
+<pre><code><b>let</b> all_collection_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator).collection_data;
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_collection_data, collection_name);
 </code></pre>
 
 
@@ -6387,13 +6387,13 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `withdraw_with_event_internal`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_withdraw_with_event_internal">withdraw_with_event_internal</a>(account_addr: <b>address</b>, id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, amount: u64): <a href="token.md#0x3_token_Token">token::Token</a>
+<pre><code><b>fun</b> [token.md#0x3_token_withdraw_with_event_internal](withdraw_with_event_internal)(account_addr: <b>address</b>, id: [token.md#0x3_token_TokenId](token::TokenId), amount: u64): [token.md#0x3_token_Token](token::Token)
 </code></pre>
 
 
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf);
 </code></pre>
 
 
@@ -6402,15 +6402,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_WithdrawWithEventInternalAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_WithdrawWithEventInternalAbortsIf">WithdrawWithEventInternalAbortsIf</a> {
+<pre><code><b>schema</b> [token.md#0x3_token_WithdrawWithEventInternalAbortsIf](WithdrawWithEventInternalAbortsIf) {
     account_addr: <b>address</b>;
-    id: <a href="token.md#0x3_token_TokenId">TokenId</a>;
+    id: [token.md#0x3_token_TokenId](TokenId);
     amount: u64;
-    <b>let</b> tokens = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr).tokens;
+    <b>let</b> tokens = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr).tokens;
     <b>aborts_if</b> amount &lt;= 0;
-    <b>aborts_if</b> <a href="token.md#0x3_token_spec_balance_of">spec_balance_of</a>(account_addr, id) &lt; amount;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(tokens, id);
+    <b>aborts_if</b> [token.md#0x3_token_spec_balance_of](spec_balance_of)(account_addr, id) &lt; amount;
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(tokens, id);
 }
 </code></pre>
 
@@ -6421,16 +6421,16 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `update_token_property_internal`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_update_token_property_internal">update_token_property_internal</a>(token_owner: <b>address</b>, token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, types: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>fun</b> [token.md#0x3_token_update_token_property_internal](update_token_property_internal)(token_owner: <b>address</b>, token_id: [token.md#0x3_token_TokenId](token::TokenId), keys: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;, values: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;u8&gt;&gt;, types: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
 
 
 <pre><code><b>pragma</b> aborts_if_is_partial;
-<b>let</b> tokens = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(token_owner).tokens;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(token_owner);
-<b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(tokens, token_id);
+<b>let</b> tokens = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(token_owner).tokens;
+<b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(token_owner);
+<b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(tokens, token_id);
 </code></pre>
 
 
@@ -6440,15 +6440,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `direct_deposit`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_direct_deposit">direct_deposit</a>(account_addr: <b>address</b>, <a href="token.md#0x3_token">token</a>: <a href="token.md#0x3_token_Token">token::Token</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_direct_deposit](direct_deposit)(account_addr: <b>address</b>, [token.md#0x3_token](token): [token.md#0x3_token_Token](token::Token))
 </code></pre>
 
 
 
 
-<pre><code><b>let</b> token_id = <a href="token.md#0x3_token">token</a>.id;
-<b>let</b> token_amount = <a href="token.md#0x3_token">token</a>.amount;
-<b>include</b> <a href="token.md#0x3_token_DirectDepositAbortsIf">DirectDepositAbortsIf</a>;
+<pre><code><b>let</b> token_id = [token.md#0x3_token](token).id;
+<b>let</b> token_amount = [token.md#0x3_token](token).amount;
+<b>include</b> [token.md#0x3_token_DirectDepositAbortsIf](DirectDepositAbortsIf);
 </code></pre>
 
 
@@ -6457,15 +6457,15 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 <a id="0x3_token_DirectDepositAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_DirectDepositAbortsIf">DirectDepositAbortsIf</a> {
+<pre><code><b>schema</b> [token.md#0x3_token_DirectDepositAbortsIf](DirectDepositAbortsIf) {
     account_addr: <b>address</b>;
-    token_id: <a href="token.md#0x3_token_TokenId">TokenId</a>;
+    token_id: [token.md#0x3_token_TokenId](TokenId);
     token_amount: u64;
-    <b>let</b> token_store = <b>global</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
-    <b>let</b> recipient_token = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get">table::spec_get</a>(token_store.tokens, token_id);
-    <b>let</b> b = <a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(token_store.tokens, token_id);
+    <b>let</b> token_store = <b>global</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
+    <b>let</b> recipient_token = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_get](table::spec_get)(token_store.tokens, token_id);
+    <b>let</b> b = [../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(token_store.tokens, token_id);
     <b>aborts_if</b> token_amount &lt;= 0;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_TokenStore">TokenStore</a>&gt;(account_addr);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_TokenStore](TokenStore)&gt;(account_addr);
     <b>aborts_if</b> b && recipient_token.id != token_id;
     <b>aborts_if</b> b && recipient_token.amount + token_amount &gt; MAX_U64;
 }
@@ -6478,14 +6478,14 @@ The length of name should less than MAX_NFT_NAME_LENGTH
 ### Function `assert_collection_exists`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_collection_exists">assert_collection_exists</a>(creator_address: <b>address</b>, collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_collection_exists](assert_collection_exists)(creator_address: <b>address</b>, collection_name: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String))
 </code></pre>
 
 
 The collection_name should exist in collection_data of the creator_address's Collections.
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf);
 </code></pre>
 
 
@@ -6494,12 +6494,12 @@ The collection_name should exist in collection_data of the creator_address's Col
 <a id="0x3_token_AssertCollectionExistsAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_AssertCollectionExistsAbortsIf">AssertCollectionExistsAbortsIf</a> {
+<pre><code><b>schema</b> [token.md#0x3_token_AssertCollectionExistsAbortsIf](AssertCollectionExistsAbortsIf) {
     creator_address: <b>address</b>;
     collection_name: String;
-    <b>let</b> all_collection_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address).collection_data;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_address);
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_collection_data, collection_name);
+    <b>let</b> all_collection_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address).collection_data;
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_address);
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_collection_data, collection_name);
 }
 </code></pre>
 
@@ -6510,7 +6510,7 @@ The collection_name should exist in collection_data of the creator_address's Col
 ### Function `assert_tokendata_exists`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_tokendata_exists">assert_tokendata_exists</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, token_data_id: <a href="token.md#0x3_token_TokenDataId">token::TokenDataId</a>)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_tokendata_exists](assert_tokendata_exists)(creator: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), token_data_id: [token.md#0x3_token_TokenDataId](token::TokenDataId))
 </code></pre>
 
 
@@ -6519,7 +6519,7 @@ The  creator of token_data_id exists in Collections.
 The token_data_id is in the all_token_data.
 
 
-<pre><code><b>include</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a>;
+<pre><code><b>include</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf);
 </code></pre>
 
 
@@ -6528,15 +6528,15 @@ The token_data_id is in the all_token_data.
 <a id="0x3_token_AssertTokendataExistsAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token.md#0x3_token_AssertTokendataExistsAbortsIf">AssertTokendataExistsAbortsIf</a> {
-    creator: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    token_data_id: <a href="token.md#0x3_token_TokenDataId">TokenDataId</a>;
+<pre><code><b>schema</b> [token.md#0x3_token_AssertTokendataExistsAbortsIf](AssertTokendataExistsAbortsIf) {
+    creator: [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer);
+    token_data_id: [token.md#0x3_token_TokenDataId](TokenDataId);
     <b>let</b> creator_addr = token_data_id.creator;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
+    <b>let</b> addr = [../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of](signer::address_of)(creator);
     <b>aborts_if</b> addr != creator_addr;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr);
-    <b>let</b> all_token_data = <b>global</b>&lt;<a href="token.md#0x3_token_Collections">Collections</a>&gt;(creator_addr).token_data;
-    <b>aborts_if</b> !<a href="../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains">table::spec_contains</a>(all_token_data, token_data_id);
+    <b>aborts_if</b> !<b>exists</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr);
+    <b>let</b> all_token_data = <b>global</b>&lt;[token.md#0x3_token_Collections](Collections)&gt;(creator_addr).token_data;
+    <b>aborts_if</b> ![../../aptos-framework/../aptos-stdlib/doc/table.md#0x1_table_spec_contains](table::spec_contains)(all_token_data, token_data_id);
 }
 </code></pre>
 
@@ -6547,7 +6547,7 @@ The token_data_id is in the all_token_data.
 ### Function `assert_non_standard_reserved_property`
 
 
-<pre><code><b>fun</b> <a href="token.md#0x3_token_assert_non_standard_reserved_property">assert_non_standard_reserved_property</a>(keys: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;)
+<pre><code><b>fun</b> [token.md#0x3_token_assert_non_standard_reserved_property](assert_non_standard_reserved_property)(keys: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector](vector)&lt;[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String](string::String)&gt;)
 </code></pre>
 
 
@@ -6563,7 +6563,7 @@ The token_data_id is in the all_token_data.
 ### Function `initialize_token_script`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="token.md#0x3_token_initialize_token_script">initialize_token_script</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
+<pre><code><b>public</b> entry <b>fun</b> [token.md#0x3_token_initialize_token_script](initialize_token_script)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer))
 </code></pre>
 
 
@@ -6580,7 +6580,7 @@ Deprecated function
 ### Function `initialize_token`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="token.md#0x3_token_initialize_token">initialize_token</a>(_account: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, _token_id: <a href="token.md#0x3_token_TokenId">token::TokenId</a>)
+<pre><code><b>public</b> <b>fun</b> [token.md#0x3_token_initialize_token](initialize_token)(_account: &[../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer](signer), _token_id: [token.md#0x3_token_TokenId](token::TokenId))
 </code></pre>
 
 

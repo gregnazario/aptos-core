@@ -5,7 +5,7 @@
 
 Access control list (acl) module. An acl is a list of account addresses who
 have the access permission to a certain object.
-This module uses a <code><a href="vector.md#0x1_vector">vector</a></code> to represent the list, but can be refactored to
+This module uses a <code>[vector.md#0x1_vector](vector)</code> to represent the list, but can be refactored to
 use a "set" instead when it's available in the language in the future.
 
 
@@ -24,8 +24,8 @@ use a "set" instead when it's available in the language in the future.
     -  [Function `assert_contains`](#@Specification_1_assert_contains)
 
 
-<pre><code><b>use</b> <a href="error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="vector.md#0x1_vector">0x1::vector</a>;
+<pre><code><b>use</b> [error.md#0x1_error](0x1::error);
+<b>use</b> [vector.md#0x1_vector](0x1::vector);
 </code></pre>
 
 
@@ -36,7 +36,7 @@ use a "set" instead when it's available in the language in the future.
 
 
 
-<pre><code><b>struct</b> <a href="acl.md#0x1_acl_ACL">ACL</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [acl.md#0x1_acl_ACL](ACL) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
@@ -47,7 +47,7 @@ use a "set" instead when it's available in the language in the future.
 
 <dl>
 <dt>
-<code>list: <a href="vector.md#0x1_vector">vector</a>&lt;<b>address</b>&gt;</code>
+<code>list: [vector.md#0x1_vector](vector)&lt;<b>address</b>&gt;</code>
 </dt>
 <dd>
 
@@ -67,7 +67,7 @@ use a "set" instead when it's available in the language in the future.
 The ACL already contains the address.
 
 
-<pre><code><b>const</b> <a href="acl.md#0x1_acl_ECONTAIN">ECONTAIN</a>: u64 = 0;
+<pre><code><b>const</b> [acl.md#0x1_acl_ECONTAIN](ECONTAIN): u64 = 0;
 </code></pre>
 
 
@@ -77,7 +77,7 @@ The ACL already contains the address.
 The ACL does not contain the address.
 
 
-<pre><code><b>const</b> <a href="acl.md#0x1_acl_ENOT_CONTAIN">ENOT_CONTAIN</a>: u64 = 1;
+<pre><code><b>const</b> [acl.md#0x1_acl_ENOT_CONTAIN](ENOT_CONTAIN): u64 = 1;
 </code></pre>
 
 
@@ -89,7 +89,7 @@ The ACL does not contain the address.
 Return an empty ACL.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_empty">empty</a>(): <a href="acl.md#0x1_acl_ACL">acl::ACL</a>
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_empty](empty)(): [acl.md#0x1_acl_ACL](acl::ACL)
 </code></pre>
 
 
@@ -98,8 +98,8 @@ Return an empty ACL.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_empty">empty</a>(): <a href="acl.md#0x1_acl_ACL">ACL</a> {
-    <a href="acl.md#0x1_acl_ACL">ACL</a>{ list: <a href="vector.md#0x1_vector_empty">vector::empty</a>&lt;<b>address</b>&gt;() }
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_empty](empty)(): [acl.md#0x1_acl_ACL](ACL) {
+    [acl.md#0x1_acl_ACL](ACL){ list: [vector.md#0x1_vector_empty](vector::empty)&lt;<b>address</b>&gt;() }
 }
 </code></pre>
 
@@ -114,7 +114,7 @@ Return an empty ACL.
 Add the address to the ACL.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_add">add</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_add](add)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
@@ -123,9 +123,9 @@ Add the address to the ACL.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_add">add</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">ACL</a>, addr: <b>address</b>) {
-    <b>assert</b>!(!<a href="vector.md#0x1_vector_contains">vector::contains</a>(&<b>mut</b> <a href="acl.md#0x1_acl">acl</a>.list, &addr), <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="acl.md#0x1_acl_ECONTAIN">ECONTAIN</a>));
-    <a href="vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> <a href="acl.md#0x1_acl">acl</a>.list, addr);
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_add](add)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](ACL), addr: <b>address</b>) {
+    <b>assert</b>!(![vector.md#0x1_vector_contains](vector::contains)(&<b>mut</b> [acl.md#0x1_acl](acl).list, &addr), [error.md#0x1_error_invalid_argument](error::invalid_argument)([acl.md#0x1_acl_ECONTAIN](ECONTAIN)));
+    [vector.md#0x1_vector_push_back](vector::push_back)(&<b>mut</b> [acl.md#0x1_acl](acl).list, addr);
 }
 </code></pre>
 
@@ -140,7 +140,7 @@ Add the address to the ACL.
 Remove the address from the ACL.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_remove">remove</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_remove](remove)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
@@ -149,10 +149,10 @@ Remove the address from the ACL.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_remove">remove</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">ACL</a>, addr: <b>address</b>) {
-    <b>let</b> (found, index) = <a href="vector.md#0x1_vector_index_of">vector::index_of</a>(&<b>mut</b> <a href="acl.md#0x1_acl">acl</a>.list, &addr);
-    <b>assert</b>!(found, <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="acl.md#0x1_acl_ENOT_CONTAIN">ENOT_CONTAIN</a>));
-    <a href="vector.md#0x1_vector_remove">vector::remove</a>(&<b>mut</b> <a href="acl.md#0x1_acl">acl</a>.list, index);
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_remove](remove)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](ACL), addr: <b>address</b>) {
+    <b>let</b> (found, index) = [vector.md#0x1_vector_index_of](vector::index_of)(&<b>mut</b> [acl.md#0x1_acl](acl).list, &addr);
+    <b>assert</b>!(found, [error.md#0x1_error_invalid_argument](error::invalid_argument)([acl.md#0x1_acl_ENOT_CONTAIN](ENOT_CONTAIN)));
+    [vector.md#0x1_vector_remove](vector::remove)(&<b>mut</b> [acl.md#0x1_acl](acl).list, index);
 }
 </code></pre>
 
@@ -167,7 +167,7 @@ Remove the address from the ACL.
 Return true iff the ACL contains the address.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_contains">contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>): bool
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_contains](contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>): bool
 </code></pre>
 
 
@@ -176,8 +176,8 @@ Return true iff the ACL contains the address.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_contains">contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">ACL</a>, addr: <b>address</b>): bool {
-    <a href="vector.md#0x1_vector_contains">vector::contains</a>(&<a href="acl.md#0x1_acl">acl</a>.list, &addr)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_contains](contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](ACL), addr: <b>address</b>): bool {
+    [vector.md#0x1_vector_contains](vector::contains)(&[acl.md#0x1_acl](acl).list, &addr)
 }
 </code></pre>
 
@@ -192,7 +192,7 @@ Return true iff the ACL contains the address.
 assert! that the ACL has the address.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_assert_contains">assert_contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_assert_contains](assert_contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
@@ -201,8 +201,8 @@ assert! that the ACL has the address.
 <summary>Implementation</summary>
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_assert_contains">assert_contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">ACL</a>, addr: <b>address</b>) {
-    <b>assert</b>!(<a href="acl.md#0x1_acl_contains">contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr), <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="acl.md#0x1_acl_ENOT_CONTAIN">ENOT_CONTAIN</a>));
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_assert_contains](assert_contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](ACL), addr: <b>address</b>) {
+    <b>assert</b>!([acl.md#0x1_acl_contains](contains)([acl.md#0x1_acl](acl), addr), [error.md#0x1_error_invalid_argument](error::invalid_argument)([acl.md#0x1_acl_ENOT_CONTAIN](ENOT_CONTAIN)));
 }
 </code></pre>
 
@@ -220,14 +220,14 @@ assert! that the ACL has the address.
 ### Struct `ACL`
 
 
-<pre><code><b>struct</b> <a href="acl.md#0x1_acl_ACL">ACL</a> <b>has</b> <b>copy</b>, drop, store
+<pre><code><b>struct</b> [acl.md#0x1_acl_ACL](ACL) <b>has</b> <b>copy</b>, drop, store
 </code></pre>
 
 
 
 <dl>
 <dt>
-<code>list: <a href="vector.md#0x1_vector">vector</a>&lt;<b>address</b>&gt;</code>
+<code>list: [vector.md#0x1_vector](vector)&lt;<b>address</b>&gt;</code>
 </dt>
 <dd>
 
@@ -245,8 +245,8 @@ assert! that the ACL has the address.
 <a id="0x1_acl_spec_contains"></a>
 
 
-<pre><code><b>fun</b> <a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>: <a href="acl.md#0x1_acl_ACL">ACL</a>, addr: <b>address</b>): bool {
-   <b>exists</b> a in <a href="acl.md#0x1_acl">acl</a>.list: a == addr
+<pre><code><b>fun</b> [acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl): [acl.md#0x1_acl_ACL](ACL), addr: <b>address</b>): bool {
+   <b>exists</b> a in [acl.md#0x1_acl](acl).list: a == addr
 }
 </code></pre>
 
@@ -257,14 +257,14 @@ assert! that the ACL has the address.
 ### Function `add`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_add">add</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_add](add)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> <a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr) <b>with</b> <a href="error.md#0x1_error_INVALID_ARGUMENT">error::INVALID_ARGUMENT</a>;
-<b>ensures</b> <a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr);
+<pre><code><b>aborts_if</b> [acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr) <b>with</b> [error.md#0x1_error_INVALID_ARGUMENT](error::INVALID_ARGUMENT);
+<b>ensures</b> [acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr);
 </code></pre>
 
 
@@ -274,14 +274,14 @@ assert! that the ACL has the address.
 ### Function `remove`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_remove">remove</a>(<a href="acl.md#0x1_acl">acl</a>: &<b>mut</b> <a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_remove](remove)([acl.md#0x1_acl](acl): &<b>mut</b> [acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr) <b>with</b> <a href="error.md#0x1_error_INVALID_ARGUMENT">error::INVALID_ARGUMENT</a>;
-<b>ensures</b> !<a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr);
+<pre><code><b>aborts_if</b> ![acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr) <b>with</b> [error.md#0x1_error_INVALID_ARGUMENT](error::INVALID_ARGUMENT);
+<b>ensures</b> ![acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr);
 </code></pre>
 
 
@@ -291,13 +291,13 @@ assert! that the ACL has the address.
 ### Function `contains`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_contains">contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>): bool
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_contains](contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>): bool
 </code></pre>
 
 
 
 
-<pre><code><b>ensures</b> result == <a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr);
+<pre><code><b>ensures</b> result == [acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr);
 </code></pre>
 
 
@@ -307,13 +307,13 @@ assert! that the ACL has the address.
 ### Function `assert_contains`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="acl.md#0x1_acl_assert_contains">assert_contains</a>(<a href="acl.md#0x1_acl">acl</a>: &<a href="acl.md#0x1_acl_ACL">acl::ACL</a>, addr: <b>address</b>)
+<pre><code><b>public</b> <b>fun</b> [acl.md#0x1_acl_assert_contains](assert_contains)([acl.md#0x1_acl](acl): &[acl.md#0x1_acl_ACL](acl::ACL), addr: <b>address</b>)
 </code></pre>
 
 
 
 
-<pre><code><b>aborts_if</b> !<a href="acl.md#0x1_acl_spec_contains">spec_contains</a>(<a href="acl.md#0x1_acl">acl</a>, addr) <b>with</b> <a href="error.md#0x1_error_INVALID_ARGUMENT">error::INVALID_ARGUMENT</a>;
+<pre><code><b>aborts_if</b> ![acl.md#0x1_acl_spec_contains](spec_contains)([acl.md#0x1_acl](acl), addr) <b>with</b> [error.md#0x1_error_INVALID_ARGUMENT](error::INVALID_ARGUMENT);
 </code></pre>
 
 
