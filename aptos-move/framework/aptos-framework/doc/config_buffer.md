@@ -3,17 +3,17 @@
 
 # Module `0x1::config_buffer`
 
-This wrapper helps store an on-chain config for the next epoch.
+This wrapper helps store an on&#45;chain config for the next epoch.
 
-Once reconfigure with DKG is introduced, every on-chain config <code>C</code> should do the following.
-- Support async update when DKG is enabled. This is typically done by 3 steps below.
-- Implement <code>C::set_for_next_epoch()</code> using <code><a href="config_buffer.md#0x1_config_buffer_upsert">upsert</a>()</code> function in this module.
-- Implement <code>C::on_new_epoch()</code> using <code><a href="config_buffer.md#0x1_config_buffer_extract">extract</a>()</code> function in this module.
-- Update <code><a href="reconfiguration_with_dkg.md#0x1_reconfiguration_with_dkg_finish">0x1::reconfiguration_with_dkg::finish</a>()</code> to call <code>C::on_new_epoch()</code>.
-- Support sychronous update when DKG is disabled.
-This is typically done by implementing <code>C::set()</code> to update the config resource directly.
+Once reconfigure with DKG is introduced, every on&#45;chain config `C` should do the following.
+&#45; Support async update when DKG is enabled. This is typically done by 3 steps below.
+&#45; Implement `C::set_for_next_epoch()` using `upsert()` function in this module.
+&#45; Implement `C::on_new_epoch()` using `extract()` function in this module.
+&#45; Update `0x1::reconfiguration_with_dkg::finish()` to call `C::on_new_epoch()`.
+&#45; Support sychronous update when DKG is disabled.
+This is typically done by implementing `C::set()` to update the config resource directly.
 
-NOTE: on-chain config <code>0x1::state::ValidatorSet</code> implemented its own buffer.
+NOTE: on&#45;chain config `0x1::state::ValidatorSet` implemented its own buffer.
 
 
 -  [Resource `PendingConfigs`](#0x1_config_buffer_PendingConfigs)
@@ -28,14 +28,16 @@ NOTE: on-chain config <code>0x1::state::ValidatorSet</code> implemented its own 
     -  [Function `extract`](#@Specification_1_extract)
 
 
-<pre><code><b>use</b> <a href="../../aptos-stdlib/doc/any.md#0x1_any">0x1::any</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map">0x1::simple_map</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-<b>use</b> <a href="system_addresses.md#0x1_system_addresses">0x1::system_addresses</a>;
-<b>use</b> <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info">0x1::type_info</a>;
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    use 0x1::any;
+    use 0x1::option;
+    use 0x1::simple_map;
+    use 0x1::string;
+    use 0x1::system_addresses;
+    use 0x1::type_info;
+}
+```
 
 
 <a id="0x1_config_buffer_PendingConfigs"></a>
@@ -44,26 +46,25 @@ NOTE: on-chain config <code>0x1::state::ValidatorSet</code> implemented its own 
 
 
 
-<pre><code><b>struct</b> <a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::config_buffer {
+    struct PendingConfigs has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>configs: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;<a href="../../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="../../aptos-stdlib/doc/any.md#0x1_any_Any">any::Any</a>&gt;</code>
+`configs: simple_map::SimpleMap<string::String, any::Any>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -75,9 +76,11 @@ NOTE: on-chain config <code>0x1::state::ValidatorSet</code> implemented its own 
 Config buffer operations failed with permission denied.
 
 
-<pre><code><b>const</b> <a href="config_buffer.md#0x1_config_buffer_ESTD_SIGNER_NEEDED">ESTD_SIGNER_NEEDED</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    const ESTD_SIGNER_NEEDED: u64 = 1;
+}
+```
 
 
 <a id="0x1_config_buffer_initialize"></a>
@@ -86,119 +89,123 @@ Config buffer operations failed with permission denied.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::config_buffer {
+    public fun initialize(aptos_framework: &signer)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-    <b>if</b> (!<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework)) {
-        <b>move_to</b>(aptos_framework, <a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a> {
-            configs: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_new">simple_map::new</a>(),
-        })
+```move
+module 0x1::config_buffer {
+    public fun initialize(aptos_framework: &signer) {
+        system_addresses::assert_aptos_framework(aptos_framework);
+        if (!exists<PendingConfigs>(@aptos_framework)) {
+            move_to(aptos_framework, PendingConfigs {
+                configs: simple_map::new(),
+            })
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_config_buffer_does_exist"></a>
 
 ## Function `does_exist`
 
-Check whether there is a pending config payload for <code>T</code>.
+Check whether there is a pending config payload for `T`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_does_exist">does_exist</a>&lt;T: store&gt;(): bool
-</code></pre>
+```move
+module 0x1::config_buffer {
+    public fun does_exist<T: store>(): bool
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_does_exist">does_exist</a>&lt;T: store&gt;(): bool <b>acquires</b> <a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a> {
-    <b>if</b> (<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework)) {
-        <b>let</b> config = <b>borrow_global</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-        <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_contains_key">simple_map::contains_key</a>(&config.configs, &<a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;())
-    } <b>else</b> {
-        <b>false</b>
+```move
+module 0x1::config_buffer {
+    public fun does_exist<T: store>(): bool acquires PendingConfigs {
+        if (exists<PendingConfigs>(@aptos_framework)) {
+            let config = borrow_global<PendingConfigs>(@aptos_framework);
+            simple_map::contains_key(&config.configs, &type_info::type_name<T>())
+        } else {
+            false
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_config_buffer_upsert"></a>
 
 ## Function `upsert`
 
-Upsert an on-chain config to the buffer for the next epoch.
+Upsert an on&#45;chain config to the buffer for the next epoch.
 
-Typically used in <code>X::set_for_next_epoch()</code> where X is an on-chain config.
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_upsert">upsert</a>&lt;T: drop, store&gt;(config: T)
-</code></pre>
+Typically used in `X::set_for_next_epoch()` where X is an on&#45;chain config.
 
 
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_upsert">upsert</a>&lt;T: drop + store&gt;(config: T) <b>acquires</b> <a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a> {
-    <b>let</b> configs = <b>borrow_global_mut</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-    <b>let</b> key = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-    <b>let</b> value = <a href="../../aptos-stdlib/doc/any.md#0x1_any_pack">any::pack</a>(config);
-    <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_upsert">simple_map::upsert</a>(&<b>mut</b> configs.configs, key, value);
+```move
+module 0x1::config_buffer {
+    public(friend) fun upsert<T: drop, store>(config: T)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::config_buffer {
+    public(friend) fun upsert<T: drop + store>(config: T) acquires PendingConfigs {
+        let configs = borrow_global_mut<PendingConfigs>(@aptos_framework);
+        let key = type_info::type_name<T>();
+        let value = any::pack(config);
+        simple_map::upsert(&mut configs.configs, key, value);
+    }
+}
+```
+
 
 <a id="0x1_config_buffer_extract"></a>
 
 ## Function `extract`
 
-Take the buffered config <code>T</code> out (buffer cleared). Abort if the buffer is empty.
+Take the buffered config `T` out (buffer cleared). Abort if the buffer is empty.
 Should only be used at the end of a reconfiguration.
 
-Typically used in <code>X::on_new_epoch()</code> where X is an on-chaon config.
+Typically used in `X::on_new_epoch()` where X is an on&#45;chaon config.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_extract">extract</a>&lt;T: store&gt;(): T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_extract">extract</a>&lt;T: store&gt;(): T <b>acquires</b> <a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a> {
-    <b>let</b> configs = <b>borrow_global_mut</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-    <b>let</b> key = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-    <b>let</b> (_, value_packed) = <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_remove">simple_map::remove</a>(&<b>mut</b> configs.configs, &key);
-    <a href="../../aptos-stdlib/doc/any.md#0x1_any_unpack">any::unpack</a>(value_packed)
+```move
+module 0x1::config_buffer {
+    public fun extract<T: store>(): T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::config_buffer {
+    public fun extract<T: store>(): T acquires PendingConfigs {
+        let configs = borrow_global_mut<PendingConfigs>(@aptos_framework);
+        let key = type_info::type_name<T>();
+        let (_, value_packed) = simple_map::remove(&mut configs.configs, &key);
+        any::unpack(value_packed)
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -206,9 +213,11 @@ Typically used in <code>X::on_new_epoch()</code> where X is an on-chaon config.
 
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    pragma verify = true;
+}
+```
 
 
 <a id="@Specification_1_does_exist"></a>
@@ -216,33 +225,39 @@ Typically used in <code>X::on_new_epoch()</code> where X is an on-chaon config.
 ### Function `does_exist`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_does_exist">does_exist</a>&lt;T: store&gt;(): bool
-</code></pre>
+```move
+module 0x1::config_buffer {
+    public fun does_exist<T: store>(): bool
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>let</b> type_name = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-<b>ensures</b> result == <a href="config_buffer.md#0x1_config_buffer_spec_fun_does_exist">spec_fun_does_exist</a>&lt;T&gt;(type_name);
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    aborts_if false;
+    let type_name = type_info::type_name<T>();
+    ensures result == spec_fun_does_exist<T>(type_name);
+}
+```
 
 
 
 <a id="0x1_config_buffer_spec_fun_does_exist"></a>
 
 
-<pre><code><b>fun</b> <a href="config_buffer.md#0x1_config_buffer_spec_fun_does_exist">spec_fun_does_exist</a>&lt;T: store&gt;(type_name: String): bool {
-   <b>if</b> (<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework)) {
-       <b>let</b> config = <b>global</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-       <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(config.configs, type_name)
-   } <b>else</b> {
-       <b>false</b>
-   }
+```move
+module 0x1::config_buffer {
+    fun spec_fun_does_exist<T: store>(type_name: String): bool {
+       if (exists<PendingConfigs>(@aptos_framework)) {
+           let config = global<PendingConfigs>(@aptos_framework);
+           simple_map::spec_contains_key(config.configs, type_name)
+       } else {
+           false
+       }
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_upsert"></a>
@@ -250,15 +265,19 @@ Typically used in <code>X::on_new_epoch()</code> where X is an on-chaon config.
 ### Function `upsert`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_upsert">upsert</a>&lt;T: drop, store&gt;(config: T)
-</code></pre>
+```move
+module 0x1::config_buffer {
+    public(friend) fun upsert<T: drop, store>(config: T)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    aborts_if !exists<PendingConfigs>(@aptos_framework);
+}
+```
 
 
 <a id="@Specification_1_extract"></a>
@@ -266,77 +285,87 @@ Typically used in <code>X::on_new_epoch()</code> where X is an on-chaon config.
 ### Function `extract`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="config_buffer.md#0x1_config_buffer_extract">extract</a>&lt;T: store&gt;(): T
-</code></pre>
+```move
+module 0x1::config_buffer {
+    public fun extract<T: store>(): T
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-<b>include</b> <a href="config_buffer.md#0x1_config_buffer_ExtractAbortsIf">ExtractAbortsIf</a>&lt;T&gt;;
-</code></pre>
-
+```move
+module 0x1::config_buffer {
+    aborts_if !exists<PendingConfigs>(@aptos_framework);
+    include ExtractAbortsIf<T>;
+}
+```
 
 
 
 <a id="0x1_config_buffer_ExtractAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="config_buffer.md#0x1_config_buffer_ExtractAbortsIf">ExtractAbortsIf</a>&lt;T&gt; {
-    <b>let</b> configs = <b>global</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-    <b>let</b> key = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-    <b>aborts_if</b> !<a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(configs.configs, key);
-    <b>include</b> <a href="../../aptos-stdlib/doc/any.md#0x1_any_UnpackAbortsIf">any::UnpackAbortsIf</a>&lt;T&gt; {
-        x: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(configs.configs, key)
-    };
+```move
+module 0x1::config_buffer {
+    schema ExtractAbortsIf<T> {
+        let configs = global<PendingConfigs>(@aptos_framework);
+        let key = type_info::type_name<T>();
+        aborts_if !simple_map::spec_contains_key(configs.configs, key);
+        include any::UnpackAbortsIf<T> {
+            x: simple_map::spec_get(configs.configs, key)
+        };
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_config_buffer_SetForNextEpochAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="config_buffer.md#0x1_config_buffer_SetForNextEpochAbortsIf">SetForNextEpochAbortsIf</a> {
-    <a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;;
-    <b>let</b> account_addr = std::signer::address_of(<a href="account.md#0x1_account">account</a>);
-    <b>aborts_if</b> account_addr != @aptos_framework;
-    <b>aborts_if</b> len(config) == 0;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
+```move
+module 0x1::config_buffer {
+    schema SetForNextEpochAbortsIf {
+        account: &signer;
+        config: vector<u8>;
+        let account_addr = std::signer::address_of(account);
+        aborts_if account_addr != @aptos_framework;
+        aborts_if len(config) == 0;
+        aborts_if !exists<PendingConfigs>(@aptos_framework);
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_config_buffer_OnNewEpochAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="config_buffer.md#0x1_config_buffer_OnNewEpochAbortsIf">OnNewEpochAbortsIf</a>&lt;T&gt; {
-    <b>let</b> type_name = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-    <b>let</b> configs = <b>global</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-    <b>include</b> <a href="config_buffer.md#0x1_config_buffer_spec_fun_does_exist">spec_fun_does_exist</a>&lt;T&gt;(type_name) ==&gt; <a href="../../aptos-stdlib/doc/any.md#0x1_any_UnpackAbortsIf">any::UnpackAbortsIf</a>&lt;T&gt; {
-        x: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(configs.configs, type_name)
-    };
+```move
+module 0x1::config_buffer {
+    schema OnNewEpochAbortsIf<T> {
+        let type_name = type_info::type_name<T>();
+        let configs = global<PendingConfigs>(@aptos_framework);
+        include spec_fun_does_exist<T>(type_name) ==> any::UnpackAbortsIf<T> {
+            x: simple_map::spec_get(configs.configs, type_name)
+        };
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_config_buffer_OnNewEpochRequirement"></a>
 
 
-<pre><code><b>schema</b> <a href="config_buffer.md#0x1_config_buffer_OnNewEpochRequirement">OnNewEpochRequirement</a>&lt;T&gt; {
-    <b>let</b> type_name = <a href="../../aptos-stdlib/doc/type_info.md#0x1_type_info_type_name">type_info::type_name</a>&lt;T&gt;();
-    <b>let</b> configs = <b>global</b>&lt;<a href="config_buffer.md#0x1_config_buffer_PendingConfigs">PendingConfigs</a>&gt;(@aptos_framework);
-    <b>include</b> <a href="config_buffer.md#0x1_config_buffer_spec_fun_does_exist">spec_fun_does_exist</a>&lt;T&gt;(type_name) ==&gt; <a href="../../aptos-stdlib/doc/any.md#0x1_any_UnpackRequirement">any::UnpackRequirement</a>&lt;T&gt; {
-        x: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(configs.configs, type_name)
-    };
+```move
+module 0x1::config_buffer {
+    schema OnNewEpochRequirement<T> {
+        let type_name = type_info::type_name<T>();
+        let configs = global<PendingConfigs>(@aptos_framework);
+        include spec_fun_does_exist<T>(type_name) ==> any::UnpackRequirement<T> {
+            x: simple_map::spec_get(configs.configs, type_name)
+        };
+    }
 }
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```

@@ -48,16 +48,18 @@ This module provides utils to add and emit new token events that are not in toke
     -  [Function `emit_token_maximum_mutate_event`](#@Specification_0_emit_token_maximum_mutate_event)
 
 
-<pre><code><b>use</b> <a href="../../aptos-framework/doc/account.md#0x1_account">0x1::account</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/doc/any.md#0x1_any">0x1::any</a>;
-<b>use</b> <a href="../../aptos-framework/doc/event.md#0x1_event">0x1::event</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-<b>use</b> <a href="property_map.md#0x3_property_map">0x3::property_map</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    use 0x1::account;
+    use 0x1::any;
+    use 0x1::event;
+    use 0x1::features;
+    use 0x1::option;
+    use 0x1::signer;
+    use 0x1::string;
+    use 0x3::property_map;
+}
+```
 
 
 <a id="0x3_token_event_store_CollectionDescriptionMutateEvent"></a>
@@ -67,44 +69,43 @@ This module provides utils to add and emit new token events that are not in toke
 Event emitted when collection description is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutateEvent">CollectionDescriptionMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct CollectionDescriptionMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_description: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_description: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_CollectionDescriptionMutate"></a>
 
@@ -113,45 +114,44 @@ Event emitted when collection description is mutated
 Event emitted when collection description is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutate">CollectionDescriptionMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct CollectionDescriptionMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_description: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_description: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_CollectionUriMutateEvent"></a>
 
@@ -160,44 +160,43 @@ Event emitted when collection description is mutated
 Event emitted when collection uri is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionUriMutateEvent">CollectionUriMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct CollectionUriMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_CollectionUriMutate"></a>
 
@@ -206,45 +205,44 @@ Event emitted when collection uri is mutated
 Event emitted when collection uri is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionUriMutate">CollectionUriMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct CollectionUriMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_CollectionMaxiumMutateEvent"></a>
 
@@ -253,44 +251,43 @@ Event emitted when collection uri is mutated
 Event emitted when the collection maximum is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutateEvent">CollectionMaxiumMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct CollectionMaxiumMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_maximum: u64</code>
+`old_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_maximum: u64</code>
+`new_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_CollectionMaxiumMutate"></a>
 
@@ -299,108 +296,105 @@ Event emitted when the collection maximum is mutated
 Event emitted when the collection maximum is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutate">CollectionMaxiumMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct CollectionMaxiumMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator_addr: <b>address</b></code>
+`creator_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_name: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection_name: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_maximum: u64</code>
+`old_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_maximum: u64</code>
+`new_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_OptInTransferEvent"></a>
 
 ## Struct `OptInTransferEvent`
 
-Event emitted when an user opt-in the direct transfer
+Event emitted when an user opt&#45;in the direct transfer
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_OptInTransferEvent">OptInTransferEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct OptInTransferEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>opt_in: bool</code>
+`opt_in: bool`
 </dt>
 <dd>
- True if the user opt in, false if the user opt-out
+ True if the user opt in, false if the user opt&#45;out
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_OptInTransfer"></a>
 
 ## Struct `OptInTransfer`
 
-Event emitted when an user opt-in the direct transfer
+Event emitted when an user opt&#45;in the direct transfer
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_OptInTransfer">OptInTransfer</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct OptInTransfer has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>account_address: <b>address</b></code>
+`account_address: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>opt_in: bool</code>
+`opt_in: bool`
 </dt>
 <dd>
- True if the user opt in, false if the user opt-out
+ True if the user opt in, false if the user opt&#45;out
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_UriMutationEvent"></a>
 
@@ -409,50 +403,49 @@ Event emitted when an user opt-in the direct transfer
 Event emitted when the tokendata uri mutates
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_UriMutationEvent">UriMutationEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct UriMutationEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_UriMutation"></a>
 
@@ -461,51 +454,50 @@ Event emitted when the tokendata uri mutates
 Event emitted when the tokendata uri mutates
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_UriMutation">UriMutation</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct UriMutation has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_uri: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_DefaultPropertyMutateEvent"></a>
 
@@ -514,56 +506,55 @@ Event emitted when the tokendata uri mutates
 Event emitted when mutating the default the token properties stored at tokendata
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutateEvent">DefaultPropertyMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct DefaultPropertyMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+`keys: vector<string::String>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;&gt;</code>
+`old_values: vector<option::Option<property_map::PropertyValue>>`
 </dt>
 <dd>
  we allow upsert so the old values might be none
 </dd>
 <dt>
-<code>new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;</code>
+`new_values: vector<property_map::PropertyValue>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_DefaultPropertyMutate"></a>
 
@@ -572,57 +563,56 @@ Event emitted when mutating the default the token properties stored at tokendata
 Event emitted when mutating the default the token properties stored at tokendata
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutate">DefaultPropertyMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct DefaultPropertyMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;</code>
+`keys: vector<string::String>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;&gt;</code>
+`old_values: vector<option::Option<property_map::PropertyValue>>`
 </dt>
 <dd>
  we allow upsert so the old values might be none
 </dd>
 <dt>
-<code>new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;</code>
+`new_values: vector<property_map::PropertyValue>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_DescriptionMutateEvent"></a>
 
@@ -631,50 +621,49 @@ Event emitted when mutating the default the token properties stored at tokendata
 Event emitted when the tokendata description is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_DescriptionMutateEvent">DescriptionMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct DescriptionMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_description: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_description: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_DescriptionMutate"></a>
 
@@ -683,51 +672,50 @@ Event emitted when the tokendata description is mutated
 Event emitted when the tokendata description is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_DescriptionMutate">DescriptionMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct DescriptionMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`old_description: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`new_description: string::String`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_RoyaltyMutateEvent"></a>
 
@@ -736,74 +724,73 @@ Event emitted when the tokendata description is mutated
 Event emitted when the token royalty is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_RoyaltyMutateEvent">RoyaltyMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct RoyaltyMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_numerator: u64</code>
+`old_royalty_numerator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_denominator: u64</code>
+`old_royalty_denominator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_payee_addr: <b>address</b></code>
+`old_royalty_payee_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_numerator: u64</code>
+`new_royalty_numerator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_denominator: u64</code>
+`new_royalty_denominator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_payee_addr: <b>address</b></code>
+`new_royalty_payee_addr: address`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_RoyaltyMutate"></a>
 
@@ -812,75 +799,74 @@ Event emitted when the token royalty is mutated
 Event emitted when the token royalty is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_RoyaltyMutate">RoyaltyMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct RoyaltyMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_numerator: u64</code>
+`old_royalty_numerator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_denominator: u64</code>
+`old_royalty_denominator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_royalty_payee_addr: <b>address</b></code>
+`old_royalty_payee_addr: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_numerator: u64</code>
+`new_royalty_numerator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_denominator: u64</code>
+`new_royalty_denominator: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_royalty_payee_addr: <b>address</b></code>
+`new_royalty_payee_addr: address`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_MaxiumMutateEvent"></a>
 
@@ -889,50 +875,49 @@ Event emitted when the token royalty is mutated
 Event emitted when the token maximum is mutated
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_MaxiumMutateEvent">MaxiumMutateEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct MaxiumMutateEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_maximum: u64</code>
+`old_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_maximum: u64</code>
+`new_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_MaximumMutate"></a>
 
@@ -941,51 +926,50 @@ Event emitted when the token maximum is mutated
 Event emitted when the token maximum is mutated
 
 
-<pre><code>#[<a href="../../aptos-framework/doc/event.md#0x1_event">event</a>]
-<b>struct</b> <a href="token_event_store.md#0x3_token_event_store_MaximumMutate">MaximumMutate</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x3::token_event_store {
+    #[event]
+    struct MaximumMutate has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>creator: <b>address</b></code>
+`creator: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`collection: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code><a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a></code>
+`token: string::String`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>old_maximum: u64</code>
+`old_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>new_maximum: u64</code>
+`new_maximum: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x3_token_event_store_TokenEventStoreV1"></a>
 
@@ -993,72 +977,73 @@ Event emitted when the token maximum is mutated
 
 
 
-<pre><code><b>struct</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> <b>has</b> key
-</code></pre>
+```move
+module 0x3::token_event_store {
+    struct TokenEventStoreV1 has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>collection_uri_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionUriMutateEvent">token_event_store::CollectionUriMutateEvent</a>&gt;</code>
+`collection_uri_mutate_events: event::EventHandle<token_event_store::CollectionUriMutateEvent>`
 </dt>
 <dd>
  collection mutation events
 </dd>
 <dt>
-<code>collection_maximum_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutateEvent">token_event_store::CollectionMaxiumMutateEvent</a>&gt;</code>
+`collection_maximum_mutate_events: event::EventHandle<token_event_store::CollectionMaxiumMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>collection_description_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutateEvent">token_event_store::CollectionDescriptionMutateEvent</a>&gt;</code>
+`collection_description_mutate_events: event::EventHandle<token_event_store::CollectionDescriptionMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>opt_in_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_OptInTransferEvent">token_event_store::OptInTransferEvent</a>&gt;</code>
+`opt_in_events: event::EventHandle<token_event_store::OptInTransferEvent>`
 </dt>
 <dd>
- token transfer opt-in event
+ token transfer opt&#45;in event
 </dd>
 <dt>
-<code>uri_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_UriMutationEvent">token_event_store::UriMutationEvent</a>&gt;</code>
+`uri_mutate_events: event::EventHandle<token_event_store::UriMutationEvent>`
 </dt>
 <dd>
  token mutation events
 </dd>
 <dt>
-<code>default_property_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutateEvent">token_event_store::DefaultPropertyMutateEvent</a>&gt;</code>
+`default_property_mutate_events: event::EventHandle<token_event_store::DefaultPropertyMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>description_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DescriptionMutateEvent">token_event_store::DescriptionMutateEvent</a>&gt;</code>
+`description_mutate_events: event::EventHandle<token_event_store::DescriptionMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>royalty_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_RoyaltyMutateEvent">token_event_store::RoyaltyMutateEvent</a>&gt;</code>
+`royalty_mutate_events: event::EventHandle<token_event_store::RoyaltyMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>maximum_mutate_events: <a href="../../aptos-framework/doc/event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_MaxiumMutateEvent">token_event_store::MaxiumMutateEvent</a>&gt;</code>
+`maximum_mutate_events: event::EventHandle<token_event_store::MaxiumMutateEvent>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>extension: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/doc/any.md#0x1_any_Any">any::Any</a>&gt;</code>
+`extension: option::Option<any::Any>`
 </dt>
 <dd>
  This is for adding new events in future
@@ -1066,44 +1051,43 @@ Event emitted when the token maximum is mutated
 </dl>
 
 
-</details>
-
 <a id="0x3_token_event_store_initialize_token_event_store"></a>
 
 ## Function `initialize_token_event_store`
 
 
 
-<pre><code><b>fun</b> <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(acct: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(acct: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>){
-    <b>if</b> (!<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(acct))) {
-        <b>move_to</b>(acct, <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-            collection_uri_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionUriMutateEvent">CollectionUriMutateEvent</a>&gt;(acct),
-            collection_maximum_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutateEvent">CollectionMaxiumMutateEvent</a>&gt;(acct),
-            collection_description_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutateEvent">CollectionDescriptionMutateEvent</a>&gt;(acct),
-            opt_in_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_OptInTransferEvent">OptInTransferEvent</a>&gt;(acct),
-            uri_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_UriMutationEvent">UriMutationEvent</a>&gt;(acct),
-            default_property_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutateEvent">DefaultPropertyMutateEvent</a>&gt;(acct),
-            description_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DescriptionMutateEvent">DescriptionMutateEvent</a>&gt;(acct),
-            royalty_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_RoyaltyMutateEvent">RoyaltyMutateEvent</a>&gt;(acct),
-            maximum_mutate_events: <a href="../../aptos-framework/doc/account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="token_event_store.md#0x3_token_event_store_MaxiumMutateEvent">MaxiumMutateEvent</a>&gt;(acct),
-            extension: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_none">option::none</a>&lt;Any&gt;(),
-        });
-    };
+```move
+module 0x3::token_event_store {
+    fun initialize_token_event_store(acct: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    fun initialize_token_event_store(acct: &signer){
+        if (!exists<TokenEventStoreV1>(signer::address_of(acct))) {
+            move_to(acct, TokenEventStoreV1 {
+                collection_uri_mutate_events: account::new_event_handle<CollectionUriMutateEvent>(acct),
+                collection_maximum_mutate_events: account::new_event_handle<CollectionMaxiumMutateEvent>(acct),
+                collection_description_mutate_events: account::new_event_handle<CollectionDescriptionMutateEvent>(acct),
+                opt_in_events: account::new_event_handle<OptInTransferEvent>(acct),
+                uri_mutate_events: account::new_event_handle<UriMutationEvent>(acct),
+                default_property_mutate_events: account::new_event_handle<DefaultPropertyMutateEvent>(acct),
+                description_mutate_events: account::new_event_handle<DescriptionMutateEvent>(acct),
+                royalty_mutate_events: account::new_event_handle<RoyaltyMutateEvent>(acct),
+                maximum_mutate_events: account::new_event_handle<MaxiumMutateEvent>(acct),
+                extension: option::none<Any>(),
+            });
+        };
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_collection_uri_mutate_event"></a>
 
@@ -1112,44 +1096,45 @@ Event emitted when the token maximum is mutated
 Emit the collection uri mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_uri_mutate_event">emit_collection_uri_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_uri_mutate_event">emit_collection_uri_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: String, old_uri: String, new_uri: String) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_CollectionUriMutateEvent">CollectionUriMutateEvent</a> {
-        creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-        collection_name: collection,
-        old_uri,
-        new_uri,
-    };
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator));
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_CollectionUriMutate">CollectionUriMutate</a> {
-                creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-                collection_name: collection,
-                old_uri,
-                new_uri,
-            }
-        );
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionUriMutateEvent">CollectionUriMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.collection_uri_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_uri_mutate_event(creator: &signer, collection: string::String, old_uri: string::String, new_uri: string::String)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_uri_mutate_event(creator: &signer, collection: String, old_uri: String, new_uri: String) acquires TokenEventStoreV1 {
+        let event = CollectionUriMutateEvent {
+            creator_addr: signer::address_of(creator),
+            collection_name: collection,
+            old_uri,
+            new_uri,
+        };
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(signer::address_of(creator));
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                CollectionUriMutate {
+                    creator_addr: signer::address_of(creator),
+                    collection_name: collection,
+                    old_uri,
+                    new_uri,
+                }
+            );
+        };
+        event::emit_event<CollectionUriMutateEvent>(
+            &mut token_event_store.collection_uri_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_collection_description_mutate_event"></a>
 
@@ -1158,44 +1143,45 @@ Emit the collection uri mutation event
 Emit the collection description mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_description_mutate_event">emit_collection_description_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_description_mutate_event">emit_collection_description_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: String, old_description: String, new_description: String) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutateEvent">CollectionDescriptionMutateEvent</a> {
-        creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-        collection_name: collection,
-        old_description,
-        new_description,
-    };
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator));
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutate">CollectionDescriptionMutate</a> {
-                creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-                collection_name: collection,
-                old_description,
-                new_description,
-            }
-        );
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionDescriptionMutateEvent">CollectionDescriptionMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.collection_description_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_description_mutate_event(creator: &signer, collection: string::String, old_description: string::String, new_description: string::String)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_description_mutate_event(creator: &signer, collection: String, old_description: String, new_description: String) acquires TokenEventStoreV1 {
+        let event = CollectionDescriptionMutateEvent {
+            creator_addr: signer::address_of(creator),
+            collection_name: collection,
+            old_description,
+            new_description,
+        };
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(signer::address_of(creator));
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                CollectionDescriptionMutate {
+                    creator_addr: signer::address_of(creator),
+                    collection_name: collection,
+                    old_description,
+                    new_description,
+                }
+            );
+        };
+        event::emit_event<CollectionDescriptionMutateEvent>(
+            &mut token_event_store.collection_description_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_collection_maximum_mutate_event"></a>
 
@@ -1204,84 +1190,86 @@ Emit the collection description mutation event
 Emit the collection maximum mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_maximum_mutate_event">emit_collection_maximum_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_maximum: u64, new_maximum: u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_maximum_mutate_event">emit_collection_maximum_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: String, old_maximum: u64, new_maximum: u64) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutateEvent">CollectionMaxiumMutateEvent</a> {
-        creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-        collection_name: collection,
-        old_maximum,
-        new_maximum,
-    };
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator));
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutate">CollectionMaxiumMutate</a> {
-                creator_addr: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator),
-                collection_name: collection,
-                old_maximum,
-                new_maximum,
-            }
-        );
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_CollectionMaxiumMutateEvent">CollectionMaxiumMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.collection_maximum_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_maximum_mutate_event(creator: &signer, collection: string::String, old_maximum: u64, new_maximum: u64)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_maximum_mutate_event(creator: &signer, collection: String, old_maximum: u64, new_maximum: u64) acquires TokenEventStoreV1 {
+        let event = CollectionMaxiumMutateEvent {
+            creator_addr: signer::address_of(creator),
+            collection_name: collection,
+            old_maximum,
+            new_maximum,
+        };
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(signer::address_of(creator));
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                CollectionMaxiumMutate {
+                    creator_addr: signer::address_of(creator),
+                    collection_name: collection,
+                    old_maximum,
+                    new_maximum,
+                }
+            );
+        };
+        event::emit_event<CollectionMaxiumMutateEvent>(
+            &mut token_event_store.collection_maximum_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_token_opt_in_event"></a>
 
 ## Function `emit_token_opt_in_event`
 
-Emit the direct opt-in event
+Emit the direct opt&#45;in event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_opt_in_event">emit_token_opt_in_event</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_opt_in_event">emit_token_opt_in_event</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> opt_in_event = <a href="token_event_store.md#0x3_token_event_store_OptInTransferEvent">OptInTransferEvent</a> {
-      opt_in,
-    };
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>));
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_OptInTransfer">OptInTransfer</a> {
-                account_address: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>),
-                opt_in,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_OptInTransferEvent">OptInTransferEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.opt_in_events,
-        opt_in_event,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_opt_in_event(account: &signer, opt_in: bool)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_opt_in_event(account: &signer, opt_in: bool) acquires TokenEventStoreV1 {
+        let opt_in_event = OptInTransferEvent {
+          opt_in,
+        };
+        initialize_token_event_store(account);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(signer::address_of(account));
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                OptInTransfer {
+                    account_address: signer::address_of(account),
+                    opt_in,
+                });
+        };
+        event::emit_event<OptInTransferEvent>(
+            &mut token_event_store.opt_in_events,
+            opt_in_event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_token_uri_mutate_event"></a>
 
@@ -1290,54 +1278,55 @@ Emit the direct opt-in event
 Emit URI mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_uri_mutate_event">emit_token_uri_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_uri_mutate_event">emit_token_uri_mutate_event</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    collection: String,
-    <a href="token.md#0x3_token">token</a>: String,
-    old_uri: String,
-    new_uri: String,
-) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> creator_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_UriMutationEvent">UriMutationEvent</a> {
-        creator: creator_addr,
-        collection,
-        <a href="token.md#0x3_token">token</a>,
-        old_uri,
-        new_uri,
-    };
-
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(creator_addr);
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_UriMutation">UriMutation</a> {
-                creator: creator_addr,
-                collection,
-                <a href="token.md#0x3_token">token</a>,
-                old_uri,
-                new_uri,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_UriMutationEvent">UriMutationEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.uri_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_uri_mutate_event(creator: &signer, collection: string::String, token: string::String, old_uri: string::String, new_uri: string::String)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_uri_mutate_event(
+        creator: &signer,
+        collection: String,
+        token: String,
+        old_uri: String,
+        new_uri: String,
+    ) acquires TokenEventStoreV1 {
+        let creator_addr = signer::address_of(creator);
+
+        let event = UriMutationEvent {
+            creator: creator_addr,
+            collection,
+            token,
+            old_uri,
+            new_uri,
+        };
+
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(creator_addr);
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                UriMutation {
+                    creator: creator_addr,
+                    collection,
+                    token,
+                    old_uri,
+                    new_uri,
+                });
+        };
+        event::emit_event<UriMutationEvent>(
+            &mut token_event_store.uri_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_default_property_mutate_event"></a>
 
@@ -1346,57 +1335,58 @@ Emit URI mutation event
 Emit tokendata property map mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_default_property_mutate_event">emit_default_property_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;&gt;, new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_default_property_mutate_event">emit_default_property_mutate_event</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    collection: String,
-    <a href="token.md#0x3_token">token</a>: String,
-    keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
-    old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Option&lt;PropertyValue&gt;&gt;,
-    new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;PropertyValue&gt;,
-) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> creator_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutateEvent">DefaultPropertyMutateEvent</a> {
-        creator: creator_addr,
-        collection,
-        <a href="token.md#0x3_token">token</a>,
-        keys,
-        old_values,
-        new_values,
-    };
-
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(creator_addr);
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutate">DefaultPropertyMutate</a> {
-                creator: creator_addr,
-                collection,
-                <a href="token.md#0x3_token">token</a>,
-                keys,
-                old_values,
-                new_values,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DefaultPropertyMutateEvent">DefaultPropertyMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.default_property_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_default_property_mutate_event(creator: &signer, collection: string::String, token: string::String, keys: vector<string::String>, old_values: vector<option::Option<property_map::PropertyValue>>, new_values: vector<property_map::PropertyValue>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_default_property_mutate_event(
+        creator: &signer,
+        collection: String,
+        token: String,
+        keys: vector<String>,
+        old_values: vector<Option<PropertyValue>>,
+        new_values: vector<PropertyValue>,
+    ) acquires TokenEventStoreV1 {
+        let creator_addr = signer::address_of(creator);
+
+        let event = DefaultPropertyMutateEvent {
+            creator: creator_addr,
+            collection,
+            token,
+            keys,
+            old_values,
+            new_values,
+        };
+
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(creator_addr);
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                DefaultPropertyMutate {
+                    creator: creator_addr,
+                    collection,
+                    token,
+                    keys,
+                    old_values,
+                    new_values,
+                });
+        };
+        event::emit_event<DefaultPropertyMutateEvent>(
+            &mut token_event_store.default_property_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_token_descrition_mutate_event"></a>
 
@@ -1405,54 +1395,55 @@ Emit tokendata property map mutation event
 Emit description mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_descrition_mutate_event">emit_token_descrition_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_descrition_mutate_event">emit_token_descrition_mutate_event</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    collection: String,
-    <a href="token.md#0x3_token">token</a>: String,
-    old_description: String,
-    new_description: String,
-) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> creator_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_DescriptionMutateEvent">DescriptionMutateEvent</a> {
-        creator: creator_addr,
-        collection,
-        <a href="token.md#0x3_token">token</a>,
-        old_description,
-        new_description,
-    };
-
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(creator_addr);
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_DescriptionMutate">DescriptionMutate</a> {
-                creator: creator_addr,
-                collection,
-                <a href="token.md#0x3_token">token</a>,
-                old_description,
-                new_description,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_DescriptionMutateEvent">DescriptionMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.description_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_descrition_mutate_event(creator: &signer, collection: string::String, token: string::String, old_description: string::String, new_description: string::String)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_descrition_mutate_event(
+        creator: &signer,
+        collection: String,
+        token: String,
+        old_description: String,
+        new_description: String,
+    ) acquires TokenEventStoreV1 {
+        let creator_addr = signer::address_of(creator);
+
+        let event = DescriptionMutateEvent {
+            creator: creator_addr,
+            collection,
+            token,
+            old_description,
+            new_description,
+        };
+
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(creator_addr);
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                DescriptionMutate {
+                    creator: creator_addr,
+                    collection,
+                    token,
+                    old_description,
+                    new_description,
+                });
+        };
+        event::emit_event<DescriptionMutateEvent>(
+            &mut token_event_store.description_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_token_royalty_mutate_event"></a>
 
@@ -1461,65 +1452,66 @@ Emit description mutation event
 Emit royalty mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_royalty_mutate_event">emit_token_royalty_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_royalty_numerator: u64, old_royalty_denominator: u64, old_royalty_payee_addr: <b>address</b>, new_royalty_numerator: u64, new_royalty_denominator: u64, new_royalty_payee_addr: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_royalty_mutate_event">emit_token_royalty_mutate_event</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    collection: String,
-    <a href="token.md#0x3_token">token</a>: String,
-    old_royalty_numerator: u64,
-    old_royalty_denominator: u64,
-    old_royalty_payee_addr: <b>address</b>,
-    new_royalty_numerator: u64,
-    new_royalty_denominator: u64,
-    new_royalty_payee_addr: <b>address</b>,
-) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> creator_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_RoyaltyMutateEvent">RoyaltyMutateEvent</a> {
-        creator: creator_addr,
-        collection,
-        <a href="token.md#0x3_token">token</a>,
-        old_royalty_numerator,
-        old_royalty_denominator,
-        old_royalty_payee_addr,
-        new_royalty_numerator,
-        new_royalty_denominator,
-        new_royalty_payee_addr,
-    };
-
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> = <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(creator_addr);
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_RoyaltyMutate">RoyaltyMutate</a> {
-                creator: creator_addr,
-                collection,
-                <a href="token.md#0x3_token">token</a>,
-                old_royalty_numerator,
-                old_royalty_denominator,
-                old_royalty_payee_addr,
-                new_royalty_numerator,
-                new_royalty_denominator,
-                new_royalty_payee_addr,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_RoyaltyMutateEvent">RoyaltyMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.royalty_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_royalty_mutate_event(creator: &signer, collection: string::String, token: string::String, old_royalty_numerator: u64, old_royalty_denominator: u64, old_royalty_payee_addr: address, new_royalty_numerator: u64, new_royalty_denominator: u64, new_royalty_payee_addr: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_royalty_mutate_event(
+        creator: &signer,
+        collection: String,
+        token: String,
+        old_royalty_numerator: u64,
+        old_royalty_denominator: u64,
+        old_royalty_payee_addr: address,
+        new_royalty_numerator: u64,
+        new_royalty_denominator: u64,
+        new_royalty_payee_addr: address,
+    ) acquires TokenEventStoreV1 {
+        let creator_addr = signer::address_of(creator);
+        let event = RoyaltyMutateEvent {
+            creator: creator_addr,
+            collection,
+            token,
+            old_royalty_numerator,
+            old_royalty_denominator,
+            old_royalty_payee_addr,
+            new_royalty_numerator,
+            new_royalty_denominator,
+            new_royalty_payee_addr,
+        };
+
+        initialize_token_event_store(creator);
+        let token_event_store = borrow_global_mut<TokenEventStoreV1>(creator_addr);
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                RoyaltyMutate {
+                    creator: creator_addr,
+                    collection,
+                    token,
+                    old_royalty_numerator,
+                    old_royalty_denominator,
+                    old_royalty_payee_addr,
+                    new_royalty_numerator,
+                    new_royalty_denominator,
+                    new_royalty_payee_addr,
+                });
+        };
+        event::emit_event<RoyaltyMutateEvent>(
+            &mut token_event_store.royalty_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="0x3_token_event_store_emit_token_maximum_mutate_event"></a>
 
@@ -1528,54 +1520,55 @@ Emit royalty mutation event
 Emit maximum mutation event
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_maximum_mutate_event">emit_token_maximum_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_maximum: u64, new_maximum: u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_maximum_mutate_event">emit_token_maximum_mutate_event</a>(
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
-    collection: String,
-    <a href="token.md#0x3_token">token</a>: String,
-    old_maximum: u64,
-    new_maximum: u64,
-) <b>acquires</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a> {
-    <b>let</b> creator_addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-
-    <b>let</b> <a href="../../aptos-framework/doc/event.md#0x1_event">event</a> = <a href="token_event_store.md#0x3_token_event_store_MaxiumMutateEvent">MaxiumMutateEvent</a> {
-        creator: creator_addr,
-        collection,
-        <a href="token.md#0x3_token">token</a>,
-        old_maximum,
-        new_maximum,
-    };
-
-    <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(creator);
-    <b>let</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a> =  <b>borrow_global_mut</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(creator_addr);
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="../../aptos-framework/doc/event.md#0x1_event_emit">event::emit</a>(
-            <a href="token_event_store.md#0x3_token_event_store_MaximumMutate">MaximumMutate</a> {
-                creator: creator_addr,
-                collection,
-                <a href="token.md#0x3_token">token</a>,
-                old_maximum,
-                new_maximum,
-            });
-    };
-    <a href="../../aptos-framework/doc/event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="token_event_store.md#0x3_token_event_store_MaxiumMutateEvent">MaxiumMutateEvent</a>&gt;(
-        &<b>mut</b> <a href="token_event_store.md#0x3_token_event_store">token_event_store</a>.maximum_mutate_events,
-        <a href="../../aptos-framework/doc/event.md#0x1_event">event</a>,
-    );
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_maximum_mutate_event(creator: &signer, collection: string::String, token: string::String, old_maximum: u64, new_maximum: u64)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_maximum_mutate_event(
+        creator: &signer,
+        collection: String,
+        token: String,
+        old_maximum: u64,
+        new_maximum: u64,
+    ) acquires TokenEventStoreV1 {
+        let creator_addr = signer::address_of(creator);
+
+        let event = MaxiumMutateEvent {
+            creator: creator_addr,
+            collection,
+            token,
+            old_maximum,
+            new_maximum,
+        };
+
+        initialize_token_event_store(creator);
+        let token_event_store =  borrow_global_mut<TokenEventStoreV1>(creator_addr);
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                MaximumMutate {
+                    creator: creator_addr,
+                    collection,
+                    token,
+                    old_maximum,
+                    new_maximum,
+                });
+        };
+        event::emit_event<MaxiumMutateEvent>(
+            &mut token_event_store.maximum_mutate_events,
+            event,
+        );
+    }
+}
+```
+
 
 <a id="@Specification_0"></a>
 
@@ -1583,10 +1576,12 @@ Emit maximum mutation event
 
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    pragma verify = true;
+    pragma aborts_if_is_strict;
+}
+```
 
 
 <a id="@Specification_0_initialize_token_event_store"></a>
@@ -1594,17 +1589,21 @@ Emit maximum mutation event
 ### Function `initialize_token_event_store`
 
 
-<pre><code><b>fun</b> <a href="token_event_store.md#0x3_token_event_store_initialize_token_event_store">initialize_token_event_store</a>(acct: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    fun initialize_token_event_store(acct: &signer)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(acct);
-<b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a> {creator : acct};
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    pragma verify = true;
+    let addr = signer::address_of(acct);
+    include InitializeTokenEventStoreAbortsIf {creator : acct};
+}
+```
 
 Adjust the overflow value according to the
 number of registered events
@@ -1613,32 +1612,36 @@ number of registered events
 <a id="0x3_token_event_store_InitializeTokenEventStoreAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a> {
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;Account&gt;(addr);
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(addr) && !<b>exists</b>&lt;Account&gt;(addr);
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-    <b>aborts_if</b> !<b>exists</b>&lt;<a href="token_event_store.md#0x3_token_event_store_TokenEventStoreV1">TokenEventStoreV1</a>&gt;(addr) && <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+```move
+module 0x3::token_event_store {
+    schema InitializeTokenEventStoreAbortsIf {
+        creator: &signer;
+        let addr = signer::address_of(creator);
+        let account = global<Account>(addr);
+        aborts_if !exists<TokenEventStoreV1>(addr) && !exists<Account>(addr);
+        aborts_if !exists<TokenEventStoreV1>(addr) && account.guid_creation_num + 9 >= account::MAX_GUID_CREATION_NUM;
+        aborts_if !exists<TokenEventStoreV1>(addr) && account.guid_creation_num + 9 > MAX_U64;
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x3_token_event_store_TokenEventStoreAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="token_event_store.md#0x3_token_event_store_TokenEventStoreAbortsIf">TokenEventStoreAbortsIf</a> {
-    creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    <b>let</b> addr = <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(creator);
-    <b>let</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a> = <b>global</b>&lt;Account&gt;(addr);
-    <b>aborts_if</b> !<b>exists</b>&lt;Account&gt;(addr);
-    <b>aborts_if</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt;= <a href="../../aptos-framework/doc/account.md#0x1_account_MAX_GUID_CREATION_NUM">account::MAX_GUID_CREATION_NUM</a>;
-    <b>aborts_if</b> <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>.guid_creation_num + 9 &gt; MAX_U64;
+```move
+module 0x3::token_event_store {
+    schema TokenEventStoreAbortsIf {
+        creator: &signer;
+        let addr = signer::address_of(creator);
+        let account = global<Account>(addr);
+        aborts_if !exists<Account>(addr);
+        aborts_if account.guid_creation_num + 9 >= account::MAX_GUID_CREATION_NUM;
+        aborts_if account.guid_creation_num + 9 > MAX_U64;
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_0_emit_collection_uri_mutate_event"></a>
@@ -1646,15 +1649,19 @@ number of registered events
 ### Function `emit_collection_uri_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_uri_mutate_event">emit_collection_uri_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_uri_mutate_event(creator: &signer, collection: string::String, old_uri: string::String, new_uri: string::String)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_collection_description_mutate_event"></a>
@@ -1662,15 +1669,19 @@ number of registered events
 ### Function `emit_collection_description_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_description_mutate_event">emit_collection_description_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_description_mutate_event(creator: &signer, collection: string::String, old_description: string::String, new_description: string::String)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_collection_maximum_mutate_event"></a>
@@ -1678,15 +1689,19 @@ number of registered events
 ### Function `emit_collection_maximum_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_collection_maximum_mutate_event">emit_collection_maximum_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_maximum: u64, new_maximum: u64)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_collection_maximum_mutate_event(creator: &signer, collection: string::String, old_maximum: u64, new_maximum: u64)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_token_opt_in_event"></a>
@@ -1694,15 +1709,19 @@ number of registered events
 ### Function `emit_token_opt_in_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_opt_in_event">emit_token_opt_in_event</a>(<a href="../../aptos-framework/doc/account.md#0x1_account">account</a>: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, opt_in: bool)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_opt_in_event(account: &signer, opt_in: bool)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a> {creator : <a href="../../aptos-framework/doc/account.md#0x1_account">account</a>};
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf {creator : account};
+}
+```
 
 
 <a id="@Specification_0_emit_token_uri_mutate_event"></a>
@@ -1710,15 +1729,19 @@ number of registered events
 ### Function `emit_token_uri_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_uri_mutate_event">emit_token_uri_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_uri: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_uri_mutate_event(creator: &signer, collection: string::String, token: string::String, old_uri: string::String, new_uri: string::String)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_default_property_mutate_event"></a>
@@ -1726,15 +1749,19 @@ number of registered events
 ### Function `emit_default_property_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_default_property_mutate_event">emit_default_property_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, keys: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, old_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;&gt;, new_values: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="property_map.md#0x3_property_map_PropertyValue">property_map::PropertyValue</a>&gt;)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_default_property_mutate_event(creator: &signer, collection: string::String, token: string::String, keys: vector<string::String>, old_values: vector<option::Option<property_map::PropertyValue>>, new_values: vector<property_map::PropertyValue>)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_token_descrition_mutate_event"></a>
@@ -1742,15 +1769,19 @@ number of registered events
 ### Function `emit_token_descrition_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_descrition_mutate_event">emit_token_descrition_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, new_description: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_descrition_mutate_event(creator: &signer, collection: string::String, token: string::String, old_description: string::String, new_description: string::String)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_token_royalty_mutate_event"></a>
@@ -1758,15 +1789,19 @@ number of registered events
 ### Function `emit_token_royalty_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_royalty_mutate_event">emit_token_royalty_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_royalty_numerator: u64, old_royalty_denominator: u64, old_royalty_payee_addr: <b>address</b>, new_royalty_numerator: u64, new_royalty_denominator: u64, new_royalty_payee_addr: <b>address</b>)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_royalty_mutate_event(creator: &signer, collection: string::String, token: string::String, old_royalty_numerator: u64, old_royalty_denominator: u64, old_royalty_payee_addr: address, new_royalty_numerator: u64, new_royalty_denominator: u64, new_royalty_payee_addr: address)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_emit_token_maximum_mutate_event"></a>
@@ -1774,14 +1809,16 @@ number of registered events
 ### Function `emit_token_maximum_mutate_event`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="token_event_store.md#0x3_token_event_store_emit_token_maximum_mutate_event">emit_token_maximum_mutate_event</a>(creator: &<a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, collection: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <a href="token.md#0x3_token">token</a>: <a href="../../aptos-framework/../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, old_maximum: u64, new_maximum: u64)
-</code></pre>
+```move
+module 0x3::token_event_store {
+    public(friend) fun emit_token_maximum_mutate_event(creator: &signer, collection: string::String, token: string::String, old_maximum: u64, new_maximum: u64)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="token_event_store.md#0x3_token_event_store_InitializeTokenEventStoreAbortsIf">InitializeTokenEventStoreAbortsIf</a>;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x3::token_event_store {
+    include InitializeTokenEventStoreAbortsIf;
+}
+```

@@ -22,9 +22,11 @@ Provides a framework for comparing two elements
     -  [Function `compare_u8_vector`](#@Specification_1_compare_u8_vector)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/bcs.md#0x1_bcs">0x1::bcs</a>;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    use 0x1::bcs;
+}
+```
 
 
 <a id="0x1_comparator_Result"></a>
@@ -33,26 +35,25 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>struct</b> <a href="comparator.md#0x1_comparator_Result">Result</a> <b>has</b> drop
-</code></pre>
+```move
+module 0x1::comparator {
+    struct Result has drop
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>inner: u8</code>
+`inner: u8`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -63,27 +64,33 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>const</b> <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a>: u8 = 0;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    const EQUAL: u8 = 0;
+}
+```
 
 
 <a id="0x1_comparator_GREATER"></a>
 
 
 
-<pre><code><b>const</b> <a href="comparator.md#0x1_comparator_GREATER">GREATER</a>: u8 = 2;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    const GREATER: u8 = 2;
+}
+```
 
 
 <a id="0x1_comparator_SMALLER"></a>
 
 
 
-<pre><code><b>const</b> <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a>: u8 = 1;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    const SMALLER: u8 = 1;
+}
+```
 
 
 <a id="0x1_comparator_is_equal"></a>
@@ -92,23 +99,24 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_equal">is_equal</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_equal">is_equal</a>(result: &<a href="comparator.md#0x1_comparator_Result">Result</a>): bool {
-    result.inner == <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a>
+```move
+module 0x1::comparator {
+    public fun is_equal(result: &comparator::Result): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::comparator {
+    public fun is_equal(result: &Result): bool {
+        result.inner == EQUAL
+    }
+}
+```
+
 
 <a id="0x1_comparator_is_smaller_than"></a>
 
@@ -116,23 +124,24 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_smaller_than">is_smaller_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_smaller_than">is_smaller_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">Result</a>): bool {
-    result.inner == <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a>
+```move
+module 0x1::comparator {
+    public fun is_smaller_than(result: &comparator::Result): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::comparator {
+    public fun is_smaller_than(result: &Result): bool {
+        result.inner == SMALLER
+    }
+}
+```
+
 
 <a id="0x1_comparator_is_greater_than"></a>
 
@@ -140,23 +149,24 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_greater_than">is_greater_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_greater_than">is_greater_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">Result</a>): bool {
-    result.inner == <a href="comparator.md#0x1_comparator_GREATER">GREATER</a>
+```move
+module 0x1::comparator {
+    public fun is_greater_than(result: &comparator::Result): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::comparator {
+    public fun is_greater_than(result: &Result): bool {
+        result.inner == GREATER
+    }
+}
+```
+
 
 <a id="0x1_comparator_compare"></a>
 
@@ -164,26 +174,27 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare">compare</a>&lt;T&gt;(left: &T, right: &T): <a href="comparator.md#0x1_comparator_Result">comparator::Result</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare">compare</a>&lt;T&gt;(left: &T, right: &T): <a href="comparator.md#0x1_comparator_Result">Result</a> {
-    <b>let</b> left_bytes = <a href="../../move-stdlib/doc/bcs.md#0x1_bcs_to_bytes">bcs::to_bytes</a>(left);
-    <b>let</b> right_bytes = <a href="../../move-stdlib/doc/bcs.md#0x1_bcs_to_bytes">bcs::to_bytes</a>(right);
-
-    <a href="comparator.md#0x1_comparator_compare_u8_vector">compare_u8_vector</a>(left_bytes, right_bytes)
+```move
+module 0x1::comparator {
+    public fun compare<T>(left: &T, right: &T): comparator::Result
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::comparator {
+    public fun compare<T>(left: &T, right: &T): Result {
+        let left_bytes = bcs::to_bytes(left);
+        let right_bytes = bcs::to_bytes(right);
+
+        compare_u8_vector(left_bytes, right_bytes)
+    }
+}
+```
+
 
 <a id="0x1_comparator_compare_u8_vector"></a>
 
@@ -191,46 +202,47 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare_u8_vector">compare_u8_vector</a>(left: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, right: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="comparator.md#0x1_comparator_Result">comparator::Result</a>
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun compare_u8_vector(left: vector<u8>, right: vector<u8>): comparator::Result
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare_u8_vector">compare_u8_vector</a>(left: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, right: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="comparator.md#0x1_comparator_Result">Result</a> {
-    <b>let</b> left_length = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&left);
-    <b>let</b> right_length = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&right);
+```move
+module 0x1::comparator {
+    public fun compare_u8_vector(left: vector<u8>, right: vector<u8>): Result {
+        let left_length = vector::length(&left);
+        let right_length = vector::length(&right);
 
-    <b>let</b> idx = 0;
+        let idx = 0;
 
-    <b>while</b> (idx &lt; left_length && idx &lt; right_length) {
-        <b>let</b> left_byte = *<a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&left, idx);
-        <b>let</b> right_byte = *<a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&right, idx);
+        while (idx < left_length && idx < right_length) {
+            let left_byte = *vector::borrow(&left, idx);
+            let right_byte = *vector::borrow(&right, idx);
 
-        <b>if</b> (left_byte &lt; right_byte) {
-            <b>return</b> <a href="comparator.md#0x1_comparator_Result">Result</a> { inner: <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a> }
-        } <b>else</b> <b>if</b> (left_byte &gt; right_byte) {
-            <b>return</b> <a href="comparator.md#0x1_comparator_Result">Result</a> { inner: <a href="comparator.md#0x1_comparator_GREATER">GREATER</a> }
+            if (left_byte < right_byte) {
+                return Result { inner: SMALLER }
+            } else if (left_byte > right_byte) {
+                return Result { inner: GREATER }
+            };
+            idx = idx + 1;
         };
-        idx = idx + 1;
-    };
 
-    <b>if</b> (left_length &lt; right_length) {
-        <a href="comparator.md#0x1_comparator_Result">Result</a> { inner: <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a> }
-    } <b>else</b> <b>if</b> (left_length &gt; right_length) {
-        <a href="comparator.md#0x1_comparator_Result">Result</a> { inner: <a href="comparator.md#0x1_comparator_GREATER">GREATER</a> }
-    } <b>else</b> {
-        <a href="comparator.md#0x1_comparator_Result">Result</a> { inner: <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a> }
+        if (left_length < right_length) {
+            Result { inner: SMALLER }
+        } else if (left_length > right_length) {
+            Result { inner: GREATER }
+        } else {
+            Result { inner: EQUAL }
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -242,14 +254,16 @@ Provides a framework for comparing two elements
 ### Struct `Result`
 
 
-<pre><code><b>struct</b> <a href="comparator.md#0x1_comparator_Result">Result</a> <b>has</b> drop
-</code></pre>
-
+```move
+module 0x1::comparator {
+    struct Result has drop
+}
+```
 
 
 <dl>
 <dt>
-<code>inner: u8</code>
+`inner: u8`
 </dt>
 <dd>
 
@@ -258,9 +272,11 @@ Provides a framework for comparing two elements
 
 
 
-<pre><code><b>invariant</b> inner == <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a> || inner == <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a> || inner == <a href="comparator.md#0x1_comparator_GREATER">GREATER</a>;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    invariant inner == EQUAL || inner == SMALLER || inner == GREATER;
+}
+```
 
 
 <a id="@Specification_1_is_equal"></a>
@@ -268,17 +284,21 @@ Provides a framework for comparing two elements
 ### Function `is_equal`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_equal">is_equal</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun is_equal(result: &comparator::Result): bool
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>let</b> res = result;
-<b>ensures</b> result == (res.inner == <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a>);
-</code></pre>
-
+```move
+module 0x1::comparator {
+    aborts_if false;
+    let res = result;
+    ensures result == (res.inner == EQUAL);
+}
+```
 
 
 <a id="@Specification_1_is_smaller_than"></a>
@@ -286,17 +306,21 @@ Provides a framework for comparing two elements
 ### Function `is_smaller_than`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_smaller_than">is_smaller_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun is_smaller_than(result: &comparator::Result): bool
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>let</b> res = result;
-<b>ensures</b> result == (res.inner == <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a>);
-</code></pre>
-
+```move
+module 0x1::comparator {
+    aborts_if false;
+    let res = result;
+    ensures result == (res.inner == SMALLER);
+}
+```
 
 
 <a id="@Specification_1_is_greater_than"></a>
@@ -304,17 +328,21 @@ Provides a framework for comparing two elements
 ### Function `is_greater_than`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_is_greater_than">is_greater_than</a>(result: &<a href="comparator.md#0x1_comparator_Result">comparator::Result</a>): bool
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun is_greater_than(result: &comparator::Result): bool
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>let</b> res = result;
-<b>ensures</b> result == (res.inner == <a href="comparator.md#0x1_comparator_GREATER">GREATER</a>);
-</code></pre>
-
+```move
+module 0x1::comparator {
+    aborts_if false;
+    let res = result;
+    ensures result == (res.inner == GREATER);
+}
+```
 
 
 <a id="@Specification_1_compare"></a>
@@ -322,26 +350,32 @@ Provides a framework for comparing two elements
 ### Function `compare`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare">compare</a>&lt;T&gt;(left: &T, right: &T): <a href="comparator.md#0x1_comparator_Result">comparator::Result</a>
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun compare<T>(left: &T, right: &T): comparator::Result
+}
+```
 
 
 
-
-<pre><code><b>let</b> left_bytes = <a href="../../move-stdlib/doc/bcs.md#0x1_bcs_to_bytes">bcs::to_bytes</a>(left);
-<b>let</b> right_bytes = <a href="../../move-stdlib/doc/bcs.md#0x1_bcs_to_bytes">bcs::to_bytes</a>(right);
-<b>ensures</b> result == <a href="comparator.md#0x1_comparator_spec_compare_u8_vector">spec_compare_u8_vector</a>(left_bytes, right_bytes);
-</code></pre>
-
+```move
+module 0x1::comparator {
+    let left_bytes = bcs::to_bytes(left);
+    let right_bytes = bcs::to_bytes(right);
+    ensures result == spec_compare_u8_vector(left_bytes, right_bytes);
+}
+```
 
 
 
 <a id="0x1_comparator_spec_compare_u8_vector"></a>
 
 
-<pre><code><b>fun</b> <a href="comparator.md#0x1_comparator_spec_compare_u8_vector">spec_compare_u8_vector</a>(left: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, right: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="comparator.md#0x1_comparator_Result">Result</a>;
-</code></pre>
-
+```move
+module 0x1::comparator {
+    fun spec_compare_u8_vector(left: vector<u8>, right: vector<u8>): Result;
+}
+```
 
 
 <a id="@Specification_1_compare_u8_vector"></a>
@@ -349,39 +383,41 @@ Provides a framework for comparing two elements
 ### Function `compare_u8_vector`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="comparator.md#0x1_comparator_compare_u8_vector">compare_u8_vector</a>(left: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, right: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="comparator.md#0x1_comparator_Result">comparator::Result</a>
-</code></pre>
+```move
+module 0x1::comparator {
+    public fun compare_u8_vector(left: vector<u8>, right: vector<u8>): comparator::Result
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> unroll = 5;
-<b>pragma</b> opaque;
-<b>aborts_if</b> <b>false</b>;
-<b>let</b> left_length = len(left);
-<b>let</b> right_length = len(right);
-<b>ensures</b> (result.inner == <a href="comparator.md#0x1_comparator_EQUAL">EQUAL</a>) ==&gt; (
-    (left_length == right_length) &&
-        (<b>forall</b> i: u64 <b>where</b> i &lt; left_length: left[i] == right[i])
-);
-<b>ensures</b> (result.inner == <a href="comparator.md#0x1_comparator_SMALLER">SMALLER</a>) ==&gt; (
-    (<b>exists</b> i: u64 <b>where</b> i &lt; left_length:
-        (i &lt; right_length) &&
-            (left[i] &lt; right[i]) &&
-            (<b>forall</b> j: u64 <b>where</b> j &lt; i: left[j] == right[j])
-    ) ||
-        (left_length &lt; right_length)
-);
-<b>ensures</b> (result.inner == <a href="comparator.md#0x1_comparator_GREATER">GREATER</a>) ==&gt; (
-    (<b>exists</b> i: u64 <b>where</b> i &lt; left_length:
-        (i &lt; right_length) &&
-            (left[i] &gt; right[i]) &&
-            (<b>forall</b> j: u64 <b>where</b> j &lt; i: left[j] == right[j])
-    ) ||
-        (left_length &gt; right_length)
-);
-<b>ensures</b> [abstract] result == <a href="comparator.md#0x1_comparator_spec_compare_u8_vector">spec_compare_u8_vector</a>(left, right);
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::comparator {
+    pragma unroll = 5;
+    pragma opaque;
+    aborts_if false;
+    let left_length = len(left);
+    let right_length = len(right);
+    ensures (result.inner == EQUAL) ==> (
+        (left_length == right_length) &&
+            (forall i: u64 where i < left_length: left[i] == right[i])
+    );
+    ensures (result.inner == SMALLER) ==> (
+        (exists i: u64 where i < left_length:
+            (i < right_length) &&
+                (left[i] < right[i]) &&
+                (forall j: u64 where j < i: left[j] == right[j])
+        ) ||
+            (left_length < right_length)
+    );
+    ensures (result.inner == GREATER) ==> (
+        (exists i: u64 where i < left_length:
+            (i < right_length) &&
+                (left[i] > right[i]) &&
+                (forall j: u64 where j < i: left[j] == right[j])
+        ) ||
+            (left_length > right_length)
+    );
+    ensures [abstract] result == spec_compare_u8_vector(left, right);
+}
+```

@@ -26,13 +26,15 @@ Reconfiguration, and may be updated by root.
     -  [Function `validator_txn_enabled_internal`](#@Specification_1_validator_txn_enabled_internal)
 
 
-<pre><code><b>use</b> <a href="chain_status.md#0x1_chain_status">0x1::chain_status</a>;
-<b>use</b> <a href="config_buffer.md#0x1_config_buffer">0x1::config_buffer</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="reconfiguration.md#0x1_reconfiguration">0x1::reconfiguration</a>;
-<b>use</b> <a href="system_addresses.md#0x1_system_addresses">0x1::system_addresses</a>;
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    use 0x1::chain_status;
+    use 0x1::config_buffer;
+    use 0x1::error;
+    use 0x1::reconfiguration;
+    use 0x1::system_addresses;
+}
+```
 
 
 <a id="0x1_consensus_config_ConsensusConfig"></a>
@@ -41,26 +43,25 @@ Reconfiguration, and may be updated by root.
 
 
 
-<pre><code><b>struct</b> <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> <b>has</b> drop, store, key
-</code></pre>
+```move
+module 0x1::consensus_config {
+    struct ConsensusConfig has drop, store, key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`config: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -72,9 +73,11 @@ Reconfiguration, and may be updated by root.
 The provided on chain config bytes are empty or invalid
 
 
-<pre><code><b>const</b> <a href="consensus_config.md#0x1_consensus_config_EINVALID_CONFIG">EINVALID_CONFIG</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    const EINVALID_CONFIG: u64 = 1;
+}
+```
 
 
 <a id="0x1_consensus_config_initialize"></a>
@@ -84,127 +87,131 @@ The provided on chain config bytes are empty or invalid
 Publishes the ConsensusConfig config.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-    <b>assert</b>!(<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&config) &gt; 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="consensus_config.md#0x1_consensus_config_EINVALID_CONFIG">EINVALID_CONFIG</a>));
-    <b>move_to</b>(aptos_framework, <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> { config });
+```move
+module 0x1::consensus_config {
+    public(friend) fun initialize(aptos_framework: &signer, config: vector<u8>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::consensus_config {
+    public(friend) fun initialize(aptos_framework: &signer, config: vector<u8>) {
+        system_addresses::assert_aptos_framework(aptos_framework);
+        assert!(vector::length(&config) > 0, error::invalid_argument(EINVALID_CONFIG));
+        move_to(aptos_framework, ConsensusConfig { config });
+    }
+}
+```
+
 
 <a id="0x1_consensus_config_set"></a>
 
 ## Function `set`
 
-Deprecated by <code><a href="consensus_config.md#0x1_consensus_config_set_for_next_epoch">set_for_next_epoch</a>()</code>.
+Deprecated by `set_for_next_epoch()`.
 
 WARNING: calling this while randomness is enabled will trigger a new epoch without randomness!
 
 TODO: update all the tests that reference this function, then disable this function.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set">set</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set">set</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;) <b>acquires</b> <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(<a href="account.md#0x1_account">account</a>);
-    <a href="chain_status.md#0x1_chain_status_assert_genesis">chain_status::assert_genesis</a>();
-    <b>assert</b>!(<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&config) &gt; 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="consensus_config.md#0x1_consensus_config_EINVALID_CONFIG">EINVALID_CONFIG</a>));
-
-    <b>let</b> config_ref = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework).config;
-    *config_ref = config;
-
-    // Need <b>to</b> trigger <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> so validator nodes can sync on the updated configs.
-    <a href="reconfiguration.md#0x1_reconfiguration_reconfigure">reconfiguration::reconfigure</a>();
+```move
+module 0x1::consensus_config {
+    public fun set(account: &signer, config: vector<u8>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::consensus_config {
+    public fun set(account: &signer, config: vector<u8>) acquires ConsensusConfig {
+        system_addresses::assert_aptos_framework(account);
+        chain_status::assert_genesis();
+        assert!(vector::length(&config) > 0, error::invalid_argument(EINVALID_CONFIG));
+
+        let config_ref = &mut borrow_global_mut<ConsensusConfig>(@aptos_framework).config;
+        *config_ref = config;
+
+        // Need to trigger reconfiguration so validator nodes can sync on the updated configs.
+        reconfiguration::reconfigure();
+    }
+}
+```
+
 
 <a id="0x1_consensus_config_set_for_next_epoch"></a>
 
 ## Function `set_for_next_epoch`
 
-This can be called by on-chain governance to update on-chain consensus configs for the next epoch.
+This can be called by on&#45;chain governance to update on&#45;chain consensus configs for the next epoch.
 Example usage:
 ```
-aptos_framework::consensus_config::set_for_next_epoch(&framework_signer, some_config_bytes);
-aptos_framework::aptos_governance::reconfigure(&framework_signer);
+aptos_framework::consensus_config::set_for_next_epoch(&amp;framework_signer, some_config_bytes);
+aptos_framework::aptos_governance::reconfigure(&amp;framework_signer);
 ```
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set_for_next_epoch">set_for_next_epoch</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set_for_next_epoch">set_for_next_epoch</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(<a href="account.md#0x1_account">account</a>);
-    <b>assert</b>!(<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&config) &gt; 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="consensus_config.md#0x1_consensus_config_EINVALID_CONFIG">EINVALID_CONFIG</a>));
-    std::config_buffer::upsert&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> {config});
+```move
+module 0x1::consensus_config {
+    public fun set_for_next_epoch(account: &signer, config: vector<u8>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::consensus_config {
+    public fun set_for_next_epoch(account: &signer, config: vector<u8>) {
+        system_addresses::assert_aptos_framework(account);
+        assert!(vector::length(&config) > 0, error::invalid_argument(EINVALID_CONFIG));
+        std::config_buffer::upsert<ConsensusConfig>(ConsensusConfig {config});
+    }
+}
+```
+
 
 <a id="0x1_consensus_config_on_new_epoch"></a>
 
 ## Function `on_new_epoch`
 
-Only used in reconfigurations to apply the pending <code><a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a></code>, if there is any.
+Only used in reconfigurations to apply the pending `ConsensusConfig`, if there is any.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_on_new_epoch">on_new_epoch</a>(framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::consensus_config {
+    public(friend) fun on_new_epoch(framework: &signer)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_on_new_epoch">on_new_epoch</a>(framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) <b>acquires</b> <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(framework);
-    <b>if</b> (<a href="config_buffer.md#0x1_config_buffer_does_exist">config_buffer::does_exist</a>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;()) {
-        <b>let</b> new_config = <a href="config_buffer.md#0x1_config_buffer_extract">config_buffer::extract</a>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;();
-        <b>if</b> (<b>exists</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework)) {
-            *<b>borrow_global_mut</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework) = new_config;
-        } <b>else</b> {
-            <b>move_to</b>(framework, new_config);
-        };
+```move
+module 0x1::consensus_config {
+    public(friend) fun on_new_epoch(framework: &signer) acquires ConsensusConfig {
+        system_addresses::assert_aptos_framework(framework);
+        if (config_buffer::does_exist<ConsensusConfig>()) {
+            let new_config = config_buffer::extract<ConsensusConfig>();
+            if (exists<ConsensusConfig>(@aptos_framework)) {
+                *borrow_global_mut<ConsensusConfig>(@aptos_framework) = new_config;
+            } else {
+                move_to(framework, new_config);
+            };
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_consensus_config_validator_txn_enabled"></a>
 
@@ -212,24 +219,25 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled">validator_txn_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled">validator_txn_enabled</a>(): bool <b>acquires</b> <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> {
-    <b>let</b> config_bytes = <b>borrow_global</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework).config;
-    <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled_internal">validator_txn_enabled_internal</a>(config_bytes)
+```move
+module 0x1::consensus_config {
+    public fun validator_txn_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::consensus_config {
+    public fun validator_txn_enabled(): bool acquires ConsensusConfig {
+        let config_bytes = borrow_global<ConsensusConfig>(@aptos_framework).config;
+        validator_txn_enabled_internal(config_bytes)
+    }
+}
+```
+
 
 <a id="0x1_consensus_config_validator_txn_enabled_internal"></a>
 
@@ -237,21 +245,22 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 
 
 
-<pre><code><b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled_internal">validator_txn_enabled_internal</a>(config_bytes: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
+```move
+module 0x1::consensus_config {
+    fun validator_txn_enabled_internal(config_bytes: vector<u8>): bool
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled_internal">validator_txn_enabled_internal</a>(config_bytes: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool;
-</code></pre>
+```move
+module 0x1::consensus_config {
+    native fun validator_txn_enabled_internal(config_bytes: vector<u8>): bool;
+}
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -274,7 +283,7 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 <td>During genesis, the Aptos framework account should be assigned the consensus config resource.</td>
 <td>Medium</td>
 <td>The consensus_config::initialize function calls the assert_aptos_framework function to ensure that the signer is the aptos_framework and then assigns the ConsensusConfig resource to it.</td>
-<td>Formally verified via <a href="#high-level-req-1">initialize</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;1](initialize).</td>
 </tr>
 
 <tr>
@@ -282,7 +291,7 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 <td>Only aptos framework account is allowed to update the consensus configuration.</td>
 <td>Medium</td>
 <td>The consensus_config::set function ensures that the signer is aptos_framework.</td>
-<td>Formally verified via <a href="#high-level-req-2">set</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;2](set).</td>
 </tr>
 
 <tr>
@@ -290,7 +299,7 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 <td>Only a valid configuration can be used during initialization and update.</td>
 <td>Medium</td>
 <td>Both the initialize and set functions validate the config by ensuring its length to be greater than 0.</td>
-<td>Formally verified via <a href="#high-level-req-3.1">initialize</a> and <a href="#high-level-req-3.2">set</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;3.1](initialize) and [#high&#45;level&#45;req&#45;3.2](set).</td>
 </tr>
 
 </table>
@@ -303,11 +312,13 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 ### Module-level Specification
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-<b>invariant</b> [suspendable] <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>() ==&gt; <b>exists</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework);
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    pragma verify = true;
+    pragma aborts_if_is_strict;
+    invariant [suspendable] chain_status::is_operating() ==> exists<ConsensusConfig>(@aptos_framework);
+}
+```
 
 
 <a id="@Specification_1_initialize"></a>
@@ -315,23 +326,29 @@ Only used in reconfigurations to apply the pending <code><a href="consensus_conf
 ### Function `initialize`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    public(friend) fun initialize(aptos_framework: &signer, config: vector<u8>)
+}
+```
 
 Ensure caller is admin.
 Aborts if StateStorageUsage already exists.
 
 
-<pre><code><b>let</b> addr = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(aptos_framework);
-// This enforces <a id="high-level-req-1" href="#high-level-req">high-level requirement 1</a>:
-<b>aborts_if</b> !<a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">system_addresses::is_aptos_framework_address</a>(addr);
-<b>aborts_if</b> <b>exists</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework);
-// This enforces <a id="high-level-req-3.1" href="#high-level-req">high-level requirement 3</a>:
-<b>aborts_if</b> !(len(config) &gt; 0);
-<b>ensures</b> <b>global</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(addr) == <a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a> { config };
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    let addr = signer::address_of(aptos_framework);
+// This enforces ### high&#45;level&#45;req&#45;1
+[#high&#45;level&#45;req](high&#45;level requirement 1):
+    aborts_if !system_addresses::is_aptos_framework_address(addr);
+    aborts_if exists<ConsensusConfig>(@aptos_framework);
+// This enforces ### high&#45;level&#45;req&#45;3.1
+[#high&#45;level&#45;req](high&#45;level requirement 3):
+    aborts_if !(len(config) > 0);
+    ensures global<ConsensusConfig>(addr) == ConsensusConfig { config };
+}
+```
 
 
 <a id="@Specification_1_set"></a>
@@ -339,30 +356,36 @@ Aborts if StateStorageUsage already exists.
 ### Function `set`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set">set</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
+```move
+module 0x1::consensus_config {
+    public fun set(account: &signer, config: vector<u8>)
+}
+```
 
-
-Ensure the caller is admin and <code><a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a></code> should be existed.
+Ensure the caller is admin and `ConsensusConfig` should be existed.
 When setting now time must be later than last_reconfiguration_time.
 
 
-<pre><code><b>pragma</b> verify_duration_estimate = 600;
-<b>include</b> <a href="transaction_fee.md#0x1_transaction_fee_RequiresCollectedFeesPerValueLeqBlockAptosSupply">transaction_fee::RequiresCollectedFeesPerValueLeqBlockAptosSupply</a>;
-<b>include</b> <a href="staking_config.md#0x1_staking_config_StakingRewardsConfigRequirement">staking_config::StakingRewardsConfigRequirement</a>;
-<b>let</b> addr = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>);
-// This enforces <a id="high-level-req-2" href="#high-level-req">high-level requirement 2</a>:
-<b>aborts_if</b> !<a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">system_addresses::is_aptos_framework_address</a>(addr);
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework);
-// This enforces <a id="high-level-req-3.2" href="#high-level-req">high-level requirement 3</a>:
-<b>aborts_if</b> !(len(config) &gt; 0);
-<b>requires</b> <a href="chain_status.md#0x1_chain_status_is_genesis">chain_status::is_genesis</a>();
-<b>requires</b> <a href="timestamp.md#0x1_timestamp_spec_now_microseconds">timestamp::spec_now_microseconds</a>() &gt;= <a href="reconfiguration.md#0x1_reconfiguration_last_reconfiguration_time">reconfiguration::last_reconfiguration_time</a>();
-<b>requires</b> <b>exists</b>&lt;<a href="stake.md#0x1_stake_ValidatorFees">stake::ValidatorFees</a>&gt;(@aptos_framework);
-<b>requires</b> <b>exists</b>&lt;CoinInfo&lt;AptosCoin&gt;&gt;(@aptos_framework);
-<b>ensures</b> <b>global</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework).config == config;
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    pragma verify_duration_estimate = 600;
+    include transaction_fee::RequiresCollectedFeesPerValueLeqBlockAptosSupply;
+    include staking_config::StakingRewardsConfigRequirement;
+    let addr = signer::address_of(account);
+// This enforces ### high&#45;level&#45;req&#45;2
+[#high&#45;level&#45;req](high&#45;level requirement 2):
+    aborts_if !system_addresses::is_aptos_framework_address(addr);
+    aborts_if !exists<ConsensusConfig>(@aptos_framework);
+// This enforces ### high&#45;level&#45;req&#45;3.2
+[#high&#45;level&#45;req](high&#45;level requirement 3):
+    aborts_if !(len(config) > 0);
+    requires chain_status::is_genesis();
+    requires timestamp::spec_now_microseconds() >= reconfiguration::last_reconfiguration_time();
+    requires exists<stake::ValidatorFees>(@aptos_framework);
+    requires exists<CoinInfo<AptosCoin>>(@aptos_framework);
+    ensures global<ConsensusConfig>(@aptos_framework).config == config;
+}
+```
 
 
 <a id="@Specification_1_set_for_next_epoch"></a>
@@ -370,15 +393,19 @@ When setting now time must be later than last_reconfiguration_time.
 ### Function `set_for_next_epoch`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_set_for_next_epoch">set_for_next_epoch</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, config: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;)
-</code></pre>
+```move
+module 0x1::consensus_config {
+    public fun set_for_next_epoch(account: &signer, config: vector<u8>)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="config_buffer.md#0x1_config_buffer_SetForNextEpochAbortsIf">config_buffer::SetForNextEpochAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    include config_buffer::SetForNextEpochAbortsIf;
+}
+```
 
 
 <a id="@Specification_1_on_new_epoch"></a>
@@ -386,17 +413,21 @@ When setting now time must be later than last_reconfiguration_time.
 ### Function `on_new_epoch`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_on_new_epoch">on_new_epoch</a>(framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::consensus_config {
+    public(friend) fun on_new_epoch(framework: &signer)
+}
+```
 
 
 
-
-<pre><code><b>requires</b> @aptos_framework == std::signer::address_of(framework);
-<b>include</b> <a href="config_buffer.md#0x1_config_buffer_OnNewEpochRequirement">config_buffer::OnNewEpochRequirement</a>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;;
-<b>aborts_if</b> <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    requires @aptos_framework == std::signer::address_of(framework);
+    include config_buffer::OnNewEpochRequirement<ConsensusConfig>;
+    aborts_if false;
+}
+```
 
 
 <a id="@Specification_1_validator_txn_enabled"></a>
@@ -404,17 +435,21 @@ When setting now time must be later than last_reconfiguration_time.
 ### Function `validator_txn_enabled`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled">validator_txn_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::consensus_config {
+    public fun validator_txn_enabled(): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework);
-<b>ensures</b> [abstract] result == <a href="consensus_config.md#0x1_consensus_config_spec_validator_txn_enabled_internal">spec_validator_txn_enabled_internal</a>(<b>global</b>&lt;<a href="consensus_config.md#0x1_consensus_config_ConsensusConfig">ConsensusConfig</a>&gt;(@aptos_framework).config);
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    pragma opaque;
+    aborts_if !exists<ConsensusConfig>(@aptos_framework);
+    ensures [abstract] result == spec_validator_txn_enabled_internal(global<ConsensusConfig>(@aptos_framework).config);
+}
+```
 
 
 <a id="@Specification_1_validator_txn_enabled_internal"></a>
@@ -422,24 +457,28 @@ When setting now time must be later than last_reconfiguration_time.
 ### Function `validator_txn_enabled_internal`
 
 
-<pre><code><b>fun</b> <a href="consensus_config.md#0x1_consensus_config_validator_txn_enabled_internal">validator_txn_enabled_internal</a>(config_bytes: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
+```move
+module 0x1::consensus_config {
+    fun validator_txn_enabled_internal(config_bytes: vector<u8>): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>ensures</b> [abstract] result == <a href="consensus_config.md#0x1_consensus_config_spec_validator_txn_enabled_internal">spec_validator_txn_enabled_internal</a>(config_bytes);
-</code></pre>
-
+```move
+module 0x1::consensus_config {
+    pragma opaque;
+    ensures [abstract] result == spec_validator_txn_enabled_internal(config_bytes);
+}
+```
 
 
 
 <a id="0x1_consensus_config_spec_validator_txn_enabled_internal"></a>
 
 
-<pre><code><b>fun</b> <a href="consensus_config.md#0x1_consensus_config_spec_validator_txn_enabled_internal">spec_validator_txn_enabled_internal</a>(config_bytes: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::consensus_config {
+    fun spec_validator_txn_enabled_internal(config_bytes: vector<u8>): bool;
+}
+```

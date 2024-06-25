@@ -26,12 +26,14 @@
     -  [Function `set_stake_pool_voter`](#@Specification_0_set_stake_pool_voter)
 
 
-<pre><code><b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="stake.md#0x1_stake">0x1::stake</a>;
-<b>use</b> <a href="staking_contract.md#0x1_staking_contract">0x1::staking_contract</a>;
-<b>use</b> <a href="vesting.md#0x1_vesting">0x1::vesting</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    use 0x1::signer;
+    use 0x1::stake;
+    use 0x1::staking_contract;
+    use 0x1::vesting;
+}
+```
 
 
 <a id="0x1_staking_proxy_set_operator"></a>
@@ -40,25 +42,26 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_operator">set_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_operator">set_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>) {
-    <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_operator">set_vesting_contract_operator</a>(owner, old_operator, new_operator);
-    <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_operator">set_staking_contract_operator</a>(owner, old_operator, new_operator);
-    <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_operator">set_stake_pool_operator</a>(owner, new_operator);
+```move
+module 0x1::staking_proxy {
+    public entry fun set_operator(owner: &signer, old_operator: address, new_operator: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_operator(owner: &signer, old_operator: address, new_operator: address) {
+        set_vesting_contract_operator(owner, old_operator, new_operator);
+        set_staking_contract_operator(owner, old_operator, new_operator);
+        set_stake_pool_operator(owner, new_operator);
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_voter"></a>
 
@@ -66,25 +69,26 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_voter">set_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_voter">set_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>) {
-    <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_voter">set_vesting_contract_voter</a>(owner, operator, new_voter);
-    <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_voter">set_staking_contract_voter</a>(owner, operator, new_voter);
-    <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_voter">set_stake_pool_voter</a>(owner, new_voter);
+```move
+module 0x1::staking_proxy {
+    public entry fun set_voter(owner: &signer, operator: address, new_voter: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_voter(owner: &signer, operator: address, new_voter: address) {
+        set_vesting_contract_voter(owner, operator, new_voter);
+        set_staking_contract_voter(owner, operator, new_voter);
+        set_stake_pool_voter(owner, new_voter);
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_vesting_contract_operator"></a>
 
@@ -92,31 +96,32 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_operator">set_vesting_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_operator">set_vesting_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>) {
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> vesting_contracts = &<a href="vesting.md#0x1_vesting_vesting_contracts">vesting::vesting_contracts</a>(owner_address);
-    <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_for_each_ref">vector::for_each_ref</a>(vesting_contracts, |vesting_contract| {
-        <b>let</b> vesting_contract = *vesting_contract;
-        <b>if</b> (<a href="vesting.md#0x1_vesting_operator">vesting::operator</a>(vesting_contract) == old_operator) {
-            <b>let</b> current_commission_percentage = <a href="vesting.md#0x1_vesting_operator_commission_percentage">vesting::operator_commission_percentage</a>(vesting_contract);
-            <a href="vesting.md#0x1_vesting_update_operator">vesting::update_operator</a>(owner, vesting_contract, new_operator, current_commission_percentage);
-        };
-    });
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_operator(owner: &signer, old_operator: address, new_operator: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_operator(owner: &signer, old_operator: address, new_operator: address) {
+        let owner_address = signer::address_of(owner);
+        let vesting_contracts = &vesting::vesting_contracts(owner_address);
+        vector::for_each_ref(vesting_contracts, |vesting_contract| {
+            let vesting_contract = *vesting_contract;
+            if (vesting::operator(vesting_contract) == old_operator) {
+                let current_commission_percentage = vesting::operator_commission_percentage(vesting_contract);
+                vesting::update_operator(owner, vesting_contract, new_operator, current_commission_percentage);
+            };
+        });
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_staking_contract_operator"></a>
 
@@ -124,27 +129,28 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_operator">set_staking_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_operator">set_staking_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>) {
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>if</b> (<a href="staking_contract.md#0x1_staking_contract_staking_contract_exists">staking_contract::staking_contract_exists</a>(owner_address, old_operator)) {
-        <b>let</b> current_commission_percentage = <a href="staking_contract.md#0x1_staking_contract_commission_percentage">staking_contract::commission_percentage</a>(owner_address, old_operator);
-        <a href="staking_contract.md#0x1_staking_contract_switch_operator">staking_contract::switch_operator</a>(owner, old_operator, new_operator, current_commission_percentage);
-    };
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_operator(owner: &signer, old_operator: address, new_operator: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_operator(owner: &signer, old_operator: address, new_operator: address) {
+        let owner_address = signer::address_of(owner);
+        if (staking_contract::staking_contract_exists(owner_address, old_operator)) {
+            let current_commission_percentage = staking_contract::commission_percentage(owner_address, old_operator);
+            staking_contract::switch_operator(owner, old_operator, new_operator, current_commission_percentage);
+        };
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_stake_pool_operator"></a>
 
@@ -152,26 +158,27 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_operator">set_stake_pool_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_operator: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_operator">set_stake_pool_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_operator: <b>address</b>) {
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>if</b> (<a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(owner_address)) {
-        <a href="stake.md#0x1_stake_set_operator">stake::set_operator</a>(owner, new_operator);
-    };
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_operator(owner: &signer, new_operator: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_operator(owner: &signer, new_operator: address) {
+        let owner_address = signer::address_of(owner);
+        if (stake::stake_pool_exists(owner_address)) {
+            stake::set_operator(owner, new_operator);
+        };
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_vesting_contract_voter"></a>
 
@@ -179,30 +186,31 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_voter">set_vesting_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_voter">set_vesting_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>) {
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> vesting_contracts = &<a href="vesting.md#0x1_vesting_vesting_contracts">vesting::vesting_contracts</a>(owner_address);
-    <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_for_each_ref">vector::for_each_ref</a>(vesting_contracts, |vesting_contract| {
-        <b>let</b> vesting_contract = *vesting_contract;
-        <b>if</b> (<a href="vesting.md#0x1_vesting_operator">vesting::operator</a>(vesting_contract) == operator) {
-            <a href="vesting.md#0x1_vesting_update_voter">vesting::update_voter</a>(owner, vesting_contract, new_voter);
-        };
-    });
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_voter(owner: &signer, operator: address, new_voter: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_voter(owner: &signer, operator: address, new_voter: address) {
+        let owner_address = signer::address_of(owner);
+        let vesting_contracts = &vesting::vesting_contracts(owner_address);
+        vector::for_each_ref(vesting_contracts, |vesting_contract| {
+            let vesting_contract = *vesting_contract;
+            if (vesting::operator(vesting_contract) == operator) {
+                vesting::update_voter(owner, vesting_contract, new_voter);
+            };
+        });
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_staking_contract_voter"></a>
 
@@ -210,26 +218,27 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_voter">set_staking_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_voter">set_staking_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>) {
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>if</b> (<a href="staking_contract.md#0x1_staking_contract_staking_contract_exists">staking_contract::staking_contract_exists</a>(owner_address, operator)) {
-        <a href="staking_contract.md#0x1_staking_contract_update_voter">staking_contract::update_voter</a>(owner, operator, new_voter);
-    };
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_voter(owner: &signer, operator: address, new_voter: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_voter(owner: &signer, operator: address, new_voter: address) {
+        let owner_address = signer::address_of(owner);
+        if (staking_contract::staking_contract_exists(owner_address, operator)) {
+            staking_contract::update_voter(owner, operator, new_voter);
+        };
+    }
+}
+```
+
 
 <a id="0x1_staking_proxy_set_stake_pool_voter"></a>
 
@@ -237,25 +246,26 @@
 
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_voter">set_stake_pool_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_voter: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_voter">set_stake_pool_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_voter: <b>address</b>) {
-    <b>if</b> (<a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner))) {
-        <a href="stake.md#0x1_stake_set_delegated_voter">stake::set_delegated_voter</a>(owner, new_voter);
-    };
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_voter(owner: &signer, new_voter: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_voter(owner: &signer, new_voter: address) {
+        if (stake::stake_pool_exists(signer::address_of(owner))) {
+            stake::set_delegated_voter(owner, new_voter);
+        };
+    }
+}
+```
+
 
 <a id="@Specification_0"></a>
 
@@ -293,7 +303,7 @@
 <td>3</td>
 <td>The operator and voter of a Vesting Contract should only be updated by the owner of the contract.</td>
 <td>High</td>
-<td>The owner-operator-voter model, as defined in the documentation, grants distinct abilities to each role. Therefore, it's crucial to ensure that only the owner has the authority to modify the operator or voter, to prevent the compromise of the StakePool.</td>
+<td>The owner&#45;operator&#45;voter model, as defined in the documentation, grants distinct abilities to each role. Therefore, it&apos;s crucial to ensure that only the owner has the authority to modify the operator or voter, to prevent the compromise of the StakePool.</td>
 <td>Audited that it ensures the signer owns the AdminStore resource and that the operator or voter intended for the update actually exists.</td>
 </tr>
 
@@ -301,16 +311,16 @@
 <td>4</td>
 <td>The operator and voter of a Staking Contract should only be updated by the owner of the contract.</td>
 <td>High</td>
-<td>The owner-operator-voter model, as defined in the documentation, grants distinct abilities to each role. Therefore, it's crucial to ensure that only the owner has the authority to modify the operator or voter, to prevent the compromise of the StakePool.</td>
+<td>The owner&#45;operator&#45;voter model, as defined in the documentation, grants distinct abilities to each role. Therefore, it&apos;s crucial to ensure that only the owner has the authority to modify the operator or voter, to prevent the compromise of the StakePool.</td>
 <td>Audited the patterns of updating operators and voters in the staking contract.</td>
 </tr>
 
 <tr>
 <td>5</td>
-<td>Staking Contract's operators should be unique inside a store.</td>
+<td>Staking Contract&apos;s operators should be unique inside a store.</td>
 <td>Medium</td>
 <td>Duplicates among operators could result in incorrectly updating the operator or voter associated with the incorrect StakingContract.</td>
-<td>Enforced via <a href="https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/staking_contract.move#L87">SimpleMap</a>.</td>
+<td>Enforced via [https://github.com/aptos&#45;labs/aptos&#45;core/blob/main/aptos&#45;move/framework/aptos&#45;framework/sources/staking_contract.move#L87](SimpleMap).</td>
 </tr>
 
 </table>
@@ -323,10 +333,12 @@
 ### Module-level Specification
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma verify = true;
+    pragma aborts_if_is_strict;
+}
+```
 
 
 <a id="@Specification_0_set_operator"></a>
@@ -334,19 +346,23 @@
 ### Function `set_operator`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_operator">set_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    public entry fun set_operator(owner: &signer, old_operator: address, new_operator: address)
+}
+```
 
 Aborts if conditions of SetStakePoolOperator are not met
 
 
-<pre><code><b>pragma</b> verify = <b>false</b>;
-<b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolOperator">SetStakePoolOperator</a>;
-<b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractOperator">SetStakingContractOperator</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma verify = false;
+    pragma aborts_if_is_partial;
+    include SetStakePoolOperator;
+    include SetStakingContractOperator;
+}
+```
 
 
 <a id="@Specification_0_set_voter"></a>
@@ -354,18 +370,22 @@ Aborts if conditions of SetStakePoolOperator are not met
 ### Function `set_voter`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_voter">set_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    public entry fun set_voter(owner: &signer, operator: address, new_voter: address)
+}
+```
 
 Aborts if conditions of SetStackingContractVoter and SetStackPoolVoterAbortsIf are not met
 
 
-<pre><code><b>pragma</b> aborts_if_is_partial;
-<b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractVoter">SetStakingContractVoter</a>;
-<b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolVoterAbortsIf">SetStakePoolVoterAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma aborts_if_is_partial;
+    include SetStakingContractVoter;
+    include SetStakePoolVoterAbortsIf;
+}
+```
 
 
 <a id="@Specification_0_set_vesting_contract_operator"></a>
@@ -373,15 +393,19 @@ Aborts if conditions of SetStackingContractVoter and SetStackPoolVoterAbortsIf a
 ### Function `set_vesting_contract_operator`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_operator">set_vesting_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_operator(owner: &signer, old_operator: address, new_operator: address)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify = <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma verify = false;
+}
+```
 
 
 <a id="@Specification_0_set_staking_contract_operator"></a>
@@ -389,53 +413,59 @@ Aborts if conditions of SetStackingContractVoter and SetStackPoolVoterAbortsIf a
 ### Function `set_staking_contract_operator`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_operator">set_staking_contract_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, old_operator: <b>address</b>, new_operator: <b>address</b>)
-</code></pre>
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_operator(owner: &signer, old_operator: address, new_operator: address)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> aborts_if_is_partial;
-<b>pragma</b> verify = <b>false</b>;
-<b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractOperator">SetStakingContractOperator</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma aborts_if_is_partial;
+    pragma verify = false;
+    include SetStakingContractOperator;
+}
+```
 
 
 
 <a id="0x1_staking_proxy_SetStakingContractOperator"></a>
 
 
-<pre><code><b>schema</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractOperator">SetStakingContractOperator</a> {
-    owner: <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    old_operator: <b>address</b>;
-    new_operator: <b>address</b>;
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> store = <b>global</b>&lt;Store&gt;(owner_address);
-    <b>let</b> staking_contract_exists = <b>exists</b>&lt;Store&gt;(owner_address) && <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(store.staking_contracts, old_operator);
-    <b>aborts_if</b> staking_contract_exists && <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(store.staking_contracts, new_operator);
-    <b>let</b> <b>post</b> post_store = <b>global</b>&lt;Store&gt;(owner_address);
-    <b>ensures</b> staking_contract_exists ==&gt; !<a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(post_store.staking_contracts, old_operator);
-    <b>let</b> <a href="staking_contract.md#0x1_staking_contract">staking_contract</a> = <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(store.staking_contracts, old_operator);
-    <b>let</b> stake_pool = <b>global</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(<a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.pool_address);
-    <b>let</b> active = <a href="coin.md#0x1_coin_value">coin::value</a>(stake_pool.active);
-    <b>let</b> pending_active = <a href="coin.md#0x1_coin_value">coin::value</a>(stake_pool.pending_active);
-    <b>let</b> total_active_stake = active + pending_active;
-    <b>let</b> accumulated_rewards = total_active_stake - <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.principal;
-    <b>let</b> commission_amount = accumulated_rewards * <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.commission_percentage / 100;
-    <b>aborts_if</b> staking_contract_exists && !<b>exists</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(<a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.pool_address);
-    <b>ensures</b> staking_contract_exists ==&gt;
-        <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(post_store.staking_contracts, new_operator).principal == total_active_stake - commission_amount;
-    <b>let</b> pool_address = <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.owner_cap.pool_address;
-    <b>let</b> current_commission_percentage = <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.commission_percentage;
-    <b>aborts_if</b> staking_contract_exists && commission_amount != 0 && !<b>exists</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address);
-    <b>ensures</b> staking_contract_exists && commission_amount != 0 ==&gt;
-        <b>global</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address).operator_address == new_operator
-        && <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(post_store.staking_contracts, new_operator).commission_percentage == current_commission_percentage;
-    <b>ensures</b> staking_contract_exists ==&gt; <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(post_store.staking_contracts, new_operator);
+```move
+module 0x1::staking_proxy {
+    schema SetStakingContractOperator {
+        owner: signer;
+        old_operator: address;
+        new_operator: address;
+        let owner_address = signer::address_of(owner);
+        let store = global<Store>(owner_address);
+        let staking_contract_exists = exists<Store>(owner_address) && simple_map::spec_contains_key(store.staking_contracts, old_operator);
+        aborts_if staking_contract_exists && simple_map::spec_contains_key(store.staking_contracts, new_operator);
+        let post post_store = global<Store>(owner_address);
+        ensures staking_contract_exists ==> !simple_map::spec_contains_key(post_store.staking_contracts, old_operator);
+        let staking_contract = simple_map::spec_get(store.staking_contracts, old_operator);
+        let stake_pool = global<stake::StakePool>(staking_contract.pool_address);
+        let active = coin::value(stake_pool.active);
+        let pending_active = coin::value(stake_pool.pending_active);
+        let total_active_stake = active + pending_active;
+        let accumulated_rewards = total_active_stake - staking_contract.principal;
+        let commission_amount = accumulated_rewards * staking_contract.commission_percentage / 100;
+        aborts_if staking_contract_exists && !exists<stake::StakePool>(staking_contract.pool_address);
+        ensures staking_contract_exists ==>
+            simple_map::spec_get(post_store.staking_contracts, new_operator).principal == total_active_stake - commission_amount;
+        let pool_address = staking_contract.owner_cap.pool_address;
+        let current_commission_percentage = staking_contract.commission_percentage;
+        aborts_if staking_contract_exists && commission_amount != 0 && !exists<stake::StakePool>(pool_address);
+        ensures staking_contract_exists && commission_amount != 0 ==>
+            global<stake::StakePool>(pool_address).operator_address == new_operator
+            && simple_map::spec_get(post_store.staking_contracts, new_operator).commission_percentage == current_commission_percentage;
+        ensures staking_contract_exists ==> simple_map::spec_contains_key(post_store.staking_contracts, new_operator);
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_0_set_stake_pool_operator"></a>
@@ -443,34 +473,40 @@ Aborts if conditions of SetStackingContractVoter and SetStackPoolVoterAbortsIf a
 ### Function `set_stake_pool_operator`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_operator">set_stake_pool_operator</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_operator: <b>address</b>)
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_operator(owner: &signer, new_operator: address)
+}
+```
 
 Aborts if stake_pool is exists and when OwnerCapability or stake_pool_exists
 One of them are not exists
 
 
-<pre><code><b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolOperator">SetStakePoolOperator</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    include SetStakePoolOperator;
+}
+```
 
 
 
 <a id="0x1_staking_proxy_SetStakePoolOperator"></a>
 
 
-<pre><code><b>schema</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolOperator">SetStakePoolOperator</a> {
-    owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    new_operator: <b>address</b>;
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> ownership_cap = <b>borrow_global</b>&lt;<a href="stake.md#0x1_stake_OwnerCapability">stake::OwnerCapability</a>&gt;(owner_address);
-    <b>let</b> pool_address = ownership_cap.pool_address;
-    <b>aborts_if</b> <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(owner_address) && !(<b>exists</b>&lt;<a href="stake.md#0x1_stake_OwnerCapability">stake::OwnerCapability</a>&gt;(owner_address) && <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(pool_address));
-    <b>ensures</b> <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(owner_address) ==&gt; <b>global</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address).operator_address == new_operator;
+```move
+module 0x1::staking_proxy {
+    schema SetStakePoolOperator {
+        owner: &signer;
+        new_operator: address;
+        let owner_address = signer::address_of(owner);
+        let ownership_cap = borrow_global<stake::OwnerCapability>(owner_address);
+        let pool_address = ownership_cap.pool_address;
+        aborts_if stake::stake_pool_exists(owner_address) && !(exists<stake::OwnerCapability>(owner_address) && stake::stake_pool_exists(pool_address));
+        ensures stake::stake_pool_exists(owner_address) ==> global<stake::StakePool>(pool_address).operator_address == new_operator;
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_0_set_vesting_contract_voter"></a>
@@ -478,15 +514,19 @@ One of them are not exists
 ### Function `set_vesting_contract_voter`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_vesting_contract_voter">set_vesting_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
+```move
+module 0x1::staking_proxy {
+    public entry fun set_vesting_contract_voter(owner: &signer, operator: address, new_voter: address)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify = <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    pragma verify = false;
+}
+```
 
 
 <a id="@Specification_0_set_staking_contract_voter"></a>
@@ -494,15 +534,19 @@ One of them are not exists
 ### Function `set_staking_contract_voter`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_staking_contract_voter">set_staking_contract_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, operator: <b>address</b>, new_voter: <b>address</b>)
-</code></pre>
+```move
+module 0x1::staking_proxy {
+    public entry fun set_staking_contract_voter(owner: &signer, operator: address, new_voter: address)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractVoter">SetStakingContractVoter</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    include SetStakingContractVoter;
+}
+```
 
 Make sure staking_contract_exists first
 Then abort if the resource is not exist
@@ -511,24 +555,26 @@ Then abort if the resource is not exist
 <a id="0x1_staking_proxy_SetStakingContractVoter"></a>
 
 
-<pre><code><b>schema</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakingContractVoter">SetStakingContractVoter</a> {
-    owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    operator: <b>address</b>;
-    new_voter: <b>address</b>;
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> staker = owner_address;
-    <b>let</b> store = <b>global</b>&lt;Store&gt;(staker);
-    <b>let</b> staking_contract_exists = <b>exists</b>&lt;Store&gt;(staker) && <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_contains_key">simple_map::spec_contains_key</a>(store.staking_contracts, operator);
-    <b>let</b> staker_address = owner_address;
-    <b>let</b> <a href="staking_contract.md#0x1_staking_contract">staking_contract</a> = <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_spec_get">simple_map::spec_get</a>(store.staking_contracts, operator);
-    <b>let</b> pool_address = <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.pool_address;
-    <b>let</b> pool_address1 = <a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.owner_cap.pool_address;
-    <b>aborts_if</b> staking_contract_exists && !<b>exists</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address);
-    <b>aborts_if</b> staking_contract_exists && !<b>exists</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(<a href="staking_contract.md#0x1_staking_contract">staking_contract</a>.owner_cap.pool_address);
-    <b>ensures</b> staking_contract_exists ==&gt; <b>global</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address1).delegated_voter == new_voter;
+```move
+module 0x1::staking_proxy {
+    schema SetStakingContractVoter {
+        owner: &signer;
+        operator: address;
+        new_voter: address;
+        let owner_address = signer::address_of(owner);
+        let staker = owner_address;
+        let store = global<Store>(staker);
+        let staking_contract_exists = exists<Store>(staker) && simple_map::spec_contains_key(store.staking_contracts, operator);
+        let staker_address = owner_address;
+        let staking_contract = simple_map::spec_get(store.staking_contracts, operator);
+        let pool_address = staking_contract.pool_address;
+        let pool_address1 = staking_contract.owner_cap.pool_address;
+        aborts_if staking_contract_exists && !exists<stake::StakePool>(pool_address);
+        aborts_if staking_contract_exists && !exists<stake::StakePool>(staking_contract.owner_cap.pool_address);
+        ensures staking_contract_exists ==> global<stake::StakePool>(pool_address1).delegated_voter == new_voter;
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_0_set_stake_pool_voter"></a>
@@ -536,31 +582,35 @@ Then abort if the resource is not exist
 ### Function `set_stake_pool_voter`
 
 
-<pre><code><b>public</b> entry <b>fun</b> <a href="staking_proxy.md#0x1_staking_proxy_set_stake_pool_voter">set_stake_pool_voter</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, new_voter: <b>address</b>)
-</code></pre>
+```move
+module 0x1::staking_proxy {
+    public entry fun set_stake_pool_voter(owner: &signer, new_voter: address)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolVoterAbortsIf">SetStakePoolVoterAbortsIf</a>;
-</code></pre>
-
+```move
+module 0x1::staking_proxy {
+    include SetStakePoolVoterAbortsIf;
+}
+```
 
 
 
 <a id="0x1_staking_proxy_SetStakePoolVoterAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="staking_proxy.md#0x1_staking_proxy_SetStakePoolVoterAbortsIf">SetStakePoolVoterAbortsIf</a> {
-    owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    new_voter: <b>address</b>;
-    <b>let</b> owner_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(owner);
-    <b>let</b> ownership_cap = <b>global</b>&lt;<a href="stake.md#0x1_stake_OwnerCapability">stake::OwnerCapability</a>&gt;(owner_address);
-    <b>let</b> pool_address = ownership_cap.pool_address;
-    <b>aborts_if</b> <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(owner_address) && !(<b>exists</b>&lt;<a href="stake.md#0x1_stake_OwnerCapability">stake::OwnerCapability</a>&gt;(owner_address) && <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(pool_address));
-    <b>ensures</b> <a href="stake.md#0x1_stake_stake_pool_exists">stake::stake_pool_exists</a>(owner_address) ==&gt; <b>global</b>&lt;<a href="stake.md#0x1_stake_StakePool">stake::StakePool</a>&gt;(pool_address).delegated_voter == new_voter;
+```move
+module 0x1::staking_proxy {
+    schema SetStakePoolVoterAbortsIf {
+        owner: &signer;
+        new_voter: address;
+        let owner_address = signer::address_of(owner);
+        let ownership_cap = global<stake::OwnerCapability>(owner_address);
+        let pool_address = ownership_cap.pool_address;
+        aborts_if stake::stake_pool_exists(owner_address) && !(exists<stake::OwnerCapability>(owner_address) && stake::stake_pool_exists(pool_address));
+        ensures stake::stake_pool_exists(owner_address) ==> global<stake::StakePool>(pool_address).delegated_voter == new_voter;
+    }
 }
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```

@@ -19,10 +19,12 @@ Module providing debug functionality.
     -  [Function `native_stack_trace`](#@Specification_1_native_stack_trace)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-<b>use</b> <a href="string_utils.md#0x1_string_utils">0x1::string_utils</a>;
-</code></pre>
-
+```move
+module 0x1::debug {
+    use 0x1::string;
+    use 0x1::string_utils;
+}
+```
 
 
 <a id="@Constants_0"></a>
@@ -34,18 +36,22 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>const</b> <a href="debug.md#0x1_debug_MSG_1">MSG_1</a>: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; = [97, 98, 99, 100, 101, 102];
-</code></pre>
-
+```move
+module 0x1::debug {
+    const MSG_1: vector<u8> = [97, 98, 99, 100, 101, 102];
+}
+```
 
 
 <a id="0x1_debug_MSG_2"></a>
 
 
 
-<pre><code><b>const</b> <a href="debug.md#0x1_debug_MSG_2">MSG_2</a>: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; = [49, 50, 51, 52, 53, 54];
-</code></pre>
-
+```move
+module 0x1::debug {
+    const MSG_2: vector<u8> = [49, 50, 51, 52, 53, 54];
+}
+```
 
 
 <a id="0x1_debug_print"></a>
@@ -54,23 +60,24 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print">print</a>&lt;T&gt;(x: &T)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print">print</a>&lt;T&gt;(x: &T) {
-    <a href="debug.md#0x1_debug_native_print">native_print</a>(<a href="debug.md#0x1_debug_format">format</a>(x));
+```move
+module 0x1::debug {
+    public fun print<T>(x: &T)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::debug {
+    public fun print<T>(x: &T) {
+        native_print(format(x));
+    }
+}
+```
+
 
 <a id="0x1_debug_print_stack_trace"></a>
 
@@ -78,23 +85,24 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print_stack_trace">print_stack_trace</a>()
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print_stack_trace">print_stack_trace</a>() {
-    <a href="debug.md#0x1_debug_native_print">native_print</a>(<a href="debug.md#0x1_debug_native_stack_trace">native_stack_trace</a>());
+```move
+module 0x1::debug {
+    public fun print_stack_trace()
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::debug {
+    public fun print_stack_trace() {
+        native_print(native_stack_trace());
+    }
+}
+```
+
 
 <a id="0x1_debug_format"></a>
 
@@ -102,23 +110,24 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>fun</b> <a href="debug.md#0x1_debug_format">format</a>&lt;T&gt;(x: &T): <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code>inline <b>fun</b> <a href="debug.md#0x1_debug_format">format</a>&lt;T&gt;(x: &T): String {
-    aptos_std::string_utils::debug_string(x)
+```move
+module 0x1::debug {
+    fun format<T>(x: &T): string::String
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::debug {
+    inline fun format<T>(x: &T): String {
+        aptos_std::string_utils::debug_string(x)
+    }
+}
+```
+
 
 <a id="0x1_debug_native_print"></a>
 
@@ -126,21 +135,22 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>fun</b> <a href="debug.md#0x1_debug_native_print">native_print</a>(x: <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x1::debug {
+    fun native_print(x: string::String)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="debug.md#0x1_debug_native_print">native_print</a>(x: String);
-</code></pre>
+```move
+module 0x1::debug {
+    native fun native_print(x: String);
+}
+```
 
-
-
-</details>
 
 <a id="0x1_debug_native_stack_trace"></a>
 
@@ -148,21 +158,22 @@ Module providing debug functionality.
 
 
 
-<pre><code><b>fun</b> <a href="debug.md#0x1_debug_native_stack_trace">native_stack_trace</a>(): <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
-</code></pre>
+```move
+module 0x1::debug {
+    fun native_stack_trace(): string::String
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="debug.md#0x1_debug_native_stack_trace">native_stack_trace</a>(): String;
-</code></pre>
+```move
+module 0x1::debug {
+    native fun native_stack_trace(): String;
+}
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -174,15 +185,19 @@ Module providing debug functionality.
 ### Function `print`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print">print</a>&lt;T&gt;(x: &T)
-</code></pre>
+```move
+module 0x1::debug {
+    public fun print<T>(x: &T)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::debug {
+    aborts_if false;
+}
+```
 
 
 <a id="@Specification_1_print_stack_trace"></a>
@@ -190,15 +205,19 @@ Module providing debug functionality.
 ### Function `print_stack_trace`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="debug.md#0x1_debug_print_stack_trace">print_stack_trace</a>()
-</code></pre>
+```move
+module 0x1::debug {
+    public fun print_stack_trace()
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::debug {
+    aborts_if false;
+}
+```
 
 
 <a id="@Specification_1_native_print"></a>
@@ -206,16 +225,20 @@ Module providing debug functionality.
 ### Function `native_print`
 
 
-<pre><code><b>fun</b> <a href="debug.md#0x1_debug_native_print">native_print</a>(x: <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>)
-</code></pre>
+```move
+module 0x1::debug {
+    fun native_print(x: string::String)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::debug {
+    pragma opaque;
+    aborts_if false;
+}
+```
 
 
 <a id="@Specification_1_native_stack_trace"></a>
@@ -223,15 +246,17 @@ Module providing debug functionality.
 ### Function `native_stack_trace`
 
 
-<pre><code><b>fun</b> <a href="debug.md#0x1_debug_native_stack_trace">native_stack_trace</a>(): <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
-</code></pre>
+```move
+module 0x1::debug {
+    fun native_stack_trace(): string::String
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> <b>false</b>;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::debug {
+    pragma opaque;
+    aborts_if false;
+}
+```

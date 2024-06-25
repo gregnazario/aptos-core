@@ -11,11 +11,11 @@ Example flow:
 1. Pool start outs empty.
 2. Shareholder A buys in with 1000 coins. A will receive 1000 shares in the pool. Pool now has 1000 total coins and
 1000 total shares.
-3. Pool appreciates in value from rewards and now has 2000 coins. A's 1000 shares are now worth 2000 coins.
+3. Pool appreciates in value from rewards and now has 2000 coins. A&apos;s 1000 shares are now worth 2000 coins.
 4. Shareholder B now buys in with 1000 coins. Since before the buy in, each existing share is worth 2 coins, B will
 receive 500 shares in exchange for 1000 coins. Pool now has 1500 shares and 3000 coins.
 5. Pool appreciates in value from rewards and now has 6000 coins.
-6. A redeems 500 shares. Each share is worth 6000 / 1500 = 4. A receives 2000 coins. Pool has 4000 coins and 1000
+6. A redeems 500 shares. Each share is worth 6000 / 1500 &#61; 4. A receives 2000 coins. Pool has 4000 coins and 1000
 shares left.
 
 
@@ -62,10 +62,12 @@ shares left.
     -  [Function `to_u256`](#@Specification_1_to_u256)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="table_with_length.md#0x1_table_with_length">0x1::table_with_length</a>;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    use 0x1::error;
+    use 0x1::table_with_length;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_Pool"></a>
@@ -74,44 +76,43 @@ shares left.
 
 
 
-<pre><code><b>struct</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> <b>has</b> store
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    struct Pool has store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>total_coins: u64</code>
+`total_coins: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>total_shares: u128</code>
+`total_shares: u128`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>shares: <a href="table_with_length.md#0x1_table_with_length_TableWithLength">table_with_length::TableWithLength</a>&lt;<b>address</b>, u128&gt;</code>
+`shares: table_with_length::TableWithLength<address, u128>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>scaling_factor: u64</code>
+`scaling_factor: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -122,18 +123,22 @@ shares left.
 
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U64">MAX_U64</a>: u64 = 18446744073709551615;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const MAX_U64: u64 = 18446744073709551615;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_MAX_U128"></a>
 
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>: u128 = 340282366920938463463374607431768211455;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const MAX_U128: u128 = 340282366920938463463374607431768211455;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_EINSUFFICIENT_SHARES"></a>
@@ -141,39 +146,47 @@ shares left.
 Cannot redeem more shares than the shareholder has in the pool.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EINSUFFICIENT_SHARES">EINSUFFICIENT_SHARES</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const EINSUFFICIENT_SHARES: u64 = 4;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_EPOOL_IS_NOT_EMPTY"></a>
 
-Cannot destroy non-empty pool.
+Cannot destroy non&#45;empty pool.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_IS_NOT_EMPTY">EPOOL_IS_NOT_EMPTY</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const EPOOL_IS_NOT_EMPTY: u64 = 3;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_EPOOL_TOTAL_COINS_OVERFLOW"></a>
 
-Pool's total coins cannot exceed u64.max.
+Pool&apos;s total coins cannot exceed u64.max.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_TOTAL_COINS_OVERFLOW">EPOOL_TOTAL_COINS_OVERFLOW</a>: u64 = 6;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const EPOOL_TOTAL_COINS_OVERFLOW: u64 = 6;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_EPOOL_TOTAL_SHARES_OVERFLOW"></a>
 
-Pool's total shares cannot exceed u64.max.
+Pool&apos;s total shares cannot exceed u64.max.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_TOTAL_SHARES_OVERFLOW">EPOOL_TOTAL_SHARES_OVERFLOW</a>: u64 = 7;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const EPOOL_TOTAL_SHARES_OVERFLOW: u64 = 7;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_ESHAREHOLDER_NOT_FOUND"></a>
@@ -181,9 +194,11 @@ Pool's total shares cannot exceed u64.max.
 Shareholder not present in pool.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_NOT_FOUND">ESHAREHOLDER_NOT_FOUND</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const ESHAREHOLDER_NOT_FOUND: u64 = 1;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_ESHAREHOLDER_SHARES_OVERFLOW"></a>
@@ -191,9 +206,11 @@ Shareholder not present in pool.
 Shareholder cannot have more than u64.max shares.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_SHARES_OVERFLOW">ESHAREHOLDER_SHARES_OVERFLOW</a>: u64 = 5;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const ESHAREHOLDER_SHARES_OVERFLOW: u64 = 5;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_ETOO_MANY_SHAREHOLDERS"></a>
@@ -201,9 +218,11 @@ Shareholder cannot have more than u64.max shares.
 There are too many shareholders in the pool.
 
 
-<pre><code><b>const</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ETOO_MANY_SHAREHOLDERS">ETOO_MANY_SHAREHOLDERS</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    const ETOO_MANY_SHAREHOLDERS: u64 = 2;
+}
+```
 
 
 <a id="0x1_pool_u64_unbound_new"></a>
@@ -213,81 +232,84 @@ There are too many shareholders in the pool.
 Create a new pool.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_new">new</a>(): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_new">new</a>(): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> {
-    // Default <b>to</b> a scaling factor of 1 (effectively no scaling).
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_create_with_scaling_factor">create_with_scaling_factor</a>(1)
+```move
+module 0x1::pool_u64_unbound {
+    public fun new(): pool_u64_unbound::Pool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun new(): Pool {
+        // Default to a scaling factor of 1 (effectively no scaling).
+        create_with_scaling_factor(1)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_create"></a>
 
 ## Function `create`
 
-Deprecated. Use <code>new</code> instead.
+Deprecated. Use `new` instead.
 Create a new pool.
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_create">create</a>(): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_create">create</a>(): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> {
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_new">new</a>()
+```move
+module 0x1::pool_u64_unbound {
+    #[deprecated]
+    public fun create(): pool_u64_unbound::Pool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun create(): Pool {
+        new()
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_create_with_scaling_factor"></a>
 
 ## Function `create_with_scaling_factor`
 
-Create a new pool with custom <code>scaling_factor</code>.
+Create a new pool with custom `scaling_factor`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_create_with_scaling_factor">create_with_scaling_factor</a>(scaling_factor: u64): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun create_with_scaling_factor(scaling_factor: u64): pool_u64_unbound::Pool
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_create_with_scaling_factor">create_with_scaling_factor</a>(scaling_factor: u64): <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> {
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> {
-        total_coins: 0,
-        total_shares: 0,
-        shares: <a href="table.md#0x1_table_new">table::new</a>&lt;<b>address</b>, u128&gt;(),
-        scaling_factor,
+```move
+module 0x1::pool_u64_unbound {
+    public fun create_with_scaling_factor(scaling_factor: u64): Pool {
+        Pool {
+            total_coins: 0,
+            total_shares: 0,
+            shares: table::new<address, u128>(),
+            scaling_factor,
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_destroy_empty"></a>
 
@@ -296,210 +318,218 @@ Create a new pool with custom <code>scaling_factor</code>.
 Destroy an empty pool. This will fail if the pool has any balance of coins.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_destroy_empty">destroy_empty</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_destroy_empty">destroy_empty</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>) {
-    <b>assert</b>!(pool.total_coins == 0, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_IS_NOT_EMPTY">EPOOL_IS_NOT_EMPTY</a>));
-    <b>let</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> {
-        total_coins: _,
-        total_shares: _,
-        shares,
-        scaling_factor: _,
-    } = pool;
-    table::destroy_empty&lt;<b>address</b>, u128&gt;(shares);
+```move
+module 0x1::pool_u64_unbound {
+    public fun destroy_empty(pool: pool_u64_unbound::Pool)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun destroy_empty(pool: Pool) {
+        assert!(pool.total_coins == 0, error::invalid_state(EPOOL_IS_NOT_EMPTY));
+        let Pool {
+            total_coins: _,
+            total_shares: _,
+            shares,
+            scaling_factor: _,
+        } = pool;
+        table::destroy_empty<address, u128>(shares);
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_total_coins"></a>
 
 ## Function `total_coins`
 
-Return <code>pool</code>'s total balance of coins.
+Return `pool`&apos;s total balance of coins.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_coins">total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_coins">total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>): u64 {
-    pool.total_coins
+```move
+module 0x1::pool_u64_unbound {
+    public fun total_coins(pool: &pool_u64_unbound::Pool): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun total_coins(pool: &Pool): u64 {
+        pool.total_coins
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_total_shares"></a>
 
 ## Function `total_shares`
 
-Return the total number of shares across all shareholders in <code>pool</code>.
+Return the total number of shares across all shareholders in `pool`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_shares">total_shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_shares">total_shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>): u128 {
-    pool.total_shares
+```move
+module 0x1::pool_u64_unbound {
+    public fun total_shares(pool: &pool_u64_unbound::Pool): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun total_shares(pool: &Pool): u128 {
+        pool.total_shares
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_contains"></a>
 
 ## Function `contains`
 
-Return true if <code>shareholder</code> is in <code>pool</code>.
+Return true if `shareholder` is in `pool`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>): bool {
-    <a href="table.md#0x1_table_contains">table::contains</a>(&pool.shares, shareholder)
+```move
+module 0x1::pool_u64_unbound {
+    public fun contains(pool: &pool_u64_unbound::Pool, shareholder: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun contains(pool: &Pool, shareholder: address): bool {
+        table::contains(&pool.shares, shareholder)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_shares"></a>
 
 ## Function `shares`
 
-Return the number of shares of <code>stakeholder</code> in <code>pool</code>.
+Return the number of shares of `stakeholder` in `pool`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares(pool: &pool_u64_unbound::Pool, shareholder: address): u128
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>): u128 {
-    <b>if</b> (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool, shareholder)) {
-        *<a href="table.md#0x1_table_borrow">table::borrow</a>(&pool.shares, shareholder)
-    } <b>else</b> {
-        0
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares(pool: &Pool, shareholder: address): u128 {
+        if (contains(pool, shareholder)) {
+            *table::borrow(&pool.shares, shareholder)
+        } else {
+            0
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_balance"></a>
 
 ## Function `balance`
 
-Return the balance in coins of <code>shareholder</code> in <code>pool.</code>
+Return the balance in coins of `shareholder` in `pool.`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_balance">balance</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_balance">balance</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>): u64 {
-    <b>let</b> num_shares = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool, shareholder);
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount">shares_to_amount</a>(pool, num_shares)
+```move
+module 0x1::pool_u64_unbound {
+    public fun balance(pool: &pool_u64_unbound::Pool, shareholder: address): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun balance(pool: &Pool, shareholder: address): u64 {
+        let num_shares = shares(pool, shareholder);
+        shares_to_amount(pool, num_shares)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_shareholders_count"></a>
 
 ## Function `shareholders_count`
 
-Return the number of shareholders in <code>pool</code>.
+Return the number of shareholders in `pool`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shareholders_count">shareholders_count</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shareholders_count">shareholders_count</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>): u64 {
-    table::length(&pool.shares)
+```move
+module 0x1::pool_u64_unbound {
+    public fun shareholders_count(pool: &pool_u64_unbound::Pool): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun shareholders_count(pool: &Pool): u64 {
+        table::length(&pool.shares)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_update_total_coins"></a>
 
 ## Function `update_total_coins`
 
-Update <code>pool</code>'s total balance of coins.
+Update `pool`&apos;s total balance of coins.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_update_total_coins">update_total_coins</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, new_total_coins: u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_update_total_coins">update_total_coins</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, new_total_coins: u64) {
-    pool.total_coins = new_total_coins;
+```move
+module 0x1::pool_u64_unbound {
+    public fun update_total_coins(pool: &mut pool_u64_unbound::Pool, new_total_coins: u64)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun update_total_coins(pool: &mut Pool, new_total_coins: u64) {
+        pool.total_coins = new_total_coins;
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_buy_in"></a>
 
@@ -508,333 +538,343 @@ Update <code>pool</code>'s total balance of coins.
 Allow an existing or new shareholder to add their coins to the pool in exchange for new shares.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_buy_in">buy_in</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, coins_amount: u64): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_buy_in">buy_in</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>, coins_amount: u64): u128 {
-    <b>if</b> (coins_amount == 0) <b>return</b> 0;
-
-    <b>let</b> new_shares = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares">amount_to_shares</a>(pool, coins_amount);
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U64">MAX_U64</a> - pool.total_coins &gt;= coins_amount, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_TOTAL_COINS_OVERFLOW">EPOOL_TOTAL_COINS_OVERFLOW</a>));
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a> - pool.total_shares &gt;= new_shares, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EPOOL_TOTAL_SHARES_OVERFLOW">EPOOL_TOTAL_SHARES_OVERFLOW</a>));
-
-    pool.total_coins = pool.total_coins + coins_amount;
-    pool.total_shares = pool.total_shares + new_shares;
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_add_shares">add_shares</a>(pool, shareholder, new_shares);
-    new_shares
+```move
+module 0x1::pool_u64_unbound {
+    public fun buy_in(pool: &mut pool_u64_unbound::Pool, shareholder: address, coins_amount: u64): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun buy_in(pool: &mut Pool, shareholder: address, coins_amount: u64): u128 {
+        if (coins_amount == 0) return 0;
+
+        let new_shares = amount_to_shares(pool, coins_amount);
+        assert!(MAX_U64 - pool.total_coins >= coins_amount, error::invalid_argument(EPOOL_TOTAL_COINS_OVERFLOW));
+        assert!(MAX_U128 - pool.total_shares >= new_shares, error::invalid_argument(EPOOL_TOTAL_SHARES_OVERFLOW));
+
+        pool.total_coins = pool.total_coins + coins_amount;
+        pool.total_shares = pool.total_shares + new_shares;
+        add_shares(pool, shareholder, new_shares);
+        new_shares
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_add_shares"></a>
 
 ## Function `add_shares`
 
-Add the number of shares directly for <code>shareholder</code> in <code>pool</code>.
-This would dilute other shareholders if the pool's balance of coins didn't change.
+Add the number of shares directly for `shareholder` in `pool`.
+This would dilute other shareholders if the pool&apos;s balance of coins didn&apos;t change.
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_add_shares">add_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, new_shares: u128): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    fun add_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, new_shares: u128): u128
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_add_shares">add_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>, new_shares: u128): u128 {
-    <b>if</b> (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool, shareholder)) {
-        <b>let</b> existing_shares = <a href="table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> pool.shares, shareholder);
-        <b>let</b> current_shares = *existing_shares;
-        <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a> - current_shares &gt;= new_shares, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_SHARES_OVERFLOW">ESHAREHOLDER_SHARES_OVERFLOW</a>));
+```move
+module 0x1::pool_u64_unbound {
+    fun add_shares(pool: &mut Pool, shareholder: address, new_shares: u128): u128 {
+        if (contains(pool, shareholder)) {
+            let existing_shares = table::borrow_mut(&mut pool.shares, shareholder);
+            let current_shares = *existing_shares;
+            assert!(MAX_U128 - current_shares >= new_shares, error::invalid_argument(ESHAREHOLDER_SHARES_OVERFLOW));
 
-        *existing_shares = current_shares + new_shares;
-        *existing_shares
-    } <b>else</b> <b>if</b> (new_shares &gt; 0) {
-        <a href="table.md#0x1_table_add">table::add</a>(&<b>mut</b> pool.shares, shareholder, new_shares);
-        new_shares
-    } <b>else</b> {
-        new_shares
+            *existing_shares = current_shares + new_shares;
+            *existing_shares
+        } else if (new_shares > 0) {
+            table::add(&mut pool.shares, shareholder, new_shares);
+            new_shares
+        } else {
+            new_shares
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_redeem_shares"></a>
 
 ## Function `redeem_shares`
 
-Allow <code>shareholder</code> to redeem their shares in <code>pool</code> for coins.
+Allow `shareholder` to redeem their shares in `pool` for coins.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_redeem_shares">redeem_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, shares_to_redeem: u128): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_redeem_shares">redeem_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>, shares_to_redeem: u128): u64 {
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool, shareholder), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_NOT_FOUND">ESHAREHOLDER_NOT_FOUND</a>));
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool, shareholder) &gt;= shares_to_redeem, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EINSUFFICIENT_SHARES">EINSUFFICIENT_SHARES</a>));
-
-    <b>if</b> (shares_to_redeem == 0) <b>return</b> 0;
-
-    <b>let</b> redeemed_coins = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount">shares_to_amount</a>(pool, shares_to_redeem);
-    pool.total_coins = pool.total_coins - redeemed_coins;
-    pool.total_shares = pool.total_shares - shares_to_redeem;
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_deduct_shares">deduct_shares</a>(pool, shareholder, shares_to_redeem);
-
-    redeemed_coins
+```move
+module 0x1::pool_u64_unbound {
+    public fun redeem_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, shares_to_redeem: u128): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun redeem_shares(pool: &mut Pool, shareholder: address, shares_to_redeem: u128): u64 {
+        assert!(contains(pool, shareholder), error::invalid_argument(ESHAREHOLDER_NOT_FOUND));
+        assert!(shares(pool, shareholder) >= shares_to_redeem, error::invalid_argument(EINSUFFICIENT_SHARES));
+
+        if (shares_to_redeem == 0) return 0;
+
+        let redeemed_coins = shares_to_amount(pool, shares_to_redeem);
+        pool.total_coins = pool.total_coins - redeemed_coins;
+        pool.total_shares = pool.total_shares - shares_to_redeem;
+        deduct_shares(pool, shareholder, shares_to_redeem);
+
+        redeemed_coins
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_transfer_shares"></a>
 
 ## Function `transfer_shares`
 
-Transfer shares from <code>shareholder_1</code> to <code>shareholder_2</code>.
+Transfer shares from `shareholder_1` to `shareholder_2`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_transfer_shares">transfer_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder_1: <b>address</b>, shareholder_2: <b>address</b>, shares_to_transfer: u128)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_transfer_shares">transfer_shares</a>(
-    pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>,
-    shareholder_1: <b>address</b>,
-    shareholder_2: <b>address</b>,
-    shares_to_transfer: u128,
-) {
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool, shareholder_1), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_NOT_FOUND">ESHAREHOLDER_NOT_FOUND</a>));
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool, shareholder_1) &gt;= shares_to_transfer, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EINSUFFICIENT_SHARES">EINSUFFICIENT_SHARES</a>));
-    <b>if</b> (shares_to_transfer == 0) <b>return</b>;
-
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_deduct_shares">deduct_shares</a>(pool, shareholder_1, shares_to_transfer);
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_add_shares">add_shares</a>(pool, shareholder_2, shares_to_transfer);
+```move
+module 0x1::pool_u64_unbound {
+    public fun transfer_shares(pool: &mut pool_u64_unbound::Pool, shareholder_1: address, shareholder_2: address, shares_to_transfer: u128)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun transfer_shares(
+        pool: &mut Pool,
+        shareholder_1: address,
+        shareholder_2: address,
+        shares_to_transfer: u128,
+    ) {
+        assert!(contains(pool, shareholder_1), error::invalid_argument(ESHAREHOLDER_NOT_FOUND));
+        assert!(shares(pool, shareholder_1) >= shares_to_transfer, error::invalid_argument(EINSUFFICIENT_SHARES));
+        if (shares_to_transfer == 0) return;
+
+        deduct_shares(pool, shareholder_1, shares_to_transfer);
+        add_shares(pool, shareholder_2, shares_to_transfer);
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_deduct_shares"></a>
 
 ## Function `deduct_shares`
 
-Directly deduct <code>shareholder</code>'s number of shares in <code>pool</code> and return the number of remaining shares.
+Directly deduct `shareholder`&apos;s number of shares in `pool` and return the number of remaining shares.
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_deduct_shares">deduct_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, num_shares: u128): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_deduct_shares">deduct_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>, num_shares: u128): u128 {
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool, shareholder), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_ESHAREHOLDER_NOT_FOUND">ESHAREHOLDER_NOT_FOUND</a>));
-    <b>assert</b>!(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool, shareholder) &gt;= num_shares, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_EINSUFFICIENT_SHARES">EINSUFFICIENT_SHARES</a>));
-
-    <b>let</b> existing_shares = <a href="table.md#0x1_table_borrow_mut">table::borrow_mut</a>(&<b>mut</b> pool.shares, shareholder);
-    *existing_shares = *existing_shares - num_shares;
-
-    // Remove the shareholder completely <b>if</b> they have no shares left.
-    <b>let</b> remaining_shares = *existing_shares;
-    <b>if</b> (remaining_shares == 0) {
-        <a href="table.md#0x1_table_remove">table::remove</a>(&<b>mut</b> pool.shares, shareholder);
-    };
-
-    remaining_shares
+```move
+module 0x1::pool_u64_unbound {
+    fun deduct_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, num_shares: u128): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    fun deduct_shares(pool: &mut Pool, shareholder: address, num_shares: u128): u128 {
+        assert!(contains(pool, shareholder), error::invalid_argument(ESHAREHOLDER_NOT_FOUND));
+        assert!(shares(pool, shareholder) >= num_shares, error::invalid_argument(EINSUFFICIENT_SHARES));
+
+        let existing_shares = table::borrow_mut(&mut pool.shares, shareholder);
+        *existing_shares = *existing_shares - num_shares;
+
+        // Remove the shareholder completely if they have no shares left.
+        let remaining_shares = *existing_shares;
+        if (remaining_shares == 0) {
+            table::remove(&mut pool.shares, shareholder);
+        };
+
+        remaining_shares
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_amount_to_shares"></a>
 
 ## Function `amount_to_shares`
 
-Return the number of new shares <code>coins_amount</code> can buy in <code>pool</code>.
-<code>amount</code> needs to big enough to avoid rounding number.
+Return the number of new shares `coins_amount` can buy in `pool`.
+`amount` needs to big enough to avoid rounding number.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares">amount_to_shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, coins_amount: u64): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares">amount_to_shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, coins_amount: u64): u128 {
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares_with_total_coins">amount_to_shares_with_total_coins</a>(pool, coins_amount, pool.total_coins)
+```move
+module 0x1::pool_u64_unbound {
+    public fun amount_to_shares(pool: &pool_u64_unbound::Pool, coins_amount: u64): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun amount_to_shares(pool: &Pool, coins_amount: u64): u128 {
+        amount_to_shares_with_total_coins(pool, coins_amount, pool.total_coins)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_amount_to_shares_with_total_coins"></a>
 
 ## Function `amount_to_shares_with_total_coins`
 
-Return the number of new shares <code>coins_amount</code> can buy in <code>pool</code> with a custom total coins number.
-<code>amount</code> needs to big enough to avoid rounding number.
+Return the number of new shares `coins_amount` can buy in `pool` with a custom total coins number.
+`amount` needs to big enough to avoid rounding number.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares_with_total_coins">amount_to_shares_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, coins_amount: u64, total_coins: u64): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun amount_to_shares_with_total_coins(pool: &pool_u64_unbound::Pool, coins_amount: u64, total_coins: u64): u128
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares_with_total_coins">amount_to_shares_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, coins_amount: u64, total_coins: u64): u128 {
-    // No shares yet so amount is worth the same number of shares.
-    <b>if</b> (pool.total_coins == 0 || pool.total_shares == 0) {
-        // Multiply by scaling factor <b>to</b> minimize rounding errors during <b>internal</b> calculations for buy ins/redeems.
-        // This can overflow but scaling factor is expected <b>to</b> be chosen carefully so this would not overflow.
-        <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(coins_amount) * <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(pool.scaling_factor)
-    } <b>else</b> {
-        // Shares price = total_coins / total existing shares.
-        // New number of shares = new_amount / shares_price = new_amount * existing_shares / total_amount.
-        // We rearrange the calc and do multiplication first <b>to</b> avoid rounding errors.
-        <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(pool, <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(coins_amount), pool.total_shares, <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(total_coins))
+```move
+module 0x1::pool_u64_unbound {
+    public fun amount_to_shares_with_total_coins(pool: &Pool, coins_amount: u64, total_coins: u64): u128 {
+        // No shares yet so amount is worth the same number of shares.
+        if (pool.total_coins == 0 || pool.total_shares == 0) {
+            // Multiply by scaling factor to minimize rounding errors during internal calculations for buy ins/redeems.
+            // This can overflow but scaling factor is expected to be chosen carefully so this would not overflow.
+            to_u128(coins_amount) * to_u128(pool.scaling_factor)
+        } else {
+            // Shares price = total_coins / total existing shares.
+            // New number of shares = new_amount / shares_price = new_amount * existing_shares / total_amount.
+            // We rearrange the calc and do multiplication first to avoid rounding errors.
+            multiply_then_divide(pool, to_u128(coins_amount), pool.total_shares, to_u128(total_coins))
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_shares_to_amount"></a>
 
 ## Function `shares_to_amount`
 
-Return the number of coins <code>shares</code> are worth in <code>pool</code>.
-<code>shares</code> needs to big enough to avoid rounding number.
+Return the number of coins `shares` are worth in `pool`.
+`shares` needs to big enough to avoid rounding number.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount">shares_to_amount</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shares: u128): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount">shares_to_amount</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shares: u128): u64 {
-    <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_coins">shares_to_amount_with_total_coins</a>(pool, shares, pool.total_coins)
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount(pool: &pool_u64_unbound::Pool, shares: u128): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount(pool: &Pool, shares: u128): u64 {
+        shares_to_amount_with_total_coins(pool, shares, pool.total_coins)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_shares_to_amount_with_total_coins"></a>
 
 ## Function `shares_to_amount_with_total_coins`
 
-Return the number of coins <code>shares</code> are worth in <code>pool</code> with a custom total coins number.
-<code>shares</code> needs to big enough to avoid rounding number.
+Return the number of coins `shares` are worth in `pool` with a custom total coins number.
+`shares` needs to big enough to avoid rounding number.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_coins">shares_to_amount_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shares: u128, total_coins: u64): u64
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount_with_total_coins(pool: &pool_u64_unbound::Pool, shares: u128, total_coins: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_coins">shares_to_amount_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shares: u128, total_coins: u64): u64 {
-    // No shares or coins yet so shares are worthless.
-    <b>if</b> (pool.total_coins == 0 || pool.total_shares == 0) {
-        0
-    } <b>else</b> {
-        // Shares price = total_coins / total existing shares.
-        // Shares worth = shares * shares price = shares * total_coins / total existing shares.
-        // We rearrange the calc and do multiplication first <b>to</b> avoid rounding errors.
-        (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(pool, shares, <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(total_coins), pool.total_shares) <b>as</b> u64)
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount_with_total_coins(pool: &Pool, shares: u128, total_coins: u64): u64 {
+        // No shares or coins yet so shares are worthless.
+        if (pool.total_coins == 0 || pool.total_shares == 0) {
+            0
+        } else {
+            // Shares price = total_coins / total existing shares.
+            // Shares worth = shares * shares price = shares * total_coins / total existing shares.
+            // We rearrange the calc and do multiplication first to avoid rounding errors.
+            (multiply_then_divide(pool, shares, to_u128(total_coins), pool.total_shares) as u64)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_shares_to_amount_with_total_stats"></a>
 
 ## Function `shares_to_amount_with_total_stats`
 
-Return the number of coins <code>shares</code> are worth in <code>pool</code> with custom total coins and shares numbers.
+Return the number of coins `shares` are worth in `pool` with custom total coins and shares numbers.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_stats">shares_to_amount_with_total_stats</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shares: u128, total_coins: u64, total_shares: u128): u64
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount_with_total_stats(pool: &pool_u64_unbound::Pool, shares: u128, total_coins: u64, total_shares: u128): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_stats">shares_to_amount_with_total_stats</a>(
-    pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>,
-    shares: u128,
-    total_coins: u64,
-    total_shares: u128,
-): u64 {
-    <b>if</b> (pool.total_coins == 0 || total_shares == 0) {
-        0
-    } <b>else</b> {
-        (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(pool, shares, <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(total_coins), total_shares) <b>as</b> u64)
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount_with_total_stats(
+        pool: &Pool,
+        shares: u128,
+        total_coins: u64,
+        total_shares: u128,
+    ): u64 {
+        if (pool.total_coins == 0 || total_shares == 0) {
+            0
+        } else {
+            (multiply_then_divide(pool, shares, to_u128(total_coins), total_shares) as u64)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_pool_u64_unbound_multiply_then_divide"></a>
 
@@ -842,24 +882,25 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(_pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, x: u128, y: u128, z: u128): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(_pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, x: u128, y: u128, z: u128): u128 {
-    <b>let</b> result = (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(x) * <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(y)) / <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(z);
-    (result <b>as</b> u128)
+```move
+module 0x1::pool_u64_unbound {
+    public fun multiply_then_divide(_pool: &pool_u64_unbound::Pool, x: u128, y: u128, z: u128): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    public fun multiply_then_divide(_pool: &Pool, x: u128, y: u128, z: u128): u128 {
+        let result = (to_u256(x) * to_u256(y)) / to_u256(z);
+        (result as u128)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_to_u128"></a>
 
@@ -867,23 +908,24 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(num: u64): u128
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(num: u64): u128 {
-    (num <b>as</b> u128)
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u128(num: u64): u128
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u128(num: u64): u128 {
+        (num as u128)
+    }
+}
+```
+
 
 <a id="0x1_pool_u64_unbound_to_u256"></a>
 
@@ -891,23 +933,24 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(num: u128): u256
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(num: u128): u256 {
-    (num <b>as</b> u256)
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u256(num: u128): u256
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u256(num: u128): u256 {
+        (num as u256)
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -919,32 +962,34 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Struct `Pool`
 
 
-<pre><code><b>struct</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a> <b>has</b> store
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    struct Pool has store
+}
+```
 
 
 <dl>
 <dt>
-<code>total_coins: u64</code>
+`total_coins: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>total_shares: u128</code>
+`total_shares: u128`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>shares: <a href="table_with_length.md#0x1_table_with_length_TableWithLength">table_with_length::TableWithLength</a>&lt;<b>address</b>, u128&gt;</code>
+`shares: table_with_length::TableWithLength<address, u128>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>scaling_factor: u64</code>
+`scaling_factor: u64`
 </dt>
 <dd>
 
@@ -953,21 +998,25 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 
 
 
-<pre><code><b>invariant</b> <b>forall</b> addr: <b>address</b>:
-    <a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(shares, addr) ==&gt; (<a href="table.md#0x1_table_spec_get">table::spec_get</a>(shares, addr) &gt; 0);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    invariant forall addr: address:
+        table::spec_contains(shares, addr) ==> (table::spec_get(shares, addr) > 0);
+}
+```
 
 
 
 <a id="0x1_pool_u64_unbound_spec_contains"></a>
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>): bool {
-   <a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(pool.shares, shareholder)
+```move
+module 0x1::pool_u64_unbound {
+    fun spec_contains(pool: Pool, shareholder: address): bool {
+       table::spec_contains(pool.shares, shareholder)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_contains"></a>
@@ -975,32 +1024,38 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `contains`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_contains">contains</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): bool
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun contains(pool: &pool_u64_unbound::Pool, shareholder: address): bool
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if false;
+    ensures result == spec_contains(pool, shareholder);
+}
+```
 
 
 
 <a id="0x1_pool_u64_unbound_spec_shares"></a>
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shareholder: <b>address</b>): u64 {
-   <b>if</b> (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder)) {
-       <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder)
-   }
-   <b>else</b> {
-       0
-   }
+```move
+module 0x1::pool_u64_unbound {
+    fun spec_shares(pool: Pool, shareholder: address): u64 {
+       if (spec_contains(pool, shareholder)) {
+           table::spec_get(pool.shares, shareholder)
+       }
+       else {
+           0
+       }
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_shares"></a>
@@ -1008,16 +1063,20 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `shares`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares">shares</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares(pool: &pool_u64_unbound::Pool, shareholder: address): u128
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if false;
+    ensures result == spec_shares(pool, shareholder);
+}
+```
 
 
 <a id="@Specification_1_balance"></a>
@@ -1025,18 +1084,22 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `balance`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_balance">balance</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>): u64
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun balance(pool: &pool_u64_unbound::Pool, shareholder: address): u64
+}
+```
 
 
 
-
-<pre><code><b>let</b> shares = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder);
-<b>let</b> total_coins = pool.total_coins;
-<b>aborts_if</b> pool.total_coins &gt; 0 && pool.total_shares &gt; 0 && (shares * total_coins) / pool.total_shares &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U64">MAX_U64</a>;
-<b>ensures</b> result == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares_to_amount_with_total_coins">spec_shares_to_amount_with_total_coins</a>(pool, shares, total_coins);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    let shares = spec_shares(pool, shareholder);
+    let total_coins = pool.total_coins;
+    aborts_if pool.total_coins > 0 && pool.total_shares > 0 && (shares * total_coins) / pool.total_shares > MAX_U64;
+    ensures result == spec_shares_to_amount_with_total_coins(pool, shares, total_coins);
+}
+```
 
 
 <a id="@Specification_1_buy_in"></a>
@@ -1044,22 +1107,26 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `buy_in`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_buy_in">buy_in</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, coins_amount: u64): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun buy_in(pool: &mut pool_u64_unbound::Pool, shareholder: address, coins_amount: u64): u128
+}
+```
 
 
 
-
-<pre><code><b>let</b> new_shares = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_amount_to_shares_with_total_coins">spec_amount_to_shares_with_total_coins</a>(pool, coins_amount, pool.total_coins);
-<b>aborts_if</b> pool.total_coins + coins_amount &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U64">MAX_U64</a>;
-<b>aborts_if</b> pool.total_shares + new_shares &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>;
-<b>include</b> coins_amount &gt; 0 ==&gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesAbortsIf">AddSharesAbortsIf</a> { new_shares: new_shares };
-<b>include</b> coins_amount &gt; 0 ==&gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesEnsures">AddSharesEnsures</a> { new_shares: new_shares };
-<b>ensures</b> pool.total_coins == <b>old</b>(pool.total_coins) + coins_amount;
-<b>ensures</b> pool.total_shares == <b>old</b>(pool.total_shares) + new_shares;
-<b>ensures</b> result == new_shares;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    let new_shares = spec_amount_to_shares_with_total_coins(pool, coins_amount, pool.total_coins);
+    aborts_if pool.total_coins + coins_amount > MAX_U64;
+    aborts_if pool.total_shares + new_shares > MAX_U128;
+    include coins_amount > 0 ==> AddSharesAbortsIf { new_shares: new_shares };
+    include coins_amount > 0 ==> AddSharesEnsures { new_shares: new_shares };
+    ensures pool.total_coins == old(pool.total_coins) + coins_amount;
+    ensures pool.total_shares == old(pool.total_shares) + new_shares;
+    ensures result == new_shares;
+}
+```
 
 
 <a id="@Specification_1_add_shares"></a>
@@ -1067,70 +1134,80 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `add_shares`
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_add_shares">add_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, new_shares: u128): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    fun add_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, new_shares: u128): u128
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesAbortsIf">AddSharesAbortsIf</a>;
-<b>include</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesEnsures">AddSharesEnsures</a>;
-<b>let</b> key_exists = <a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(pool.shares, shareholder);
-<b>ensures</b> result == <b>if</b> (key_exists) { <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder) }
-<b>else</b> { new_shares };
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    include AddSharesAbortsIf;
+    include AddSharesEnsures;
+    let key_exists = table::spec_contains(pool.shares, shareholder);
+    ensures result == if (key_exists) { table::spec_get(pool.shares, shareholder) }
+    else { new_shares };
+}
+```
 
 
 
 <a id="0x1_pool_u64_unbound_AddSharesAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesAbortsIf">AddSharesAbortsIf</a> {
-    pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>;
-    shareholder: <b>address</b>;
-    new_shares: u64;
-    <b>let</b> key_exists = <a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(pool.shares, shareholder);
-    <b>let</b> current_shares = <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder);
-    <b>aborts_if</b> key_exists && current_shares + new_shares &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>;
+```move
+module 0x1::pool_u64_unbound {
+    schema AddSharesAbortsIf {
+        pool: Pool;
+        shareholder: address;
+        new_shares: u64;
+        let key_exists = table::spec_contains(pool.shares, shareholder);
+        let current_shares = table::spec_get(pool.shares, shareholder);
+        aborts_if key_exists && current_shares + new_shares > MAX_U128;
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_pool_u64_unbound_AddSharesEnsures"></a>
 
 
-<pre><code><b>schema</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_AddSharesEnsures">AddSharesEnsures</a> {
-    pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>;
-    shareholder: <b>address</b>;
-    new_shares: u64;
-    <b>let</b> key_exists = <a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(pool.shares, shareholder);
-    <b>let</b> current_shares = <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder);
-    <b>ensures</b> key_exists ==&gt;
-        pool.shares == <a href="table.md#0x1_table_spec_set">table::spec_set</a>(<b>old</b>(pool.shares), shareholder, current_shares + new_shares);
-    <b>ensures</b> (!key_exists && new_shares &gt; 0) ==&gt;
-        pool.shares == <a href="table.md#0x1_table_spec_set">table::spec_set</a>(<b>old</b>(pool.shares), shareholder, new_shares);
+```move
+module 0x1::pool_u64_unbound {
+    schema AddSharesEnsures {
+        pool: Pool;
+        shareholder: address;
+        new_shares: u64;
+        let key_exists = table::spec_contains(pool.shares, shareholder);
+        let current_shares = table::spec_get(pool.shares, shareholder);
+        ensures key_exists ==>
+            pool.shares == table::spec_set(old(pool.shares), shareholder, current_shares + new_shares);
+        ensures (!key_exists && new_shares > 0) ==>
+            pool.shares == table::spec_set(old(pool.shares), shareholder, new_shares);
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_pool_u64_unbound_spec_amount_to_shares_with_total_coins"></a>
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_amount_to_shares_with_total_coins">spec_amount_to_shares_with_total_coins</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, coins_amount: u64, total_coins: u64): u128 {
-   <b>if</b> (pool.total_coins == 0 || pool.total_shares == 0) {
-       coins_amount * pool.scaling_factor
-   }
-   <b>else</b> {
-       (coins_amount * pool.total_shares) / total_coins
-   }
+```move
+module 0x1::pool_u64_unbound {
+    fun spec_amount_to_shares_with_total_coins(pool: Pool, coins_amount: u64, total_coins: u64): u128 {
+       if (pool.total_coins == 0 || pool.total_shares == 0) {
+           coins_amount * pool.scaling_factor
+       }
+       else {
+           (coins_amount * pool.total_shares) / total_coins
+       }
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_redeem_shares"></a>
@@ -1138,23 +1215,27 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `redeem_shares`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_redeem_shares">redeem_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, shares_to_redeem: u128): u64
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun redeem_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, shares_to_redeem: u128): u64
+}
+```
 
 
 
-
-<pre><code><b>let</b> redeemed_coins = <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares_to_amount_with_total_coins">spec_shares_to_amount_with_total_coins</a>(pool, shares_to_redeem, pool.total_coins);
-<b>aborts_if</b> !<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder);
-<b>aborts_if</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder) &lt; shares_to_redeem;
-<b>aborts_if</b> pool.<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_coins">total_coins</a> &lt; redeemed_coins;
-<b>aborts_if</b> pool.<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_total_shares">total_shares</a> &lt; shares_to_redeem;
-<b>ensures</b> pool.total_coins == <b>old</b>(pool.total_coins) - redeemed_coins;
-<b>ensures</b> pool.total_shares == <b>old</b>(pool.total_shares) - shares_to_redeem;
-<b>include</b> shares_to_redeem &gt; 0 ==&gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_DeductSharesEnsures">DeductSharesEnsures</a> { num_shares: shares_to_redeem };
-<b>ensures</b> result == redeemed_coins;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    let redeemed_coins = spec_shares_to_amount_with_total_coins(pool, shares_to_redeem, pool.total_coins);
+    aborts_if !spec_contains(pool, shareholder);
+    aborts_if spec_shares(pool, shareholder) < shares_to_redeem;
+    aborts_if pool.total_coins < redeemed_coins;
+    aborts_if pool.total_shares < shares_to_redeem;
+    ensures pool.total_coins == old(pool.total_coins) - redeemed_coins;
+    ensures pool.total_shares == old(pool.total_shares) - shares_to_redeem;
+    include shares_to_redeem > 0 ==> DeductSharesEnsures { num_shares: shares_to_redeem };
+    ensures result == redeemed_coins;
+}
+```
 
 
 <a id="@Specification_1_transfer_shares"></a>
@@ -1162,29 +1243,33 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `transfer_shares`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_transfer_shares">transfer_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder_1: <b>address</b>, shareholder_2: <b>address</b>, shares_to_transfer: u128)
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun transfer_shares(pool: &mut pool_u64_unbound::Pool, shareholder_1: address, shareholder_2: address, shares_to_transfer: u128)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> (shareholder_1 != shareholder_2) && shares_to_transfer &gt; 0 && <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_2) &&
-    (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_2) + shares_to_transfer &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>);
-<b>aborts_if</b> !<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_1);
-<b>aborts_if</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_1) &lt; shares_to_transfer;
-<b>ensures</b> shareholder_1 == shareholder_2 ==&gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(<b>old</b>(pool), shareholder_1) == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_1);
-<b>ensures</b> ((shareholder_1 != shareholder_2) && (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(<b>old</b>(pool), shareholder_1) == shares_to_transfer)) ==&gt;
-    !<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_1);
-<b>ensures</b> (shareholder_1 != shareholder_2 && shares_to_transfer &gt; 0) ==&gt;
-    (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_2));
-<b>ensures</b> (shareholder_1 != shareholder_2 && shares_to_transfer &gt; 0 && !<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(<b>old</b>(pool), shareholder_2)) ==&gt;
-    (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_2) && <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_2) == shares_to_transfer);
-<b>ensures</b> (shareholder_1 != shareholder_2 && shares_to_transfer &gt; 0 && <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(<b>old</b>(pool), shareholder_2)) ==&gt;
-    (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_2) && <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_2) == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(<b>old</b>(pool), shareholder_2) + shares_to_transfer);
-<b>ensures</b> ((shareholder_1 != shareholder_2) && (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(<b>old</b>(pool), shareholder_1) &gt; shares_to_transfer)) ==&gt;
-    (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder_1) && (<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder_1) == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(<b>old</b>(pool), shareholder_1) - shares_to_transfer));
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if (shareholder_1 != shareholder_2) && shares_to_transfer > 0 && spec_contains(pool, shareholder_2) &&
+        (spec_shares(pool, shareholder_2) + shares_to_transfer > MAX_U128);
+    aborts_if !spec_contains(pool, shareholder_1);
+    aborts_if spec_shares(pool, shareholder_1) < shares_to_transfer;
+    ensures shareholder_1 == shareholder_2 ==> spec_shares(old(pool), shareholder_1) == spec_shares(pool, shareholder_1);
+    ensures ((shareholder_1 != shareholder_2) && (spec_shares(old(pool), shareholder_1) == shares_to_transfer)) ==>
+        !spec_contains(pool, shareholder_1);
+    ensures (shareholder_1 != shareholder_2 && shares_to_transfer > 0) ==>
+        (spec_contains(pool, shareholder_2));
+    ensures (shareholder_1 != shareholder_2 && shares_to_transfer > 0 && !spec_contains(old(pool), shareholder_2)) ==>
+        (spec_contains(pool, shareholder_2) && spec_shares(pool, shareholder_2) == shares_to_transfer);
+    ensures (shareholder_1 != shareholder_2 && shares_to_transfer > 0 && spec_contains(old(pool), shareholder_2)) ==>
+        (spec_contains(pool, shareholder_2) && spec_shares(pool, shareholder_2) == spec_shares(old(pool), shareholder_2) + shares_to_transfer);
+    ensures ((shareholder_1 != shareholder_2) && (spec_shares(old(pool), shareholder_1) > shares_to_transfer)) ==>
+        (spec_contains(pool, shareholder_1) && (spec_shares(pool, shareholder_1) == spec_shares(old(pool), shareholder_1) - shares_to_transfer));
+}
+```
 
 
 <a id="@Specification_1_deduct_shares"></a>
@@ -1192,36 +1277,42 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `deduct_shares`
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_deduct_shares">deduct_shares</a>(pool: &<b>mut</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shareholder: <b>address</b>, num_shares: u128): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    fun deduct_shares(pool: &mut pool_u64_unbound::Pool, shareholder: address, num_shares: u128): u128
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_contains">spec_contains</a>(pool, shareholder);
-<b>aborts_if</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares">spec_shares</a>(pool, shareholder) &lt; num_shares;
-<b>include</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_DeductSharesEnsures">DeductSharesEnsures</a>;
-<b>let</b> remaining_shares = <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder) - num_shares;
-<b>ensures</b> remaining_shares &gt; 0 ==&gt; result == <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder);
-<b>ensures</b> remaining_shares == 0 ==&gt; result == 0;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if !spec_contains(pool, shareholder);
+    aborts_if spec_shares(pool, shareholder) < num_shares;
+    include DeductSharesEnsures;
+    let remaining_shares = table::spec_get(pool.shares, shareholder) - num_shares;
+    ensures remaining_shares > 0 ==> result == table::spec_get(pool.shares, shareholder);
+    ensures remaining_shares == 0 ==> result == 0;
+}
+```
 
 
 
 <a id="0x1_pool_u64_unbound_DeductSharesEnsures"></a>
 
 
-<pre><code><b>schema</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_DeductSharesEnsures">DeductSharesEnsures</a> {
-    pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>;
-    shareholder: <b>address</b>;
-    num_shares: u64;
-    <b>let</b> remaining_shares = <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder) - num_shares;
-    <b>ensures</b> remaining_shares &gt; 0 ==&gt; <a href="table.md#0x1_table_spec_get">table::spec_get</a>(pool.shares, shareholder) == remaining_shares;
-    <b>ensures</b> remaining_shares == 0 ==&gt; !<a href="table.md#0x1_table_spec_contains">table::spec_contains</a>(pool.shares, shareholder);
+```move
+module 0x1::pool_u64_unbound {
+    schema DeductSharesEnsures {
+        pool: Pool;
+        shareholder: address;
+        num_shares: u64;
+        let remaining_shares = table::spec_get(pool.shares, shareholder) - num_shares;
+        ensures remaining_shares > 0 ==> table::spec_get(pool.shares, shareholder) == remaining_shares;
+        ensures remaining_shares == 0 ==> !table::spec_contains(pool.shares, shareholder);
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_amount_to_shares_with_total_coins"></a>
@@ -1229,20 +1320,24 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `amount_to_shares_with_total_coins`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_amount_to_shares_with_total_coins">amount_to_shares_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, coins_amount: u64, total_coins: u64): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun amount_to_shares_with_total_coins(pool: &pool_u64_unbound::Pool, coins_amount: u64, total_coins: u64): u128
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> pool.total_coins &gt; 0 && pool.total_shares &gt; 0
-    && (coins_amount * pool.total_shares) / total_coins &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>;
-<b>aborts_if</b> (pool.total_coins == 0 || pool.total_shares == 0)
-    && coins_amount * pool.scaling_factor &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>;
-<b>aborts_if</b> pool.total_coins &gt; 0 && pool.total_shares &gt; 0 && total_coins == 0;
-<b>ensures</b> result == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_amount_to_shares_with_total_coins">spec_amount_to_shares_with_total_coins</a>(pool, coins_amount, total_coins);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if pool.total_coins > 0 && pool.total_shares > 0
+        && (coins_amount * pool.total_shares) / total_coins > MAX_U128;
+    aborts_if (pool.total_coins == 0 || pool.total_shares == 0)
+        && coins_amount * pool.scaling_factor > MAX_U128;
+    aborts_if pool.total_coins > 0 && pool.total_shares > 0 && total_coins == 0;
+    ensures result == spec_amount_to_shares_with_total_coins(pool, coins_amount, total_coins);
+}
+```
 
 
 <a id="@Specification_1_shares_to_amount_with_total_coins"></a>
@@ -1250,33 +1345,39 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `shares_to_amount_with_total_coins`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_shares_to_amount_with_total_coins">shares_to_amount_with_total_coins</a>(pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, shares: u128, total_coins: u64): u64
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun shares_to_amount_with_total_coins(pool: &pool_u64_unbound::Pool, shares: u128, total_coins: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> pool.total_coins &gt; 0 && pool.total_shares &gt; 0
-    && (shares * total_coins) / pool.total_shares &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U64">MAX_U64</a>;
-<b>ensures</b> result == <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares_to_amount_with_total_coins">spec_shares_to_amount_with_total_coins</a>(pool, shares, total_coins);
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if pool.total_coins > 0 && pool.total_shares > 0
+        && (shares * total_coins) / pool.total_shares > MAX_U64;
+    ensures result == spec_shares_to_amount_with_total_coins(pool, shares, total_coins);
+}
+```
 
 
 
 <a id="0x1_pool_u64_unbound_spec_shares_to_amount_with_total_coins"></a>
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_spec_shares_to_amount_with_total_coins">spec_shares_to_amount_with_total_coins</a>(pool: <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">Pool</a>, shares: u128, total_coins: u64): u64 {
-   <b>if</b> (pool.total_coins == 0 || pool.total_shares == 0) {
-       0
-   }
-   <b>else</b> {
-       (shares * total_coins) / pool.total_shares
-   }
+```move
+module 0x1::pool_u64_unbound {
+    fun spec_shares_to_amount_with_total_coins(pool: Pool, shares: u128, total_coins: u64): u64 {
+       if (pool.total_coins == 0 || pool.total_shares == 0) {
+           0
+       }
+       else {
+           (shares * total_coins) / pool.total_shares
+       }
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_multiply_then_divide"></a>
@@ -1284,17 +1385,21 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `multiply_then_divide`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_multiply_then_divide">multiply_then_divide</a>(_pool: &<a href="pool_u64_unbound.md#0x1_pool_u64_unbound_Pool">pool_u64_unbound::Pool</a>, x: u128, y: u128, z: u128): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    public fun multiply_then_divide(_pool: &pool_u64_unbound::Pool, x: u128, y: u128, z: u128): u128
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> z == 0;
-<b>aborts_if</b> (x * y) / z &gt; <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_MAX_U128">MAX_U128</a>;
-<b>ensures</b> result == (x * y) / z;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if z == 0;
+    aborts_if (x * y) / z > MAX_U128;
+    ensures result == (x * y) / z;
+}
+```
 
 
 <a id="@Specification_1_to_u128"></a>
@@ -1302,16 +1407,20 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `to_u128`
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u128">to_u128</a>(num: u64): u128
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u128(num: u64): u128
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == num;
-</code></pre>
-
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if false;
+    ensures result == num;
+}
+```
 
 
 <a id="@Specification_1_to_u256"></a>
@@ -1319,15 +1428,17 @@ Return the number of coins <code>shares</code> are worth in <code>pool</code> wi
 ### Function `to_u256`
 
 
-<pre><code><b>fun</b> <a href="pool_u64_unbound.md#0x1_pool_u64_unbound_to_u256">to_u256</a>(num: u128): u256
-</code></pre>
+```move
+module 0x1::pool_u64_unbound {
+    fun to_u256(num: u128): u256
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == num;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::pool_u64_unbound {
+    aborts_if false;
+    ensures result == num;
+}
+```

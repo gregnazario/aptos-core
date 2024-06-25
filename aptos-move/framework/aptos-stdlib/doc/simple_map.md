@@ -51,11 +51,13 @@ This module provides a solution for unsorted maps, that is it has the properties
     -  [Function `find`](#@Specification_1_find)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="../../move-stdlib/doc/vector.md#0x1_vector">0x1::vector</a>;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    use 0x1::error;
+    use 0x1::option;
+    use 0x1::vector;
+}
+```
 
 
 <a id="0x1_simple_map_SimpleMap"></a>
@@ -64,26 +66,25 @@ This module provides a solution for unsorted maps, that is it has the properties
 
 
 
-<pre><code><b>struct</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt; <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::simple_map {
+    struct SimpleMap<Key, Value> has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>data: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="simple_map.md#0x1_simple_map_Element">simple_map::Element</a>&lt;Key, Value&gt;&gt;</code>
+`data: vector<simple_map::Element<Key, Value>>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_simple_map_Element"></a>
 
@@ -91,32 +92,31 @@ This module provides a solution for unsorted maps, that is it has the properties
 
 
 
-<pre><code><b>struct</b> <a href="simple_map.md#0x1_simple_map_Element">Element</a>&lt;Key, Value&gt; <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::simple_map {
+    struct Element<Key, Value> has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>key: Key</code>
+`key: Key`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>value: Value</code>
+`value: Value`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -128,9 +128,11 @@ This module provides a solution for unsorted maps, that is it has the properties
 Map key already exists
 
 
-<pre><code><b>const</b> <a href="simple_map.md#0x1_simple_map_EKEY_ALREADY_EXISTS">EKEY_ALREADY_EXISTS</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    const EKEY_ALREADY_EXISTS: u64 = 1;
+}
+```
 
 
 <a id="0x1_simple_map_EKEY_NOT_FOUND"></a>
@@ -138,9 +140,11 @@ Map key already exists
 Map key is not found
 
 
-<pre><code><b>const</b> <a href="simple_map.md#0x1_simple_map_EKEY_NOT_FOUND">EKEY_NOT_FOUND</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    const EKEY_NOT_FOUND: u64 = 2;
+}
+```
 
 
 <a id="0x1_simple_map_length"></a>
@@ -149,23 +153,24 @@ Map key is not found
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_length">length</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_length">length</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;): u64 {
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&map.data)
+```move
+module 0x1::simple_map {
+    public fun length<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun length<Key: store, Value: store>(map: &SimpleMap<Key, Value>): u64 {
+        vector::length(&map.data)
+    }
+}
+```
+
 
 <a id="0x1_simple_map_new"></a>
 
@@ -174,25 +179,26 @@ Map key is not found
 Create an empty SimpleMap.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new">new</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun new<Key: store, Value: store>(): simple_map::SimpleMap<Key, Value>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new">new</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt; {
-    <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a> {
-        data: <a href="../../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>(),
+```move
+module 0x1::simple_map {
+    public fun new<Key: store, Value: store>(): SimpleMap<Key, Value> {
+        SimpleMap {
+            data: vector::empty(),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_simple_map_new_from"></a>
 
@@ -201,55 +207,57 @@ Create an empty SimpleMap.
 Create a SimpleMap from a vector of keys and values. The keys must be unique.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new_from">new_from</a>&lt;Key: store, Value: store&gt;(keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new_from">new_from</a>&lt;Key: store, Value: store&gt;(
-    keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;,
-    values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;,
-): <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt; {
-    <b>let</b> map = <a href="simple_map.md#0x1_simple_map_new">new</a>();
-    <a href="simple_map.md#0x1_simple_map_add_all">add_all</a>(&<b>mut</b> map, keys, values);
-    map
+```move
+module 0x1::simple_map {
+    public fun new_from<Key: store, Value: store>(keys: vector<Key>, values: vector<Value>): simple_map::SimpleMap<Key, Value>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun new_from<Key: store, Value: store>(
+        keys: vector<Key>,
+        values: vector<Value>,
+    ): SimpleMap<Key, Value> {
+        let map = new();
+        add_all(&mut map, keys, values);
+        map
+    }
+}
+```
+
 
 <a id="0x1_simple_map_create"></a>
 
 ## Function `create`
 
 Create an empty SimpleMap.
-This function is deprecated, use <code>new</code> instead.
+This function is deprecated, use `new` instead.
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_create">create</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_create">create</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt; {
-    <a href="simple_map.md#0x1_simple_map_new">new</a>()
+```move
+module 0x1::simple_map {
+    #[deprecated]
+    public fun create<Key: store, Value: store>(): simple_map::SimpleMap<Key, Value>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun create<Key: store, Value: store>(): SimpleMap<Key, Value> {
+        new()
+    }
+}
+```
+
 
 <a id="0x1_simple_map_borrow"></a>
 
@@ -257,29 +265,30 @@ This function is deprecated, use <code>new</code> instead.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow">borrow</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): &Value
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow">borrow</a>&lt;Key: store, Value: store&gt;(
-    map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: &Key,
-): &Value {
-    <b>let</b> maybe_idx = <a href="simple_map.md#0x1_simple_map_find">find</a>(map, key);
-    <b>assert</b>!(<a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&maybe_idx), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="simple_map.md#0x1_simple_map_EKEY_NOT_FOUND">EKEY_NOT_FOUND</a>));
-    <b>let</b> idx = <a href="../../move-stdlib/doc/option.md#0x1_option_extract">option::extract</a>(&<b>mut</b> maybe_idx);
-    &<a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&map.data, idx).value
+```move
+module 0x1::simple_map {
+    public fun borrow<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): &Value
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun borrow<Key: store, Value: store>(
+        map: &SimpleMap<Key, Value>,
+        key: &Key,
+    ): &Value {
+        let maybe_idx = find(map, key);
+        assert!(option::is_some(&maybe_idx), error::invalid_argument(EKEY_NOT_FOUND));
+        let idx = option::extract(&mut maybe_idx);
+        &vector::borrow(&map.data, idx).value
+    }
+}
+```
+
 
 <a id="0x1_simple_map_borrow_mut"></a>
 
@@ -287,29 +296,30 @@ This function is deprecated, use <code>new</code> instead.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow_mut">borrow_mut</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): &<b>mut</b> Value
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow_mut">borrow_mut</a>&lt;Key: store, Value: store&gt;(
-    map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: &Key,
-): &<b>mut</b> Value {
-    <b>let</b> maybe_idx = <a href="simple_map.md#0x1_simple_map_find">find</a>(map, key);
-    <b>assert</b>!(<a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&maybe_idx), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="simple_map.md#0x1_simple_map_EKEY_NOT_FOUND">EKEY_NOT_FOUND</a>));
-    <b>let</b> idx = <a href="../../move-stdlib/doc/option.md#0x1_option_extract">option::extract</a>(&<b>mut</b> maybe_idx);
-    &<b>mut</b> <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow_mut">vector::borrow_mut</a>(&<b>mut</b> map.data, idx).value
+```move
+module 0x1::simple_map {
+    public fun borrow_mut<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: &Key): &mut Value
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun borrow_mut<Key: store, Value: store>(
+        map: &mut SimpleMap<Key, Value>,
+        key: &Key,
+    ): &mut Value {
+        let maybe_idx = find(map, key);
+        assert!(option::is_some(&maybe_idx), error::invalid_argument(EKEY_NOT_FOUND));
+        let idx = option::extract(&mut maybe_idx);
+        &mut vector::borrow_mut(&mut map.data, idx).value
+    }
+}
+```
+
 
 <a id="0x1_simple_map_contains_key"></a>
 
@@ -317,27 +327,28 @@ This function is deprecated, use <code>new</code> instead.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_contains_key">contains_key</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_contains_key">contains_key</a>&lt;Key: store, Value: store&gt;(
-    map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: &Key,
-): bool {
-    <b>let</b> maybe_idx = <a href="simple_map.md#0x1_simple_map_find">find</a>(map, key);
-    <a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&maybe_idx)
+```move
+module 0x1::simple_map {
+    public fun contains_key<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun contains_key<Key: store, Value: store>(
+        map: &SimpleMap<Key, Value>,
+        key: &Key,
+    ): bool {
+        let maybe_idx = find(map, key);
+        option::is_some(&maybe_idx)
+    }
+}
+```
+
 
 <a id="0x1_simple_map_destroy_empty"></a>
 
@@ -345,24 +356,25 @@ This function is deprecated, use <code>new</code> instead.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_destroy_empty">destroy_empty</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_destroy_empty">destroy_empty</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;) {
-    <b>let</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a> { data } = map;
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy_empty">vector::destroy_empty</a>(data);
+```move
+module 0x1::simple_map {
+    public fun destroy_empty<Key: store, Value: store>(map: simple_map::SimpleMap<Key, Value>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun destroy_empty<Key: store, Value: store>(map: SimpleMap<Key, Value>) {
+        let SimpleMap { data } = map;
+        vector::destroy_empty(data);
+    }
+}
+```
+
 
 <a id="0x1_simple_map_add"></a>
 
@@ -371,30 +383,31 @@ This function is deprecated, use <code>new</code> instead.
 Add a key/value pair to the map. The key must not already exist.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add">add</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: Key, value: Value)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add">add</a>&lt;Key: store, Value: store&gt;(
-    map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: Key,
-    value: Value,
-) {
-    <b>let</b> maybe_idx = <a href="simple_map.md#0x1_simple_map_find">find</a>(map, &key);
-    <b>assert</b>!(<a href="../../move-stdlib/doc/option.md#0x1_option_is_none">option::is_none</a>(&maybe_idx), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="simple_map.md#0x1_simple_map_EKEY_ALREADY_EXISTS">EKEY_ALREADY_EXISTS</a>));
-
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> map.data, <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value });
+```move
+module 0x1::simple_map {
+    public fun add<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: Key, value: Value)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun add<Key: store, Value: store>(
+        map: &mut SimpleMap<Key, Value>,
+        key: Key,
+        value: Value,
+    ) {
+        let maybe_idx = find(map, &key);
+        assert!(option::is_none(&maybe_idx), error::invalid_argument(EKEY_ALREADY_EXISTS));
+
+        vector::push_back(&mut map.data, Element { key, value });
+    }
+}
+```
+
 
 <a id="0x1_simple_map_add_all"></a>
 
@@ -403,29 +416,30 @@ Add a key/value pair to the map. The key must not already exist.
 Add multiple key/value pairs to the map. The keys must not already exist.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add_all">add_all</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add_all">add_all</a>&lt;Key: store, Value: store&gt;(
-    map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;,
-    values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;,
-) {
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_zip">vector::zip</a>(keys, values, |key, value| {
-        <a href="simple_map.md#0x1_simple_map_add">add</a>(map, key, value);
-    });
+```move
+module 0x1::simple_map {
+    public fun add_all<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, keys: vector<Key>, values: vector<Value>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun add_all<Key: store, Value: store>(
+        map: &mut SimpleMap<Key, Value>,
+        keys: vector<Key>,
+        values: vector<Value>,
+    ) {
+        vector::zip(keys, values, |key, value| {
+            add(map, key, value);
+        });
+    }
+}
+```
+
 
 <a id="0x1_simple_map_upsert"></a>
 
@@ -434,41 +448,42 @@ Add multiple key/value pairs to the map. The keys must not already exist.
 Insert key/value pair or update an existing key to a new value
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_upsert">upsert</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: Key, value: Value): (<a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;Key&gt;, <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;Value&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_upsert">upsert</a>&lt;Key: store, Value: store&gt;(
-    map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: Key,
-    value: Value
-): (std::option::Option&lt;Key&gt;, std::option::Option&lt;Value&gt;) {
-    <b>let</b> data = &<b>mut</b> map.data;
-    <b>let</b> len = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(data);
-    <b>let</b> i = 0;
-    <b>while</b> (i &lt; len) {
-        <b>let</b> element = <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(data, i);
-        <b>if</b> (&element.key == &key) {
-            <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(data, <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value });
-            <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap">vector::swap</a>(data, i, len);
-            <b>let</b> <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value } = <a href="../../move-stdlib/doc/vector.md#0x1_vector_pop_back">vector::pop_back</a>(data);
-            <b>return</b> (std::option::some(key), std::option::some(value))
-        };
-        i = i + 1;
-    };
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> map.data, <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value });
-    (std::option::none(), std::option::none())
+```move
+module 0x1::simple_map {
+    public fun upsert<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: Key, value: Value): (option::Option<Key>, option::Option<Value>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun upsert<Key: store, Value: store>(
+        map: &mut SimpleMap<Key, Value>,
+        key: Key,
+        value: Value
+    ): (std::option::Option<Key>, std::option::Option<Value>) {
+        let data = &mut map.data;
+        let len = vector::length(data);
+        let i = 0;
+        while (i < len) {
+            let element = vector::borrow(data, i);
+            if (&element.key == &key) {
+                vector::push_back(data, Element { key, value });
+                vector::swap(data, i, len);
+                let Element { key, value } = vector::pop_back(data);
+                return (std::option::some(key), std::option::some(value))
+            };
+            i = i + 1;
+        };
+        vector::push_back(&mut map.data, Element { key, value });
+        (std::option::none(), std::option::none())
+    }
+}
+```
+
 
 <a id="0x1_simple_map_keys"></a>
 
@@ -477,26 +492,27 @@ Insert key/value pair or update an existing key to a new value
 Return all keys in the map. This requires keys to be copyable.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_keys">keys</a>&lt;Key: <b>copy</b>, Value&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_keys">keys</a>&lt;Key: <b>copy</b>, Value&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt; {
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_map_ref">vector::map_ref</a>(&map.data, |e| {
-        <b>let</b> e: &<a href="simple_map.md#0x1_simple_map_Element">Element</a>&lt;Key, Value&gt; = e;
-        e.key
-    })
+```move
+module 0x1::simple_map {
+    public fun keys<Key: copy, Value>(map: &simple_map::SimpleMap<Key, Value>): vector<Key>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun keys<Key: copy, Value>(map: &SimpleMap<Key, Value>): vector<Key> {
+        vector::map_ref(&map.data, |e| {
+            let e: &Element<Key, Value> = e;
+            e.key
+        })
+    }
+}
+```
+
 
 <a id="0x1_simple_map_values"></a>
 
@@ -505,26 +521,27 @@ Return all keys in the map. This requires keys to be copyable.
 Return all values in the map. This requires values to be copyable.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_values">values</a>&lt;Key, Value: <b>copy</b>&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_values">values</a>&lt;Key, Value: <b>copy</b>&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt; {
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_map_ref">vector::map_ref</a>(&map.data, |e| {
-        <b>let</b> e: &<a href="simple_map.md#0x1_simple_map_Element">Element</a>&lt;Key, Value&gt; = e;
-        e.value
-    })
+```move
+module 0x1::simple_map {
+    public fun values<Key, Value: copy>(map: &simple_map::SimpleMap<Key, Value>): vector<Value>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun values<Key, Value: copy>(map: &SimpleMap<Key, Value>): vector<Value> {
+        vector::map_ref(&map.data, |e| {
+            let e: &Element<Key, Value> = e;
+            e.value
+        })
+    }
+}
+```
+
 
 <a id="0x1_simple_map_to_vec_pair"></a>
 
@@ -534,32 +551,33 @@ Transform the map into two vectors with the keys and values respectively
 Primarily used to destroy a map
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_to_vec_pair">to_vec_pair</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): (<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_to_vec_pair">to_vec_pair</a>&lt;Key: store, Value: store&gt;(
-    map: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;): (<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;) {
-    <b>let</b> keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt; = <a href="../../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>();
-    <b>let</b> values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt; = <a href="../../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>();
-    <b>let</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a> { data } = map;
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_for_each">vector::for_each</a>(data, |e| {
-        <b>let</b> <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value } = e;
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> keys, key);
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> values, value);
-    });
-    (keys, values)
+```move
+module 0x1::simple_map {
+    public fun to_vec_pair<Key: store, Value: store>(map: simple_map::SimpleMap<Key, Value>): (vector<Key>, vector<Value>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun to_vec_pair<Key: store, Value: store>(
+        map: SimpleMap<Key, Value>): (vector<Key>, vector<Value>) {
+        let keys: vector<Key> = vector::empty();
+        let values: vector<Value> = vector::empty();
+        let SimpleMap { data } = map;
+        vector::for_each(data, |e| {
+            let Element { key, value } = e;
+            vector::push_back(&mut keys, key);
+            vector::push_back(&mut values, value);
+        });
+        (keys, values)
+    }
+}
+```
+
 
 <a id="0x1_simple_map_destroy"></a>
 
@@ -569,29 +587,30 @@ For maps that cannot be dropped this is a utility to destroy them
 using lambdas to destroy the individual keys and values.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_destroy">destroy</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, dk: |Key|, dv: |Value|)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> inline <b>fun</b> <a href="simple_map.md#0x1_simple_map_destroy">destroy</a>&lt;Key: store, Value: store&gt;(
-    map: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    dk: |Key|,
-    dv: |Value|
-) {
-    <b>let</b> (keys, values) = <a href="simple_map.md#0x1_simple_map_to_vec_pair">to_vec_pair</a>(map);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy">vector::destroy</a>(keys, |_k| dk(_k));
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy">vector::destroy</a>(values, |_v| dv(_v));
+```move
+module 0x1::simple_map {
+    public fun destroy<Key: store, Value: store>(map: simple_map::SimpleMap<Key, Value>, dk: |Key|, dv: |Value|)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public inline fun destroy<Key: store, Value: store>(
+        map: SimpleMap<Key, Value>,
+        dk: |Key|,
+        dv: |Value|
+    ) {
+        let (keys, values) = to_vec_pair(map);
+        vector::destroy(keys, |_k| dk(_k));
+        vector::destroy(values, |_v| dv(_v));
+    }
+}
+```
+
 
 <a id="0x1_simple_map_remove"></a>
 
@@ -600,30 +619,31 @@ using lambdas to destroy the individual keys and values.
 Remove a key/value pair from the map. The key must exist.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_remove">remove</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): (Key, Value)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_remove">remove</a>&lt;Key: store, Value: store&gt;(
-    map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: &Key,
-): (Key, Value) {
-    <b>let</b> maybe_idx = <a href="simple_map.md#0x1_simple_map_find">find</a>(map, key);
-    <b>assert</b>!(<a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(&maybe_idx), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="simple_map.md#0x1_simple_map_EKEY_NOT_FOUND">EKEY_NOT_FOUND</a>));
-    <b>let</b> placement = <a href="../../move-stdlib/doc/option.md#0x1_option_extract">option::extract</a>(&<b>mut</b> maybe_idx);
-    <b>let</b> <a href="simple_map.md#0x1_simple_map_Element">Element</a> { key, value } = <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap_remove">vector::swap_remove</a>(&<b>mut</b> map.data, placement);
-    (key, value)
+```move
+module 0x1::simple_map {
+    public fun remove<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: &Key): (Key, Value)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    public fun remove<Key: store, Value: store>(
+        map: &mut SimpleMap<Key, Value>,
+        key: &Key,
+    ): (Key, Value) {
+        let maybe_idx = find(map, key);
+        assert!(option::is_some(&maybe_idx), error::invalid_argument(EKEY_NOT_FOUND));
+        let placement = option::extract(&mut maybe_idx);
+        let Element { key, value } = vector::swap_remove(&mut map.data, placement);
+        (key, value)
+    }
+}
+```
+
 
 <a id="0x1_simple_map_find"></a>
 
@@ -631,35 +651,36 @@ Remove a key/value pair from the map. The key must exist.
 
 
 
-<pre><code><b>fun</b> <a href="simple_map.md#0x1_simple_map_find">find</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="simple_map.md#0x1_simple_map_find">find</a>&lt;Key: store, Value: store&gt;(
-    map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt;,
-    key: &Key,
-): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt; {
-    <b>let</b> leng = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&map.data);
-    <b>let</b> i = 0;
-    <b>while</b> (i &lt; leng) {
-        <b>let</b> element = <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(&map.data, i);
-        <b>if</b> (&element.key == key) {
-            <b>return</b> <a href="../../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(i)
-        };
-        i = i + 1;
-    };
-    <a href="../../move-stdlib/doc/option.md#0x1_option_none">option::none</a>&lt;u64&gt;()
+```move
+module 0x1::simple_map {
+    fun find<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): option::Option<u64>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::simple_map {
+    fun find<Key: store, Value: store>(
+        map: &SimpleMap<Key, Value>,
+        key: &Key,
+    ): option::Option<u64> {
+        let leng = vector::length(&map.data);
+        let i = 0;
+        while (i < leng) {
+            let element = vector::borrow(&map.data, i);
+            if (&element.key == key) {
+                return option::some(i)
+            };
+            i = i + 1;
+        };
+        option::none<u64>()
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -671,14 +692,16 @@ Remove a key/value pair from the map. The key must exist.
 ### Struct `SimpleMap`
 
 
-<pre><code><b>struct</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;Key, Value&gt; <b>has</b> <b>copy</b>, drop, store
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    struct SimpleMap<Key, Value> has copy, drop, store
+}
+```
 
 
 <dl>
 <dt>
-<code>data: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="simple_map.md#0x1_simple_map_Element">simple_map::Element</a>&lt;Key, Value&gt;&gt;</code>
+`data: vector<simple_map::Element<Key, Value>>`
 </dt>
 <dd>
 
@@ -687,22 +710,24 @@ Remove a key/value pair from the map. The key must exist.
 
 
 
-<pre><code><b>pragma</b> intrinsic = map,
-    map_new = create,
-    map_len = length,
-    map_destroy_empty = destroy_empty,
-    map_has_key = contains_key,
-    map_add_no_override = add,
-    map_del_return_key = remove,
-    map_borrow = borrow,
-    map_borrow_mut = borrow_mut,
-    map_spec_get = spec_get,
-    map_spec_set = spec_set,
-    map_spec_del = spec_remove,
-    map_spec_len = spec_len,
-    map_spec_has_key = spec_contains_key;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic = map,
+        map_new = create,
+        map_len = length,
+        map_destroy_empty = destroy_empty,
+        map_has_key = contains_key,
+        map_add_no_override = add,
+        map_del_return_key = remove,
+        map_borrow = borrow,
+        map_borrow_mut = borrow_mut,
+        map_spec_get = spec_get,
+        map_spec_set = spec_set,
+        map_spec_del = spec_remove,
+        map_spec_len = spec_len,
+        map_spec_has_key = spec_contains_key;
+}
+```
 
 
 <a id="@Specification_1_length"></a>
@@ -710,15 +735,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `length`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_length">length</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): u64
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun length<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_new"></a>
@@ -726,19 +755,23 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `new`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new">new</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun new<Key: store, Value: store>(): simple_map::SimpleMap<Key, Value>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-<b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_len">spec_len</a>(result) == 0;
-<b>ensures</b> [abstract] <b>forall</b> k: Key: !<a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(result, k);
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] spec_len(result) == 0;
+    ensures [abstract] forall k: Key: !spec_contains_key(result, k);
+}
+```
 
 
 <a id="@Specification_1_new_from"></a>
@@ -746,21 +779,25 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `new_from`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_new_from">new_from</a>&lt;Key: store, Value: store&gt;(keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun new_from<Key: store, Value: store>(keys: vector<Key>, values: vector<Value>): simple_map::SimpleMap<Key, Value>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-<b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_len">spec_len</a>(result) == len(keys);
-<b>ensures</b> [abstract] <b>forall</b> k: Key: <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(result, k) &lt;==&gt; <a href="../../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(keys, k);
-<b>ensures</b> [abstract] <b>forall</b> i in 0..len(keys):
-    <a href="simple_map.md#0x1_simple_map_spec_get">spec_get</a>(result, <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(keys, i)) == <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(values, i);
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] spec_len(result) == len(keys);
+    ensures [abstract] forall k: Key: spec_contains_key(result, k) <==> vector::spec_contains(keys, k);
+    ensures [abstract] forall i in 0..len(keys):
+        spec_get(result, vector::borrow(keys, i)) == vector::borrow(values, i);
+}
+```
 
 
 <a id="@Specification_1_create"></a>
@@ -768,16 +805,20 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `create`
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_create">create</a>&lt;Key: store, Value: store&gt;(): <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    #[deprecated]
+    public fun create<Key: store, Value: store>(): simple_map::SimpleMap<Key, Value>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_borrow"></a>
@@ -785,15 +826,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `borrow`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow">borrow</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): &Value
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun borrow<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): &Value
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_borrow_mut"></a>
@@ -801,15 +846,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `borrow_mut`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_borrow_mut">borrow_mut</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): &<b>mut</b> Value
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun borrow_mut<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: &Key): &mut Value
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_contains_key"></a>
@@ -817,15 +866,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `contains_key`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_contains_key">contains_key</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): bool
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun contains_key<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_destroy_empty"></a>
@@ -833,15 +886,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `destroy_empty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_destroy_empty">destroy_empty</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun destroy_empty<Key: store, Value: store>(map: simple_map::SimpleMap<Key, Value>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_add"></a>
@@ -849,15 +906,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `add`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add">add</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: Key, value: Value)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun add<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: Key, value: Value)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_add_all"></a>
@@ -865,15 +926,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `add_all`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_add_all">add_all</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, keys: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, values: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun add_all<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, keys: vector<Key>, values: vector<Value>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_upsert"></a>
@@ -881,68 +946,82 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `upsert`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_upsert">upsert</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: Key, value: Value): (<a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;Key&gt;, <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;Value&gt;)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun upsert<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: Key, value: Value): (option::Option<Key>, option::Option<Value>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-<b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] !<a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(<b>old</b>(map), key) ==&gt; <a href="../../move-stdlib/doc/option.md#0x1_option_is_none">option::is_none</a>(result_1);
-<b>ensures</b> [abstract] !<a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(<b>old</b>(map), key) ==&gt; <a href="../../move-stdlib/doc/option.md#0x1_option_is_none">option::is_none</a>(result_2);
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(map, key);
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_get">spec_get</a>(map, key) == value;
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(<b>old</b>(map), key) ==&gt; ((<a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(result_1)) && (<a href="../../move-stdlib/doc/option.md#0x1_option_spec_borrow">option::spec_borrow</a>(result_1) == key));
-<b>ensures</b> [abstract] <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(<b>old</b>(map), key) ==&gt; ((<a href="../../move-stdlib/doc/option.md#0x1_option_is_some">option::is_some</a>(result_2)) && (<a href="../../move-stdlib/doc/option.md#0x1_option_spec_borrow">option::spec_borrow</a>(result_2) == <a href="simple_map.md#0x1_simple_map_spec_get">spec_get</a>(<b>old</b>(map), key)));
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] !spec_contains_key(old(map), key) ==> option::is_none(result_1);
+    ensures [abstract] !spec_contains_key(old(map), key) ==> option::is_none(result_2);
+    ensures [abstract] spec_contains_key(map, key);
+    ensures [abstract] spec_get(map, key) == value;
+    ensures [abstract] spec_contains_key(old(map), key) ==> ((option::is_some(result_1)) && (option::spec_borrow(result_1) == key));
+    ensures [abstract] spec_contains_key(old(map), key) ==> ((option::is_some(result_2)) && (option::spec_borrow(result_2) == spec_get(old(map), key)));
+}
+```
 
 
 
 <a id="0x1_simple_map_spec_len"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_spec_len">spec_len</a>&lt;K, V&gt;(t: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;): num;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    native fun spec_len<K, V>(t: SimpleMap<K, V>): num;
+}
+```
 
 
 
 <a id="0x1_simple_map_spec_contains_key"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>&lt;K, V&gt;(t: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;, k: K): bool;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    native fun spec_contains_key<K, V>(t: SimpleMap<K, V>, k: K): bool;
+}
+```
 
 
 
 <a id="0x1_simple_map_spec_set"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_spec_set">spec_set</a>&lt;K, V&gt;(t: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;, k: K, v: V): <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    native fun spec_set<K, V>(t: SimpleMap<K, V>, k: K, v: V): SimpleMap<K, V>;
+}
+```
 
 
 
 <a id="0x1_simple_map_spec_remove"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_spec_remove">spec_remove</a>&lt;K, V&gt;(t: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;, k: K): <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    native fun spec_remove<K, V>(t: SimpleMap<K, V>, k: K): SimpleMap<K, V>;
+}
+```
 
 
 
 <a id="0x1_simple_map_spec_get"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_spec_get">spec_get</a>&lt;K, V&gt;(t: <a href="simple_map.md#0x1_simple_map_SimpleMap">SimpleMap</a>&lt;K, V&gt;, k: K): V;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    native fun spec_get<K, V>(t: SimpleMap<K, V>, k: K): V;
+}
+```
 
 
 <a id="@Specification_1_keys"></a>
@@ -950,15 +1029,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `keys`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_keys">keys</a>&lt;Key: <b>copy</b>, Value&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun keys<Key: copy, Value>(map: &simple_map::SimpleMap<Key, Value>): vector<Key>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma verify=false;
+}
+```
 
 
 <a id="@Specification_1_values"></a>
@@ -966,15 +1049,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `values`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_values">values</a>&lt;Key, Value: <b>copy</b>&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun values<Key, Value: copy>(map: &simple_map::SimpleMap<Key, Value>): vector<Value>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma verify=false;
+}
+```
 
 
 <a id="@Specification_1_to_vec_pair"></a>
@@ -982,21 +1069,25 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `to_vec_pair`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_to_vec_pair">to_vec_pair</a>&lt;Key: store, Value: store&gt;(map: <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;): (<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Key&gt;, <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;Value&gt;)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun to_vec_pair<Key: store, Value: store>(map: simple_map::SimpleMap<Key, Value>): (vector<Key>, vector<Value>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-<b>pragma</b> opaque;
-<b>ensures</b> [abstract]
-    <b>forall</b> k: Key: <a href="../../move-stdlib/doc/vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(result_1, k) &lt;==&gt;
-        <a href="simple_map.md#0x1_simple_map_spec_contains_key">spec_contains_key</a>(map, k);
-<b>ensures</b> [abstract] <b>forall</b> i in 0..len(result_1):
-    <a href="simple_map.md#0x1_simple_map_spec_get">spec_get</a>(map, <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(result_1, i)) == <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(result_2, i);
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+    pragma opaque;
+    ensures [abstract]
+        forall k: Key: vector::spec_contains(result_1, k) <==>
+            spec_contains_key(map, k);
+    ensures [abstract] forall i in 0..len(result_1):
+        spec_get(map, vector::borrow(result_1, i)) == vector::borrow(result_2, i);
+}
+```
 
 
 <a id="@Specification_1_remove"></a>
@@ -1004,15 +1095,19 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `remove`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="simple_map.md#0x1_simple_map_remove">remove</a>&lt;Key: store, Value: store&gt;(map: &<b>mut</b> <a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): (Key, Value)
-</code></pre>
+```move
+module 0x1::simple_map {
+    public fun remove<Key: store, Value: store>(map: &mut simple_map::SimpleMap<Key, Value>, key: &Key): (Key, Value)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> intrinsic;
-</code></pre>
-
+```move
+module 0x1::simple_map {
+    pragma intrinsic;
+}
+```
 
 
 <a id="@Specification_1_find"></a>
@@ -1020,14 +1115,16 @@ Remove a key/value pair from the map. The key must exist.
 ### Function `find`
 
 
-<pre><code><b>fun</b> <a href="simple_map.md#0x1_simple_map_find">find</a>&lt;Key: store, Value: store&gt;(map: &<a href="simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;Key, Value&gt;, key: &Key): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;
-</code></pre>
+```move
+module 0x1::simple_map {
+    fun find<Key: store, Value: store>(map: &simple_map::SimpleMap<Key, Value>, key: &Key): option::Option<u64>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::simple_map {
+    pragma verify=false;
+}
+```

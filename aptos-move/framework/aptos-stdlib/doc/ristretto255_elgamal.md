@@ -6,11 +6,11 @@
 This module implements an ElGamal encryption API, over the Ristretto255 curve, that can be used with the
 Bulletproofs module.
 
-An ElGamal *ciphertext* is an encryption of a value <code>v</code> under a basepoint <code>G</code> and public key <code>Y = sk * G</code>, where <code>sk</code>
-is the corresponding secret key, is <code>(v * G + r * Y, r * G)</code>, for a random scalar <code>r</code>.
+An ElGamal &#42;ciphertext&#42; is an encryption of a value `v` under a basepoint `G` and public key `Y = sk * G`, where `sk`
+is the corresponding secret key, is `(v * G + r * Y, r * G)`, for a random scalar `r`.
 
-Note that we place the value <code>v</code> "in the exponent" of <code>G</code> so that ciphertexts are additively homomorphic: i.e., so
-that <code>Enc_Y(v, r) + Enc_Y(v', r') = Enc_Y(v + v', r + r')</code> where <code>v, v'</code> are plaintext messages, <code>Y</code> is a public key and <code>r, r'</code>
+Note that we place the value `v` &quot;in the exponent&quot; of `G` so that ciphertexts are additively homomorphic: i.e., so
+that `Enc_Y(v, r) + Enc_Y(v', r') = Enc_Y(v + v', r + r')` where `v, v'` are plaintext messages, `Y` is a public key and `r, r'`
 are the randomness of the ciphertexts.
 
 
@@ -39,11 +39,13 @@ are the randomness of the ciphertexts.
 -  [Function `get_value_component`](#0x1_ristretto255_elgamal_get_value_component)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-<b>use</b> <a href="ristretto255.md#0x1_ristretto255">0x1::ristretto255</a>;
-<b>use</b> <a href="../../move-stdlib/doc/vector.md#0x1_vector">0x1::vector</a>;
-</code></pre>
-
+```move
+module 0x1::ristretto255_elgamal {
+    use 0x1::option;
+    use 0x1::ristretto255;
+    use 0x1::vector;
+}
+```
 
 
 <a id="0x1_ristretto255_elgamal_Ciphertext"></a>
@@ -53,32 +55,31 @@ are the randomness of the ciphertexts.
 An ElGamal ciphertext.
 
 
-<pre><code><b>struct</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> <b>has</b> drop
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    struct Ciphertext has drop
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>left: <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a></code>
+`left: ristretto255::RistrettoPoint`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>right: <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a></code>
+`right: ristretto255::RistrettoPoint`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_CompressedCiphertext"></a>
 
@@ -87,32 +88,31 @@ An ElGamal ciphertext.
 A compressed ElGamal ciphertext.
 
 
-<pre><code><b>struct</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    struct CompressedCiphertext has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>left: <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a></code>
+`left: ristretto255::CompressedRistretto`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>right: <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a></code>
+`right: ristretto255::CompressedRistretto`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_CompressedPubkey"></a>
 
@@ -121,26 +121,25 @@ A compressed ElGamal ciphertext.
 An ElGamal public key.
 
 
-<pre><code><b>struct</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    struct CompressedPubkey has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>point: <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a></code>
+`point: ristretto255::CompressedRistretto`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_new_pubkey_from_bytes"></a>
 
@@ -149,177 +148,183 @@ An ElGamal public key.
 Creates a new public key from a serialized Ristretto255 point.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_pubkey_from_bytes">new_pubkey_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">ristretto255_elgamal::CompressedPubkey</a>&gt;
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_pubkey_from_bytes(bytes: vector<u8>): option::Option<ristretto255_elgamal::CompressedPubkey>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_pubkey_from_bytes">new_pubkey_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): Option&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a>&gt; {
-    <b>let</b> point = <a href="ristretto255.md#0x1_ristretto255_new_compressed_point_from_bytes">ristretto255::new_compressed_point_from_bytes</a>(bytes);
-    <b>if</b> (std::option::is_some(&<b>mut</b> point)) {
-        <b>let</b> pk = <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a> {
-            point: std::option::extract(&<b>mut</b> point)
-        };
-        std::option::some(pk)
-    } <b>else</b> {
-        std::option::none&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a>&gt;()
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_pubkey_from_bytes(bytes: vector<u8>): Option<CompressedPubkey> {
+        let point = ristretto255::new_compressed_point_from_bytes(bytes);
+        if (std::option::is_some(&mut point)) {
+            let pk = CompressedPubkey {
+                point: std::option::extract(&mut point)
+            };
+            std::option::some(pk)
+        } else {
+            std::option::none<CompressedPubkey>()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_pubkey_to_bytes"></a>
 
 ## Function `pubkey_to_bytes`
 
-Given an ElGamal public key <code>pubkey</code>, returns the byte representation of that public key.
+Given an ElGamal public key `pubkey`, returns the byte representation of that public key.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_bytes">pubkey_to_bytes</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">ristretto255_elgamal::CompressedPubkey</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_bytes">pubkey_to_bytes</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <a href="ristretto255.md#0x1_ristretto255_compressed_point_to_bytes">ristretto255::compressed_point_to_bytes</a>(pubkey.point)
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_bytes(pubkey: &ristretto255_elgamal::CompressedPubkey): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_bytes(pubkey: &CompressedPubkey): vector<u8> {
+        ristretto255::compressed_point_to_bytes(pubkey.point)
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_pubkey_to_point"></a>
 
 ## Function `pubkey_to_point`
 
-Given a public key <code>pubkey</code>, returns the underlying <code>RistrettoPoint</code> representing that key.
+Given a public key `pubkey`, returns the underlying `RistrettoPoint` representing that key.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_point">pubkey_to_point</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">ristretto255_elgamal::CompressedPubkey</a>): <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_point">pubkey_to_point</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a>): RistrettoPoint {
-    <a href="ristretto255.md#0x1_ristretto255_point_decompress">ristretto255::point_decompress</a>(&pubkey.point)
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_point(pubkey: &ristretto255_elgamal::CompressedPubkey): ristretto255::RistrettoPoint
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_point(pubkey: &CompressedPubkey): RistrettoPoint {
+        ristretto255::point_decompress(&pubkey.point)
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_pubkey_to_compressed_point"></a>
 
 ## Function `pubkey_to_compressed_point`
 
-Given a public key, returns the underlying <code>CompressedRistretto</code> point representing that key.
+Given a public key, returns the underlying `CompressedRistretto` point representing that key.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_compressed_point">pubkey_to_compressed_point</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">ristretto255_elgamal::CompressedPubkey</a>): <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_pubkey_to_compressed_point">pubkey_to_compressed_point</a>(pubkey: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedPubkey">CompressedPubkey</a>): CompressedRistretto {
-    pubkey.point
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_compressed_point(pubkey: &ristretto255_elgamal::CompressedPubkey): ristretto255::CompressedRistretto
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun pubkey_to_compressed_point(pubkey: &CompressedPubkey): CompressedRistretto {
+        pubkey.point
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_new_ciphertext_from_bytes"></a>
 
 ## Function `new_ciphertext_from_bytes`
 
-Creates a new ciphertext from two serialized Ristretto255 points: the first 32 bytes store <code>r * G</code> while the
-next 32 bytes store <code>v * G + r * Y</code>, where <code>Y</code> is the public key.
+Creates a new ciphertext from two serialized Ristretto255 points: the first 32 bytes store `r * G` while the
+next 32 bytes store `v * G + r * Y`, where `Y` is the public key.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_ciphertext_from_bytes">new_ciphertext_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>&gt;
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_ciphertext_from_bytes(bytes: vector<u8>): option::Option<ristretto255_elgamal::Ciphertext>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_ciphertext_from_bytes">new_ciphertext_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): Option&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>&gt; {
-    <b>if</b>(<a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&bytes) != 64) {
-        <b>return</b> std::option::none&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>&gt;()
-    };
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_ciphertext_from_bytes(bytes: vector<u8>): Option<Ciphertext> {
+        if(vector::length(&bytes) != 64) {
+            return std::option::none<Ciphertext>()
+        };
 
-    <b>let</b> bytes_right = <a href="../../move-stdlib/doc/vector.md#0x1_vector_trim">vector::trim</a>(&<b>mut</b> bytes, 32);
+        let bytes_right = vector::trim(&mut bytes, 32);
 
-    <b>let</b> left_point = <a href="ristretto255.md#0x1_ristretto255_new_point_from_bytes">ristretto255::new_point_from_bytes</a>(bytes);
-    <b>let</b> right_point = <a href="ristretto255.md#0x1_ristretto255_new_point_from_bytes">ristretto255::new_point_from_bytes</a>(bytes_right);
+        let left_point = ristretto255::new_point_from_bytes(bytes);
+        let right_point = ristretto255::new_point_from_bytes(bytes_right);
 
-    <b>if</b> (std::option::is_some&lt;RistrettoPoint&gt;(&<b>mut</b> left_point) && std::option::is_some&lt;RistrettoPoint&gt;(&<b>mut</b> right_point)) {
-        std::option::some&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>&gt;(<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-            left: std::option::extract&lt;RistrettoPoint&gt;(&<b>mut</b> left_point),
-            right: std::option::extract&lt;RistrettoPoint&gt;(&<b>mut</b> right_point)
-        })
-    } <b>else</b> {
-        std::option::none&lt;<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>&gt;()
+        if (std::option::is_some<RistrettoPoint>(&mut left_point) && std::option::is_some<RistrettoPoint>(&mut right_point)) {
+            std::option::some<Ciphertext>(Ciphertext {
+                left: std::option::extract<RistrettoPoint>(&mut left_point),
+                right: std::option::extract<RistrettoPoint>(&mut right_point)
+            })
+        } else {
+            std::option::none<Ciphertext>()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_new_ciphertext_no_randomness"></a>
 
 ## Function `new_ciphertext_no_randomness`
 
-Creates a new ciphertext <code>(val * G + 0 * Y, 0 * G) = (val * G, 0 * G)</code> where <code>G</code> is the Ristretto255 basepoint
+Creates a new ciphertext `(val * G + 0 * Y, 0 * G) = (val * G, 0 * G)` where `G` is the Ristretto255 basepoint
 and the randomness is set to zero.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_ciphertext_no_randomness">new_ciphertext_no_randomness</a>(val: &<a href="ristretto255.md#0x1_ristretto255_Scalar">ristretto255::Scalar</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_ciphertext_no_randomness(val: &ristretto255::Scalar): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_new_ciphertext_no_randomness">new_ciphertext_no_randomness</a>(val: &Scalar): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left: <a href="ristretto255.md#0x1_ristretto255_basepoint_mul">ristretto255::basepoint_mul</a>(val),
-        right: <a href="ristretto255.md#0x1_ristretto255_point_identity">ristretto255::point_identity</a>(),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun new_ciphertext_no_randomness(val: &Scalar): Ciphertext {
+        Ciphertext {
+            left: ristretto255::basepoint_mul(val),
+            right: ristretto255::point_identity(),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_from_points"></a>
 
@@ -328,135 +333,140 @@ and the randomness is set to zero.
 Moves a pair of Ristretto points into an ElGamal ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_from_points">ciphertext_from_points</a>(left: <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, right: <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_from_points(left: ristretto255::RistrettoPoint, right: ristretto255::RistrettoPoint): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_from_points">ciphertext_from_points</a>(left: RistrettoPoint, right: RistrettoPoint): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left,
-        right,
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_from_points(left: RistrettoPoint, right: RistrettoPoint): Ciphertext {
+        Ciphertext {
+            left,
+            right,
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_from_compressed_points"></a>
 
 ## Function `ciphertext_from_compressed_points`
 
-Moves a pair of <code>CompressedRistretto</code> points into an ElGamal ciphertext.
+Moves a pair of `CompressedRistretto` points into an ElGamal ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_from_compressed_points">ciphertext_from_compressed_points</a>(left: <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a>, right: <a href="ristretto255.md#0x1_ristretto255_CompressedRistretto">ristretto255::CompressedRistretto</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">ristretto255_elgamal::CompressedCiphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_from_compressed_points(left: ristretto255::CompressedRistretto, right: ristretto255::CompressedRistretto): ristretto255_elgamal::CompressedCiphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_from_compressed_points">ciphertext_from_compressed_points</a>(left: CompressedRistretto, right: CompressedRistretto): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a> {
-        left,
-        right,
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_from_compressed_points(left: CompressedRistretto, right: CompressedRistretto): CompressedCiphertext {
+        CompressedCiphertext {
+            left,
+            right,
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_to_bytes"></a>
 
 ## Function `ciphertext_to_bytes`
 
-Given a ciphertext <code>ct</code>, serializes that ciphertext into bytes.
+Given a ciphertext `ct`, serializes that ciphertext into bytes.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_to_bytes">ciphertext_to_bytes</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_to_bytes">ciphertext_to_bytes</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <b>let</b> bytes_left = <a href="ristretto255.md#0x1_ristretto255_point_to_bytes">ristretto255::point_to_bytes</a>(&<a href="ristretto255.md#0x1_ristretto255_point_compress">ristretto255::point_compress</a>(&ct.left));
-    <b>let</b> bytes_right = <a href="ristretto255.md#0x1_ristretto255_point_to_bytes">ristretto255::point_to_bytes</a>(&<a href="ristretto255.md#0x1_ristretto255_point_compress">ristretto255::point_compress</a>(&ct.right));
-    <b>let</b> bytes = <a href="../../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>&lt;u8&gt;();
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_append">vector::append</a>&lt;u8&gt;(&<b>mut</b> bytes, bytes_left);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_append">vector::append</a>&lt;u8&gt;(&<b>mut</b> bytes, bytes_right);
-    bytes
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_to_bytes(ct: &ristretto255_elgamal::Ciphertext): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_to_bytes(ct: &Ciphertext): vector<u8> {
+        let bytes_left = ristretto255::point_to_bytes(&ristretto255::point_compress(&ct.left));
+        let bytes_right = ristretto255::point_to_bytes(&ristretto255::point_compress(&ct.right));
+        let bytes = vector::empty<u8>();
+        vector::append<u8>(&mut bytes, bytes_left);
+        vector::append<u8>(&mut bytes, bytes_right);
+        bytes
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_ciphertext_into_points"></a>
 
 ## Function `ciphertext_into_points`
 
-Moves the ciphertext into a pair of <code>RistrettoPoint</code>'s.
+Moves the ciphertext into a pair of `RistrettoPoint`&apos;s.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_into_points">ciphertext_into_points</a>(c: <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): (<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, <a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_into_points">ciphertext_into_points</a>(c: <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): (RistrettoPoint, RistrettoPoint) {
-    <b>let</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> { left, right } = c;
-    (left, right)
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_into_points(c: ristretto255_elgamal::Ciphertext): (ristretto255::RistrettoPoint, ristretto255::RistrettoPoint)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_into_points(c: Ciphertext): (RistrettoPoint, RistrettoPoint) {
+        let Ciphertext { left, right } = c;
+        (left, right)
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_ciphertext_as_points"></a>
 
 ## Function `ciphertext_as_points`
 
-Returns the pair of <code>RistrettoPoint</code>'s representing the ciphertext.
+Returns the pair of `RistrettoPoint`&apos;s representing the ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_as_points">ciphertext_as_points</a>(c: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): (&<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_as_points">ciphertext_as_points</a>(c: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): (&RistrettoPoint, &RistrettoPoint) {
-    (&c.left, &c.right)
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_as_points(c: &ristretto255_elgamal::Ciphertext): (&ristretto255::RistrettoPoint, &ristretto255::RistrettoPoint)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_as_points(c: &Ciphertext): (&RistrettoPoint, &RistrettoPoint) {
+        (&c.left, &c.right)
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_compress_ciphertext"></a>
 
@@ -465,26 +475,27 @@ Returns the pair of <code>RistrettoPoint</code>'s representing the ciphertext.
 Creates a new compressed ciphertext from a decompressed ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_compress_ciphertext">compress_ciphertext</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">ristretto255_elgamal::CompressedCiphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun compress_ciphertext(ct: &ristretto255_elgamal::Ciphertext): ristretto255_elgamal::CompressedCiphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_compress_ciphertext">compress_ciphertext</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a> {
-        left: point_compress(&ct.left),
-        right: point_compress(&ct.right),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun compress_ciphertext(ct: &Ciphertext): CompressedCiphertext {
+        CompressedCiphertext {
+            left: point_compress(&ct.left),
+            right: point_compress(&ct.right),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_decompress_ciphertext"></a>
 
@@ -493,136 +504,141 @@ Creates a new compressed ciphertext from a decompressed ciphertext.
 Creates a new decompressed ciphertext from a compressed ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_decompress_ciphertext">decompress_ciphertext</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">ristretto255_elgamal::CompressedCiphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun decompress_ciphertext(ct: &ristretto255_elgamal::CompressedCiphertext): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_decompress_ciphertext">decompress_ciphertext</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_CompressedCiphertext">CompressedCiphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left: <a href="ristretto255.md#0x1_ristretto255_point_decompress">ristretto255::point_decompress</a>(&ct.left),
-        right: <a href="ristretto255.md#0x1_ristretto255_point_decompress">ristretto255::point_decompress</a>(&ct.right),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun decompress_ciphertext(ct: &CompressedCiphertext): Ciphertext {
+        Ciphertext {
+            left: ristretto255::point_decompress(&ct.left),
+            right: ristretto255::point_decompress(&ct.right),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_add"></a>
 
 ## Function `ciphertext_add`
 
-Homomorphically combines two ciphertexts <code>lhs</code> and <code>rhs</code> as <code>lhs + rhs</code>.
-Useful for re-randomizing the ciphertext or updating the committed value.
+Homomorphically combines two ciphertexts `lhs` and `rhs` as `lhs + rhs`.
+Useful for re&#45;randomizing the ciphertext or updating the committed value.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_add">ciphertext_add</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_add(lhs: &ristretto255_elgamal::Ciphertext, rhs: &ristretto255_elgamal::Ciphertext): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_add">ciphertext_add</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left: <a href="ristretto255.md#0x1_ristretto255_point_add">ristretto255::point_add</a>(&lhs.left, &rhs.left),
-        right: <a href="ristretto255.md#0x1_ristretto255_point_add">ristretto255::point_add</a>(&lhs.right, &rhs.right),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_add(lhs: &Ciphertext, rhs: &Ciphertext): Ciphertext {
+        Ciphertext {
+            left: ristretto255::point_add(&lhs.left, &rhs.left),
+            right: ristretto255::point_add(&lhs.right, &rhs.right),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_add_assign"></a>
 
 ## Function `ciphertext_add_assign`
 
-Like <code>ciphertext_add</code> but assigns <code>lhs = lhs + rhs</code>.
+Like `ciphertext_add` but assigns `lhs = lhs + rhs`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_add_assign">ciphertext_add_assign</a>(lhs: &<b>mut</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_add_assign">ciphertext_add_assign</a>(lhs: &<b>mut</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>) {
-    <a href="ristretto255.md#0x1_ristretto255_point_add_assign">ristretto255::point_add_assign</a>(&<b>mut</b> lhs.left, &rhs.left);
-    <a href="ristretto255.md#0x1_ristretto255_point_add_assign">ristretto255::point_add_assign</a>(&<b>mut</b> lhs.right, &rhs.right);
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_add_assign(lhs: &mut ristretto255_elgamal::Ciphertext, rhs: &ristretto255_elgamal::Ciphertext)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_add_assign(lhs: &mut Ciphertext, rhs: &Ciphertext) {
+        ristretto255::point_add_assign(&mut lhs.left, &rhs.left);
+        ristretto255::point_add_assign(&mut lhs.right, &rhs.right);
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_ciphertext_sub"></a>
 
 ## Function `ciphertext_sub`
 
-Homomorphically combines two ciphertexts <code>lhs</code> and <code>rhs</code> as <code>lhs - rhs</code>.
-Useful for re-randomizing the ciphertext or updating the committed value.
+Homomorphically combines two ciphertexts `lhs` and `rhs` as `lhs - rhs`.
+Useful for re&#45;randomizing the ciphertext or updating the committed value.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_sub">ciphertext_sub</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_sub(lhs: &ristretto255_elgamal::Ciphertext, rhs: &ristretto255_elgamal::Ciphertext): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_sub">ciphertext_sub</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left: <a href="ristretto255.md#0x1_ristretto255_point_sub">ristretto255::point_sub</a>(&lhs.left, &rhs.left),
-        right: <a href="ristretto255.md#0x1_ristretto255_point_sub">ristretto255::point_sub</a>(&lhs.right, &rhs.right),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_sub(lhs: &Ciphertext, rhs: &Ciphertext): Ciphertext {
+        Ciphertext {
+            left: ristretto255::point_sub(&lhs.left, &rhs.left),
+            right: ristretto255::point_sub(&lhs.right, &rhs.right),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_sub_assign"></a>
 
 ## Function `ciphertext_sub_assign`
 
-Like <code>ciphertext_add</code> but assigns <code>lhs = lhs - rhs</code>.
+Like `ciphertext_add` but assigns `lhs = lhs - rhs`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_sub_assign">ciphertext_sub_assign</a>(lhs: &<b>mut</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_sub_assign">ciphertext_sub_assign</a>(lhs: &<b>mut</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>) {
-    <a href="ristretto255.md#0x1_ristretto255_point_sub_assign">ristretto255::point_sub_assign</a>(&<b>mut</b> lhs.left, &rhs.left);
-    <a href="ristretto255.md#0x1_ristretto255_point_sub_assign">ristretto255::point_sub_assign</a>(&<b>mut</b> lhs.right, &rhs.right);
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_sub_assign(lhs: &mut ristretto255_elgamal::Ciphertext, rhs: &ristretto255_elgamal::Ciphertext)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_sub_assign(lhs: &mut Ciphertext, rhs: &Ciphertext) {
+        ristretto255::point_sub_assign(&mut lhs.left, &rhs.left);
+        ristretto255::point_sub_assign(&mut lhs.right, &rhs.right);
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_ciphertext_clone"></a>
 
@@ -631,26 +647,27 @@ Like <code>ciphertext_add</code> but assigns <code>lhs = lhs - rhs</code>.
 Creates a copy of this ciphertext.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_clone">ciphertext_clone</a>(c: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>
-</code></pre>
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_clone(c: &ristretto255_elgamal::Ciphertext): ristretto255_elgamal::Ciphertext
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_clone">ciphertext_clone</a>(c: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-    <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a> {
-        left: <a href="ristretto255.md#0x1_ristretto255_point_clone">ristretto255::point_clone</a>(&c.left),
-        right: <a href="ristretto255.md#0x1_ristretto255_point_clone">ristretto255::point_clone</a>(&c.right),
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_clone(c: &Ciphertext): Ciphertext {
+        Ciphertext {
+            left: ristretto255::point_clone(&c.left),
+            right: ristretto255::point_clone(&c.right),
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_elgamal_ciphertext_equals"></a>
 
@@ -659,49 +676,47 @@ Creates a copy of this ciphertext.
 Returns true if the two ciphertexts are identical: i.e., same value and same randomness.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_equals">ciphertext_equals</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_ciphertext_equals">ciphertext_equals</a>(lhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>, rhs: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): bool {
-    <a href="ristretto255.md#0x1_ristretto255_point_equals">ristretto255::point_equals</a>(&lhs.left, &rhs.left) &&
-    <a href="ristretto255.md#0x1_ristretto255_point_equals">ristretto255::point_equals</a>(&lhs.right, &rhs.right)
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_equals(lhs: &ristretto255_elgamal::Ciphertext, rhs: &ristretto255_elgamal::Ciphertext): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_elgamal {
+    public fun ciphertext_equals(lhs: &Ciphertext, rhs: &Ciphertext): bool {
+        ristretto255::point_equals(&lhs.left, &rhs.left) &&
+        ristretto255::point_equals(&lhs.right, &rhs.right)
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_elgamal_get_value_component"></a>
 
 ## Function `get_value_component`
 
-Returns the <code>RistrettoPoint</code> in the ciphertext which contains the encrypted value in the exponent.
+Returns the `RistrettoPoint` in the ciphertext which contains the encrypted value in the exponent.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_get_value_component">get_value_component</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">ristretto255_elgamal::Ciphertext</a>): &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_get_value_component">get_value_component</a>(ct: &<a href="ristretto255_elgamal.md#0x1_ristretto255_elgamal_Ciphertext">Ciphertext</a>): &RistrettoPoint {
-    &ct.left
+```move
+module 0x1::ristretto255_elgamal {
+    public fun get_value_component(ct: &ristretto255_elgamal::Ciphertext): &ristretto255::RistrettoPoint
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
 
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::ristretto255_elgamal {
+    public fun get_value_component(ct: &Ciphertext): &RistrettoPoint {
+        &ct.left
+    }
+}
+```

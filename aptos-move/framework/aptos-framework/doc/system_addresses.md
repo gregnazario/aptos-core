@@ -30,10 +30,12 @@
     -  [Function `assert_vm`](#@Specification_1_assert_vm)
 
 
-<pre><code><b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    use 0x1::error;
+    use 0x1::signer;
+}
+```
 
 
 <a id="@Constants_0"></a>
@@ -46,9 +48,11 @@
 The address/account did not correspond to the core framework address
 
 
-<pre><code><b>const</b> <a href="system_addresses.md#0x1_system_addresses_ENOT_APTOS_FRAMEWORK_ADDRESS">ENOT_APTOS_FRAMEWORK_ADDRESS</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    const ENOT_APTOS_FRAMEWORK_ADDRESS: u64 = 3;
+}
+```
 
 
 <a id="0x1_system_addresses_ENOT_CORE_RESOURCE_ADDRESS"></a>
@@ -56,9 +60,11 @@ The address/account did not correspond to the core framework address
 The address/account did not correspond to the core resource address
 
 
-<pre><code><b>const</b> <a href="system_addresses.md#0x1_system_addresses_ENOT_CORE_RESOURCE_ADDRESS">ENOT_CORE_RESOURCE_ADDRESS</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    const ENOT_CORE_RESOURCE_ADDRESS: u64 = 1;
+}
+```
 
 
 <a id="0x1_system_addresses_ENOT_FRAMEWORK_RESERVED_ADDRESS"></a>
@@ -66,9 +72,11 @@ The address/account did not correspond to the core resource address
 The address is not framework reserved address
 
 
-<pre><code><b>const</b> <a href="system_addresses.md#0x1_system_addresses_ENOT_FRAMEWORK_RESERVED_ADDRESS">ENOT_FRAMEWORK_RESERVED_ADDRESS</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    const ENOT_FRAMEWORK_RESERVED_ADDRESS: u64 = 4;
+}
+```
 
 
 <a id="0x1_system_addresses_EVM"></a>
@@ -76,9 +84,11 @@ The address is not framework reserved address
 The operation can only be performed by the VM
 
 
-<pre><code><b>const</b> <a href="system_addresses.md#0x1_system_addresses_EVM">EVM</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    const EVM: u64 = 2;
+}
+```
 
 
 <a id="0x1_system_addresses_assert_core_resource"></a>
@@ -87,23 +97,24 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource">assert_core_resource</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource">assert_core_resource</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_core_resource_address">assert_core_resource_address</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>))
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource(account: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource(account: &signer) {
+        assert_core_resource_address(signer::address_of(account))
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_assert_core_resource_address"></a>
 
@@ -111,23 +122,24 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource_address">assert_core_resource_address</a>(addr: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource_address">assert_core_resource_address</a>(addr: <b>address</b>) {
-    <b>assert</b>!(<a href="system_addresses.md#0x1_system_addresses_is_core_resource_address">is_core_resource_address</a>(addr), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="system_addresses.md#0x1_system_addresses_ENOT_CORE_RESOURCE_ADDRESS">ENOT_CORE_RESOURCE_ADDRESS</a>))
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource_address(addr: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource_address(addr: address) {
+        assert!(is_core_resource_address(addr), error::permission_denied(ENOT_CORE_RESOURCE_ADDRESS))
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_core_resource_address"></a>
 
@@ -135,23 +147,24 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_core_resource_address">is_core_resource_address</a>(addr: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_core_resource_address">is_core_resource_address</a>(addr: <b>address</b>): bool {
-    addr == @core_resources
+```move
+module 0x1::system_addresses {
+    public fun is_core_resource_address(addr: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_core_resource_address(addr: address): bool {
+        addr == @core_resources
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_assert_aptos_framework"></a>
 
@@ -159,26 +172,27 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">assert_aptos_framework</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">assert_aptos_framework</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <b>assert</b>!(
-        <a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">is_aptos_framework_address</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>)),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="system_addresses.md#0x1_system_addresses_ENOT_APTOS_FRAMEWORK_ADDRESS">ENOT_APTOS_FRAMEWORK_ADDRESS</a>),
-    )
+```move
+module 0x1::system_addresses {
+    public fun assert_aptos_framework(account: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_aptos_framework(account: &signer) {
+        assert!(
+            is_aptos_framework_address(signer::address_of(account)),
+            error::permission_denied(ENOT_APTOS_FRAMEWORK_ADDRESS),
+        )
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_assert_framework_reserved_address"></a>
 
@@ -186,23 +200,24 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved_address">assert_framework_reserved_address</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved_address">assert_framework_reserved_address</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved">assert_framework_reserved</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>));
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved_address(account: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved_address(account: &signer) {
+        assert_framework_reserved(signer::address_of(account));
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_assert_framework_reserved"></a>
 
@@ -210,85 +225,88 @@ The operation can only be performed by the VM
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved">assert_framework_reserved</a>(addr: <b>address</b>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved">assert_framework_reserved</a>(addr: <b>address</b>) {
-    <b>assert</b>!(
-        <a href="system_addresses.md#0x1_system_addresses_is_framework_reserved_address">is_framework_reserved_address</a>(addr),
-        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="system_addresses.md#0x1_system_addresses_ENOT_FRAMEWORK_RESERVED_ADDRESS">ENOT_FRAMEWORK_RESERVED_ADDRESS</a>),
-    )
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved(addr: address)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved(addr: address) {
+        assert!(
+            is_framework_reserved_address(addr),
+            error::permission_denied(ENOT_FRAMEWORK_RESERVED_ADDRESS),
+        )
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_framework_reserved_address"></a>
 
 ## Function `is_framework_reserved_address`
 
-Return true if <code>addr</code> is 0x0 or under the on chain governance's control.
+Return true if `addr` is 0x0 or under the on chain governance&apos;s control.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_framework_reserved_address">is_framework_reserved_address</a>(addr: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_framework_reserved_address">is_framework_reserved_address</a>(addr: <b>address</b>): bool {
-    <a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">is_aptos_framework_address</a>(addr) ||
-        addr == @0x2 ||
-        addr == @0x3 ||
-        addr == @0x4 ||
-        addr == @0x5 ||
-        addr == @0x6 ||
-        addr == @0x7 ||
-        addr == @0x8 ||
-        addr == @0x9 ||
-        addr == @0xa
+```move
+module 0x1::system_addresses {
+    public fun is_framework_reserved_address(addr: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_framework_reserved_address(addr: address): bool {
+        is_aptos_framework_address(addr) ||
+            addr == @0x2 ||
+            addr == @0x3 ||
+            addr == @0x4 ||
+            addr == @0x5 ||
+            addr == @0x6 ||
+            addr == @0x7 ||
+            addr == @0x8 ||
+            addr == @0x9 ||
+            addr == @0xa
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_aptos_framework_address"></a>
 
 ## Function `is_aptos_framework_address`
 
-Return true if <code>addr</code> is 0x1.
+Return true if `addr` is 0x1.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">is_aptos_framework_address</a>(addr: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">is_aptos_framework_address</a>(addr: <b>address</b>): bool {
-    addr == @aptos_framework
+```move
+module 0x1::system_addresses {
+    public fun is_aptos_framework_address(addr: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_aptos_framework_address(addr: address): bool {
+        addr == @aptos_framework
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_assert_vm"></a>
 
@@ -297,98 +315,102 @@ Return true if <code>addr</code> is 0x1.
 Assert that the signer has the VM reserved address.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_vm">assert_vm</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_vm">assert_vm</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <b>assert</b>!(<a href="system_addresses.md#0x1_system_addresses_is_vm">is_vm</a>(<a href="account.md#0x1_account">account</a>), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="system_addresses.md#0x1_system_addresses_EVM">EVM</a>))
+```move
+module 0x1::system_addresses {
+    public fun assert_vm(account: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun assert_vm(account: &signer) {
+        assert!(is_vm(account), error::permission_denied(EVM))
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_vm"></a>
 
 ## Function `is_vm`
 
-Return true if <code>addr</code> is a reserved address for the VM to call system modules.
+Return true if `addr` is a reserved address for the VM to call system modules.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_vm">is_vm</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_vm">is_vm</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>): bool {
-    <a href="system_addresses.md#0x1_system_addresses_is_vm_address">is_vm_address</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>))
+```move
+module 0x1::system_addresses {
+    public fun is_vm(account: &signer): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_vm(account: &signer): bool {
+        is_vm_address(signer::address_of(account))
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_vm_address"></a>
 
 ## Function `is_vm_address`
 
-Return true if <code>addr</code> is a reserved address for the VM to call system modules.
+Return true if `addr` is a reserved address for the VM to call system modules.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_vm_address">is_vm_address</a>(addr: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_vm_address">is_vm_address</a>(addr: <b>address</b>): bool {
-    addr == @vm_reserved
+```move
+module 0x1::system_addresses {
+    public fun is_vm_address(addr: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_vm_address(addr: address): bool {
+        addr == @vm_reserved
+    }
+}
+```
+
 
 <a id="0x1_system_addresses_is_reserved_address"></a>
 
 ## Function `is_reserved_address`
 
-Return true if <code>addr</code> is either the VM address or an Aptos Framework address.
+Return true if `addr` is either the VM address or an Aptos Framework address.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_reserved_address">is_reserved_address</a>(addr: <b>address</b>): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_reserved_address">is_reserved_address</a>(addr: <b>address</b>): bool {
-    <a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">is_aptos_framework_address</a>(addr) || <a href="system_addresses.md#0x1_system_addresses_is_vm_address">is_vm_address</a>(addr)
+```move
+module 0x1::system_addresses {
+    public fun is_reserved_address(addr: address): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::system_addresses {
+    public fun is_reserved_address(addr: address): bool {
+        is_aptos_framework_address(addr) || is_vm_address(addr)
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -411,7 +433,7 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 <td>Asserting that a provided address corresponds to the Core Resources address should always yield a true result when matched.</td>
 <td>Low</td>
 <td>The assert_core_resource and assert_core_resource_address functions ensure that the provided signer or address belong to the @core_resources account.</td>
-<td>Formally verified via <a href="#high-level-req-1">AbortsIfNotCoreResource</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;1](AbortsIfNotCoreResource).</td>
 </tr>
 
 <tr>
@@ -419,7 +441,7 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 <td>Asserting that a provided address corresponds to the Aptos Framework Resources address should always yield a true result when matched.</td>
 <td>High</td>
 <td>The assert_aptos_framework function ensures that the provided signer belongs to the @aptos_framework account.</td>
-<td>Formally verified via <a href="#high-level-req-2">AbortsIfNotAptosFramework</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;2](AbortsIfNotAptosFramework).</td>
 </tr>
 
 <tr>
@@ -427,7 +449,7 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 <td>Asserting that a provided address corresponds to the VM address should always yield a true result when matched.</td>
 <td>High</td>
 <td>The assert_vm function ensure that the provided signer belongs to the @vm_reserved account.</td>
-<td>Formally verified via <a href="#high-level-req-3">AbortsIfNotVM</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;3](AbortsIfNotVM).</td>
 </tr>
 
 </table>
@@ -440,10 +462,12 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Module-level Specification
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma verify = true;
+    pragma aborts_if_is_strict;
+}
+```
 
 
 <a id="@Specification_1_assert_core_resource"></a>
@@ -451,16 +475,20 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `assert_core_resource`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource">assert_core_resource</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource(account: &signer)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotCoreResource">AbortsIfNotCoreResource</a> { addr: <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>) };
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma opaque;
+    include AbortsIfNotCoreResource { addr: signer::address_of(account) };
+}
+```
 
 
 <a id="@Specification_1_assert_core_resource_address"></a>
@@ -468,16 +496,20 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `assert_core_resource_address`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_core_resource_address">assert_core_resource_address</a>(addr: <b>address</b>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_core_resource_address(addr: address)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotCoreResource">AbortsIfNotCoreResource</a>;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma opaque;
+    include AbortsIfNotCoreResource;
+}
+```
 
 
 <a id="@Specification_1_is_core_resource_address"></a>
@@ -485,17 +517,21 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `is_core_resource_address`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_is_core_resource_address">is_core_resource_address</a>(addr: <b>address</b>): bool
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun is_core_resource_address(addr: address): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == (addr == @core_resources);
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma opaque;
+    aborts_if false;
+    ensures result == (addr == @core_resources);
+}
+```
 
 
 <a id="@Specification_1_assert_aptos_framework"></a>
@@ -503,16 +539,20 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `assert_aptos_framework`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">assert_aptos_framework</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_aptos_framework(account: &signer)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a>;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma opaque;
+    include AbortsIfNotAptosFramework;
+}
+```
 
 
 <a id="@Specification_1_assert_framework_reserved_address"></a>
@@ -520,15 +560,19 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `assert_framework_reserved_address`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved_address">assert_framework_reserved_address</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved_address(account: &signer)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="system_addresses.md#0x1_system_addresses_is_framework_reserved_address">is_framework_reserved_address</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>));
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    aborts_if !is_framework_reserved_address(signer::address_of(account));
+}
+```
 
 
 <a id="@Specification_1_assert_framework_reserved"></a>
@@ -536,15 +580,19 @@ Return true if <code>addr</code> is either the VM address or an Aptos Framework 
 ### Function `assert_framework_reserved`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_framework_reserved">assert_framework_reserved</a>(addr: <b>address</b>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_framework_reserved(addr: address)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="system_addresses.md#0x1_system_addresses_is_framework_reserved_address">is_framework_reserved_address</a>(addr);
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    aborts_if !is_framework_reserved_address(addr);
+}
+```
 
 Specifies that a function aborts if the account does not have the aptos framework address.
 
@@ -552,13 +600,16 @@ Specifies that a function aborts if the account does not have the aptos framewor
 <a id="0x1_system_addresses_AbortsIfNotAptosFramework"></a>
 
 
-<pre><code><b>schema</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a> {
-    <a href="account.md#0x1_account">account</a>: <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    // This enforces <a id="high-level-req-2" href="#high-level-req">high-level requirement 2</a>:
-    <b>aborts_if</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>) != @aptos_framework <b>with</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_PERMISSION_DENIED">error::PERMISSION_DENIED</a>;
+```move
+module 0x1::system_addresses {
+    schema AbortsIfNotAptosFramework {
+        account: signer;
+    // This enforces ### high&#45;level&#45;req&#45;2
+    [#high&#45;level&#45;req](high&#45;level requirement 2):
+        aborts_if signer::address_of(account) != @aptos_framework with error::PERMISSION_DENIED;
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_assert_vm"></a>
@@ -566,16 +617,20 @@ Specifies that a function aborts if the account does not have the aptos framewor
 ### Function `assert_vm`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="system_addresses.md#0x1_system_addresses_assert_vm">assert_vm</a>(<a href="account.md#0x1_account">account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::system_addresses {
+    public fun assert_vm(account: &signer)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>include</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotVM">AbortsIfNotVM</a>;
-</code></pre>
-
+```move
+module 0x1::system_addresses {
+    pragma opaque;
+    include AbortsIfNotVM;
+}
+```
 
 Specifies that a function aborts if the account does not have the VM reserved address.
 
@@ -583,12 +638,13 @@ Specifies that a function aborts if the account does not have the VM reserved ad
 <a id="0x1_system_addresses_AbortsIfNotVM"></a>
 
 
-<pre><code><b>schema</b> <a href="system_addresses.md#0x1_system_addresses_AbortsIfNotVM">AbortsIfNotVM</a> {
-    <a href="account.md#0x1_account">account</a>: <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    // This enforces <a id="high-level-req-3" href="#high-level-req">high-level requirement 3</a>:
-    <b>aborts_if</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="account.md#0x1_account">account</a>) != @vm_reserved <b>with</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_PERMISSION_DENIED">error::PERMISSION_DENIED</a>;
+```move
+module 0x1::system_addresses {
+    schema AbortsIfNotVM {
+        account: signer;
+    // This enforces ### high&#45;level&#45;req&#45;3
+    [#high&#45;level&#45;req](high&#45;level requirement 3):
+        aborts_if signer::address_of(account) != @vm_reserved with error::PERMISSION_DENIED;
+    }
 }
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```

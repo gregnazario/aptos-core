@@ -10,36 +10,36 @@ E.g., a Groth16 ZK proof verifier can be built to work over any pairing supporte
 In general, every structure implements basic operations like (de)serialization, equality check, random sampling.
 
 A group may also implement the following operations. (Additive group notation is assumed.)
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_order">order</a>()</code> for getting the group order.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_zero">zero</a>()</code> for getting the group identity.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_one">one</a>()</code> for getting the group generator (if exists).
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_neg">neg</a>()</code> for group element inversion.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_add">add</a>()</code> for group operation (i.e., a group addition).
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_sub">sub</a>()</code> for group element subtraction.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_double">double</a>()</code> for efficient doubling.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul">scalar_mul</a>()</code> for group scalar multiplication.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul">multi_scalar_mul</a>()</code> for efficient group multi-scalar multiplication.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_hash_to">hash_to</a>()</code> for hash-to-group.
+&#45; `order()` for getting the group order.
+&#45; `zero()` for getting the group identity.
+&#45; `one()` for getting the group generator (if exists).
+&#45; `neg()` for group element inversion.
+&#45; `add()` for group operation (i.e., a group addition).
+&#45; `sub()` for group element subtraction.
+&#45; `double()` for efficient doubling.
+&#45; `scalar_mul()` for group scalar multiplication.
+&#45; `multi_scalar_mul()` for efficient group multi&#45;scalar multiplication.
+&#45; `hash_to()` for hash&#45;to&#45;group.
 
 A field may also implement the following operations.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_zero">zero</a>()</code> for getting the field additive identity.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_one">one</a>()</code> for getting the field multiplicative identity.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_add">add</a>()</code> for field addition.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_sub">sub</a>()</code> for field subtraction.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_mul">mul</a>()</code> for field multiplication.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_div">div</a>()</code> for field division.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_neg">neg</a>()</code> for field negation.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_inv">inv</a>()</code> for field inversion.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_sqr">sqr</a>()</code> for efficient field element squaring.
-- <code><a href="crypto_algebra.md#0x1_crypto_algebra_from_u64">from_u64</a>()</code> for quick conversion from u64 to field element.
+&#45; `zero()` for getting the field additive identity.
+&#45; `one()` for getting the field multiplicative identity.
+&#45; `add()` for field addition.
+&#45; `sub()` for field subtraction.
+&#45; `mul()` for field multiplication.
+&#45; `div()` for field division.
+&#45; `neg()` for field negation.
+&#45; `inv()` for field inversion.
+&#45; `sqr()` for efficient field element squaring.
+&#45; `from_u64()` for quick conversion from u64 to field element.
 
-For 3 groups that admit a bilinear map, <code><a href="crypto_algebra.md#0x1_crypto_algebra_pairing">pairing</a>()</code> and <code><a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing">multi_pairing</a>()</code> may be implemented.
+For 3 groups that admit a bilinear map, `pairing()` and `multi_pairing()` may be implemented.
 
-For a subset/superset relationship between 2 structures, <code><a href="crypto_algebra.md#0x1_crypto_algebra_upcast">upcast</a>()</code> and <code><a href="crypto_algebra.md#0x1_crypto_algebra_downcast">downcast</a>()</code> may be implemented.
-E.g., in BLS12-381 pairing, since <code>Gt</code> is a subset of <code>Fq12</code>,
-<code><a href="crypto_algebra.md#0x1_crypto_algebra_upcast">upcast</a>&lt;Gt, Fq12&gt;()</code> and <code><a href="crypto_algebra.md#0x1_crypto_algebra_downcast">downcast</a>&lt;Fq12, Gt&gt;()</code> will be supported.
+For a subset/superset relationship between 2 structures, `upcast()` and `downcast()` may be implemented.
+E.g., in BLS12&#45;381 pairing, since `Gt` is a subset of `Fq12`,
+`upcast<Gt, Fq12>()` and `downcast<Fq12, Gt>()` will be supported.
 
-See <code>*_algebra.<b>move</b></code> for currently implemented algebraic structures.
+See `*_algebra.move` for currently implemented algebraic structures.
 
 
 -  [Struct `Element`](#0x1_crypto_algebra_Element)
@@ -116,40 +116,41 @@ See <code>*_algebra.<b>move</b></code> for currently implemented algebraic struc
     -  [Function `zero_internal`](#@Specification_1_zero_internal)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="../../move-stdlib/doc/option.md#0x1_option">0x1::option</a>;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    use 0x1::error;
+    use 0x1::features;
+    use 0x1::option;
+}
+```
 
 
 <a id="0x1_crypto_algebra_Element"></a>
 
 ## Struct `Element`
 
-This struct represents an element of a structure <code>S</code>.
+This struct represents an element of a structure `S`.
 
 
-<pre><code><b>struct</b> <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; <b>has</b> <b>copy</b>, drop
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    struct Element<S> has copy, drop
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>handle: u64</code>
+`handle: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -160,678 +161,706 @@ This struct represents an element of a structure <code>S</code>.
 
 
 
-<pre><code><b>const</b> <a href="crypto_algebra.md#0x1_crypto_algebra_E_NON_EQUAL_LENGTHS">E_NON_EQUAL_LENGTHS</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    const E_NON_EQUAL_LENGTHS: u64 = 2;
+}
+```
 
 
 <a id="0x1_crypto_algebra_E_NOT_IMPLEMENTED"></a>
 
 
 
-<pre><code><b>const</b> <a href="crypto_algebra.md#0x1_crypto_algebra_E_NOT_IMPLEMENTED">E_NOT_IMPLEMENTED</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    const E_NOT_IMPLEMENTED: u64 = 1;
+}
+```
 
 
 <a id="0x1_crypto_algebra_E_TOO_MUCH_MEMORY_USED"></a>
 
 
 
-<pre><code><b>const</b> <a href="crypto_algebra.md#0x1_crypto_algebra_E_TOO_MUCH_MEMORY_USED">E_TOO_MUCH_MEMORY_USED</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    const E_TOO_MUCH_MEMORY_USED: u64 = 3;
+}
+```
 
 
 <a id="0x1_crypto_algebra_eq"></a>
 
 ## Function `eq`
 
-Check if <code>x == y</code> for elements <code>x</code> and <code>y</code> of a structure <code>S</code>.
+Check if `x == y` for elements `x` and `y` of a structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_eq">eq</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_eq">eq</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): bool {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_eq_internal">eq_internal</a>&lt;S&gt;(x.handle, y.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun eq<S>(x: &crypto_algebra::Element<S>, y: &crypto_algebra::Element<S>): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::crypto_algebra {
+    public fun eq<S>(x: &Element<S>, y: &Element<S>): bool {
+        abort_unless_cryptography_algebra_natives_enabled();
+        eq_internal<S>(x.handle, y.handle)
+    }
+}
+```
+
 
 <a id="0x1_crypto_algebra_from_u64"></a>
 
 ## Function `from_u64`
 
-Convert a u64 to an element of a structure <code>S</code>.
+Convert a u64 to an element of a structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64">from_u64</a>&lt;S&gt;(value: u64): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun from_u64<S>(value: u64): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64">from_u64</a>&lt;S&gt;(value: u64): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64_internal">from_u64_internal</a>&lt;S&gt;(value)
+```move
+module 0x1::crypto_algebra {
+    public fun from_u64<S>(value: u64): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: from_u64_internal<S>(value)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_zero"></a>
 
 ## Function `zero`
 
-Return the additive identity of field <code>S</code>, or the identity of group <code>S</code>.
+Return the additive identity of field `S`, or the identity of group `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_zero">zero</a>&lt;S&gt;(): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun zero<S>(): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_zero">zero</a>&lt;S&gt;(): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_zero_internal">zero_internal</a>&lt;S&gt;()
+```move
+module 0x1::crypto_algebra {
+    public fun zero<S>(): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: zero_internal<S>()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_one"></a>
 
 ## Function `one`
 
-Return the multiplicative identity of field <code>S</code>, or a fixed generator of group <code>S</code>.
+Return the multiplicative identity of field `S`, or a fixed generator of group `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_one">one</a>&lt;S&gt;(): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun one<S>(): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_one">one</a>&lt;S&gt;(): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_one_internal">one_internal</a>&lt;S&gt;()
+```move
+module 0x1::crypto_algebra {
+    public fun one<S>(): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: one_internal<S>()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_neg"></a>
 
 ## Function `neg`
 
-Compute <code>-x</code> for an element <code>x</code> of a structure <code>S</code>.
+Compute `-x` for an element `x` of a structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_neg">neg</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun neg<S>(x: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_neg">neg</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_neg_internal">neg_internal</a>&lt;S&gt;(x.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun neg<S>(x: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: neg_internal<S>(x.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_add"></a>
 
 ## Function `add`
 
-Compute <code>x + y</code> for elements <code>x</code> and <code>y</code> of structure <code>S</code>.
+Compute `x + y` for elements `x` and `y` of structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_add">add</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun add<S>(x: &crypto_algebra::Element<S>, y: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_add">add</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_add_internal">add_internal</a>&lt;S&gt;(x.handle, y.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun add<S>(x: &Element<S>, y: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: add_internal<S>(x.handle, y.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_sub"></a>
 
 ## Function `sub`
 
-Compute <code>x - y</code> for elements <code>x</code> and <code>y</code> of a structure <code>S</code>.
+Compute `x - y` for elements `x` and `y` of a structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sub">sub</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun sub<S>(x: &crypto_algebra::Element<S>, y: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sub">sub</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_sub_internal">sub_internal</a>&lt;S&gt;(x.handle, y.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun sub<S>(x: &Element<S>, y: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: sub_internal<S>(x.handle, y.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_mul"></a>
 
 ## Function `mul`
 
-Compute <code>x * y</code> for elements <code>x</code> and <code>y</code> of a structure <code>S</code>.
+Compute `x * y` for elements `x` and `y` of a structure `S`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_mul">mul</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun mul<S>(x: &crypto_algebra::Element<S>, y: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_mul">mul</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_mul_internal">mul_internal</a>&lt;S&gt;(x.handle, y.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun mul<S>(x: &Element<S>, y: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: mul_internal<S>(x.handle, y.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_div"></a>
 
 ## Function `div`
 
-Try computing <code>x / y</code> for elements <code>x</code> and <code>y</code> of a structure <code>S</code>.
-Return none if <code>y</code> does not have a multiplicative inverse in the structure <code>S</code>
-(e.g., when <code>S</code> is a field, and <code>y</code> is zero).
+Try computing `x / y` for elements `x` and `y` of a structure `S`.
+Return none if `y` does not have a multiplicative inverse in the structure `S`
+(e.g., when `S` is a field, and `y` is zero).
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_div">div</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun div<S>(x: &crypto_algebra::Element<S>, y: &crypto_algebra::Element<S>): option::Option<crypto_algebra::Element<S>>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_div">div</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;, y: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): Option&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <b>let</b> (succ, handle) = <a href="crypto_algebra.md#0x1_crypto_algebra_div_internal">div_internal</a>&lt;S&gt;(x.handle, y.handle);
-    <b>if</b> (succ) {
-        some(<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; { handle })
-    } <b>else</b> {
-        none()
+```move
+module 0x1::crypto_algebra {
+    public fun div<S>(x: &Element<S>, y: &Element<S>): Option<Element<S>> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        let (succ, handle) = div_internal<S>(x.handle, y.handle);
+        if (succ) {
+            some(Element<S> { handle })
+        } else {
+            none()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_sqr"></a>
 
 ## Function `sqr`
 
-Compute <code>x^2</code> for an element <code>x</code> of a structure <code>S</code>. Faster and cheaper than <code><a href="crypto_algebra.md#0x1_crypto_algebra_mul">mul</a>(x, x)</code>.
+Compute `x^2` for an element `x` of a structure `S`. Faster and cheaper than `mul(x, x)`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sqr">sqr</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun sqr<S>(x: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sqr">sqr</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_sqr_internal">sqr_internal</a>&lt;S&gt;(x.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun sqr<S>(x: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: sqr_internal<S>(x.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_inv"></a>
 
 ## Function `inv`
 
-Try computing <code>x^(-1)</code> for an element <code>x</code> of a structure <code>S</code>.
-Return none if <code>x</code> does not have a multiplicative inverse in the structure <code>S</code>
-(e.g., when <code>S</code> is a field, and <code>x</code> is zero).
+Try computing `x^(-1)` for an element `x` of a structure `S`.
+Return none if `x` does not have a multiplicative inverse in the structure `S`
+(e.g., when `S` is a field, and `x` is zero).
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_inv">inv</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun inv<S>(x: &crypto_algebra::Element<S>): option::Option<crypto_algebra::Element<S>>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_inv">inv</a>&lt;S&gt;(x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): Option&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <b>let</b> (succeeded, handle) = <a href="crypto_algebra.md#0x1_crypto_algebra_inv_internal">inv_internal</a>&lt;S&gt;(x.handle);
-    <b>if</b> (succeeded) {
-        <b>let</b> scalar = <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; { handle };
-        some(scalar)
-    } <b>else</b> {
-        none()
+```move
+module 0x1::crypto_algebra {
+    public fun inv<S>(x: &Element<S>): Option<Element<S>> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        let (succeeded, handle) = inv_internal<S>(x.handle);
+        if (succeeded) {
+            let scalar = Element<S> { handle };
+            some(scalar)
+        } else {
+            none()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_double"></a>
 
 ## Function `double`
 
-Compute <code>2*P</code> for an element <code>P</code> of a structure <code>S</code>. Faster and cheaper than <code><a href="crypto_algebra.md#0x1_crypto_algebra_add">add</a>(P, P)</code>.
+Compute `2*P` for an element `P` of a structure `S`. Faster and cheaper than `add(P, P)`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_double">double</a>&lt;S&gt;(element_p: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun double<S>(element_p: &crypto_algebra::Element<S>): crypto_algebra::Element<S>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_double">double</a>&lt;S&gt;(element_p: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_double_internal">double_internal</a>&lt;S&gt;(element_p.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun double<S>(element_p: &Element<S>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<S> {
+            handle: double_internal<S>(element_p.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_multi_scalar_mul"></a>
 
 ## Function `multi_scalar_mul`
 
-Compute <code>k[0]*P[0]+...+k[n-1]*P[n-1]</code>, where
-<code>P[]</code> are <code>n</code> elements of group <code>G</code> represented by parameter <code>elements</code>, and
-<code>k[]</code> are <code>n</code> elements of the scalarfield <code>S</code> of group <code>G</code> represented by parameter <code>scalars</code>.
+Compute `k[0]*P[0]+...+k[n-1]*P[n-1]`, where
+`P[]` are `n` elements of group `G` represented by parameter `elements`, and
+`k[]` are `n` elements of the scalarfield `S` of group `G` represented by parameter `scalars`.
 
-Abort with code <code>std::error::invalid_argument(<a href="crypto_algebra.md#0x1_crypto_algebra_E_NON_EQUAL_LENGTHS">E_NON_EQUAL_LENGTHS</a>)</code> if the sizes of <code>elements</code> and <code>scalars</code> do not match.
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul">multi_scalar_mul</a>&lt;G, S&gt;(elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G&gt;&gt;, scalars: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G&gt;
-</code></pre>
+Abort with code `std::error::invalid_argument(E_NON_EQUAL_LENGTHS)` if the sizes of `elements` and `scalars` do not match.
 
 
+```move
+module 0x1::crypto_algebra {
+    public fun multi_scalar_mul<G, S>(elements: &vector<crypto_algebra::Element<G>>, scalars: &vector<crypto_algebra::Element<S>>): crypto_algebra::Element<G>
+}
+```
 
-<details>
-<summary>Implementation</summary>
+
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul">multi_scalar_mul</a>&lt;G, S&gt;(elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt;&gt;, scalars: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt; {
-    <b>let</b> element_handles = <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>(elements);
-    <b>let</b> scalar_handles = <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>(scalars);
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul_internal">multi_scalar_mul_internal</a>&lt;G, S&gt;(element_handles, scalar_handles)
+```move
+module 0x1::crypto_algebra {
+    public fun multi_scalar_mul<G, S>(elements: &vector<Element<G>>, scalars: &vector<Element<S>>): Element<G> {
+        let element_handles = handles_from_elements(elements);
+        let scalar_handles = handles_from_elements(scalars);
+        Element<G> {
+            handle: multi_scalar_mul_internal<G, S>(element_handles, scalar_handles)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_scalar_mul"></a>
 
 ## Function `scalar_mul`
 
-Compute <code>k*P</code>, where <code>P</code> is an element of a group <code>G</code> and <code>k</code> is an element of the scalar field <code>S</code> associated to the group <code>G</code>.
+Compute `k*P`, where `P` is an element of a group `G` and `k` is an element of the scalar field `S` associated to the group `G`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul">scalar_mul</a>&lt;G, S&gt;(element_p: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G&gt;, scalar_k: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun scalar_mul<G, S>(element_p: &crypto_algebra::Element<G>, scalar_k: &crypto_algebra::Element<S>): crypto_algebra::Element<G>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul">scalar_mul</a>&lt;G, S&gt;(element_p: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt;, scalar_k: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul_internal">scalar_mul_internal</a>&lt;G, S&gt;(element_p.handle, scalar_k.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun scalar_mul<G, S>(element_p: &Element<G>, scalar_k: &Element<S>): Element<G> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<G> {
+            handle: scalar_mul_internal<G, S>(element_p.handle, scalar_k.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_multi_pairing"></a>
 
 ## Function `multi_pairing`
 
-Efficiently compute <code>e(P[0],Q[0])+...+e(P[n-1],Q[n-1])</code>,
-where <code>e: (G1,G2) -&gt; (Gt)</code> is the pairing function from groups <code>(G1,G2)</code> to group <code>Gt</code>,
-<code>P[]</code> are <code>n</code> elements of group <code>G1</code> represented by parameter <code>g1_elements</code>, and
-<code>Q[]</code> are <code>n</code> elements of group <code>G2</code> represented by parameter <code>g2_elements</code>.
+Efficiently compute `e(P[0],Q[0])+...+e(P[n-1],Q[n-1])`,
+where `e: (G1,G2) -> (Gt)` is the pairing function from groups `(G1,G2)` to group `Gt`,
+`P[]` are `n` elements of group `G1` represented by parameter `g1_elements`, and
+`Q[]` are `n` elements of group `G2` represented by parameter `g2_elements`.
 
-Abort with code <code>std::error::invalid_argument(<a href="crypto_algebra.md#0x1_crypto_algebra_E_NON_EQUAL_LENGTHS">E_NON_EQUAL_LENGTHS</a>)</code> if the sizes of <code>g1_elements</code> and <code>g2_elements</code> do not match.
+Abort with code `std::error::invalid_argument(E_NON_EQUAL_LENGTHS)` if the sizes of `g1_elements` and `g2_elements` do not match.
 
-NOTE: we are viewing the target group <code>Gt</code> of the pairing as an additive group,
+NOTE: we are viewing the target group `Gt` of the pairing as an additive group,
 rather than a multiplicative one (which is typically the case).
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing">multi_pairing</a>&lt;G1, G2, Gt&gt;(g1_elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G1&gt;&gt;, g2_elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G2&gt;&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;Gt&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun multi_pairing<G1, G2, Gt>(g1_elements: &vector<crypto_algebra::Element<G1>>, g2_elements: &vector<crypto_algebra::Element<G2>>): crypto_algebra::Element<Gt>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing">multi_pairing</a>&lt;G1,G2,Gt&gt;(g1_elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G1&gt;&gt;, g2_elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G2&gt;&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;Gt&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <b>let</b> g1_handles = <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>(g1_elements);
-    <b>let</b> g2_handles = <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>(g2_elements);
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;Gt&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing_internal">multi_pairing_internal</a>&lt;G1,G2,Gt&gt;(g1_handles, g2_handles)
+```move
+module 0x1::crypto_algebra {
+    public fun multi_pairing<G1,G2,Gt>(g1_elements: &vector<Element<G1>>, g2_elements: &vector<Element<G2>>): Element<Gt> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        let g1_handles = handles_from_elements(g1_elements);
+        let g2_handles = handles_from_elements(g2_elements);
+        Element<Gt> {
+            handle: multi_pairing_internal<G1,G2,Gt>(g1_handles, g2_handles)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_pairing"></a>
 
 ## Function `pairing`
 
-Compute the pairing function (a.k.a., bilinear map) on a <code>G1</code> element and a <code>G2</code> element.
-Return an element in the target group <code>Gt</code>.
+Compute the pairing function (a.k.a., bilinear map) on a `G1` element and a `G2` element.
+Return an element in the target group `Gt`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_pairing">pairing</a>&lt;G1, G2, Gt&gt;(element_1: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G1&gt;, element_2: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;G2&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;Gt&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun pairing<G1, G2, Gt>(element_1: &crypto_algebra::Element<G1>, element_2: &crypto_algebra::Element<G2>): crypto_algebra::Element<Gt>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_pairing">pairing</a>&lt;G1,G2,Gt&gt;(element_1: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G1&gt;, element_2: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;G2&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;Gt&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;Gt&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_pairing_internal">pairing_internal</a>&lt;G1,G2,Gt&gt;(element_1.handle, element_2.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun pairing<G1,G2,Gt>(element_1: &Element<G1>, element_2: &Element<G2>): Element<Gt> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<Gt> {
+            handle: pairing_internal<G1,G2,Gt>(element_1.handle, element_2.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_deserialize"></a>
 
 ## Function `deserialize`
 
-Try deserializing a byte array to an element of an algebraic structure <code>S</code> using a given serialization format <code>F</code>.
+Try deserializing a byte array to an element of an algebraic structure `S` using a given serialization format `F`.
 Return none if the deserialization failed.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize">deserialize</a>&lt;S, F&gt;(bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun deserialize<S, F>(bytes: &vector<u8>): option::Option<crypto_algebra::Element<S>>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize">deserialize</a>&lt;S, F&gt;(bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): Option&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <b>let</b> (succeeded, handle) = <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize_internal">deserialize_internal</a>&lt;S, F&gt;(bytes);
-    <b>if</b> (succeeded) {
-        some(<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; { handle })
-    } <b>else</b> {
-        none()
+```move
+module 0x1::crypto_algebra {
+    public fun deserialize<S, F>(bytes: &vector<u8>): Option<Element<S>> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        let (succeeded, handle) = deserialize_internal<S, F>(bytes);
+        if (succeeded) {
+            some(Element<S> { handle })
+        } else {
+            none()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_serialize"></a>
 
 ## Function `serialize`
 
-Serialize an element of an algebraic structure <code>S</code> to a byte array using a given serialization format <code>F</code>.
+Serialize an element of an algebraic structure `S` to a byte array using a given serialization format `F`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_serialize">serialize</a>&lt;S, F&gt;(element: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_serialize">serialize</a>&lt;S, F&gt;(element: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_serialize_internal">serialize_internal</a>&lt;S, F&gt;(element.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun serialize<S, F>(element: &crypto_algebra::Element<S>): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::crypto_algebra {
+    public fun serialize<S, F>(element: &Element<S>): vector<u8> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        serialize_internal<S, F>(element.handle)
+    }
+}
+```
+
 
 <a id="0x1_crypto_algebra_order"></a>
 
 ## Function `order`
 
-Get the order of structure <code>S</code>, a big integer little-endian encoded as a byte array.
+Get the order of structure `S`, a big integer little&#45;endian encoded as a byte array.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_order">order</a>&lt;S&gt;(): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_order">order</a>&lt;S&gt;(): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_order_internal">order_internal</a>&lt;S&gt;()
+```move
+module 0x1::crypto_algebra {
+    public fun order<S>(): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::crypto_algebra {
+    public fun order<S>(): vector<u8> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        order_internal<S>()
+    }
+}
+```
+
 
 <a id="0x1_crypto_algebra_upcast"></a>
 
 ## Function `upcast`
 
-Cast an element of a structure <code>S</code> to a parent structure <code>L</code>.
+Cast an element of a structure `S` to a parent structure `L`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_upcast">upcast</a>&lt;S, L&gt;(element: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;L&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    public fun upcast<S, L>(element: &crypto_algebra::Element<S>): crypto_algebra::Element<L>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_upcast">upcast</a>&lt;S,L&gt;(element: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;L&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;L&gt; {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_upcast_internal">upcast_internal</a>&lt;S,L&gt;(element.handle)
+```move
+module 0x1::crypto_algebra {
+    public fun upcast<S,L>(element: &Element<S>): Element<L> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element<L> {
+            handle: upcast_internal<S,L>(element.handle)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_downcast"></a>
 
 ## Function `downcast`
 
-Try casting an element <code>x</code> of a structure <code>L</code> to a sub-structure <code>S</code>.
-Return none if <code>x</code> is not a member of <code>S</code>.
+Try casting an element `x` of a structure `L` to a sub&#45;structure `S`.
+Return none if `x` is not a member of `S`.
 
-NOTE: Membership check in <code>S</code> is performed inside, which can be expensive, depending on the structures <code>L</code> and <code>S</code>.
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_downcast">downcast</a>&lt;L, S&gt;(element_x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;L&gt;): <a href="../../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;
-</code></pre>
+NOTE: Membership check in `S` is performed inside, which can be expensive, depending on the structures `L` and `S`.
 
 
+```move
+module 0x1::crypto_algebra {
+    public fun downcast<L, S>(element_x: &crypto_algebra::Element<L>): option::Option<crypto_algebra::Element<S>>
+}
+```
 
-<details>
-<summary>Implementation</summary>
+
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_downcast">downcast</a>&lt;L,S&gt;(element_x: &<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;L&gt;): Option&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <b>let</b> (succ, new_handle) = <a href="crypto_algebra.md#0x1_crypto_algebra_downcast_internal">downcast_internal</a>&lt;L,S&gt;(element_x.handle);
-    <b>if</b> (succ) {
-        some(<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; { handle: new_handle })
-    } <b>else</b> {
-        none()
+```move
+module 0x1::crypto_algebra {
+    public fun downcast<L,S>(element_x: &Element<L>): Option<Element<S>> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        let (succ, new_handle) = downcast_internal<L,S>(element_x.handle);
+        if (succ) {
+            some(Element<S> { handle: new_handle })
+        } else {
+            none()
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_hash_to"></a>
 
 ## Function `hash_to`
 
-Hash an arbitrary-length byte array <code>msg</code> into structure <code>S</code> with a domain separation tag <code>dst</code>
-using the given hash-to-structure suite <code>H</code>.
+Hash an arbitrary&#45;length byte array `msg` into structure `S` with a domain separation tag `dst`
+using the given hash&#45;to&#45;structure suite `H`.
 
-NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a non-empty one is provided.
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to">hash_to</a>&lt;S, H&gt;(dst: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, msg: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;
-</code></pre>
+NOTE: some hashing methods do not accept a `dst` and will abort if a non&#45;empty one is provided.
 
 
+```move
+module 0x1::crypto_algebra {
+    public fun hash_to<S, H>(dst: &vector<u8>, msg: &vector<u8>): crypto_algebra::Element<S>
+}
+```
 
-<details>
-<summary>Implementation</summary>
+
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to">hash_to</a>&lt;S, H&gt;(dst: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, msg: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt; {
-    <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>();
-    <a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a> {
-        handle: <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to_internal">hash_to_internal</a>&lt;S, H&gt;(dst, msg)
+```move
+module 0x1::crypto_algebra {
+    public fun hash_to<S, H>(dst: &vector<u8>, msg: &vector<u8>): Element<S> {
+        abort_unless_cryptography_algebra_natives_enabled();
+        Element {
+            handle: hash_to_internal<S, H>(dst, msg)
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled"></a>
 
@@ -839,24 +868,25 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>()
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_abort_unless_cryptography_algebra_natives_enabled">abort_unless_cryptography_algebra_natives_enabled</a>() {
-    <b>if</b> (<a href="../../move-stdlib/doc/features.md#0x1_features_cryptography_algebra_enabled">features::cryptography_algebra_enabled</a>()) <b>return</b>;
-    <b>abort</b>(std::error::not_implemented(0))
+```move
+module 0x1::crypto_algebra {
+    fun abort_unless_cryptography_algebra_natives_enabled()
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::crypto_algebra {
+    fun abort_unless_cryptography_algebra_natives_enabled() {
+        if (features::cryptography_algebra_enabled()) return;
+        abort(std::error::not_implemented(0))
+    }
+}
+```
+
 
 <a id="0x1_crypto_algebra_handles_from_elements"></a>
 
@@ -864,36 +894,37 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>&lt;S&gt;(elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>&lt;S&gt;(elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">Element</a>&lt;S&gt;&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt; {
-    <b>let</b> num_elements = std::vector::length(elements);
-    <b>let</b> element_handles = std::vector::empty();
-    <b>let</b> i = 0;
-    <b>while</b> ({
-        <b>spec</b> {
-            <b>invariant</b> len(element_handles) == i;
-            <b>invariant</b> <b>forall</b> k in 0..i: element_handles[k] == elements[k].handle;
-        };
-        i &lt; num_elements
-    }) {
-        std::vector::push_back(&<b>mut</b> element_handles, std::vector::borrow(elements, i).handle);
-        i = i + 1;
-    };
-    element_handles
+```move
+module 0x1::crypto_algebra {
+    fun handles_from_elements<S>(elements: &vector<crypto_algebra::Element<S>>): vector<u64>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::crypto_algebra {
+    fun handles_from_elements<S>(elements: &vector<Element<S>>): vector<u64> {
+        let num_elements = std::vector::length(elements);
+        let element_handles = std::vector::empty();
+        let i = 0;
+        while ({
+            spec {
+                invariant len(element_handles) == i;
+                invariant forall k in 0..i: element_handles[k] == elements[k].handle;
+            };
+            i < num_elements
+        }) {
+            std::vector::push_back(&mut element_handles, std::vector::borrow(elements, i).handle);
+            i = i + 1;
+        };
+        element_handles
+    }
+}
+```
+
 
 <a id="0x1_crypto_algebra_add_internal"></a>
 
@@ -901,21 +932,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_add_internal">add_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun add_internal<S>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_add_internal">add_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun add_internal<S>(handle_1: u64, handle_2: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_deserialize_internal"></a>
 
@@ -923,21 +955,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize_internal">deserialize_internal</a>&lt;S, F&gt;(bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun deserialize_internal<S, F>(bytes: &vector<u8>): (bool, u64)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize_internal">deserialize_internal</a>&lt;S, F&gt;(bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): (bool, u64);
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun deserialize_internal<S, F>(bytes: &vector<u8>): (bool, u64);
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_div_internal"></a>
 
@@ -945,21 +978,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_div_internal">div_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun div_internal<F>(handle_1: u64, handle_2: u64): (bool, u64)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_div_internal">div_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): (bool, u64);
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun div_internal<F>(handle_1: u64, handle_2: u64): (bool, u64);
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_double_internal"></a>
 
@@ -967,21 +1001,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_double_internal">double_internal</a>&lt;G&gt;(element_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun double_internal<G>(element_handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_double_internal">double_internal</a>&lt;G&gt;(element_handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun double_internal<G>(element_handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_downcast_internal"></a>
 
@@ -989,21 +1024,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_downcast_internal">downcast_internal</a>&lt;L, S&gt;(handle: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun downcast_internal<L, S>(handle: u64): (bool, u64)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_downcast_internal">downcast_internal</a>&lt;L,S&gt;(handle: u64): (bool, u64);
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun downcast_internal<L,S>(handle: u64): (bool, u64);
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_from_u64_internal"></a>
 
@@ -1011,21 +1047,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64_internal">from_u64_internal</a>&lt;S&gt;(value: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun from_u64_internal<S>(value: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64_internal">from_u64_internal</a>&lt;S&gt;(value: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun from_u64_internal<S>(value: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_eq_internal"></a>
 
@@ -1033,21 +1070,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_eq_internal">eq_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): bool
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun eq_internal<S>(handle_1: u64, handle_2: u64): bool
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_eq_internal">eq_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): bool;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun eq_internal<S>(handle_1: u64, handle_2: u64): bool;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_hash_to_internal"></a>
 
@@ -1055,21 +1093,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to_internal">hash_to_internal</a>&lt;S, H&gt;(dst: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun hash_to_internal<S, H>(dst: &vector<u8>, bytes: &vector<u8>): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to_internal">hash_to_internal</a>&lt;S, H&gt;(dst: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun hash_to_internal<S, H>(dst: &vector<u8>, bytes: &vector<u8>): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_inv_internal"></a>
 
@@ -1077,21 +1116,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_inv_internal">inv_internal</a>&lt;F&gt;(handle: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun inv_internal<F>(handle: u64): (bool, u64)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_inv_internal">inv_internal</a>&lt;F&gt;(handle: u64): (bool, u64);
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun inv_internal<F>(handle: u64): (bool, u64);
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_mul_internal"></a>
 
@@ -1099,21 +1139,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_mul_internal">mul_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun mul_internal<F>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_mul_internal">mul_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun mul_internal<F>(handle_1: u64, handle_2: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_multi_pairing_internal"></a>
 
@@ -1121,21 +1162,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing_internal">multi_pairing_internal</a>&lt;G1, G2, Gt&gt;(g1_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, g2_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun multi_pairing_internal<G1, G2, Gt>(g1_handles: vector<u64>, g2_handles: vector<u64>): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing_internal">multi_pairing_internal</a>&lt;G1,G2,Gt&gt;(g1_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, g2_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun multi_pairing_internal<G1,G2,Gt>(g1_handles: vector<u64>, g2_handles: vector<u64>): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_multi_scalar_mul_internal"></a>
 
@@ -1143,21 +1185,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul_internal">multi_scalar_mul_internal</a>&lt;G, S&gt;(element_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, scalar_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun multi_scalar_mul_internal<G, S>(element_handles: vector<u64>, scalar_handles: vector<u64>): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul_internal">multi_scalar_mul_internal</a>&lt;G, S&gt;(element_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, scalar_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun multi_scalar_mul_internal<G, S>(element_handles: vector<u64>, scalar_handles: vector<u64>): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_neg_internal"></a>
 
@@ -1165,21 +1208,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_neg_internal">neg_internal</a>&lt;F&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun neg_internal<F>(handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_neg_internal">neg_internal</a>&lt;F&gt;(handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun neg_internal<F>(handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_one_internal"></a>
 
@@ -1187,21 +1231,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_one_internal">one_internal</a>&lt;S&gt;(): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun one_internal<S>(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_one_internal">one_internal</a>&lt;S&gt;(): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun one_internal<S>(): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_order_internal"></a>
 
@@ -1209,21 +1254,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_order_internal">order_internal</a>&lt;G&gt;(): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun order_internal<G>(): vector<u8>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_order_internal">order_internal</a>&lt;G&gt;(): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun order_internal<G>(): vector<u8>;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_pairing_internal"></a>
 
@@ -1231,21 +1277,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_pairing_internal">pairing_internal</a>&lt;G1, G2, Gt&gt;(g1_handle: u64, g2_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun pairing_internal<G1, G2, Gt>(g1_handle: u64, g2_handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_pairing_internal">pairing_internal</a>&lt;G1,G2,Gt&gt;(g1_handle: u64, g2_handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun pairing_internal<G1,G2,Gt>(g1_handle: u64, g2_handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_scalar_mul_internal"></a>
 
@@ -1253,21 +1300,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul_internal">scalar_mul_internal</a>&lt;G, S&gt;(element_handle: u64, scalar_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun scalar_mul_internal<G, S>(element_handle: u64, scalar_handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul_internal">scalar_mul_internal</a>&lt;G, S&gt;(element_handle: u64, scalar_handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun scalar_mul_internal<G, S>(element_handle: u64, scalar_handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_serialize_internal"></a>
 
@@ -1275,21 +1323,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_serialize_internal">serialize_internal</a>&lt;S, F&gt;(handle: u64): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun serialize_internal<S, F>(handle: u64): vector<u8>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_serialize_internal">serialize_internal</a>&lt;S, F&gt;(handle: u64): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun serialize_internal<S, F>(handle: u64): vector<u8>;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_sqr_internal"></a>
 
@@ -1297,21 +1346,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sqr_internal">sqr_internal</a>&lt;G&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun sqr_internal<G>(handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sqr_internal">sqr_internal</a>&lt;G&gt;(handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun sqr_internal<G>(handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_sub_internal"></a>
 
@@ -1319,21 +1369,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sub_internal">sub_internal</a>&lt;G&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun sub_internal<G>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sub_internal">sub_internal</a>&lt;G&gt;(handle_1: u64, handle_2: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun sub_internal<G>(handle_1: u64, handle_2: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_upcast_internal"></a>
 
@@ -1341,21 +1392,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_upcast_internal">upcast_internal</a>&lt;S, L&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun upcast_internal<S, L>(handle: u64): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_upcast_internal">upcast_internal</a>&lt;S,L&gt;(handle: u64): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun upcast_internal<S,L>(handle: u64): u64;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_crypto_algebra_zero_internal"></a>
 
@@ -1363,21 +1415,22 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_zero_internal">zero_internal</a>&lt;S&gt;(): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun zero_internal<S>(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_zero_internal">zero_internal</a>&lt;S&gt;(): u64;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    native fun zero_internal<S>(): u64;
+}
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -1389,16 +1442,20 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `handles_from_elements`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_handles_from_elements">handles_from_elements</a>&lt;S&gt;(elements: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="crypto_algebra.md#0x1_crypto_algebra_Element">crypto_algebra::Element</a>&lt;S&gt;&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun handles_from_elements<S>(elements: &vector<crypto_algebra::Element<S>>): vector<u64>
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> <b>forall</b> i in 0..len(elements): result[i] == elements[i].handle;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    aborts_if false;
+    ensures forall i in 0..len(elements): result[i] == elements[i].handle;
+}
+```
 
 
 <a id="@Specification_1_add_internal"></a>
@@ -1406,15 +1463,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `add_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_add_internal">add_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun add_internal<S>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_deserialize_internal"></a>
@@ -1422,15 +1483,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `deserialize_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_deserialize_internal">deserialize_internal</a>&lt;S, F&gt;(bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun deserialize_internal<S, F>(bytes: &vector<u8>): (bool, u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_div_internal"></a>
@@ -1438,15 +1503,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `div_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_div_internal">div_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun div_internal<F>(handle_1: u64, handle_2: u64): (bool, u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_double_internal"></a>
@@ -1454,15 +1523,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `double_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_double_internal">double_internal</a>&lt;G&gt;(element_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun double_internal<G>(element_handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_downcast_internal"></a>
@@ -1470,15 +1543,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `downcast_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_downcast_internal">downcast_internal</a>&lt;L, S&gt;(handle: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun downcast_internal<L, S>(handle: u64): (bool, u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_from_u64_internal"></a>
@@ -1486,15 +1563,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `from_u64_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_from_u64_internal">from_u64_internal</a>&lt;S&gt;(value: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun from_u64_internal<S>(value: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_eq_internal"></a>
@@ -1502,15 +1583,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `eq_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_eq_internal">eq_internal</a>&lt;S&gt;(handle_1: u64, handle_2: u64): bool
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun eq_internal<S>(handle_1: u64, handle_2: u64): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_hash_to_internal"></a>
@@ -1518,15 +1603,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `hash_to_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_hash_to_internal">hash_to_internal</a>&lt;S, H&gt;(dst: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, bytes: &<a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun hash_to_internal<S, H>(dst: &vector<u8>, bytes: &vector<u8>): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_inv_internal"></a>
@@ -1534,15 +1623,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `inv_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_inv_internal">inv_internal</a>&lt;F&gt;(handle: u64): (bool, u64)
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun inv_internal<F>(handle: u64): (bool, u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_mul_internal"></a>
@@ -1550,15 +1643,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `mul_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_mul_internal">mul_internal</a>&lt;F&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun mul_internal<F>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_multi_pairing_internal"></a>
@@ -1566,15 +1663,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `multi_pairing_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_pairing_internal">multi_pairing_internal</a>&lt;G1, G2, Gt&gt;(g1_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, g2_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun multi_pairing_internal<G1, G2, Gt>(g1_handles: vector<u64>, g2_handles: vector<u64>): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_multi_scalar_mul_internal"></a>
@@ -1582,15 +1683,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `multi_scalar_mul_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_multi_scalar_mul_internal">multi_scalar_mul_internal</a>&lt;G, S&gt;(element_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;, scalar_handles: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u64&gt;): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun multi_scalar_mul_internal<G, S>(element_handles: vector<u64>, scalar_handles: vector<u64>): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_neg_internal"></a>
@@ -1598,15 +1703,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `neg_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_neg_internal">neg_internal</a>&lt;F&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun neg_internal<F>(handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_one_internal"></a>
@@ -1614,15 +1723,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `one_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_one_internal">one_internal</a>&lt;S&gt;(): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun one_internal<S>(): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_order_internal"></a>
@@ -1630,15 +1743,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `order_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_order_internal">order_internal</a>&lt;G&gt;(): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun order_internal<G>(): vector<u8>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_pairing_internal"></a>
@@ -1646,15 +1763,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `pairing_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_pairing_internal">pairing_internal</a>&lt;G1, G2, Gt&gt;(g1_handle: u64, g2_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun pairing_internal<G1, G2, Gt>(g1_handle: u64, g2_handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_scalar_mul_internal"></a>
@@ -1662,15 +1783,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `scalar_mul_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_scalar_mul_internal">scalar_mul_internal</a>&lt;G, S&gt;(element_handle: u64, scalar_handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun scalar_mul_internal<G, S>(element_handle: u64, scalar_handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_serialize_internal"></a>
@@ -1678,15 +1803,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `serialize_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_serialize_internal">serialize_internal</a>&lt;S, F&gt;(handle: u64): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun serialize_internal<S, F>(handle: u64): vector<u8>
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_sqr_internal"></a>
@@ -1694,15 +1823,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `sqr_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sqr_internal">sqr_internal</a>&lt;G&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun sqr_internal<G>(handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_sub_internal"></a>
@@ -1710,15 +1843,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `sub_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_sub_internal">sub_internal</a>&lt;G&gt;(handle_1: u64, handle_2: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun sub_internal<G>(handle_1: u64, handle_2: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_upcast_internal"></a>
@@ -1726,15 +1863,19 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `upcast_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_upcast_internal">upcast_internal</a>&lt;S, L&gt;(handle: u64): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun upcast_internal<S, L>(handle: u64): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```
 
 
 <a id="@Specification_1_zero_internal"></a>
@@ -1742,14 +1883,16 @@ NOTE: some hashing methods do not accept a <code>dst</code> and will abort if a 
 ### Function `zero_internal`
 
 
-<pre><code><b>fun</b> <a href="crypto_algebra.md#0x1_crypto_algebra_zero_internal">zero_internal</a>&lt;S&gt;(): u64
-</code></pre>
+```move
+module 0x1::crypto_algebra {
+    fun zero_internal<S>(): u64
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::crypto_algebra {
+    pragma opaque;
+}
+```

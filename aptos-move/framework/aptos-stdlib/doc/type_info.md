@@ -26,12 +26,14 @@
     -  [Function `verify_type_of_generic`](#@Specification_1_verify_type_of_generic)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/bcs.md#0x1_bcs">0x1::bcs</a>;
-<b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="../../move-stdlib/doc/string.md#0x1_string">0x1::string</a>;
-</code></pre>
-
+```move
+module 0x1::type_info {
+    use 0x1::bcs;
+    use 0x1::error;
+    use 0x1::features;
+    use 0x1::string;
+}
+```
 
 
 <a id="0x1_type_info_TypeInfo"></a>
@@ -40,38 +42,37 @@
 
 
 
-<pre><code><b>struct</b> <a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::type_info {
+    struct TypeInfo has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>account_address: <b>address</b></code>
+`account_address: address`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>module_name: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`module_name: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>struct_name: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`struct_name: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -82,9 +83,11 @@
 
 
 
-<pre><code><b>const</b> <a href="type_info.md#0x1_type_info_E_NATIVE_FUN_NOT_AVAILABLE">E_NATIVE_FUN_NOT_AVAILABLE</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::type_info {
+    const E_NATIVE_FUN_NOT_AVAILABLE: u64 = 1;
+}
+```
 
 
 <a id="0x1_type_info_account_address"></a>
@@ -93,23 +96,24 @@
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_account_address">account_address</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">type_info::TypeInfo</a>): <b>address</b>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_account_address">account_address</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>): <b>address</b> {
-    <a href="type_info.md#0x1_type_info">type_info</a>.account_address
+```move
+module 0x1::type_info {
+    public fun account_address(type_info: &type_info::TypeInfo): address
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    public fun account_address(type_info: &TypeInfo): address {
+        type_info.account_address
+    }
+}
+```
+
 
 <a id="0x1_type_info_module_name"></a>
 
@@ -117,23 +121,24 @@
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_module_name">module_name</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">type_info::TypeInfo</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_module_name">module_name</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <a href="type_info.md#0x1_type_info">type_info</a>.module_name
+```move
+module 0x1::type_info {
+    public fun module_name(type_info: &type_info::TypeInfo): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    public fun module_name(type_info: &TypeInfo): vector<u8> {
+        type_info.module_name
+    }
+}
+```
+
 
 <a id="0x1_type_info_struct_name"></a>
 
@@ -141,102 +146,106 @@
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_struct_name">struct_name</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">type_info::TypeInfo</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_struct_name">struct_name</a>(<a href="type_info.md#0x1_type_info">type_info</a>: &<a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    <a href="type_info.md#0x1_type_info">type_info</a>.struct_name
+```move
+module 0x1::type_info {
+    public fun struct_name(type_info: &type_info::TypeInfo): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    public fun struct_name(type_info: &TypeInfo): vector<u8> {
+        type_info.struct_name
+    }
+}
+```
+
 
 <a id="0x1_type_info_chain_id"></a>
 
 ## Function `chain_id`
 
-Returns the current chain ID, mirroring what <code>aptos_framework::chain_id::get()</code> would return, except in <code>#[test]</code>
-functions, where this will always return <code>4u8</code> as the chain ID, whereas <code>aptos_framework::chain_id::get()</code> will
-return whichever ID was passed to <code>aptos_framework::chain_id::initialize_for_test()</code>.
+Returns the current chain ID, mirroring what `aptos_framework::chain_id::get()` would return, except in `#[test]`
+functions, where this will always return `4u8` as the chain ID, whereas `aptos_framework::chain_id::get()` will
+return whichever ID was passed to `aptos_framework::chain_id::initialize_for_test()`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_chain_id">chain_id</a>(): u8
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_chain_id">chain_id</a>(): u8 {
-    <b>if</b> (!<a href="../../move-stdlib/doc/features.md#0x1_features_aptos_stdlib_chain_id_enabled">features::aptos_stdlib_chain_id_enabled</a>()) {
-        <b>abort</b>(std::error::invalid_state(<a href="type_info.md#0x1_type_info_E_NATIVE_FUN_NOT_AVAILABLE">E_NATIVE_FUN_NOT_AVAILABLE</a>))
-    };
-
-    <a href="type_info.md#0x1_type_info_chain_id_internal">chain_id_internal</a>()
+```move
+module 0x1::type_info {
+    public fun chain_id(): u8
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    public fun chain_id(): u8 {
+        if (!features::aptos_stdlib_chain_id_enabled()) {
+            abort(std::error::invalid_state(E_NATIVE_FUN_NOT_AVAILABLE))
+        };
+
+        chain_id_internal()
+    }
+}
+```
+
 
 <a id="0x1_type_info_type_of"></a>
 
 ## Function `type_of`
 
-Return the <code><a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a></code> struct containing  for the type <code>T</code>.
+Return the `TypeInfo` struct containing  for the type `T`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;(): <a href="type_info.md#0x1_type_info_TypeInfo">type_info::TypeInfo</a>
-</code></pre>
+```move
+module 0x1::type_info {
+    public fun type_of<T>(): type_info::TypeInfo
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>native</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;(): <a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>;
-</code></pre>
+```move
+module 0x1::type_info {
+    public native fun type_of<T>(): TypeInfo;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_type_info_type_name"></a>
 
 ## Function `type_name`
 
 Return the human readable string for the type, including the address, module name, and any type arguments.
-Example: 0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>
-Or: 0x1::table::Table<0x1::string::String, 0x1::string::String>
+Example: 0x1::coin::CoinStore&lt;0x1::aptos_coin::AptosCoin&gt;
+Or: 0x1::table::Table&lt;0x1::string::String, 0x1::string::String&gt;
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_name">type_name</a>&lt;T&gt;(): <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
-</code></pre>
+```move
+module 0x1::type_info {
+    public fun type_name<T>(): string::String
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>native</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_name">type_name</a>&lt;T&gt;(): String;
-</code></pre>
+```move
+module 0x1::type_info {
+    public native fun type_name<T>(): String;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_type_info_chain_id_internal"></a>
 
@@ -244,53 +253,55 @@ Or: 0x1::table::Table<0x1::string::String, 0x1::string::String>
 
 
 
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_chain_id_internal">chain_id_internal</a>(): u8
-</code></pre>
+```move
+module 0x1::type_info {
+    fun chain_id_internal(): u8
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="type_info.md#0x1_type_info_chain_id_internal">chain_id_internal</a>(): u8;
-</code></pre>
+```move
+module 0x1::type_info {
+    native fun chain_id_internal(): u8;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_type_info_size_of_val"></a>
 
 ## Function `size_of_val`
 
-Return the BCS size, in bytes, of value at <code>val_ref</code>.
+Return the BCS size, in bytes, of value at `val_ref`.
 
 See the [BCS spec](https://github.com/diem/bcs)
 
-See <code>test_size_of_val()</code> for an analysis of common types and
-nesting patterns, as well as <code>test_size_of_val_vectors()</code> for an
+See `test_size_of_val()` for an analysis of common types and
+nesting patterns, as well as `test_size_of_val_vectors()` for an
 analysis of vector size dynamism.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_size_of_val">size_of_val</a>&lt;T&gt;(val_ref: &T): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_size_of_val">size_of_val</a>&lt;T&gt;(val_ref: &T): u64 {
-    // Return <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a> length of vectorized BCS representation.
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&<a href="../../move-stdlib/doc/bcs.md#0x1_bcs_to_bytes">bcs::to_bytes</a>(val_ref))
+```move
+module 0x1::type_info {
+    public fun size_of_val<T>(val_ref: &T): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    public fun size_of_val<T>(val_ref: &T): u64 {
+        // Return vector length of vectorized BCS representation.
+        vector::length(&bcs::to_bytes(val_ref))
+    }
+}
+```
+
 
 <a id="0x1_type_info_verify_type_of"></a>
 
@@ -298,32 +309,33 @@ analysis of vector size dynamism.
 
 
 
-<pre><code>#[verify_only]
-<b>fun</b> <a href="type_info.md#0x1_type_info_verify_type_of">verify_type_of</a>()
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_verify_type_of">verify_type_of</a>() {
-    <b>let</b> <a href="type_info.md#0x1_type_info">type_info</a> = <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;<a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>&gt;();
-    <b>let</b> account_address = <a href="type_info.md#0x1_type_info_account_address">account_address</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>let</b> module_name = <a href="type_info.md#0x1_type_info_module_name">module_name</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>let</b> struct_name = <a href="type_info.md#0x1_type_info_struct_name">struct_name</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>spec</b> {
-        <b>assert</b> account_address == @aptos_std;
-        <b>assert</b> module_name == b"<a href="type_info.md#0x1_type_info">type_info</a>";
-        <b>assert</b> struct_name == b"<a href="type_info.md#0x1_type_info_TypeInfo">TypeInfo</a>";
-    };
+```move
+module 0x1::type_info {
+    #[verify_only]
+    fun verify_type_of()
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    fun verify_type_of() {
+        let type_info = type_of<TypeInfo>();
+        let account_address = account_address(&type_info);
+        let module_name = module_name(&type_info);
+        let struct_name = struct_name(&type_info);
+        spec {
+            assert account_address == @aptos_std;
+            assert module_name == b"type_info";
+            assert struct_name == b"TypeInfo";
+        };
+    }
+}
+```
+
 
 <a id="0x1_type_info_verify_type_of_generic"></a>
 
@@ -331,32 +343,33 @@ analysis of vector size dynamism.
 
 
 
-<pre><code>#[verify_only]
-<b>fun</b> <a href="type_info.md#0x1_type_info_verify_type_of_generic">verify_type_of_generic</a>&lt;T&gt;()
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_verify_type_of_generic">verify_type_of_generic</a>&lt;T&gt;() {
-    <b>let</b> <a href="type_info.md#0x1_type_info">type_info</a> = <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;();
-    <b>let</b> account_address = <a href="type_info.md#0x1_type_info_account_address">account_address</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>let</b> module_name = <a href="type_info.md#0x1_type_info_module_name">module_name</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>let</b> struct_name = <a href="type_info.md#0x1_type_info_struct_name">struct_name</a>(&<a href="type_info.md#0x1_type_info">type_info</a>);
-    <b>spec</b> {
-        <b>assert</b> account_address == <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;().account_address;
-        <b>assert</b> module_name == <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;().module_name;
-        <b>assert</b> struct_name == <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;().struct_name;
-    };
+```move
+module 0x1::type_info {
+    #[verify_only]
+    fun verify_type_of_generic<T>()
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::type_info {
+    fun verify_type_of_generic<T>() {
+        let type_info = type_of<T>();
+        let account_address = account_address(&type_info);
+        let module_name = module_name(&type_info);
+        let struct_name = struct_name(&type_info);
+        spec {
+            assert account_address == type_of<T>().account_address;
+            assert module_name == type_of<T>().module_name;
+            assert struct_name == type_of<T>().struct_name;
+        };
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -368,16 +381,20 @@ analysis of vector size dynamism.
 ### Function `chain_id`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_chain_id">chain_id</a>(): u8
-</code></pre>
+```move
+module 0x1::type_info {
+    public fun chain_id(): u8
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="../../move-stdlib/doc/features.md#0x1_features_spec_is_enabled">features::spec_is_enabled</a>(<a href="../../move-stdlib/doc/features.md#0x1_features_APTOS_STD_CHAIN_ID_NATIVES">features::APTOS_STD_CHAIN_ID_NATIVES</a>);
-<b>ensures</b> result == <a href="type_info.md#0x1_type_info_spec_chain_id_internal">spec_chain_id_internal</a>();
-</code></pre>
-
+```move
+module 0x1::type_info {
+    aborts_if !features::spec_is_enabled(features::APTOS_STD_CHAIN_ID_NATIVES);
+    ensures result == spec_chain_id_internal();
+}
+```
 
 
 <a id="@Specification_1_type_of"></a>
@@ -385,9 +402,11 @@ analysis of vector size dynamism.
 ### Function `type_of`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_of">type_of</a>&lt;T&gt;(): <a href="type_info.md#0x1_type_info_TypeInfo">type_info::TypeInfo</a>
-</code></pre>
-
+```move
+module 0x1::type_info {
+    public fun type_of<T>(): type_info::TypeInfo
+}
+```
 
 
 
@@ -396,9 +415,11 @@ analysis of vector size dynamism.
 ### Function `type_name`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_type_name">type_name</a>&lt;T&gt;(): <a href="../../move-stdlib/doc/string.md#0x1_string_String">string::String</a>
-</code></pre>
-
+```move
+module 0x1::type_info {
+    public fun type_name<T>(): string::String
+}
+```
 
 
 
@@ -407,37 +428,45 @@ analysis of vector size dynamism.
 ### Function `chain_id_internal`
 
 
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_chain_id_internal">chain_id_internal</a>(): u8
-</code></pre>
+```move
+module 0x1::type_info {
+    fun chain_id_internal(): u8
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == <a href="type_info.md#0x1_type_info_spec_chain_id_internal">spec_chain_id_internal</a>();
-</code></pre>
-
+```move
+module 0x1::type_info {
+    pragma opaque;
+    aborts_if false;
+    ensures result == spec_chain_id_internal();
+}
+```
 
 
 
 <a id="0x1_type_info_spec_chain_id_internal"></a>
 
 
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_spec_chain_id_internal">spec_chain_id_internal</a>(): u8;
-</code></pre>
-
+```move
+module 0x1::type_info {
+    fun spec_chain_id_internal(): u8;
+}
+```
 
 
 
 <a id="0x1_type_info_spec_size_of_val"></a>
 
 
-<pre><code><b>fun</b> <a href="type_info.md#0x1_type_info_spec_size_of_val">spec_size_of_val</a>&lt;T&gt;(val_ref: T): u64 {
-   len(std::bcs::serialize(val_ref))
+```move
+module 0x1::type_info {
+    fun spec_size_of_val<T>(val_ref: T): u64 {
+       len(std::bcs::serialize(val_ref))
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_size_of_val"></a>
@@ -445,16 +474,20 @@ analysis of vector size dynamism.
 ### Function `size_of_val`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="type_info.md#0x1_type_info_size_of_val">size_of_val</a>&lt;T&gt;(val_ref: &T): u64
-</code></pre>
+```move
+module 0x1::type_info {
+    public fun size_of_val<T>(val_ref: &T): u64
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == <a href="type_info.md#0x1_type_info_spec_size_of_val">spec_size_of_val</a>&lt;T&gt;(val_ref);
-</code></pre>
-
+```move
+module 0x1::type_info {
+    aborts_if false;
+    ensures result == spec_size_of_val<T>(val_ref);
+}
+```
 
 
 <a id="@Specification_1_verify_type_of_generic"></a>
@@ -462,24 +495,28 @@ analysis of vector size dynamism.
 ### Function `verify_type_of_generic`
 
 
-<pre><code>#[verify_only]
-<b>fun</b> <a href="type_info.md#0x1_type_info_verify_type_of_generic">verify_type_of_generic</a>&lt;T&gt;()
-</code></pre>
+```move
+module 0x1::type_info {
+    #[verify_only]
+    fun verify_type_of_generic<T>()
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="type_info.md#0x1_type_info_spec_is_struct">spec_is_struct</a>&lt;T&gt;();
-</code></pre>
-
+```move
+module 0x1::type_info {
+    aborts_if !spec_is_struct<T>();
+}
+```
 
 
 
 <a id="0x1_type_info_spec_is_struct"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="type_info.md#0x1_type_info_spec_is_struct">spec_is_struct</a>&lt;T&gt;(): bool;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::type_info {
+    native fun spec_is_struct<T>(): bool;
+}
+```

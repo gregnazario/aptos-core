@@ -5,9 +5,9 @@
 
 This module implements a Bulletproof range proof verifier on the Ristretto255 curve.
 
-A Bulletproof-based zero-knowledge range proof is a proof that a Pedersen commitment
-$c = v G + r H$ commits to an $n$-bit value $v$ (i.e., $v \in [0, 2^n)$). Currently, this module only supports
-$n \in \{8, 16, 32, 64\}$ for the number of bits.
+A Bulletproof&#45;based zero&#45;knowledge range proof is a proof that a Pedersen commitment
+$c &#61; v G &#43; r H$ commits to an $n$&#45;bit value $v$ (i.e., $v \in [0, 2^n)$). Currently, this module only supports
+$n \in \&#123;8, 16, 32, 64\&#125;$ for the number of bits.
 
 
 -  [Struct `RangeProof`](#0x1_ristretto255_bulletproofs_RangeProof)
@@ -22,42 +22,43 @@ $n \in \{8, 16, 32, 64\}$ for the number of bits.
     -  [Function `verify_range_proof_internal`](#@Specification_1_verify_range_proof_internal)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="../../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="ristretto255.md#0x1_ristretto255">0x1::ristretto255</a>;
-<b>use</b> <a href="ristretto255_pedersen.md#0x1_ristretto255_pedersen">0x1::ristretto255_pedersen</a>;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    use 0x1::error;
+    use 0x1::features;
+    use 0x1::ristretto255;
+    use 0x1::ristretto255_pedersen;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_RangeProof"></a>
 
 ## Struct `RangeProof`
 
-Represents a zero-knowledge range proof that a value committed inside a Pedersen commitment lies in
-<code>[0, 2^{<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_MAX_RANGE_BITS">MAX_RANGE_BITS</a>})</code>.
+Represents a zero&#45;knowledge range proof that a value committed inside a Pedersen commitment lies in
+`[0, 2^{MAX_RANGE_BITS})`.
 
 
-<pre><code><b>struct</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a> <b>has</b> <b>copy</b>, drop, store
-</code></pre>
+```move
+module 0x1::ristretto255_bulletproofs {
+    struct RangeProof has copy, drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`bytes: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -69,9 +70,11 @@ Represents a zero-knowledge range proof that a value committed inside a Pedersen
 The native functions have not been rolled out yet.
 
 
-<pre><code><b>const</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_NATIVE_FUN_NOT_AVAILABLE">E_NATIVE_FUN_NOT_AVAILABLE</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    const E_NATIVE_FUN_NOT_AVAILABLE: u64 = 4;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_E_DESERIALIZE_RANGE_PROOF"></a>
@@ -79,19 +82,23 @@ The native functions have not been rolled out yet.
 There was an error deserializing the range proof.
 
 
-<pre><code><b>const</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_DESERIALIZE_RANGE_PROOF">E_DESERIALIZE_RANGE_PROOF</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    const E_DESERIALIZE_RANGE_PROOF: u64 = 1;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_E_RANGE_NOT_SUPPORTED"></a>
 
-The range proof system only supports proving ranges of type $[0, 2^b)$ where $b \in \{8, 16, 32, 64\}$.
+The range proof system only supports proving ranges of type $[0, 2^b)$ where $b \in \&#123;8, 16, 32, 64\&#125;$.
 
 
-<pre><code><b>const</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_RANGE_NOT_SUPPORTED">E_RANGE_NOT_SUPPORTED</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    const E_RANGE_NOT_SUPPORTED: u64 = 3;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_E_VALUE_OUTSIDE_RANGE"></a>
@@ -99,19 +106,23 @@ The range proof system only supports proving ranges of type $[0, 2^b)$ where $b 
 The committed value given to the prover is too large.
 
 
-<pre><code><b>const</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_VALUE_OUTSIDE_RANGE">E_VALUE_OUTSIDE_RANGE</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    const E_VALUE_OUTSIDE_RANGE: u64 = 2;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_MAX_RANGE_BITS"></a>
 
-The maximum range supported by the Bulletproofs library is $[0, 2^{64})$.
+The maximum range supported by the Bulletproofs library is $[0, 2^&#123;64&#125;)$.
 
 
-<pre><code><b>const</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_MAX_RANGE_BITS">MAX_RANGE_BITS</a>: u64 = 64;
-</code></pre>
-
+```move
+module 0x1::ristretto255_bulletproofs {
+    const MAX_RANGE_BITS: u64 = 64;
+}
+```
 
 
 <a id="0x1_ristretto255_bulletproofs_get_max_range_bits"></a>
@@ -121,182 +132,188 @@ The maximum range supported by the Bulletproofs library is $[0, 2^{64})$.
 Returns the maximum # of bits that the range proof system can verify proofs for.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_get_max_range_bits">get_max_range_bits</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_get_max_range_bits">get_max_range_bits</a>(): u64 {
-    <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_MAX_RANGE_BITS">MAX_RANGE_BITS</a>
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun get_max_range_bits(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun get_max_range_bits(): u64 {
+        MAX_RANGE_BITS
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_bulletproofs_range_proof_from_bytes"></a>
 
 ## Function `range_proof_from_bytes`
 
 Deserializes a range proof from a sequence of bytes. The serialization format is the same as the format in
-the zkcrypto's <code>bulletproofs</code> library (https://docs.rs/bulletproofs/4.0.0/bulletproofs/struct.RangeProof.html#method.from_bytes).
+the zkcrypto&apos;s `bulletproofs` library (https://docs.rs/bulletproofs/4.0.0/bulletproofs/struct.RangeProof.html#method.from_bytes).
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_range_proof_from_bytes">range_proof_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">ristretto255_bulletproofs::RangeProof</a>
-</code></pre>
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun range_proof_from_bytes(bytes: vector<u8>): ristretto255_bulletproofs::RangeProof
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_range_proof_from_bytes">range_proof_from_bytes</a>(bytes: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a> {
-    <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a> {
-        bytes
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun range_proof_from_bytes(bytes: vector<u8>): RangeProof {
+        RangeProof {
+            bytes
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_ristretto255_bulletproofs_range_proof_to_bytes"></a>
 
 ## Function `range_proof_to_bytes`
 
-Returns the byte-representation of a range proof.
+Returns the byte&#45;representation of a range proof.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_range_proof_to_bytes">range_proof_to_bytes</a>(proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">ristretto255_bulletproofs::RangeProof</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_range_proof_to_bytes">range_proof_to_bytes</a>(proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a>): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt; {
-    proof.bytes
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun range_proof_to_bytes(proof: &ristretto255_bulletproofs::RangeProof): vector<u8>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun range_proof_to_bytes(proof: &RangeProof): vector<u8> {
+        proof.bytes
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_bulletproofs_verify_range_proof_pedersen"></a>
 
 ## Function `verify_range_proof_pedersen`
 
-Verifies a zero-knowledge range proof that the value <code>v</code> committed in <code>com</code> (under the default Bulletproofs
-commitment key; see <code>pedersen::new_commitment_for_bulletproof</code>) satisfies $v \in [0, 2^b)$. Only works
-for $b \in \{8, 16, 32, 64\}$. Additionally, checks that the prover used <code>dst</code> as the domain-separation
+Verifies a zero&#45;knowledge range proof that the value `v` committed in `com` (under the default Bulletproofs
+commitment key; see `pedersen::new_commitment_for_bulletproof`) satisfies $v \in [0, 2^b)$. Only works
+for $b \in \&#123;8, 16, 32, 64\&#125;$. Additionally, checks that the prover used `dst` as the domain&#45;separation
 tag (DST).
 
 WARNING: The DST check is VERY important for security as it prevents proofs computed for one application
-(a.k.a., a _domain_) with <code>dst_1</code> from verifying in a different application with <code>dst_2 != dst_1</code>.
+(a.k.a., a _domain_) with `dst_1` from verifying in a different application with `dst_2 != dst_1`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_pedersen">verify_range_proof_pedersen</a>(com: &<a href="ristretto255_pedersen.md#0x1_ristretto255_pedersen_Commitment">ristretto255_pedersen::Commitment</a>, proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">ristretto255_bulletproofs::RangeProof</a>, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_pedersen">verify_range_proof_pedersen</a>(com: &pedersen::Commitment, proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a>, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool {
-    <b>assert</b>!(<a href="../../move-stdlib/doc/features.md#0x1_features_bulletproofs_enabled">features::bulletproofs_enabled</a>(), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_NATIVE_FUN_NOT_AVAILABLE">E_NATIVE_FUN_NOT_AVAILABLE</a>));
-
-    <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_internal">verify_range_proof_internal</a>(
-        <a href="ristretto255.md#0x1_ristretto255_point_to_bytes">ristretto255::point_to_bytes</a>(&pedersen::commitment_as_compressed_point(com)),
-        &<a href="ristretto255.md#0x1_ristretto255_basepoint">ristretto255::basepoint</a>(), &<a href="ristretto255.md#0x1_ristretto255_hash_to_point_base">ristretto255::hash_to_point_base</a>(),
-        proof.bytes,
-        num_bits,
-        dst
-    )
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun verify_range_proof_pedersen(com: &ristretto255_pedersen::Commitment, proof: &ristretto255_bulletproofs::RangeProof, num_bits: u64, dst: vector<u8>): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun verify_range_proof_pedersen(com: &pedersen::Commitment, proof: &RangeProof, num_bits: u64, dst: vector<u8>): bool {
+        assert!(features::bulletproofs_enabled(), error::invalid_state(E_NATIVE_FUN_NOT_AVAILABLE));
+
+        verify_range_proof_internal(
+            ristretto255::point_to_bytes(&pedersen::commitment_as_compressed_point(com)),
+            &ristretto255::basepoint(), &ristretto255::hash_to_point_base(),
+            proof.bytes,
+            num_bits,
+            dst
+        )
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_bulletproofs_verify_range_proof"></a>
 
 ## Function `verify_range_proof`
 
-Verifies a zero-knowledge range proof that the value <code>v</code> committed in <code>com</code> (as v * val_base + r * rand_base,
-for some randomness <code>r</code>) satisfies <code>v</code> in <code>[0, 2^num_bits)</code>. Only works for <code>num_bits</code> in <code>{8, 16, 32, 64}</code>.
+Verifies a zero&#45;knowledge range proof that the value `v` committed in `com` (as v &#42; val_base &#43; r &#42; rand_base,
+for some randomness `r`) satisfies `v` in `[0, 2^num_bits)`. Only works for `num_bits` in `{8, 16, 32, 64}`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof">verify_range_proof</a>(com: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, val_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, rand_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">ristretto255_bulletproofs::RangeProof</a>, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof">verify_range_proof</a>(
-    com: &RistrettoPoint,
-    val_base: &RistrettoPoint, rand_base: &RistrettoPoint,
-    proof: &<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_RangeProof">RangeProof</a>, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-{
-    <b>assert</b>!(<a href="../../move-stdlib/doc/features.md#0x1_features_bulletproofs_enabled">features::bulletproofs_enabled</a>(), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_NATIVE_FUN_NOT_AVAILABLE">E_NATIVE_FUN_NOT_AVAILABLE</a>));
-
-    <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_internal">verify_range_proof_internal</a>(
-        <a href="ristretto255.md#0x1_ristretto255_point_to_bytes">ristretto255::point_to_bytes</a>(&<a href="ristretto255.md#0x1_ristretto255_point_compress">ristretto255::point_compress</a>(com)),
-        val_base, rand_base,
-        proof.bytes, num_bits, dst
-    )
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun verify_range_proof(com: &ristretto255::RistrettoPoint, val_base: &ristretto255::RistrettoPoint, rand_base: &ristretto255::RistrettoPoint, proof: &ristretto255_bulletproofs::RangeProof, num_bits: u64, dst: vector<u8>): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::ristretto255_bulletproofs {
+    public fun verify_range_proof(
+        com: &RistrettoPoint,
+        val_base: &RistrettoPoint, rand_base: &RistrettoPoint,
+        proof: &RangeProof, num_bits: u64, dst: vector<u8>): bool
+    {
+        assert!(features::bulletproofs_enabled(), error::invalid_state(E_NATIVE_FUN_NOT_AVAILABLE));
+
+        verify_range_proof_internal(
+            ristretto255::point_to_bytes(&ristretto255::point_compress(com)),
+            val_base, rand_base,
+            proof.bytes, num_bits, dst
+        )
+    }
+}
+```
+
 
 <a id="0x1_ristretto255_bulletproofs_verify_range_proof_internal"></a>
 
 ## Function `verify_range_proof_internal`
 
-Aborts with <code><a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_DESERIALIZE_RANGE_PROOF">E_DESERIALIZE_RANGE_PROOF</a>)</code> if <code>proof</code> is not a valid serialization of a
+Aborts with `error::invalid_argument(E_DESERIALIZE_RANGE_PROOF)` if `proof` is not a valid serialization of a
 range proof.
-Aborts with <code><a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_E_RANGE_NOT_SUPPORTED">E_RANGE_NOT_SUPPORTED</a>)</code> if an unsupported <code>num_bits</code> is provided.
+Aborts with `error::invalid_argument(E_RANGE_NOT_SUPPORTED)` if an unsupported `num_bits` is provided.
 
 
-<pre><code><b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_internal">verify_range_proof_internal</a>(com: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, val_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, rand_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, proof: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
+```move
+module 0x1::ristretto255_bulletproofs {
+    fun verify_range_proof_internal(com: vector<u8>, val_base: &ristretto255::RistrettoPoint, rand_base: &ristretto255::RistrettoPoint, proof: vector<u8>, num_bits: u64, dst: vector<u8>): bool
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_internal">verify_range_proof_internal</a>(
-    com: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;,
-    val_base: &RistrettoPoint,
-    rand_base: &RistrettoPoint,
-    proof: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;,
-    num_bits: u64,
-    dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool;
-</code></pre>
+```move
+module 0x1::ristretto255_bulletproofs {
+    native fun verify_range_proof_internal(
+        com: vector<u8>,
+        val_base: &RistrettoPoint,
+        rand_base: &RistrettoPoint,
+        proof: vector<u8>,
+        num_bits: u64,
+        dst: vector<u8>): bool;
+}
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -308,14 +325,16 @@ Aborts with <code><a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argu
 ### Function `verify_range_proof_internal`
 
 
-<pre><code><b>fun</b> <a href="ristretto255_bulletproofs.md#0x1_ristretto255_bulletproofs_verify_range_proof_internal">verify_range_proof_internal</a>(com: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, val_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, rand_base: &<a href="ristretto255.md#0x1_ristretto255_RistrettoPoint">ristretto255::RistrettoPoint</a>, proof: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;, num_bits: u64, dst: <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;): bool
-</code></pre>
+```move
+module 0x1::ristretto255_bulletproofs {
+    fun verify_range_proof_internal(com: vector<u8>, val_base: &ristretto255::RistrettoPoint, rand_base: &ristretto255::RistrettoPoint, proof: vector<u8>, num_bits: u64, dst: vector<u8>): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::ristretto255_bulletproofs {
+    pragma opaque;
+}
+```

@@ -10,8 +10,10 @@
 -  [Specification](#@Specification_0)
 
 
-<pre><code></code></pre>
-
+```move
+module 0x1::signer {
+}
+```
 
 
 <a id="0x1_signer_borrow_address"></a>
@@ -19,29 +21,30 @@
 ## Function `borrow_address`
 
 Borrows the address of the signer
-Conceptually, you can think of the <code><a href="signer.md#0x1_signer">signer</a></code> as being a struct wrapper around an
+Conceptually, you can think of the `signer` as being a struct wrapper around an
 address
 ```
-struct signer has drop { addr: address }
+struct signer has drop &#123; addr: address &#125;
 ```
-<code>borrow_address</code> borrows this inner field
+`borrow_address` borrows this inner field
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="signer.md#0x1_signer_borrow_address">borrow_address</a>(s: &<a href="signer.md#0x1_signer">signer</a>): &<b>address</b>
-</code></pre>
+```move
+module 0x1::signer {
+    public fun borrow_address(s: &signer): &address
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>native</b> <b>public</b> <b>fun</b> <a href="signer.md#0x1_signer_borrow_address">borrow_address</a>(s: &<a href="signer.md#0x1_signer">signer</a>): &<b>address</b>;
-</code></pre>
+```move
+module 0x1::signer {
+    native public fun borrow_address(s: &signer): &address;
+}
+```
 
-
-
-</details>
 
 <a id="0x1_signer_address_of"></a>
 
@@ -49,46 +52,49 @@ struct signer has drop { addr: address }
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="signer.md#0x1_signer_address_of">address_of</a>(s: &<a href="signer.md#0x1_signer">signer</a>): <b>address</b>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="signer.md#0x1_signer_address_of">address_of</a>(s: &<a href="signer.md#0x1_signer">signer</a>): <b>address</b> {
-    *<a href="signer.md#0x1_signer_borrow_address">borrow_address</a>(s)
+```move
+module 0x1::signer {
+    public fun address_of(s: &signer): address
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::signer {
+    public fun address_of(s: &signer): address {
+        *borrow_address(s)
+    }
+}
+```
+
 
 <a id="@Specification_0"></a>
 
 ## Specification
 
-Return true only if <code>s</code> is a transaction signer. This is a spec function only available in spec.
+Return true only if `s` is a transaction signer. This is a spec function only available in spec.
 
 
 <a id="0x1_signer_is_txn_signer"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="signer.md#0x1_signer_is_txn_signer">is_txn_signer</a>(s: <a href="signer.md#0x1_signer">signer</a>): bool;
-</code></pre>
+```move
+module 0x1::signer {
+    native fun is_txn_signer(s: signer): bool;
+}
+```
 
-
-Return true only if <code>a</code> is a transaction signer address. This is a spec function only available in spec.
+Return true only if `a` is a transaction signer address. This is a spec function only available in spec.
 
 
 <a id="0x1_signer_is_txn_signer_addr"></a>
 
 
-<pre><code><b>native</b> <b>fun</b> <a href="signer.md#0x1_signer_is_txn_signer_addr">is_txn_signer_addr</a>(a: <b>address</b>): bool;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::signer {
+    native fun is_txn_signer_addr(a: address): bool;
+}
+```

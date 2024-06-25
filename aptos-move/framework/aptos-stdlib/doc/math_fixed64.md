@@ -17,11 +17,13 @@ Standard math utilities missing in the Move Language.
 -  [Function `pow_raw`](#0x1_math_fixed64_pow_raw)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="fixed_point64.md#0x1_fixed_point64">0x1::fixed_point64</a>;
-<b>use</b> <a href="math128.md#0x1_math128">0x1::math128</a>;
-</code></pre>
-
+```move
+module 0x1::math_fixed64 {
+    use 0x1::error;
+    use 0x1::fixed_point64;
+    use 0x1::math128;
+}
+```
 
 
 <a id="@Constants_0"></a>
@@ -34,9 +36,11 @@ Standard math utilities missing in the Move Language.
 Abort code on overflow
 
 
-<pre><code><b>const</b> <a href="math_fixed64.md#0x1_math_fixed64_EOVERFLOW_EXP">EOVERFLOW_EXP</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::math_fixed64 {
+    const EOVERFLOW_EXP: u64 = 1;
+}
+```
 
 
 <a id="0x1_math_fixed64_LN2"></a>
@@ -44,9 +48,11 @@ Abort code on overflow
 Natural log 2 in 32 bit fixed point
 
 
-<pre><code><b>const</b> <a href="math_fixed64.md#0x1_math_fixed64_LN2">LN2</a>: u256 = 12786308645202655660;
-</code></pre>
-
+```move
+module 0x1::math_fixed64 {
+    const LN2: u256 = 12786308645202655660;
+}
+```
 
 
 <a id="0x1_math_fixed64_sqrt"></a>
@@ -56,26 +62,27 @@ Natural log 2 in 32 bit fixed point
 Square root of fixed point number
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_sqrt">sqrt</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_sqrt">sqrt</a>(x: FixedPoint64): FixedPoint64 {
-    <b>let</b> y = <a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x);
-    <b>let</b> z = (<a href="math128.md#0x1_math128_sqrt">math128::sqrt</a>(y) &lt;&lt; 32 <b>as</b> u256);
-    z = (z + ((y <b>as</b> u256) &lt;&lt; 64) / z) &gt;&gt; 1;
-    <a href="fixed_point64.md#0x1_fixed_point64_create_from_raw_value">fixed_point64::create_from_raw_value</a>((z <b>as</b> u128))
+```move
+module 0x1::math_fixed64 {
+    public fun sqrt(x: fixed_point64::FixedPoint64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun sqrt(x: FixedPoint64): FixedPoint64 {
+        let y = fixed_point64::get_raw_value(x);
+        let z = (math128::sqrt(y) << 32 as u256);
+        z = (z + ((y as u256) << 64) / z) >> 1;
+        fixed_point64::create_from_raw_value((z as u128))
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_exp"></a>
 
@@ -84,51 +91,53 @@ Square root of fixed point number
 Exponent function with a precission of 9 digits.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_exp">exp</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_exp">exp</a>(x: FixedPoint64): FixedPoint64 {
-    <b>let</b> raw_value = (<a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x) <b>as</b> u256);
-    <a href="fixed_point64.md#0x1_fixed_point64_create_from_raw_value">fixed_point64::create_from_raw_value</a>((<a href="math_fixed64.md#0x1_math_fixed64_exp_raw">exp_raw</a>(raw_value) <b>as</b> u128))
+```move
+module 0x1::math_fixed64 {
+    public fun exp(x: fixed_point64::FixedPoint64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun exp(x: FixedPoint64): FixedPoint64 {
+        let raw_value = (fixed_point64::get_raw_value(x) as u256);
+        fixed_point64::create_from_raw_value((exp_raw(raw_value) as u128))
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_log2_plus_64"></a>
 
 ## Function `log2_plus_64`
 
-Because log2 is negative for values < 1 we instead return log2(x) + 64 which
+Because log2 is negative for values &lt; 1 we instead return log2(x) &#43; 64 which
 is positive for all values of x.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_log2_plus_64">log2_plus_64</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_log2_plus_64">log2_plus_64</a>(x: FixedPoint64): FixedPoint64 {
-    <b>let</b> raw_value = (<a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x) <b>as</b> u128);
-    <a href="math128.md#0x1_math128_log2_64">math128::log2_64</a>(raw_value)
+```move
+module 0x1::math_fixed64 {
+    public fun log2_plus_64(x: fixed_point64::FixedPoint64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun log2_plus_64(x: FixedPoint64): FixedPoint64 {
+        let raw_value = (fixed_point64::get_raw_value(x) as u128);
+        math128::log2_64(raw_value)
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_ln_plus_32ln2"></a>
 
@@ -136,25 +145,26 @@ is positive for all values of x.
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_ln_plus_32ln2">ln_plus_32ln2</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_ln_plus_32ln2">ln_plus_32ln2</a>(x: FixedPoint64): FixedPoint64 {
-    <b>let</b> raw_value = <a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x);
-    <b>let</b> x = (<a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(<a href="math128.md#0x1_math128_log2_64">math128::log2_64</a>(raw_value)) <b>as</b> u256);
-    <a href="fixed_point64.md#0x1_fixed_point64_create_from_raw_value">fixed_point64::create_from_raw_value</a>(((x * <a href="math_fixed64.md#0x1_math_fixed64_LN2">LN2</a>) &gt;&gt; 64 <b>as</b> u128))
+```move
+module 0x1::math_fixed64 {
+    public fun ln_plus_32ln2(x: fixed_point64::FixedPoint64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun ln_plus_32ln2(x: FixedPoint64): FixedPoint64 {
+        let raw_value = fixed_point64::get_raw_value(x);
+        let x = (fixed_point64::get_raw_value(math128::log2_64(raw_value)) as u256);
+        fixed_point64::create_from_raw_value(((x * LN2) >> 64 as u128))
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_pow"></a>
 
@@ -163,52 +173,54 @@ is positive for all values of x.
 Integer power of a fixed point number
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_pow">pow</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>, n: u64): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_pow">pow</a>(x: FixedPoint64, n: u64): FixedPoint64 {
-    <b>let</b> raw_value = (<a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x) <b>as</b> u256);
-    <a href="fixed_point64.md#0x1_fixed_point64_create_from_raw_value">fixed_point64::create_from_raw_value</a>((<a href="math_fixed64.md#0x1_math_fixed64_pow_raw">pow_raw</a>(raw_value, (n <b>as</b> u128)) <b>as</b> u128))
+```move
+module 0x1::math_fixed64 {
+    public fun pow(x: fixed_point64::FixedPoint64, n: u64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun pow(x: FixedPoint64, n: u64): FixedPoint64 {
+        let raw_value = (fixed_point64::get_raw_value(x) as u256);
+        fixed_point64::create_from_raw_value((pow_raw(raw_value, (n as u128)) as u128))
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_mul_div"></a>
 
 ## Function `mul_div`
 
-Specialized function for x * y / z that omits intermediate shifting
+Specialized function for x &#42; y / z that omits intermediate shifting
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_mul_div">mul_div</a>(x: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>, y: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>, z: <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>): <a href="fixed_point64.md#0x1_fixed_point64_FixedPoint64">fixed_point64::FixedPoint64</a>
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_mul_div">mul_div</a>(x: FixedPoint64, y: FixedPoint64, z: FixedPoint64): FixedPoint64 {
-    <b>let</b> a = <a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(x);
-    <b>let</b> b = <a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(y);
-    <b>let</b> c = <a href="fixed_point64.md#0x1_fixed_point64_get_raw_value">fixed_point64::get_raw_value</a>(z);
-    <a href="fixed_point64.md#0x1_fixed_point64_create_from_raw_value">fixed_point64::create_from_raw_value</a> (<a href="math128.md#0x1_math128_mul_div">math128::mul_div</a>(a, b, c))
+```move
+module 0x1::math_fixed64 {
+    public fun mul_div(x: fixed_point64::FixedPoint64, y: fixed_point64::FixedPoint64, z: fixed_point64::FixedPoint64): fixed_point64::FixedPoint64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    public fun mul_div(x: FixedPoint64, y: FixedPoint64, z: FixedPoint64): FixedPoint64 {
+        let a = fixed_point64::get_raw_value(x);
+        let b = fixed_point64::get_raw_value(y);
+        let c = fixed_point64::get_raw_value(z);
+        fixed_point64::create_from_raw_value (math128::mul_div(a, b, c))
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_exp_raw"></a>
 
@@ -216,47 +228,48 @@ Specialized function for x * y / z that omits intermediate shifting
 
 
 
-<pre><code><b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_exp_raw">exp_raw</a>(x: u256): u256
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_exp_raw">exp_raw</a>(x: u256): u256 {
-    // <a href="math_fixed64.md#0x1_math_fixed64_exp">exp</a>(x / 2^64) = 2^(x / (2^64 * ln(2))) = 2^(floor(x / (2^64 * ln(2))) + frac(x / (2^64 * ln(2))))
-    <b>let</b> shift_long = x / <a href="math_fixed64.md#0x1_math_fixed64_LN2">LN2</a>;
-    <b>assert</b>!(shift_long &lt;= 63, std::error::invalid_state(<a href="math_fixed64.md#0x1_math_fixed64_EOVERFLOW_EXP">EOVERFLOW_EXP</a>));
-    <b>let</b> shift = (shift_long <b>as</b> u8);
-    <b>let</b> remainder = x % <a href="math_fixed64.md#0x1_math_fixed64_LN2">LN2</a>;
-    // At this point we want <b>to</b> calculate 2^(remainder / ln2) &lt;&lt; shift
-    // ln2 = 580 * 22045359733108027
-    <b>let</b> bigfactor = 22045359733108027;
-    <b>let</b> exponent = remainder / bigfactor;
-    <b>let</b> x = remainder % bigfactor;
-    // 2^(remainder / ln2) = (2^(1/580))^exponent * <a href="math_fixed64.md#0x1_math_fixed64_exp">exp</a>(x / 2^64)
-    <b>let</b> roottwo = 18468802611690918839;  // fixed point representation of 2^(1/580)
-    // 2^(1/580) = roottwo(1 - eps), so the number we seek is roottwo^exponent (1 - eps * exponent)
-    <b>let</b> power = <a href="math_fixed64.md#0x1_math_fixed64_pow_raw">pow_raw</a>(roottwo, (exponent <b>as</b> u128));
-    <b>let</b> eps_correction = 219071715585908898;
-    power = power - ((power * eps_correction * exponent) &gt;&gt; 128);
-    // x is fixed point number smaller than bigfactor/2^64 &lt; 0.0011 so we need only 5 tayler steps
-    // <b>to</b> get the 15 digits of precission
-    <b>let</b> taylor1 = (power * x) &gt;&gt; (64 - shift);
-    <b>let</b> taylor2 = (taylor1 * x) &gt;&gt; 64;
-    <b>let</b> taylor3 = (taylor2 * x) &gt;&gt; 64;
-    <b>let</b> taylor4 = (taylor3 * x) &gt;&gt; 64;
-    <b>let</b> taylor5 = (taylor4 * x) &gt;&gt; 64;
-    <b>let</b> taylor6 = (taylor5 * x) &gt;&gt; 64;
-    (power &lt;&lt; shift) + taylor1 + taylor2 / 2 + taylor3 / 6 + taylor4 / 24 + taylor5 / 120 + taylor6 / 720
+```move
+module 0x1::math_fixed64 {
+    fun exp_raw(x: u256): u256
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::math_fixed64 {
+    fun exp_raw(x: u256): u256 {
+        // exp(x / 2^64) = 2^(x / (2^64 * ln(2))) = 2^(floor(x / (2^64 * ln(2))) + frac(x / (2^64 * ln(2))))
+        let shift_long = x / LN2;
+        assert!(shift_long <= 63, std::error::invalid_state(EOVERFLOW_EXP));
+        let shift = (shift_long as u8);
+        let remainder = x % LN2;
+        // At this point we want to calculate 2^(remainder / ln2) << shift
+        // ln2 = 580 * 22045359733108027
+        let bigfactor = 22045359733108027;
+        let exponent = remainder / bigfactor;
+        let x = remainder % bigfactor;
+        // 2^(remainder / ln2) = (2^(1/580))^exponent * exp(x / 2^64)
+        let roottwo = 18468802611690918839;  // fixed point representation of 2^(1/580)
+        // 2^(1/580) = roottwo(1 - eps), so the number we seek is roottwo^exponent (1 - eps * exponent)
+        let power = pow_raw(roottwo, (exponent as u128));
+        let eps_correction = 219071715585908898;
+        power = power - ((power * eps_correction * exponent) >> 128);
+        // x is fixed point number smaller than bigfactor/2^64 < 0.0011 so we need only 5 tayler steps
+        // to get the 15 digits of precission
+        let taylor1 = (power * x) >> (64 - shift);
+        let taylor2 = (taylor1 * x) >> 64;
+        let taylor3 = (taylor2 * x) >> 64;
+        let taylor4 = (taylor3 * x) >> 64;
+        let taylor5 = (taylor4 * x) >> 64;
+        let taylor6 = (taylor5 * x) >> 64;
+        (power << shift) + taylor1 + taylor2 / 2 + taylor3 / 6 + taylor4 / 24 + taylor5 / 120 + taylor6 / 720
+    }
+}
+```
+
 
 <a id="0x1_math_fixed64_pow_raw"></a>
 
@@ -264,31 +277,28 @@ Specialized function for x * y / z that omits intermediate shifting
 
 
 
-<pre><code><b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_pow_raw">pow_raw</a>(x: u256, n: u128): u256
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="math_fixed64.md#0x1_math_fixed64_pow_raw">pow_raw</a>(x: u256, n: u128): u256 {
-    <b>let</b> res: u256 = 1 &lt;&lt; 64;
-    <b>while</b> (n != 0) {
-        <b>if</b> (n & 1 != 0) {
-            res = (res * x) &gt;&gt; 64;
-        };
-        n = n &gt;&gt; 1;
-        x = (x * x) &gt;&gt; 64;
-    };
-    res
+```move
+module 0x1::math_fixed64 {
+    fun pow_raw(x: u256, n: u128): u256
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
 
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::math_fixed64 {
+    fun pow_raw(x: u256, n: u128): u256 {
+        let res: u256 = 1 << 64;
+        while (n != 0) {
+            if (n & 1 != 0) {
+                res = (res * x) >> 64;
+            };
+            n = n >> 1;
+            x = (x * x) >> 64;
+        };
+        res
+    }
+}
+```

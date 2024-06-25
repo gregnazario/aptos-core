@@ -33,20 +33,22 @@ to synchronize configuration changes for the validators.
     -  [Function `emit_genesis_reconfiguration_event`](#@Specification_1_emit_genesis_reconfiguration_event)
 
 
-<pre><code><b>use</b> <a href="account.md#0x1_account">0x1::account</a>;
-<b>use</b> <a href="chain_status.md#0x1_chain_status">0x1::chain_status</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="event.md#0x1_event">0x1::event</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features">0x1::features</a>;
-<b>use</b> <a href="reconfiguration_state.md#0x1_reconfiguration_state">0x1::reconfiguration_state</a>;
-<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="stake.md#0x1_stake">0x1::stake</a>;
-<b>use</b> <a href="storage_gas.md#0x1_storage_gas">0x1::storage_gas</a>;
-<b>use</b> <a href="system_addresses.md#0x1_system_addresses">0x1::system_addresses</a>;
-<b>use</b> <a href="timestamp.md#0x1_timestamp">0x1::timestamp</a>;
-<b>use</b> <a href="transaction_fee.md#0x1_transaction_fee">0x1::transaction_fee</a>;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    use 0x1::account;
+    use 0x1::chain_status;
+    use 0x1::error;
+    use 0x1::event;
+    use 0x1::features;
+    use 0x1::reconfiguration_state;
+    use 0x1::signer;
+    use 0x1::stake;
+    use 0x1::storage_gas;
+    use 0x1::system_addresses;
+    use 0x1::timestamp;
+    use 0x1::transaction_fee;
+}
+```
 
 
 <a id="0x1_reconfiguration_NewEpochEvent"></a>
@@ -55,30 +57,29 @@ to synchronize configuration changes for the validators.
 
 Event that signals consensus to start a new epoch,
 with new configuration information. This is also called a
-"reconfiguration event"
+&quot;reconfiguration event&quot;
 
 
-<pre><code>#[<a href="event.md#0x1_event">event</a>]
-<b>struct</b> <a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    #[event]
+    struct NewEpochEvent has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>epoch: u64</code>
+`epoch: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_reconfiguration_NewEpoch"></a>
 
@@ -86,30 +87,29 @@ with new configuration information. This is also called a
 
 Event that signals consensus to start a new epoch,
 with new configuration information. This is also called a
-"reconfiguration event"
+&quot;reconfiguration event&quot;
 
 
-<pre><code>#[<a href="event.md#0x1_event">event</a>]
-<b>struct</b> <a href="reconfiguration.md#0x1_reconfiguration_NewEpoch">NewEpoch</a> <b>has</b> drop, store
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    #[event]
+    struct NewEpoch has drop, store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>epoch: u64</code>
+`epoch: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_reconfiguration_Configuration"></a>
 
@@ -118,38 +118,37 @@ with new configuration information. This is also called a
 Holds information about state of reconfiguration
 
 
-<pre><code><b>struct</b> <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    struct Configuration has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>epoch: u64</code>
+`epoch: u64`
 </dt>
 <dd>
  Epoch number
 </dd>
 <dt>
-<code>last_reconfiguration_time: u64</code>
+`last_reconfiguration_time: u64`
 </dt>
 <dd>
  Time of last reconfiguration. Only changes on reconfiguration events.
 </dd>
 <dt>
-<code>events: <a href="event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">reconfiguration::NewEpochEvent</a>&gt;</code>
+`events: event::EventHandle<reconfiguration::NewEpochEvent>`
 </dt>
 <dd>
  Event handle for reconfiguration events
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_reconfiguration_DisableReconfiguration"></a>
 
@@ -159,26 +158,25 @@ Reconfiguration will be disabled if this resource is published under the
 aptos_framework system address
 
 
-<pre><code><b>struct</b> <a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    struct DisableReconfiguration has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>dummy_field: bool</code>
+`dummy_field: bool`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -187,22 +185,26 @@ aptos_framework system address
 
 <a id="0x1_reconfiguration_ECONFIG"></a>
 
-A <code>Reconfiguration</code> resource is in an invalid state
+A `Reconfiguration` resource is in an invalid state
 
 
-<pre><code><b>const</b> <a href="reconfiguration.md#0x1_reconfiguration_ECONFIG">ECONFIG</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    const ECONFIG: u64 = 2;
+}
+```
 
 
 <a id="0x1_reconfiguration_ECONFIGURATION"></a>
 
-The <code><a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a></code> resource is in an invalid state
+The `Configuration` resource is in an invalid state
 
 
-<pre><code><b>const</b> <a href="reconfiguration.md#0x1_reconfiguration_ECONFIGURATION">ECONFIGURATION</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    const ECONFIGURATION: u64 = 1;
+}
+```
 
 
 <a id="0x1_reconfiguration_EINVALID_BLOCK_TIME"></a>
@@ -210,9 +212,11 @@ The <code><a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configu
 An invalid block time was encountered.
 
 
-<pre><code><b>const</b> <a href="reconfiguration.md#0x1_reconfiguration_EINVALID_BLOCK_TIME">EINVALID_BLOCK_TIME</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    const EINVALID_BLOCK_TIME: u64 = 4;
+}
+```
 
 
 <a id="0x1_reconfiguration_EINVALID_GUID_FOR_EVENT"></a>
@@ -220,19 +224,23 @@ An invalid block time was encountered.
 An invalid block time was encountered.
 
 
-<pre><code><b>const</b> <a href="reconfiguration.md#0x1_reconfiguration_EINVALID_GUID_FOR_EVENT">EINVALID_GUID_FOR_EVENT</a>: u64 = 5;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    const EINVALID_GUID_FOR_EVENT: u64 = 5;
+}
+```
 
 
 <a id="0x1_reconfiguration_EMODIFY_CAPABILITY"></a>
 
-A <code>ModifyConfigCapability</code> is in a different state than was expected
+A `ModifyConfigCapability` is in a different state than was expected
 
 
-<pre><code><b>const</b> <a href="reconfiguration.md#0x1_reconfiguration_EMODIFY_CAPABILITY">EMODIFY_CAPABILITY</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    const EMODIFY_CAPABILITY: u64 = 3;
+}
+```
 
 
 <a id="0x1_reconfiguration_initialize"></a>
@@ -240,37 +248,38 @@ A <code>ModifyConfigCapability</code> is in a different state than was expected
 ## Function `initialize`
 
 Only called during genesis.
-Publishes <code><a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a></code> resource. Can only be invoked by aptos framework account, and only a single time in Genesis.
+Publishes `Configuration` resource. Can only be invoked by aptos framework account, and only a single time in Genesis.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-
-    // <b>assert</b> it matches `new_epoch_event_key()`, otherwise the <a href="event.md#0x1_event">event</a> can't be recognized
-    <b>assert</b>!(<a href="account.md#0x1_account_get_guid_next_creation_num">account::get_guid_next_creation_num</a>(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(aptos_framework)) == 2, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="reconfiguration.md#0x1_reconfiguration_EINVALID_GUID_FOR_EVENT">EINVALID_GUID_FOR_EVENT</a>));
-    <b>move_to</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(
-        aptos_framework,
-        <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> {
-            epoch: 0,
-            last_reconfiguration_time: 0,
-            events: <a href="account.md#0x1_account_new_event_handle">account::new_event_handle</a>&lt;<a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a>&gt;(aptos_framework),
-        }
-    );
+```move
+module 0x1::reconfiguration {
+    public(friend) fun initialize(aptos_framework: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    public(friend) fun initialize(aptos_framework: &signer) {
+        system_addresses::assert_aptos_framework(aptos_framework);
+
+        // assert it matches `new_epoch_event_key()`, otherwise the event can't be recognized
+        assert!(account::get_guid_next_creation_num(signer::address_of(aptos_framework)) == 2, error::invalid_state(EINVALID_GUID_FOR_EVENT));
+        move_to<Configuration>(
+            aptos_framework,
+            Configuration {
+                epoch: 0,
+                last_reconfiguration_time: 0,
+                events: account::new_event_handle<NewEpochEvent>(aptos_framework),
+            }
+        );
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_disable_reconfiguration"></a>
 
@@ -280,25 +289,26 @@ Private function to temporarily halt reconfiguration.
 This function should only be used for offline WriteSet generation purpose and should never be invoked on chain.
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_disable_reconfiguration">disable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_disable_reconfiguration">disable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-    <b>assert</b>!(<a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>(), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="reconfiguration.md#0x1_reconfiguration_ECONFIGURATION">ECONFIGURATION</a>));
-    <b>move_to</b>(aptos_framework, <a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a> {})
+```move
+module 0x1::reconfiguration {
+    fun disable_reconfiguration(aptos_framework: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    fun disable_reconfiguration(aptos_framework: &signer) {
+        system_addresses::assert_aptos_framework(aptos_framework);
+        assert!(reconfiguration_enabled(), error::invalid_state(ECONFIGURATION));
+        move_to(aptos_framework, DisableReconfiguration {})
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_enable_reconfiguration"></a>
 
@@ -308,26 +318,27 @@ Private function to resume reconfiguration.
 This function should only be used for offline WriteSet generation purpose and should never be invoked on chain.
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_enable_reconfiguration">enable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_enable_reconfiguration">enable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) <b>acquires</b> <a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a> {
-    <a href="system_addresses.md#0x1_system_addresses_assert_aptos_framework">system_addresses::assert_aptos_framework</a>(aptos_framework);
-
-    <b>assert</b>!(!<a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>(), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="reconfiguration.md#0x1_reconfiguration_ECONFIGURATION">ECONFIGURATION</a>));
-    <a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a> {} = <b>move_from</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(aptos_framework));
+```move
+module 0x1::reconfiguration {
+    fun enable_reconfiguration(aptos_framework: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    fun enable_reconfiguration(aptos_framework: &signer) acquires DisableReconfiguration {
+        system_addresses::assert_aptos_framework(aptos_framework);
+
+        assert!(!reconfiguration_enabled(), error::invalid_state(ECONFIGURATION));
+        DisableReconfiguration {} = move_from<DisableReconfiguration>(signer::address_of(aptos_framework));
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_reconfiguration_enabled"></a>
 
@@ -335,23 +346,24 @@ This function should only be used for offline WriteSet generation purpose and sh
 
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>(): bool {
-    !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework)
+```move
+module 0x1::reconfiguration {
+    fun reconfiguration_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    fun reconfiguration_enabled(): bool {
+        !exists<DisableReconfiguration>(@aptos_framework)
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_reconfigure"></a>
 
@@ -360,88 +372,89 @@ This function should only be used for offline WriteSet generation purpose and sh
 Signal validators to start using new configuration. Must be called from friend config modules.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfigure">reconfigure</a>()
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    public(friend) fun reconfigure()
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfigure">reconfigure</a>() <b>acquires</b> <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> {
-    // Do not do anything <b>if</b> <a href="genesis.md#0x1_genesis">genesis</a> <b>has</b> not finished.
-    <b>if</b> (<a href="chain_status.md#0x1_chain_status_is_genesis">chain_status::is_genesis</a>() || <a href="timestamp.md#0x1_timestamp_now_microseconds">timestamp::now_microseconds</a>() == 0 || !<a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>()) {
-        <b>return</b>
-    };
+```move
+module 0x1::reconfiguration {
+    public(friend) fun reconfigure() acquires Configuration {
+        // Do not do anything if genesis has not finished.
+        if (chain_status::is_genesis() || timestamp::now_microseconds() == 0 || !reconfiguration_enabled()) {
+            return
+        };
 
-    <b>let</b> config_ref = <b>borrow_global_mut</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-    <b>let</b> current_time = <a href="timestamp.md#0x1_timestamp_now_microseconds">timestamp::now_microseconds</a>();
+        let config_ref = borrow_global_mut<Configuration>(@aptos_framework);
+        let current_time = timestamp::now_microseconds();
 
-    // Do not do anything <b>if</b> a <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> <a href="event.md#0x1_event">event</a> is already emitted within this transaction.
-    //
-    // This is OK because:
-    // - The time changes in every non-empty <a href="block.md#0x1_block">block</a>
-    // - A <a href="block.md#0x1_block">block</a> automatically ends after a transaction that <b>emits</b> a <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> <a href="event.md#0x1_event">event</a>, which is guaranteed by
-    //   VM <b>spec</b> that all transactions comming after a <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> transaction will be returned <b>as</b> Retry
-    //   status.
-    // - Each transaction must emit at most one <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> <a href="event.md#0x1_event">event</a>
-    //
-    // Thus, this check <b>ensures</b> that a transaction that does multiple "<a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> required" actions <b>emits</b> only
-    // one <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> <a href="event.md#0x1_event">event</a>.
-    //
-    <b>if</b> (current_time == config_ref.last_reconfiguration_time) {
-        <b>return</b>
-    };
+        // Do not do anything if a reconfiguration event is already emitted within this transaction.
+        //
+        // This is OK because:
+        // - The time changes in every non-empty block
+        // - A block automatically ends after a transaction that emits a reconfiguration event, which is guaranteed by
+        //   VM spec that all transactions comming after a reconfiguration transaction will be returned as Retry
+        //   status.
+        // - Each transaction must emit at most one reconfiguration event
+        //
+        // Thus, this check ensures that a transaction that does multiple "reconfiguration required" actions emits only
+        // one reconfiguration event.
+        //
+        if (current_time == config_ref.last_reconfiguration_time) {
+            return
+        };
 
-    <a href="reconfiguration_state.md#0x1_reconfiguration_state_on_reconfig_start">reconfiguration_state::on_reconfig_start</a>();
+        reconfiguration_state::on_reconfig_start();
 
-    // Reconfiguration "forces the <a href="block.md#0x1_block">block</a>" <b>to</b> end, <b>as</b> mentioned above. Therefore, we must process the collected fees
-    // explicitly so that staking can distribute them.
-    //
-    // This also handles the case when a validator is removed due <b>to</b> the governance proposal. In particular, removing
-    // the validator causes a <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a>. We explicitly process fees, i.e. we drain aggregatable <a href="coin.md#0x1_coin">coin</a> and populate
-    // the fees <a href="../../aptos-stdlib/doc/table.md#0x1_table">table</a>, prior <b>to</b> calling `on_new_epoch()`. That call, in turn, distributes transaction fees for all active
-    // and pending_inactive validators, which <b>include</b> <a href="../../aptos-stdlib/doc/any.md#0x1_any">any</a> validator that is <b>to</b> be removed.
-    <b>if</b> (<a href="../../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features_collect_and_distribute_gas_fees">features::collect_and_distribute_gas_fees</a>()) {
-        // All transactions after <a href="reconfiguration.md#0x1_reconfiguration">reconfiguration</a> are Retry. Therefore, when the next
-        // <a href="block.md#0x1_block">block</a> starts and tries <b>to</b> assign/burn collected fees it will be just 0 and
-        // nothing will be assigned.
-        <a href="transaction_fee.md#0x1_transaction_fee_process_collected_fees">transaction_fee::process_collected_fees</a>();
-    };
+        // Reconfiguration "forces the block" to end, as mentioned above. Therefore, we must process the collected fees
+        // explicitly so that staking can distribute them.
+        //
+        // This also handles the case when a validator is removed due to the governance proposal. In particular, removing
+        // the validator causes a reconfiguration. We explicitly process fees, i.e. we drain aggregatable coin and populate
+        // the fees table, prior to calling `on_new_epoch()`. That call, in turn, distributes transaction fees for all active
+        // and pending_inactive validators, which include any validator that is to be removed.
+        if (features::collect_and_distribute_gas_fees()) {
+            // All transactions after reconfiguration are Retry. Therefore, when the next
+            // block starts and tries to assign/burn collected fees it will be just 0 and
+            // nothing will be assigned.
+            transaction_fee::process_collected_fees();
+        };
 
-    // Call <a href="stake.md#0x1_stake">stake</a> <b>to</b> compute the new validator set and distribute rewards and transaction fees.
-    <a href="stake.md#0x1_stake_on_new_epoch">stake::on_new_epoch</a>();
-    <a href="storage_gas.md#0x1_storage_gas_on_reconfig">storage_gas::on_reconfig</a>();
+        // Call stake to compute the new validator set and distribute rewards and transaction fees.
+        stake::on_new_epoch();
+        storage_gas::on_reconfig();
 
-    <b>assert</b>!(current_time &gt; config_ref.last_reconfiguration_time, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="reconfiguration.md#0x1_reconfiguration_EINVALID_BLOCK_TIME">EINVALID_BLOCK_TIME</a>));
-    config_ref.last_reconfiguration_time = current_time;
-    <b>spec</b> {
-        <b>assume</b> config_ref.epoch + 1 &lt;= MAX_U64;
-    };
-    config_ref.epoch = config_ref.epoch + 1;
+        assert!(current_time > config_ref.last_reconfiguration_time, error::invalid_state(EINVALID_BLOCK_TIME));
+        config_ref.last_reconfiguration_time = current_time;
+        spec {
+            assume config_ref.epoch + 1 <= MAX_U64;
+        };
+        config_ref.epoch = config_ref.epoch + 1;
 
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="event.md#0x1_event_emit">event::emit</a>(
-            <a href="reconfiguration.md#0x1_reconfiguration_NewEpoch">NewEpoch</a> {
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                NewEpoch {
+                    epoch: config_ref.epoch,
+                },
+            );
+        };
+        event::emit_event<NewEpochEvent>(
+            &mut config_ref.events,
+            NewEpochEvent {
                 epoch: config_ref.epoch,
             },
         );
-    };
-    <a href="event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a>&gt;(
-        &<b>mut</b> config_ref.events,
-        <a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a> {
-            epoch: config_ref.epoch,
-        },
-    );
 
-    <a href="reconfiguration_state.md#0x1_reconfiguration_state_on_reconfig_finish">reconfiguration_state::on_reconfig_finish</a>();
+        reconfiguration_state::on_reconfig_finish();
+    }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_reconfiguration_last_reconfiguration_time"></a>
 
@@ -449,23 +462,24 @@ Signal validators to start using new configuration. Must be called from friend c
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_last_reconfiguration_time">last_reconfiguration_time</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_last_reconfiguration_time">last_reconfiguration_time</a>(): u64 <b>acquires</b> <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> {
-    <b>borrow_global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).last_reconfiguration_time
+```move
+module 0x1::reconfiguration {
+    public fun last_reconfiguration_time(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    public fun last_reconfiguration_time(): u64 acquires Configuration {
+        borrow_global<Configuration>(@aptos_framework).last_reconfiguration_time
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_current_epoch"></a>
 
@@ -473,65 +487,67 @@ Signal validators to start using new configuration. Must be called from friend c
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_current_epoch">current_epoch</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_current_epoch">current_epoch</a>(): u64 <b>acquires</b> <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> {
-    <b>borrow_global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch
+```move
+module 0x1::reconfiguration {
+    public fun current_epoch(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::reconfiguration {
+    public fun current_epoch(): u64 acquires Configuration {
+        borrow_global<Configuration>(@aptos_framework).epoch
+    }
+}
+```
+
 
 <a id="0x1_reconfiguration_emit_genesis_reconfiguration_event"></a>
 
 ## Function `emit_genesis_reconfiguration_event`
 
-Emit a <code><a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a></code> event. This function will be invoked by genesis directly to generate the very first
+Emit a `NewEpochEvent` event. This function will be invoked by genesis directly to generate the very first
 reconfiguration event.
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_emit_genesis_reconfiguration_event">emit_genesis_reconfiguration_event</a>()
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    fun emit_genesis_reconfiguration_event()
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_emit_genesis_reconfiguration_event">emit_genesis_reconfiguration_event</a>() <b>acquires</b> <a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a> {
-    <b>let</b> config_ref = <b>borrow_global_mut</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-    <b>assert</b>!(config_ref.epoch == 0 && config_ref.last_reconfiguration_time == 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="reconfiguration.md#0x1_reconfiguration_ECONFIGURATION">ECONFIGURATION</a>));
-    config_ref.epoch = 1;
+```move
+module 0x1::reconfiguration {
+    fun emit_genesis_reconfiguration_event() acquires Configuration {
+        let config_ref = borrow_global_mut<Configuration>(@aptos_framework);
+        assert!(config_ref.epoch == 0 && config_ref.last_reconfiguration_time == 0, error::invalid_state(ECONFIGURATION));
+        config_ref.epoch = 1;
 
-    <b>if</b> (std::features::module_event_migration_enabled()) {
-        <a href="event.md#0x1_event_emit">event::emit</a>(
-            <a href="reconfiguration.md#0x1_reconfiguration_NewEpoch">NewEpoch</a> {
+        if (std::features::module_event_migration_enabled()) {
+            event::emit(
+                NewEpoch {
+                    epoch: config_ref.epoch,
+                },
+            );
+        };
+        event::emit_event<NewEpochEvent>(
+            &mut config_ref.events,
+            NewEpochEvent {
                 epoch: config_ref.epoch,
             },
         );
-    };
-    <a href="event.md#0x1_event_emit_event">event::emit_event</a>&lt;<a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a>&gt;(
-        &<b>mut</b> config_ref.events,
-        <a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a> {
-            epoch: config_ref.epoch,
-        },
-    );
+    }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="@Specification_1"></a>
 
@@ -551,10 +567,10 @@ reconfiguration event.
 
 <tr>
 <td>1</td>
-<td>The Configuration resource is stored under the Aptos framework account with initial values upon module's initialization.</td>
+<td>The Configuration resource is stored under the Aptos framework account with initial values upon module&apos;s initialization.</td>
 <td>Medium</td>
 <td>The Configuration resource may only be initialized with specific values and published under the aptos_framework account.</td>
-<td>Formally verified via <a href="#high-level-req-1">initialize</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;1](initialize).</td>
 </tr>
 
 <tr>
@@ -562,14 +578,14 @@ reconfiguration event.
 <td>The reconfiguration status may be determined at any time without causing an abort, indicating whether or not the system allows reconfiguration.</td>
 <td>Low</td>
 <td>The reconfiguration_enabled function will never abort and always returns a boolean value that accurately represents whether the system allows reconfiguration.</td>
-<td>Formally verified via <a href="#high-level-req-2">reconfiguration_enabled</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;2](reconfiguration_enabled).</td>
 </tr>
 
 <tr>
 <td>3</td>
-<td>For each reconfiguration, the epoch value (config_ref.epoch) increases by 1, and one 'NewEpochEvent' is emitted.</td>
+<td>For each reconfiguration, the epoch value (config_ref.epoch) increases by 1, and one &apos;NewEpochEvent&apos; is emitted.</td>
 <td>Critical</td>
-<td>After reconfiguration, the reconfigure() function increases the epoch value of the configuration by one and increments the counter of the NewEpochEvent's EventHandle by one.</td>
+<td>After reconfiguration, the reconfigure() function increases the epoch value of the configuration by one and increments the counter of the NewEpochEvent&apos;s EventHandle by one.</td>
 <td>Audited that these two values remain in sync.</td>
 </tr>
 
@@ -578,7 +594,7 @@ reconfiguration event.
 <td>Reconfiguration is possible only if genesis has started and reconfiguration is enabled. Also, the last reconfiguration must not be the current time, returning early without further actions otherwise.</td>
 <td>High</td>
 <td>The reconfigure() function may only execute to perform successful reconfiguration when genesis has started and when reconfiguration is enabled. Without satisfying both conditions, the function returns early without executing any further actions.</td>
-<td>Formally verified via <a href="#high-level-req-4">reconfigure</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;4](reconfigure).</td>
 </tr>
 
 <tr>
@@ -586,7 +602,7 @@ reconfiguration event.
 <td>Consecutive reconfigurations without the passage of time are not permitted.</td>
 <td>High</td>
 <td>The reconfigure() function enforces the restriction that reconfiguration may only be performed when the current time is not equal to the last_reconfiguration_time.</td>
-<td>Formally verified via <a href="#high-level-req-5">reconfigure</a>.</td>
+<td>Formally verified via [#high&#45;level&#45;req&#45;5](reconfigure).</td>
 </tr>
 
 </table>
@@ -599,13 +615,15 @@ reconfiguration event.
 ### Module-level Specification
 
 
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> aborts_if_is_strict;
-<b>invariant</b> [suspendable] <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>() ==&gt; <b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>invariant</b> [suspendable] <a href="chain_status.md#0x1_chain_status_is_operating">chain_status::is_operating</a>() ==&gt;
-    (<a href="timestamp.md#0x1_timestamp_spec_now_microseconds">timestamp::spec_now_microseconds</a>() &gt;= <a href="reconfiguration.md#0x1_reconfiguration_last_reconfiguration_time">last_reconfiguration_time</a>());
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    pragma verify = true;
+    pragma aborts_if_is_strict;
+    invariant [suspendable] chain_status::is_operating() ==> exists<Configuration>(@aptos_framework);
+    invariant [suspendable] chain_status::is_operating() ==>
+        (timestamp::spec_now_microseconds() >= last_reconfiguration_time());
+}
+```
 
 Make sure the signer address is @aptos_framework.
 
@@ -613,13 +631,15 @@ Make sure the signer address is @aptos_framework.
 <a id="0x1_reconfiguration_AbortsIfNotAptosFramework"></a>
 
 
-<pre><code><b>schema</b> <a href="reconfiguration.md#0x1_reconfiguration_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a> {
-    aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>;
-    <b>let</b> addr = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(aptos_framework);
-    <b>aborts_if</b> !<a href="system_addresses.md#0x1_system_addresses_is_aptos_framework_address">system_addresses::is_aptos_framework_address</a>(addr);
+```move
+module 0x1::reconfiguration {
+    schema AbortsIfNotAptosFramework {
+        aptos_framework: &signer;
+        let addr = signer::address_of(aptos_framework);
+        aborts_if !system_addresses::is_aptos_framework_address(addr);
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_initialize"></a>
@@ -627,35 +647,40 @@ Make sure the signer address is @aptos_framework.
 ### Function `initialize`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_initialize">initialize</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    public(friend) fun initialize(aptos_framework: &signer)
+}
+```
 
 Address @aptos_framework must exist resource Account and Configuration.
 Already exists in framework account.
 Guid_creation_num should be 2 according to logic.
 
 
-<pre><code><b>include</b> <a href="reconfiguration.md#0x1_reconfiguration_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a>;
-<b>let</b> addr = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(aptos_framework);
-<b>let</b> <b>post</b> config = <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>requires</b> <b>exists</b>&lt;Account&gt;(addr);
-<b>aborts_if</b> !(<b>global</b>&lt;Account&gt;(addr).guid_creation_num == 2);
-<b>aborts_if</b> <b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-// This enforces <a id="high-level-req-1" href="#high-level-req">high-level requirement 1</a>:
-<b>ensures</b> <b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>ensures</b> config.epoch == 0 && config.last_reconfiguration_time == 0;
-<b>ensures</b> config.events == <a href="event.md#0x1_event_EventHandle">event::EventHandle</a>&lt;<a href="reconfiguration.md#0x1_reconfiguration_NewEpochEvent">NewEpochEvent</a>&gt; {
-    counter: 0,
-    <a href="guid.md#0x1_guid">guid</a>: <a href="guid.md#0x1_guid_GUID">guid::GUID</a> {
-        id: <a href="guid.md#0x1_guid_ID">guid::ID</a> {
-            creation_num: 2,
-            addr: @aptos_framework
+```move
+module 0x1::reconfiguration {
+    include AbortsIfNotAptosFramework;
+    let addr = signer::address_of(aptos_framework);
+    let post config = global<Configuration>(@aptos_framework);
+    requires exists<Account>(addr);
+    aborts_if !(global<Account>(addr).guid_creation_num == 2);
+    aborts_if exists<Configuration>(@aptos_framework);
+// This enforces ### high&#45;level&#45;req&#45;1
+[#high&#45;level&#45;req](high&#45;level requirement 1):
+    ensures exists<Configuration>(@aptos_framework);
+    ensures config.epoch == 0 && config.last_reconfiguration_time == 0;
+    ensures config.events == event::EventHandle<NewEpochEvent> {
+        counter: 0,
+        guid: guid::GUID {
+            id: guid::ID {
+                creation_num: 2,
+                addr: @aptos_framework
+            }
         }
-    }
-};
-</code></pre>
-
+    };
+}
+```
 
 
 <a id="@Specification_1_disable_reconfiguration"></a>
@@ -663,17 +688,21 @@ Guid_creation_num should be 2 according to logic.
 ### Function `disable_reconfiguration`
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_disable_reconfiguration">disable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    fun disable_reconfiguration(aptos_framework: &signer)
+}
+```
 
 
 
-
-<pre><code><b>include</b> <a href="reconfiguration.md#0x1_reconfiguration_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a>;
-<b>aborts_if</b> <b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework);
-<b>ensures</b> <b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework);
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    include AbortsIfNotAptosFramework;
+    aborts_if exists<DisableReconfiguration>(@aptos_framework);
+    ensures exists<DisableReconfiguration>(@aptos_framework);
+}
+```
 
 
 <a id="@Specification_1_enable_reconfiguration"></a>
@@ -681,18 +710,22 @@ Guid_creation_num should be 2 according to logic.
 ### Function `enable_reconfiguration`
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_enable_reconfiguration">enable_reconfiguration</a>(aptos_framework: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    fun enable_reconfiguration(aptos_framework: &signer)
+}
+```
 
 Make sure the caller is admin and check the resource DisableReconfiguration.
 
 
-<pre><code><b>include</b> <a href="reconfiguration.md#0x1_reconfiguration_AbortsIfNotAptosFramework">AbortsIfNotAptosFramework</a>;
-<b>aborts_if</b> !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework);
-<b>ensures</b> !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework);
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    include AbortsIfNotAptosFramework;
+    aborts_if !exists<DisableReconfiguration>(@aptos_framework);
+    ensures !exists<DisableReconfiguration>(@aptos_framework);
+}
+```
 
 
 <a id="@Specification_1_reconfiguration_enabled"></a>
@@ -700,17 +733,22 @@ Make sure the caller is admin and check the resource DisableReconfiguration.
 ### Function `reconfiguration_enabled`
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    fun reconfiguration_enabled(): bool
+}
+```
 
 
 
-
-<pre><code>// This enforces <a id="high-level-req-2" href="#high-level-req">high-level requirement 2</a>:
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_DisableReconfiguration">DisableReconfiguration</a>&gt;(@aptos_framework);
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+// This enforces ### high&#45;level&#45;req&#45;2
+[#high&#45;level&#45;req](high&#45;level requirement 2):
+    aborts_if false;
+    ensures result == !exists<DisableReconfiguration>(@aptos_framework);
+}
+```
 
 
 <a id="@Specification_1_reconfigure"></a>
@@ -718,27 +756,33 @@ Make sure the caller is admin and check the resource DisableReconfiguration.
 ### Function `reconfigure`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_reconfigure">reconfigure</a>()
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    public(friend) fun reconfigure()
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify = <b>true</b>;
-<b>pragma</b> verify_duration_estimate = 600;
-<b>requires</b> <b>exists</b>&lt;<a href="stake.md#0x1_stake_ValidatorFees">stake::ValidatorFees</a>&gt;(@aptos_framework);
-<b>let</b> success = !(<a href="chain_status.md#0x1_chain_status_is_genesis">chain_status::is_genesis</a>() || <a href="timestamp.md#0x1_timestamp_spec_now_microseconds">timestamp::spec_now_microseconds</a>() == 0 || !<a href="reconfiguration.md#0x1_reconfiguration_reconfiguration_enabled">reconfiguration_enabled</a>())
-    && <a href="timestamp.md#0x1_timestamp_spec_now_microseconds">timestamp::spec_now_microseconds</a>() != <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).last_reconfiguration_time;
-<b>include</b> <a href="../../aptos-stdlib/../move-stdlib/doc/features.md#0x1_features_spec_periodical_reward_rate_decrease_enabled">features::spec_periodical_reward_rate_decrease_enabled</a>() ==&gt; <a href="staking_config.md#0x1_staking_config_StakingRewardsConfigEnabledRequirement">staking_config::StakingRewardsConfigEnabledRequirement</a>;
-<b>include</b> success ==&gt; <a href="aptos_coin.md#0x1_aptos_coin_ExistsAptosCoin">aptos_coin::ExistsAptosCoin</a>;
-<b>include</b> <a href="transaction_fee.md#0x1_transaction_fee_RequiresCollectedFeesPerValueLeqBlockAptosSupply">transaction_fee::RequiresCollectedFeesPerValueLeqBlockAptosSupply</a>;
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> success ==&gt; <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch == <b>old</b>(<b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch) + 1;
-<b>ensures</b> success ==&gt; <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).last_reconfiguration_time == <a href="timestamp.md#0x1_timestamp_spec_now_microseconds">timestamp::spec_now_microseconds</a>();
-// This enforces <a id="high-level-req-4" href="#high-level-req">high-level requirement 4</a> and <a id="high-level-req-5" href="#high-level-req">high-level requirement 5</a>:
-<b>ensures</b> !success ==&gt; <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch == <b>old</b>(<b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch);
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    pragma verify = true;
+    pragma verify_duration_estimate = 600;
+    requires exists<stake::ValidatorFees>(@aptos_framework);
+    let success = !(chain_status::is_genesis() || timestamp::spec_now_microseconds() == 0 || !reconfiguration_enabled())
+        && timestamp::spec_now_microseconds() != global<Configuration>(@aptos_framework).last_reconfiguration_time;
+    include features::spec_periodical_reward_rate_decrease_enabled() ==> staking_config::StakingRewardsConfigEnabledRequirement;
+    include success ==> aptos_coin::ExistsAptosCoin;
+    include transaction_fee::RequiresCollectedFeesPerValueLeqBlockAptosSupply;
+    aborts_if false;
+    ensures success ==> global<Configuration>(@aptos_framework).epoch == old(global<Configuration>(@aptos_framework).epoch) + 1;
+    ensures success ==> global<Configuration>(@aptos_framework).last_reconfiguration_time == timestamp::spec_now_microseconds();
+// This enforces ### high&#45;level&#45;req&#45;4
+[#high&#45;level&#45;req](high&#45;level requirement 4) and ### high&#45;level&#45;req&#45;5
+[#high&#45;level&#45;req](high&#45;level requirement 5):
+    ensures !success ==> global<Configuration>(@aptos_framework).epoch == old(global<Configuration>(@aptos_framework).epoch);
+}
+```
 
 
 <a id="@Specification_1_last_reconfiguration_time"></a>
@@ -746,16 +790,20 @@ Make sure the caller is admin and check the resource DisableReconfiguration.
 ### Function `last_reconfiguration_time`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_last_reconfiguration_time">last_reconfiguration_time</a>(): u64
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    public fun last_reconfiguration_time(): u64
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>ensures</b> result == <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).last_reconfiguration_time;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    aborts_if !exists<Configuration>(@aptos_framework);
+    ensures result == global<Configuration>(@aptos_framework).last_reconfiguration_time;
+}
+```
 
 
 <a id="@Specification_1_current_epoch"></a>
@@ -763,16 +811,20 @@ Make sure the caller is admin and check the resource DisableReconfiguration.
 ### Function `current_epoch`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_current_epoch">current_epoch</a>(): u64
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    public fun current_epoch(): u64
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>ensures</b> result == <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch;
-</code></pre>
-
+```move
+module 0x1::reconfiguration {
+    aborts_if !exists<Configuration>(@aptos_framework);
+    ensures result == global<Configuration>(@aptos_framework).epoch;
+}
+```
 
 
 <a id="@Specification_1_emit_genesis_reconfiguration_event"></a>
@@ -780,19 +832,21 @@ Make sure the caller is admin and check the resource DisableReconfiguration.
 ### Function `emit_genesis_reconfiguration_event`
 
 
-<pre><code><b>fun</b> <a href="reconfiguration.md#0x1_reconfiguration_emit_genesis_reconfiguration_event">emit_genesis_reconfiguration_event</a>()
-</code></pre>
+```move
+module 0x1::reconfiguration {
+    fun emit_genesis_reconfiguration_event()
+}
+```
 
-
-When genesis_event emit the epoch and the <code>last_reconfiguration_time</code> .
+When genesis_event emit the epoch and the `last_reconfiguration_time` .
 Should equal to 0
 
 
-<pre><code><b>aborts_if</b> !<b>exists</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>let</b> config_ref = <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework);
-<b>aborts_if</b> !(config_ref.epoch == 0 && config_ref.last_reconfiguration_time == 0);
-<b>ensures</b> <b>global</b>&lt;<a href="reconfiguration.md#0x1_reconfiguration_Configuration">Configuration</a>&gt;(@aptos_framework).epoch == 1;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::reconfiguration {
+    aborts_if !exists<Configuration>(@aptos_framework);
+    let config_ref = global<Configuration>(@aptos_framework);
+    aborts_if !(config_ref.epoch == 0 && config_ref.last_reconfiguration_time == 0);
+    ensures global<Configuration>(@aptos_framework).epoch == 1;
+}
+```

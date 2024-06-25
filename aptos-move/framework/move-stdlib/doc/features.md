@@ -6,7 +6,7 @@
 Defines feature flags for Aptos. Those are used in Aptos specific implementations of features in
 the Move stdlib, the Aptos stdlib, and the Aptos framework.
 
-============================================================================================
+&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;&#61;
 Feature Flag Definitions
 
 Each feature flag should come with documentation which justifies the need of the flag.
@@ -15,16 +15,16 @@ introducing new feature flags, as too many can make it hard to understand the co
 
 Each feature flag should come with a specification of a lifetime:
 
-- a *transient* feature flag is only needed until a related code rollout has happened. This
+&#45; a &#42;transient&#42; feature flag is only needed until a related code rollout has happened. This
 is typically associated with the introduction of new native Move functions, and is only used
 from Move code. The owner of this feature is obliged to remove it once this can be done.
 
-- a *permanent* feature flag is required to stay around forever. Typically, those flags guard
+&#45; a &#42;permanent&#42; feature flag is required to stay around forever. Typically, those flags guard
 behavior in native code, and the behavior with or without the feature need to be preserved
 for playback.
 
 Note that removing a feature flag still requires the function which tests for the feature
-(like <code>code_dependency_check_enabled</code> below) to stay around for compatibility reasons, as it
+(like `code_dependency_check_enabled` below) to stay around for compatibility reasons, as it
 is a public function. However, once the feature flag is disabled, those functions can constantly
 return true.
 
@@ -155,11 +155,13 @@ return true.
     -  [Function `apply_diff`](#@Specification_1_apply_diff)
 
 
-<pre><code><b>use</b> <a href="error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="signer.md#0x1_signer">0x1::signer</a>;
-<b>use</b> <a href="vector.md#0x1_vector">0x1::vector</a>;
-</code></pre>
-
+```move
+module 0x1::features {
+    use 0x1::error;
+    use 0x1::signer;
+    use 0x1::vector;
+}
+```
 
 
 <a id="0x1_features_Features"></a>
@@ -169,26 +171,25 @@ return true.
 The enabled features, represented by a bitset stored on chain.
 
 
-<pre><code><b>struct</b> <a href="features.md#0x1_features_Features">Features</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::features {
+    struct Features has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code><a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`features: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="0x1_features_PendingFeatures"></a>
 
@@ -198,26 +199,25 @@ This resource holds the feature vec updates received in the current epoch.
 On epoch change, the updates take effect and this buffer is cleared.
 
 
-<pre><code><b>struct</b> <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> <b>has</b> key
-</code></pre>
+```move
+module 0x1::features {
+    struct PendingFeatures has key
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code><a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`features: vector<u8>`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -227,35 +227,41 @@ On epoch change, the updates take effect and this buffer is cleared.
 <a id="0x1_features_ABORT_IF_MULTISIG_PAYLOAD_MISMATCH"></a>
 
 Whether the multisig v2 fix is enabled. Once enabled, the multisig transaction execution will explicitly
-abort if the provided payload does not match the payload stored on-chain.
+abort if the provided payload does not match the payload stored on&#45;chain.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_ABORT_IF_MULTISIG_PAYLOAD_MISMATCH">ABORT_IF_MULTISIG_PAYLOAD_MISMATCH</a>: u64 = 70;
-</code></pre>
-
+```move
+module 0x1::features {
+    const ABORT_IF_MULTISIG_PAYLOAD_MISMATCH: u64 = 70;
+}
+```
 
 
 <a id="0x1_features_AGGREGATOR_V2_IS_AT_LEAST_API"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_AGGREGATOR_V2_IS_AT_LEAST_API">AGGREGATOR_V2_IS_AT_LEAST_API</a>: u64 = 66;
-</code></pre>
-
+```move
+module 0x1::features {
+    const AGGREGATOR_V2_IS_AT_LEAST_API: u64 = 66;
+}
+```
 
 
 <a id="0x1_features_APTOS_STD_CHAIN_ID_NATIVES"></a>
 
-Whether the new <code>aptos_stdlib::type_info::chain_id()</code> native for fetching the chain ID is enabled.
+Whether the new `aptos_stdlib::type_info::chain_id()` native for fetching the chain ID is enabled.
 This is needed because of the introduction of a new native function.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_APTOS_STD_CHAIN_ID_NATIVES">APTOS_STD_CHAIN_ID_NATIVES</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::features {
+    const APTOS_STD_CHAIN_ID_NATIVES: u64 = 4;
+}
+```
 
 
 <a id="0x1_features_APTOS_UNIQUE_IDENTIFIERS"></a>
@@ -264,21 +270,25 @@ Whether enable MOVE functions to call create_auid method to create AUIDs.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_APTOS_UNIQUE_IDENTIFIERS">APTOS_UNIQUE_IDENTIFIERS</a>: u64 = 23;
-</code></pre>
-
+```move
+module 0x1::features {
+    const APTOS_UNIQUE_IDENTIFIERS: u64 = 23;
+}
+```
 
 
 <a id="0x1_features_BLAKE2B_256_NATIVE"></a>
 
-Whether the new BLAKE2B-256 hash function native is enabled.
+Whether the new BLAKE2B&#45;256 hash function native is enabled.
 This is needed because of the introduction of new native function(s).
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a>: u64 = 8;
-</code></pre>
-
+```move
+module 0x1::features {
+    const BLAKE2B_256_NATIVE: u64 = 8;
+}
+```
 
 
 <a id="0x1_features_BLS12_381_STRUCTURES"></a>
@@ -288,9 +298,11 @@ Whether the generic algebra implementation for BLS12381 operations are enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_BLS12_381_STRUCTURES">BLS12_381_STRUCTURES</a>: u64 = 13;
-</code></pre>
-
+```move
+module 0x1::features {
+    const BLS12_381_STRUCTURES: u64 = 13;
+}
+```
 
 
 <a id="0x1_features_BN254_STRUCTURES"></a>
@@ -300,21 +312,25 @@ Whether the generic algebra implementation for BN254 operations are enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_BN254_STRUCTURES">BN254_STRUCTURES</a>: u64 = 43;
-</code></pre>
-
+```move
+module 0x1::features {
+    const BN254_STRUCTURES: u64 = 43;
+}
+```
 
 
 <a id="0x1_features_BULLETPROOFS_NATIVES"></a>
 
-Whether the Bulletproofs zero-knowledge range proof module is enabled, and the related native function is
+Whether the Bulletproofs zero&#45;knowledge range proof module is enabled, and the related native function is
 available. This is needed because of the introduction of a new native function.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_BULLETPROOFS_NATIVES">BULLETPROOFS_NATIVES</a>: u64 = 24;
-</code></pre>
-
+```move
+module 0x1::features {
+    const BULLETPROOFS_NATIVES: u64 = 24;
+}
+```
 
 
 <a id="0x1_features_CHARGE_INVARIANT_VIOLATION"></a>
@@ -323,9 +339,11 @@ Charge invariant violation error.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_CHARGE_INVARIANT_VIOLATION">CHARGE_INVARIANT_VIOLATION</a>: u64 = 20;
-</code></pre>
-
+```move
+module 0x1::features {
+    const CHARGE_INVARIANT_VIOLATION: u64 = 20;
+}
+```
 
 
 <a id="0x1_features_CODE_DEPENDENCY_CHECK"></a>
@@ -335,9 +353,11 @@ available. This is needed because of introduction of a new native function.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_CODE_DEPENDENCY_CHECK">CODE_DEPENDENCY_CHECK</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::features {
+    const CODE_DEPENDENCY_CHECK: u64 = 1;
+}
+```
 
 
 <a id="0x1_features_COIN_TO_FUNGIBLE_ASSET_MIGRATION"></a>
@@ -347,9 +367,11 @@ Whether migration from coin to fungible asset feature is enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_COIN_TO_FUNGIBLE_ASSET_MIGRATION">COIN_TO_FUNGIBLE_ASSET_MIGRATION</a>: u64 = 60;
-</code></pre>
-
+```move
+module 0x1::features {
+    const COIN_TO_FUNGIBLE_ASSET_MIGRATION: u64 = 60;
+}
+```
 
 
 <a id="0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES"></a>
@@ -358,9 +380,11 @@ Whether gas fees are collected and distributed to the block proposers.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a>: u64 = 6;
-</code></pre>
-
+```move
+module 0x1::features {
+    const COLLECT_AND_DISTRIBUTE_GAS_FEES: u64 = 6;
+}
+```
 
 
 <a id="0x1_features_COMMISSION_CHANGE_DELEGATION_POOL"></a>
@@ -369,9 +393,11 @@ Whether the operator commission rate change in delegation pool is enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_COMMISSION_CHANGE_DELEGATION_POOL">COMMISSION_CHANGE_DELEGATION_POOL</a>: u64 = 42;
-</code></pre>
-
+```move
+module 0x1::features {
+    const COMMISSION_CHANGE_DELEGATION_POOL: u64 = 42;
+}
+```
 
 
 <a id="0x1_features_CONCURRENT_FUNGIBLE_ASSETS"></a>
@@ -381,9 +407,11 @@ to create higher throughput concurrent variants.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_ASSETS">CONCURRENT_FUNGIBLE_ASSETS</a>: u64 = 50;
-</code></pre>
-
+```move
+module 0x1::features {
+    const CONCURRENT_FUNGIBLE_ASSETS: u64 = 50;
+}
+```
 
 
 <a id="0x1_features_CONCURRENT_FUNGIBLE_BALANCE"></a>
@@ -393,21 +421,25 @@ to create higher throughput concurrent variants.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_BALANCE">CONCURRENT_FUNGIBLE_BALANCE</a>: u64 = 67;
-</code></pre>
-
+```move
+module 0x1::features {
+    const CONCURRENT_FUNGIBLE_BALANCE: u64 = 67;
+}
+```
 
 
 <a id="0x1_features_CRYPTOGRAPHY_ALGEBRA_NATIVES"></a>
 
-Whether generic algebra basic operation support in <code>crypto_algebra.<b>move</b></code> are enabled.
+Whether generic algebra basic operation support in `crypto_algebra.move` are enabled.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_CRYPTOGRAPHY_ALGEBRA_NATIVES">CRYPTOGRAPHY_ALGEBRA_NATIVES</a>: u64 = 12;
-</code></pre>
-
+```move
+module 0x1::features {
+    const CRYPTOGRAPHY_ALGEBRA_NATIVES: u64 = 12;
+}
+```
 
 
 <a id="0x1_features_DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE"></a>
@@ -416,9 +448,11 @@ Whether to default new Fungible Store to the concurrent variant.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE">DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE</a>: u64 = 68;
-</code></pre>
-
+```move
+module 0x1::features {
+    const DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE: u64 = 68;
+}
+```
 
 
 <a id="0x1_features_DELEGATION_POOLS"></a>
@@ -427,9 +461,11 @@ Whether delegation pools are enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_DELEGATION_POOLS">DELEGATION_POOLS</a>: u64 = 11;
-</code></pre>
-
+```move
+module 0x1::features {
+    const DELEGATION_POOLS: u64 = 11;
+}
+```
 
 
 <a id="0x1_features_DELEGATION_POOL_ALLOWLISTING"></a>
@@ -438,9 +474,11 @@ Whether delegators allowlisting for delegation pools is supported.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_DELEGATION_POOL_ALLOWLISTING">DELEGATION_POOL_ALLOWLISTING</a>: u64 = 56;
-</code></pre>
-
+```move
+module 0x1::features {
+    const DELEGATION_POOL_ALLOWLISTING: u64 = 56;
+}
+```
 
 
 <a id="0x1_features_DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING"></a>
@@ -449,9 +487,11 @@ Whether enable paritial governance voting on delegation_pool.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING">DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING</a>: u64 = 21;
-</code></pre>
-
+```move
+module 0x1::features {
+    const DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING: u64 = 21;
+}
+```
 
 
 <a id="0x1_features_DISPATCHABLE_FUNGIBLE_ASSET"></a>
@@ -461,18 +501,22 @@ Whether the dispatchable fungible asset standard feature is enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_DISPATCHABLE_FUNGIBLE_ASSET">DISPATCHABLE_FUNGIBLE_ASSET</a>: u64 = 63;
-</code></pre>
-
+```move
+module 0x1::features {
+    const DISPATCHABLE_FUNGIBLE_ASSET: u64 = 63;
+}
+```
 
 
 <a id="0x1_features_EAPI_DISABLED"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_EAPI_DISABLED">EAPI_DISABLED</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::features {
+    const EAPI_DISABLED: u64 = 2;
+}
+```
 
 
 <a id="0x1_features_ED25519_PUBKEY_VALIDATE_RETURN_FALSE_WRONG_LENGTH"></a>
@@ -481,9 +525,11 @@ Whether native_public_key_validate aborts when a public key of the wrong length 
 Lifetime: ephemeral
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_ED25519_PUBKEY_VALIDATE_RETURN_FALSE_WRONG_LENGTH">ED25519_PUBKEY_VALIDATE_RETURN_FALSE_WRONG_LENGTH</a>: u64 = 14;
-</code></pre>
-
+```move
+module 0x1::features {
+    const ED25519_PUBKEY_VALIDATE_RETURN_FALSE_WRONG_LENGTH: u64 = 14;
+}
+```
 
 
 <a id="0x1_features_EFEATURE_CANNOT_BE_DISABLED"></a>
@@ -491,9 +537,11 @@ Lifetime: ephemeral
 Deployed to production, and disabling is deprecated.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::features {
+    const EFEATURE_CANNOT_BE_DISABLED: u64 = 3;
+}
+```
 
 
 <a id="0x1_features_EFRAMEWORK_SIGNER_NEEDED"></a>
@@ -501,27 +549,33 @@ Deployed to production, and disabling is deprecated.
 The provided signer has not a framework address.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_EFRAMEWORK_SIGNER_NEEDED">EFRAMEWORK_SIGNER_NEEDED</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::features {
+    const EFRAMEWORK_SIGNER_NEEDED: u64 = 1;
+}
+```
 
 
 <a id="0x1_features_EINVALID_FEATURE"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_EINVALID_FEATURE">EINVALID_FEATURE</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::features {
+    const EINVALID_FEATURE: u64 = 1;
+}
+```
 
 
 <a id="0x1_features_FEE_PAYER_ACCOUNT_OPTIONAL"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_FEE_PAYER_ACCOUNT_OPTIONAL">FEE_PAYER_ACCOUNT_OPTIONAL</a>: u64 = 35;
-</code></pre>
-
+```move
+module 0x1::features {
+    const FEE_PAYER_ACCOUNT_OPTIONAL: u64 = 35;
+}
+```
 
 
 <a id="0x1_features_FEE_PAYER_ENABLED"></a>
@@ -530,64 +584,76 @@ Whether alternate gas payer is supported
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_FEE_PAYER_ENABLED">FEE_PAYER_ENABLED</a>: u64 = 22;
-</code></pre>
-
+```move
+module 0x1::features {
+    const FEE_PAYER_ENABLED: u64 = 22;
+}
+```
 
 
 <a id="0x1_features_JWK_CONSENSUS"></a>
 
-Deprecated by <code>aptos_framework::jwk_consensus_config::JWKConsensusConfig</code>.
+Deprecated by `aptos_framework::jwk_consensus_config::JWKConsensusConfig`.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_JWK_CONSENSUS">JWK_CONSENSUS</a>: u64 = 49;
-</code></pre>
-
+```move
+module 0x1::features {
+    const JWK_CONSENSUS: u64 = 49;
+}
+```
 
 
 <a id="0x1_features_KEYLESS_ACCOUNTS"></a>
 
-Whether the OIDB feature is enabled, possibly with the ZK-less verification mode.
+Whether the OIDB feature is enabled, possibly with the ZK&#45;less verification mode.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_KEYLESS_ACCOUNTS">KEYLESS_ACCOUNTS</a>: u64 = 46;
-</code></pre>
-
+```move
+module 0x1::features {
+    const KEYLESS_ACCOUNTS: u64 = 46;
+}
+```
 
 
 <a id="0x1_features_KEYLESS_ACCOUNTS_WITH_PASSKEYS"></a>
 
-Whether keyless accounts support passkey-based ephemeral signatures.
+Whether keyless accounts support passkey&#45;based ephemeral signatures.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_KEYLESS_ACCOUNTS_WITH_PASSKEYS">KEYLESS_ACCOUNTS_WITH_PASSKEYS</a>: u64 = 54;
-</code></pre>
-
+```move
+module 0x1::features {
+    const KEYLESS_ACCOUNTS_WITH_PASSKEYS: u64 = 54;
+}
+```
 
 
 <a id="0x1_features_KEYLESS_BUT_ZKLESS_ACCOUNTS"></a>
 
-Whether the ZK-less mode of the keyless accounts feature is enabled.
+Whether the ZK&#45;less mode of the keyless accounts feature is enabled.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_KEYLESS_BUT_ZKLESS_ACCOUNTS">KEYLESS_BUT_ZKLESS_ACCOUNTS</a>: u64 = 47;
-</code></pre>
-
+```move
+module 0x1::features {
+    const KEYLESS_BUT_ZKLESS_ACCOUNTS: u64 = 47;
+}
+```
 
 
 <a id="0x1_features_LIMIT_MAX_IDENTIFIER_LENGTH"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_LIMIT_MAX_IDENTIFIER_LENGTH">LIMIT_MAX_IDENTIFIER_LENGTH</a>: u64 = 38;
-</code></pre>
-
+```move
+module 0x1::features {
+    const LIMIT_MAX_IDENTIFIER_LENGTH: u64 = 38;
+}
+```
 
 
 <a id="0x1_features_MAX_OBJECT_NESTING_CHECK"></a>
@@ -595,21 +661,25 @@ Lifetime: transient
 Whether checking the maximum object nesting is enabled.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MAX_OBJECT_NESTING_CHECK">MAX_OBJECT_NESTING_CHECK</a>: u64 = 53;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MAX_OBJECT_NESTING_CHECK: u64 = 53;
+}
+```
 
 
 <a id="0x1_features_MODULE_EVENT"></a>
 
-Whether emit function in <code>event.<b>move</b></code> are enabled for module events.
+Whether emit function in `event.move` are enabled for module events.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MODULE_EVENT">MODULE_EVENT</a>: u64 = 26;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MODULE_EVENT: u64 = 26;
+}
+```
 
 
 <a id="0x1_features_MODULE_EVENT_MIGRATION"></a>
@@ -619,19 +689,23 @@ Whether aptos_framwork enables the behavior of module event migration.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MODULE_EVENT_MIGRATION">MODULE_EVENT_MIGRATION</a>: u64 = 57;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MODULE_EVENT_MIGRATION: u64 = 57;
+}
+```
 
 
 <a id="0x1_features_MULTISIG_ACCOUNTS"></a>
 
-Whether multisig accounts (different from accounts with multi-ed25519 auth keys) are enabled.
+Whether multisig accounts (different from accounts with multi&#45;ed25519 auth keys) are enabled.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a>: u64 = 10;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MULTISIG_ACCOUNTS: u64 = 10;
+}
+```
 
 
 <a id="0x1_features_MULTISIG_V2_ENHANCEMENT"></a>
@@ -641,21 +715,25 @@ Whether the Multisig V2 enhancement feature is enabled.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MULTISIG_V2_ENHANCEMENT">MULTISIG_V2_ENHANCEMENT</a>: u64 = 55;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MULTISIG_V2_ENHANCEMENT: u64 = 55;
+}
+```
 
 
 <a id="0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES"></a>
 
-Whether the new <code>aptos_stdlib::multi_ed25519::public_key_validate_internal_v2()</code> native is enabled.
+Whether the new `aptos_stdlib::multi_ed25519::public_key_validate_internal_v2()` native is enabled.
 This is needed because of the introduction of a new native function.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a>: u64 = 7;
-</code></pre>
-
+```move
+module 0x1::features {
+    const MULTI_ED25519_PK_VALIDATE_V2_NATIVES: u64 = 7;
+}
+```
 
 
 <a id="0x1_features_NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE"></a>
@@ -663,9 +741,11 @@ Lifetime: transient
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE">NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE</a>: u64 = 64;
-</code></pre>
-
+```move
+module 0x1::features {
+    const NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE: u64 = 64;
+}
+```
 
 
 <a id="0x1_features_OBJECT_CODE_DEPLOYMENT"></a>
@@ -673,9 +753,11 @@ Lifetime: transient
 Whether deploying to objects is enabled.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_OBJECT_CODE_DEPLOYMENT">OBJECT_CODE_DEPLOYMENT</a>: u64 = 52;
-</code></pre>
-
+```move
+module 0x1::features {
+    const OBJECT_CODE_DEPLOYMENT: u64 = 52;
+}
+```
 
 
 <a id="0x1_features_OBJECT_NATIVE_DERIVED_ADDRESS"></a>
@@ -683,9 +765,11 @@ Whether deploying to objects is enabled.
 Whether we use more efficient native implementation of computing object derived address
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_OBJECT_NATIVE_DERIVED_ADDRESS">OBJECT_NATIVE_DERIVED_ADDRESS</a>: u64 = 62;
-</code></pre>
-
+```move
+module 0x1::features {
+    const OBJECT_NATIVE_DERIVED_ADDRESS: u64 = 62;
+}
+```
 
 
 <a id="0x1_features_OPERATIONS_DEFAULT_TO_FA_APT_STORE"></a>
@@ -693,9 +777,11 @@ Whether we use more efficient native implementation of computing object derived 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_OPERATIONS_DEFAULT_TO_FA_APT_STORE">OPERATIONS_DEFAULT_TO_FA_APT_STORE</a>: u64 = 65;
-</code></pre>
-
+```move
+module 0x1::features {
+    const OPERATIONS_DEFAULT_TO_FA_APT_STORE: u64 = 65;
+}
+```
 
 
 <a id="0x1_features_OPERATOR_BENEFICIARY_CHANGE"></a>
@@ -704,9 +790,11 @@ Whether allow changing beneficiaries for operators.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_OPERATOR_BENEFICIARY_CHANGE">OPERATOR_BENEFICIARY_CHANGE</a>: u64 = 39;
-</code></pre>
-
+```move
+module 0x1::features {
+    const OPERATOR_BENEFICIARY_CHANGE: u64 = 39;
+}
+```
 
 
 <a id="0x1_features_PARTIAL_GOVERNANCE_VOTING"></a>
@@ -715,9 +803,11 @@ Whether enable paritial governance voting on aptos_governance.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_PARTIAL_GOVERNANCE_VOTING">PARTIAL_GOVERNANCE_VOTING</a>: u64 = 17;
-</code></pre>
-
+```move
+module 0x1::features {
+    const PARTIAL_GOVERNANCE_VOTING: u64 = 17;
+}
+```
 
 
 <a id="0x1_features_PERIODICAL_REWARD_RATE_DECREASE"></a>
@@ -726,28 +816,34 @@ Whether reward rate decreases periodically.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_PERIODICAL_REWARD_RATE_DECREASE">PERIODICAL_REWARD_RATE_DECREASE</a>: u64 = 16;
-</code></pre>
-
+```move
+module 0x1::features {
+    const PERIODICAL_REWARD_RATE_DECREASE: u64 = 16;
+}
+```
 
 
 <a id="0x1_features_PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS">PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS</a>: u64 = 61;
-</code></pre>
-
+```move
+module 0x1::features {
+    const PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS: u64 = 61;
+}
+```
 
 
 <a id="0x1_features_RECONFIGURE_WITH_DKG"></a>
 
-Deprecated by <code>aptos_framework::randomness_config::RandomnessConfig</code>.
+Deprecated by `aptos_framework::randomness_config::RandomnessConfig`.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_RECONFIGURE_WITH_DKG">RECONFIGURE_WITH_DKG</a>: u64 = 45;
-</code></pre>
-
+```move
+module 0x1::features {
+    const RECONFIGURE_WITH_DKG: u64 = 45;
+}
+```
 
 
 <a id="0x1_features_RESOURCE_GROUPS"></a>
@@ -756,48 +852,58 @@ Whether resource groups are enabled.
 This is needed because of new attributes for structs and a change in storage representation.
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a>: u64 = 9;
-</code></pre>
-
+```move
+module 0x1::features {
+    const RESOURCE_GROUPS: u64 = 9;
+}
+```
 
 
 <a id="0x1_features_RESOURCE_GROUPS_SPLIT_IN_VM_CHANGE_SET"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_RESOURCE_GROUPS_SPLIT_IN_VM_CHANGE_SET">RESOURCE_GROUPS_SPLIT_IN_VM_CHANGE_SET</a>: u64 = 41;
-</code></pre>
-
+```move
+module 0x1::features {
+    const RESOURCE_GROUPS_SPLIT_IN_VM_CHANGE_SET: u64 = 41;
+}
+```
 
 
 <a id="0x1_features_SAFER_METADATA"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SAFER_METADATA">SAFER_METADATA</a>: u64 = 32;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SAFER_METADATA: u64 = 32;
+}
+```
 
 
 <a id="0x1_features_SAFER_RESOURCE_GROUPS"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SAFER_RESOURCE_GROUPS">SAFER_RESOURCE_GROUPS</a>: u64 = 31;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SAFER_RESOURCE_GROUPS: u64 = 31;
+}
+```
 
 
 <a id="0x1_features_SHA_512_AND_RIPEMD_160_NATIVES"></a>
 
-Whether the new SHA2-512, SHA3-512 and RIPEMD-160 hash function natives are enabled.
+Whether the new SHA2&#45;512, SHA3&#45;512 and RIPEMD&#45;160 hash function natives are enabled.
 This is needed because of the introduction of new native functions.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SHA_512_AND_RIPEMD_160_NATIVES">SHA_512_AND_RIPEMD_160_NATIVES</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SHA_512_AND_RIPEMD_160_NATIVES: u64 = 3;
+}
+```
 
 
 <a id="0x1_features_SIGNATURE_CHECKER_V2_SCRIPT_FIX"></a>
@@ -806,9 +912,11 @@ Whether the fix for a counting bug in the script path of the signature checker p
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SIGNATURE_CHECKER_V2_SCRIPT_FIX">SIGNATURE_CHECKER_V2_SCRIPT_FIX</a>: u64 = 29;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SIGNATURE_CHECKER_V2_SCRIPT_FIX: u64 = 29;
+}
+```
 
 
 <a id="0x1_features_SIGNER_NATIVE_FORMAT_FIX"></a>
@@ -817,18 +925,22 @@ Fix the native formatter for signer.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SIGNER_NATIVE_FORMAT_FIX">SIGNER_NATIVE_FORMAT_FIX</a>: u64 = 25;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SIGNER_NATIVE_FORMAT_FIX: u64 = 25;
+}
+```
 
 
 <a id="0x1_features_SINGLE_SENDER_AUTHENTICATOR"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SINGLE_SENDER_AUTHENTICATOR">SINGLE_SENDER_AUTHENTICATOR</a>: u64 = 33;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SINGLE_SENDER_AUTHENTICATOR: u64 = 33;
+}
+```
 
 
 <a id="0x1_features_SPONSORED_AUTOMATIC_ACCOUNT_CREATION"></a>
@@ -837,9 +949,11 @@ Whether the automatic creation of accounts is enabled for sponsored transactions
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_SPONSORED_AUTOMATIC_ACCOUNT_CREATION">SPONSORED_AUTOMATIC_ACCOUNT_CREATION</a>: u64 = 34;
-</code></pre>
-
+```move
+module 0x1::features {
+    const SPONSORED_AUTOMATIC_ACCOUNT_CREATION: u64 = 34;
+}
+```
 
 
 <a id="0x1_features_STRUCT_CONSTRUCTORS"></a>
@@ -849,22 +963,26 @@ Whether struct constructors are enabled
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_STRUCT_CONSTRUCTORS">STRUCT_CONSTRUCTORS</a>: u64 = 15;
-</code></pre>
-
+```move
+module 0x1::features {
+    const STRUCT_CONSTRUCTORS: u64 = 15;
+}
+```
 
 
 <a id="0x1_features_TRANSACTION_CONTEXT_EXTENSION"></a>
 
 Whether the transaction context extension is enabled. This feature allows the module
-<code>transaction_context</code> to provide contextual information about the user transaction.
+`transaction_context` to provide contextual information about the user transaction.
 
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_TRANSACTION_CONTEXT_EXTENSION">TRANSACTION_CONTEXT_EXTENSION</a>: u64 = 59;
-</code></pre>
-
+```move
+module 0x1::features {
+    const TRANSACTION_CONTEXT_EXTENSION: u64 = 59;
+}
+```
 
 
 <a id="0x1_features_TREAT_FRIEND_AS_PRIVATE"></a>
@@ -874,9 +992,11 @@ private functions.
 Lifetime: permanent
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_TREAT_FRIEND_AS_PRIVATE">TREAT_FRIEND_AS_PRIVATE</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::features {
+    const TREAT_FRIEND_AS_PRIVATE: u64 = 2;
+}
+```
 
 
 <a id="0x1_features_VM_BINARY_FORMAT_V6"></a>
@@ -885,18 +1005,22 @@ Whether to allow the use of binary format version v6.
 Lifetime: transient
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a>: u64 = 5;
-</code></pre>
-
+```move
+module 0x1::features {
+    const VM_BINARY_FORMAT_V6: u64 = 5;
+}
+```
 
 
 <a id="0x1_features_VM_BINARY_FORMAT_V7"></a>
 
 
 
-<pre><code><b>const</b> <a href="features.md#0x1_features_VM_BINARY_FORMAT_V7">VM_BINARY_FORMAT_V7</a>: u64 = 40;
-</code></pre>
-
+```move
+module 0x1::features {
+    const VM_BINARY_FORMAT_V7: u64 = 40;
+}
+```
 
 
 <a id="0x1_features_code_dependency_check_enabled"></a>
@@ -905,23 +1029,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_code_dependency_check_enabled">code_dependency_check_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_code_dependency_check_enabled">code_dependency_check_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_CODE_DEPENDENCY_CHECK">CODE_DEPENDENCY_CHECK</a>)
+```move
+module 0x1::features {
+    public fun code_dependency_check_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun code_dependency_check_enabled(): bool acquires Features {
+        is_enabled(CODE_DEPENDENCY_CHECK)
+    }
+}
+```
+
 
 <a id="0x1_features_treat_friend_as_private"></a>
 
@@ -929,23 +1054,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_treat_friend_as_private">treat_friend_as_private</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_treat_friend_as_private">treat_friend_as_private</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_TREAT_FRIEND_AS_PRIVATE">TREAT_FRIEND_AS_PRIVATE</a>)
+```move
+module 0x1::features {
+    public fun treat_friend_as_private(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun treat_friend_as_private(): bool acquires Features {
+        is_enabled(TREAT_FRIEND_AS_PRIVATE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_sha_512_and_ripemd_160_feature"></a>
 
@@ -953,21 +1079,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_sha_512_and_ripemd_160_feature">get_sha_512_and_ripemd_160_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_sha_512_and_ripemd_160_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_sha_512_and_ripemd_160_feature">get_sha_512_and_ripemd_160_feature</a>(): u64 { <a href="features.md#0x1_features_SHA_512_AND_RIPEMD_160_NATIVES">SHA_512_AND_RIPEMD_160_NATIVES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_sha_512_and_ripemd_160_feature(): u64 { SHA_512_AND_RIPEMD_160_NATIVES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_sha_512_and_ripemd_160_enabled"></a>
 
@@ -975,23 +1102,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_sha_512_and_ripemd_160_enabled">sha_512_and_ripemd_160_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_sha_512_and_ripemd_160_enabled">sha_512_and_ripemd_160_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_SHA_512_AND_RIPEMD_160_NATIVES">SHA_512_AND_RIPEMD_160_NATIVES</a>)
+```move
+module 0x1::features {
+    public fun sha_512_and_ripemd_160_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun sha_512_and_ripemd_160_enabled(): bool acquires Features {
+        is_enabled(SHA_512_AND_RIPEMD_160_NATIVES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_aptos_stdlib_chain_id_feature"></a>
 
@@ -999,21 +1127,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aptos_stdlib_chain_id_feature">get_aptos_stdlib_chain_id_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_aptos_stdlib_chain_id_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aptos_stdlib_chain_id_feature">get_aptos_stdlib_chain_id_feature</a>(): u64 { <a href="features.md#0x1_features_APTOS_STD_CHAIN_ID_NATIVES">APTOS_STD_CHAIN_ID_NATIVES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_aptos_stdlib_chain_id_feature(): u64 { APTOS_STD_CHAIN_ID_NATIVES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_aptos_stdlib_chain_id_enabled"></a>
 
@@ -1021,23 +1150,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aptos_stdlib_chain_id_enabled">aptos_stdlib_chain_id_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aptos_stdlib_chain_id_enabled">aptos_stdlib_chain_id_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_APTOS_STD_CHAIN_ID_NATIVES">APTOS_STD_CHAIN_ID_NATIVES</a>)
+```move
+module 0x1::features {
+    public fun aptos_stdlib_chain_id_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun aptos_stdlib_chain_id_enabled(): bool acquires Features {
+        is_enabled(APTOS_STD_CHAIN_ID_NATIVES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_vm_binary_format_v6"></a>
 
@@ -1045,21 +1175,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_vm_binary_format_v6">get_vm_binary_format_v6</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_vm_binary_format_v6(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_vm_binary_format_v6">get_vm_binary_format_v6</a>(): u64 { <a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_vm_binary_format_v6(): u64 { VM_BINARY_FORMAT_V6 }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_allow_vm_binary_format_v6"></a>
 
@@ -1067,23 +1198,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_allow_vm_binary_format_v6">allow_vm_binary_format_v6</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_allow_vm_binary_format_v6">allow_vm_binary_format_v6</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_VM_BINARY_FORMAT_V6">VM_BINARY_FORMAT_V6</a>)
+```move
+module 0x1::features {
+    public fun allow_vm_binary_format_v6(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun allow_vm_binary_format_v6(): bool acquires Features {
+        is_enabled(VM_BINARY_FORMAT_V6)
+    }
+}
+```
+
 
 <a id="0x1_features_get_collect_and_distribute_gas_fees_feature"></a>
 
@@ -1091,21 +1223,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_collect_and_distribute_gas_fees_feature">get_collect_and_distribute_gas_fees_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_collect_and_distribute_gas_fees_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_collect_and_distribute_gas_fees_feature">get_collect_and_distribute_gas_fees_feature</a>(): u64 { <a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_collect_and_distribute_gas_fees_feature(): u64 { COLLECT_AND_DISTRIBUTE_GAS_FEES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_collect_and_distribute_gas_fees"></a>
 
@@ -1113,23 +1246,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_collect_and_distribute_gas_fees">collect_and_distribute_gas_fees</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_collect_and_distribute_gas_fees">collect_and_distribute_gas_fees</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a>)
+```move
+module 0x1::features {
+    public fun collect_and_distribute_gas_fees(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun collect_and_distribute_gas_fees(): bool acquires Features {
+        is_enabled(COLLECT_AND_DISTRIBUTE_GAS_FEES)
+    }
+}
+```
+
 
 <a id="0x1_features_multi_ed25519_pk_validate_v2_feature"></a>
 
@@ -1137,21 +1271,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_feature">multi_ed25519_pk_validate_v2_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun multi_ed25519_pk_validate_v2_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_feature">multi_ed25519_pk_validate_v2_feature</a>(): u64 { <a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun multi_ed25519_pk_validate_v2_feature(): u64 { MULTI_ED25519_PK_VALIDATE_V2_NATIVES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_multi_ed25519_pk_validate_v2_enabled"></a>
 
@@ -1159,23 +1294,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_enabled">multi_ed25519_pk_validate_v2_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multi_ed25519_pk_validate_v2_enabled">multi_ed25519_pk_validate_v2_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MULTI_ED25519_PK_VALIDATE_V2_NATIVES">MULTI_ED25519_PK_VALIDATE_V2_NATIVES</a>)
+```move
+module 0x1::features {
+    public fun multi_ed25519_pk_validate_v2_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun multi_ed25519_pk_validate_v2_enabled(): bool acquires Features {
+        is_enabled(MULTI_ED25519_PK_VALIDATE_V2_NATIVES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_blake2b_256_feature"></a>
 
@@ -1183,21 +1319,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_blake2b_256_feature">get_blake2b_256_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_blake2b_256_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_blake2b_256_feature">get_blake2b_256_feature</a>(): u64 { <a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_blake2b_256_feature(): u64 { BLAKE2B_256_NATIVE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_blake2b_256_enabled"></a>
 
@@ -1205,23 +1342,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_blake2b_256_enabled">blake2b_256_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_blake2b_256_enabled">blake2b_256_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_BLAKE2B_256_NATIVE">BLAKE2B_256_NATIVE</a>)
+```move
+module 0x1::features {
+    public fun blake2b_256_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun blake2b_256_enabled(): bool acquires Features {
+        is_enabled(BLAKE2B_256_NATIVE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_resource_groups_feature"></a>
 
@@ -1229,21 +1367,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_resource_groups_feature">get_resource_groups_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_resource_groups_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_resource_groups_feature">get_resource_groups_feature</a>(): u64 { <a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_resource_groups_feature(): u64 { RESOURCE_GROUPS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_resource_groups_enabled"></a>
 
@@ -1251,23 +1390,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_resource_groups_enabled">resource_groups_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_resource_groups_enabled">resource_groups_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_RESOURCE_GROUPS">RESOURCE_GROUPS</a>)
+```move
+module 0x1::features {
+    public fun resource_groups_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun resource_groups_enabled(): bool acquires Features {
+        is_enabled(RESOURCE_GROUPS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_multisig_accounts_feature"></a>
 
@@ -1275,21 +1415,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_accounts_feature">get_multisig_accounts_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_multisig_accounts_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_accounts_feature">get_multisig_accounts_feature</a>(): u64 { <a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_multisig_accounts_feature(): u64 { MULTISIG_ACCOUNTS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_multisig_accounts_enabled"></a>
 
@@ -1297,23 +1438,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_accounts_enabled">multisig_accounts_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_accounts_enabled">multisig_accounts_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MULTISIG_ACCOUNTS">MULTISIG_ACCOUNTS</a>)
+```move
+module 0x1::features {
+    public fun multisig_accounts_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun multisig_accounts_enabled(): bool acquires Features {
+        is_enabled(MULTISIG_ACCOUNTS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_delegation_pools_feature"></a>
 
@@ -1321,21 +1463,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pools_feature">get_delegation_pools_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pools_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pools_feature">get_delegation_pools_feature</a>(): u64 { <a href="features.md#0x1_features_DELEGATION_POOLS">DELEGATION_POOLS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pools_feature(): u64 { DELEGATION_POOLS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_delegation_pools_enabled"></a>
 
@@ -1343,23 +1486,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pools_enabled">delegation_pools_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pools_enabled">delegation_pools_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_DELEGATION_POOLS">DELEGATION_POOLS</a>)
+```move
+module 0x1::features {
+    public fun delegation_pools_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun delegation_pools_enabled(): bool acquires Features {
+        is_enabled(DELEGATION_POOLS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_cryptography_algebra_natives_feature"></a>
 
@@ -1367,21 +1511,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_cryptography_algebra_natives_feature">get_cryptography_algebra_natives_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_cryptography_algebra_natives_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_cryptography_algebra_natives_feature">get_cryptography_algebra_natives_feature</a>(): u64 { <a href="features.md#0x1_features_CRYPTOGRAPHY_ALGEBRA_NATIVES">CRYPTOGRAPHY_ALGEBRA_NATIVES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_cryptography_algebra_natives_feature(): u64 { CRYPTOGRAPHY_ALGEBRA_NATIVES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_cryptography_algebra_enabled"></a>
 
@@ -1389,23 +1534,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_cryptography_algebra_enabled">cryptography_algebra_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_cryptography_algebra_enabled">cryptography_algebra_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_CRYPTOGRAPHY_ALGEBRA_NATIVES">CRYPTOGRAPHY_ALGEBRA_NATIVES</a>)
+```move
+module 0x1::features {
+    public fun cryptography_algebra_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun cryptography_algebra_enabled(): bool acquires Features {
+        is_enabled(CRYPTOGRAPHY_ALGEBRA_NATIVES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_bls12_381_strutures_feature"></a>
 
@@ -1413,21 +1559,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bls12_381_strutures_feature">get_bls12_381_strutures_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bls12_381_strutures_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bls12_381_strutures_feature">get_bls12_381_strutures_feature</a>(): u64 { <a href="features.md#0x1_features_BLS12_381_STRUCTURES">BLS12_381_STRUCTURES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bls12_381_strutures_feature(): u64 { BLS12_381_STRUCTURES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_bls12_381_structures_enabled"></a>
 
@@ -1435,23 +1582,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bls12_381_structures_enabled">bls12_381_structures_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bls12_381_structures_enabled">bls12_381_structures_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_BLS12_381_STRUCTURES">BLS12_381_STRUCTURES</a>)
+```move
+module 0x1::features {
+    public fun bls12_381_structures_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun bls12_381_structures_enabled(): bool acquires Features {
+        is_enabled(BLS12_381_STRUCTURES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_periodical_reward_rate_decrease_feature"></a>
 
@@ -1459,21 +1607,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_periodical_reward_rate_decrease_feature">get_periodical_reward_rate_decrease_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_periodical_reward_rate_decrease_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_periodical_reward_rate_decrease_feature">get_periodical_reward_rate_decrease_feature</a>(): u64 { <a href="features.md#0x1_features_PERIODICAL_REWARD_RATE_DECREASE">PERIODICAL_REWARD_RATE_DECREASE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_periodical_reward_rate_decrease_feature(): u64 { PERIODICAL_REWARD_RATE_DECREASE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_periodical_reward_rate_decrease_enabled"></a>
 
@@ -1481,23 +1630,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_periodical_reward_rate_decrease_enabled">periodical_reward_rate_decrease_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_periodical_reward_rate_decrease_enabled">periodical_reward_rate_decrease_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_PERIODICAL_REWARD_RATE_DECREASE">PERIODICAL_REWARD_RATE_DECREASE</a>)
+```move
+module 0x1::features {
+    public fun periodical_reward_rate_decrease_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun periodical_reward_rate_decrease_enabled(): bool acquires Features {
+        is_enabled(PERIODICAL_REWARD_RATE_DECREASE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_partial_governance_voting"></a>
 
@@ -1505,21 +1655,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_partial_governance_voting">get_partial_governance_voting</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_partial_governance_voting(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_partial_governance_voting">get_partial_governance_voting</a>(): u64 { <a href="features.md#0x1_features_PARTIAL_GOVERNANCE_VOTING">PARTIAL_GOVERNANCE_VOTING</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_partial_governance_voting(): u64 { PARTIAL_GOVERNANCE_VOTING }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_partial_governance_voting_enabled"></a>
 
@@ -1527,23 +1678,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_partial_governance_voting_enabled">partial_governance_voting_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_partial_governance_voting_enabled">partial_governance_voting_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_PARTIAL_GOVERNANCE_VOTING">PARTIAL_GOVERNANCE_VOTING</a>)
+```move
+module 0x1::features {
+    public fun partial_governance_voting_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun partial_governance_voting_enabled(): bool acquires Features {
+        is_enabled(PARTIAL_GOVERNANCE_VOTING)
+    }
+}
+```
+
 
 <a id="0x1_features_get_delegation_pool_partial_governance_voting"></a>
 
@@ -1551,21 +1703,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pool_partial_governance_voting">get_delegation_pool_partial_governance_voting</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pool_partial_governance_voting(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pool_partial_governance_voting">get_delegation_pool_partial_governance_voting</a>(): u64 { <a href="features.md#0x1_features_DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING">DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pool_partial_governance_voting(): u64 { DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_delegation_pool_partial_governance_voting_enabled"></a>
 
@@ -1573,23 +1726,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pool_partial_governance_voting_enabled">delegation_pool_partial_governance_voting_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pool_partial_governance_voting_enabled">delegation_pool_partial_governance_voting_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING">DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING</a>)
+```move
+module 0x1::features {
+    public fun delegation_pool_partial_governance_voting_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun delegation_pool_partial_governance_voting_enabled(): bool acquires Features {
+        is_enabled(DELEGATION_POOL_PARTIAL_GOVERNANCE_VOTING)
+    }
+}
+```
+
 
 <a id="0x1_features_fee_payer_enabled"></a>
 
@@ -1597,23 +1751,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_fee_payer_enabled">fee_payer_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_fee_payer_enabled">fee_payer_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_FEE_PAYER_ENABLED">FEE_PAYER_ENABLED</a>)
+```move
+module 0x1::features {
+    public fun fee_payer_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun fee_payer_enabled(): bool acquires Features {
+        is_enabled(FEE_PAYER_ENABLED)
+    }
+}
+```
+
 
 <a id="0x1_features_get_auids"></a>
 
@@ -1621,23 +1776,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_auids">get_auids</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_auids(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_auids">get_auids</a>(): u64 {
-    <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>)
- }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_auids(): u64 {
+        error::invalid_argument(EFEATURE_CANNOT_BE_DISABLED)
+     }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_auids_enabled"></a>
 
@@ -1645,23 +1801,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_auids_enabled">auids_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_auids_enabled">auids_enabled</a>(): bool {
-    <b>true</b>
+```move
+module 0x1::features {
+    public fun auids_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun auids_enabled(): bool {
+        true
+    }
+}
+```
+
 
 <a id="0x1_features_get_bulletproofs_feature"></a>
 
@@ -1669,21 +1826,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bulletproofs_feature">get_bulletproofs_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bulletproofs_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bulletproofs_feature">get_bulletproofs_feature</a>(): u64 { <a href="features.md#0x1_features_BULLETPROOFS_NATIVES">BULLETPROOFS_NATIVES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bulletproofs_feature(): u64 { BULLETPROOFS_NATIVES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_bulletproofs_enabled"></a>
 
@@ -1691,23 +1849,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bulletproofs_enabled">bulletproofs_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bulletproofs_enabled">bulletproofs_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_BULLETPROOFS_NATIVES">BULLETPROOFS_NATIVES</a>)
+```move
+module 0x1::features {
+    public fun bulletproofs_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun bulletproofs_enabled(): bool acquires Features {
+        is_enabled(BULLETPROOFS_NATIVES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_signer_native_format_fix_feature"></a>
 
@@ -1715,21 +1874,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_signer_native_format_fix_feature">get_signer_native_format_fix_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_signer_native_format_fix_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_signer_native_format_fix_feature">get_signer_native_format_fix_feature</a>(): u64 { <a href="features.md#0x1_features_SIGNER_NATIVE_FORMAT_FIX">SIGNER_NATIVE_FORMAT_FIX</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_signer_native_format_fix_feature(): u64 { SIGNER_NATIVE_FORMAT_FIX }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_signer_native_format_fix_enabled"></a>
 
@@ -1737,23 +1897,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_signer_native_format_fix_enabled">signer_native_format_fix_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_signer_native_format_fix_enabled">signer_native_format_fix_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_SIGNER_NATIVE_FORMAT_FIX">SIGNER_NATIVE_FORMAT_FIX</a>)
+```move
+module 0x1::features {
+    public fun signer_native_format_fix_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun signer_native_format_fix_enabled(): bool acquires Features {
+        is_enabled(SIGNER_NATIVE_FORMAT_FIX)
+    }
+}
+```
+
 
 <a id="0x1_features_get_module_event_feature"></a>
 
@@ -1761,21 +1922,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_module_event_feature">get_module_event_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_module_event_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_module_event_feature">get_module_event_feature</a>(): u64 { <a href="features.md#0x1_features_MODULE_EVENT">MODULE_EVENT</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_module_event_feature(): u64 { MODULE_EVENT }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_module_event_enabled"></a>
 
@@ -1783,23 +1945,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_module_event_enabled">module_event_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_module_event_enabled">module_event_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MODULE_EVENT">MODULE_EVENT</a>)
+```move
+module 0x1::features {
+    public fun module_event_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun module_event_enabled(): bool acquires Features {
+        is_enabled(MODULE_EVENT)
+    }
+}
+```
+
 
 <a id="0x1_features_get_aggregator_v2_api_feature"></a>
 
@@ -1807,23 +1970,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aggregator_v2_api_feature">get_aggregator_v2_api_feature</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aggregator_v2_api_feature">get_aggregator_v2_api_feature</a>(): u64 {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>)
+```move
+module 0x1::features {
+    public fun get_aggregator_v2_api_feature(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun get_aggregator_v2_api_feature(): u64 {
+        abort error::invalid_argument(EFEATURE_CANNOT_BE_DISABLED)
+    }
+}
+```
+
 
 <a id="0x1_features_aggregator_v2_api_enabled"></a>
 
@@ -1831,23 +1995,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_v2_api_enabled">aggregator_v2_api_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_v2_api_enabled">aggregator_v2_api_enabled</a>(): bool {
-    <b>true</b>
+```move
+module 0x1::features {
+    public fun aggregator_v2_api_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun aggregator_v2_api_enabled(): bool {
+        true
+    }
+}
+```
+
 
 <a id="0x1_features_get_aggregator_snapshots_feature"></a>
 
@@ -1855,24 +2020,25 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aggregator_snapshots_feature">get_aggregator_snapshots_feature</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_aggregator_snapshots_feature">get_aggregator_snapshots_feature</a>(): u64 {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EINVALID_FEATURE">EINVALID_FEATURE</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun get_aggregator_snapshots_feature(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun get_aggregator_snapshots_feature(): u64 {
+        abort error::invalid_argument(EINVALID_FEATURE)
+    }
+}
+```
+
 
 <a id="0x1_features_aggregator_snapshots_enabled"></a>
 
@@ -1880,24 +2046,25 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_snapshots_enabled">aggregator_snapshots_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_snapshots_enabled">aggregator_snapshots_enabled</a>(): bool {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EINVALID_FEATURE">EINVALID_FEATURE</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun aggregator_snapshots_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun aggregator_snapshots_enabled(): bool {
+        abort error::invalid_argument(EINVALID_FEATURE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_sponsored_automatic_account_creation"></a>
 
@@ -1905,21 +2072,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_sponsored_automatic_account_creation">get_sponsored_automatic_account_creation</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_sponsored_automatic_account_creation(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_sponsored_automatic_account_creation">get_sponsored_automatic_account_creation</a>(): u64 { <a href="features.md#0x1_features_SPONSORED_AUTOMATIC_ACCOUNT_CREATION">SPONSORED_AUTOMATIC_ACCOUNT_CREATION</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_sponsored_automatic_account_creation(): u64 { SPONSORED_AUTOMATIC_ACCOUNT_CREATION }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_sponsored_automatic_account_creation_enabled"></a>
 
@@ -1927,23 +2095,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_sponsored_automatic_account_creation_enabled">sponsored_automatic_account_creation_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_sponsored_automatic_account_creation_enabled">sponsored_automatic_account_creation_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_SPONSORED_AUTOMATIC_ACCOUNT_CREATION">SPONSORED_AUTOMATIC_ACCOUNT_CREATION</a>)
+```move
+module 0x1::features {
+    public fun sponsored_automatic_account_creation_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun sponsored_automatic_account_creation_enabled(): bool acquires Features {
+        is_enabled(SPONSORED_AUTOMATIC_ACCOUNT_CREATION)
+    }
+}
+```
+
 
 <a id="0x1_features_get_concurrent_token_v2_feature"></a>
 
@@ -1951,23 +2120,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_token_v2_feature">get_concurrent_token_v2_feature</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_token_v2_feature">get_concurrent_token_v2_feature</a>(): u64 {
-    <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>)
+```move
+module 0x1::features {
+    public fun get_concurrent_token_v2_feature(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun get_concurrent_token_v2_feature(): u64 {
+        error::invalid_argument(EFEATURE_CANNOT_BE_DISABLED)
+    }
+}
+```
+
 
 <a id="0x1_features_concurrent_token_v2_enabled"></a>
 
@@ -1975,23 +2145,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_token_v2_enabled">concurrent_token_v2_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_token_v2_enabled">concurrent_token_v2_enabled</a>(): bool {
-    <b>true</b>
+```move
+module 0x1::features {
+    public fun concurrent_token_v2_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun concurrent_token_v2_enabled(): bool {
+        true
+    }
+}
+```
+
 
 <a id="0x1_features_get_concurrent_assets_feature"></a>
 
@@ -1999,24 +2170,25 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_assets_feature">get_concurrent_assets_feature</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_assets_feature">get_concurrent_assets_feature</a>(): u64 {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun get_concurrent_assets_feature(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun get_concurrent_assets_feature(): u64 {
+        abort error::invalid_argument(EFEATURE_CANNOT_BE_DISABLED)
+    }
+}
+```
+
 
 <a id="0x1_features_concurrent_assets_enabled"></a>
 
@@ -2024,24 +2196,25 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_assets_enabled">concurrent_assets_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_assets_enabled">concurrent_assets_enabled</a>(): bool {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EFEATURE_CANNOT_BE_DISABLED">EFEATURE_CANNOT_BE_DISABLED</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun concurrent_assets_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun concurrent_assets_enabled(): bool {
+        abort error::invalid_argument(EFEATURE_CANNOT_BE_DISABLED)
+    }
+}
+```
+
 
 <a id="0x1_features_get_operator_beneficiary_change_feature"></a>
 
@@ -2049,21 +2222,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_operator_beneficiary_change_feature">get_operator_beneficiary_change_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_operator_beneficiary_change_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_operator_beneficiary_change_feature">get_operator_beneficiary_change_feature</a>(): u64 { <a href="features.md#0x1_features_OPERATOR_BENEFICIARY_CHANGE">OPERATOR_BENEFICIARY_CHANGE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_operator_beneficiary_change_feature(): u64 { OPERATOR_BENEFICIARY_CHANGE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_operator_beneficiary_change_enabled"></a>
 
@@ -2071,23 +2245,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_operator_beneficiary_change_enabled">operator_beneficiary_change_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_operator_beneficiary_change_enabled">operator_beneficiary_change_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_OPERATOR_BENEFICIARY_CHANGE">OPERATOR_BENEFICIARY_CHANGE</a>)
+```move
+module 0x1::features {
+    public fun operator_beneficiary_change_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun operator_beneficiary_change_enabled(): bool acquires Features {
+        is_enabled(OPERATOR_BENEFICIARY_CHANGE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_commission_change_delegation_pool_feature"></a>
 
@@ -2095,21 +2270,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_commission_change_delegation_pool_feature">get_commission_change_delegation_pool_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_commission_change_delegation_pool_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_commission_change_delegation_pool_feature">get_commission_change_delegation_pool_feature</a>(): u64 { <a href="features.md#0x1_features_COMMISSION_CHANGE_DELEGATION_POOL">COMMISSION_CHANGE_DELEGATION_POOL</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_commission_change_delegation_pool_feature(): u64 { COMMISSION_CHANGE_DELEGATION_POOL }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_commission_change_delegation_pool_enabled"></a>
 
@@ -2117,23 +2293,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_commission_change_delegation_pool_enabled">commission_change_delegation_pool_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_commission_change_delegation_pool_enabled">commission_change_delegation_pool_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_COMMISSION_CHANGE_DELEGATION_POOL">COMMISSION_CHANGE_DELEGATION_POOL</a>)
+```move
+module 0x1::features {
+    public fun commission_change_delegation_pool_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun commission_change_delegation_pool_enabled(): bool acquires Features {
+        is_enabled(COMMISSION_CHANGE_DELEGATION_POOL)
+    }
+}
+```
+
 
 <a id="0x1_features_get_bn254_strutures_feature"></a>
 
@@ -2141,21 +2318,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bn254_strutures_feature">get_bn254_strutures_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bn254_strutures_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_bn254_strutures_feature">get_bn254_strutures_feature</a>(): u64 { <a href="features.md#0x1_features_BN254_STRUCTURES">BN254_STRUCTURES</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_bn254_strutures_feature(): u64 { BN254_STRUCTURES }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_bn254_structures_enabled"></a>
 
@@ -2163,23 +2341,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bn254_structures_enabled">bn254_structures_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_bn254_structures_enabled">bn254_structures_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_BN254_STRUCTURES">BN254_STRUCTURES</a>)
+```move
+module 0x1::features {
+    public fun bn254_structures_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun bn254_structures_enabled(): bool acquires Features {
+        is_enabled(BN254_STRUCTURES)
+    }
+}
+```
+
 
 <a id="0x1_features_get_reconfigure_with_dkg_feature"></a>
 
@@ -2187,21 +2366,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_reconfigure_with_dkg_feature">get_reconfigure_with_dkg_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_reconfigure_with_dkg_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_reconfigure_with_dkg_feature">get_reconfigure_with_dkg_feature</a>(): u64 { <a href="features.md#0x1_features_RECONFIGURE_WITH_DKG">RECONFIGURE_WITH_DKG</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_reconfigure_with_dkg_feature(): u64 { RECONFIGURE_WITH_DKG }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_reconfigure_with_dkg_enabled"></a>
 
@@ -2209,23 +2389,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_reconfigure_with_dkg_enabled">reconfigure_with_dkg_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_reconfigure_with_dkg_enabled">reconfigure_with_dkg_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_RECONFIGURE_WITH_DKG">RECONFIGURE_WITH_DKG</a>)
+```move
+module 0x1::features {
+    public fun reconfigure_with_dkg_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun reconfigure_with_dkg_enabled(): bool acquires Features {
+        is_enabled(RECONFIGURE_WITH_DKG)
+    }
+}
+```
+
 
 <a id="0x1_features_get_keyless_accounts_feature"></a>
 
@@ -2233,21 +2414,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_accounts_feature">get_keyless_accounts_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_accounts_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_accounts_feature">get_keyless_accounts_feature</a>(): u64 { <a href="features.md#0x1_features_KEYLESS_ACCOUNTS">KEYLESS_ACCOUNTS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_accounts_feature(): u64 { KEYLESS_ACCOUNTS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_keyless_accounts_enabled"></a>
 
@@ -2255,23 +2437,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_accounts_enabled">keyless_accounts_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_accounts_enabled">keyless_accounts_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_KEYLESS_ACCOUNTS">KEYLESS_ACCOUNTS</a>)
+```move
+module 0x1::features {
+    public fun keyless_accounts_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun keyless_accounts_enabled(): bool acquires Features {
+        is_enabled(KEYLESS_ACCOUNTS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_keyless_but_zkless_accounts_feature"></a>
 
@@ -2279,21 +2462,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_but_zkless_accounts_feature">get_keyless_but_zkless_accounts_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_but_zkless_accounts_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_but_zkless_accounts_feature">get_keyless_but_zkless_accounts_feature</a>(): u64 { <a href="features.md#0x1_features_KEYLESS_BUT_ZKLESS_ACCOUNTS">KEYLESS_BUT_ZKLESS_ACCOUNTS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_but_zkless_accounts_feature(): u64 { KEYLESS_BUT_ZKLESS_ACCOUNTS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_keyless_but_zkless_accounts_feature_enabled"></a>
 
@@ -2301,23 +2485,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_but_zkless_accounts_feature_enabled">keyless_but_zkless_accounts_feature_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_but_zkless_accounts_feature_enabled">keyless_but_zkless_accounts_feature_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_KEYLESS_BUT_ZKLESS_ACCOUNTS">KEYLESS_BUT_ZKLESS_ACCOUNTS</a>)
+```move
+module 0x1::features {
+    public fun keyless_but_zkless_accounts_feature_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun keyless_but_zkless_accounts_feature_enabled(): bool acquires Features {
+        is_enabled(KEYLESS_BUT_ZKLESS_ACCOUNTS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_jwk_consensus_feature"></a>
 
@@ -2325,21 +2510,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_jwk_consensus_feature">get_jwk_consensus_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_jwk_consensus_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_jwk_consensus_feature">get_jwk_consensus_feature</a>(): u64 { <a href="features.md#0x1_features_JWK_CONSENSUS">JWK_CONSENSUS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_jwk_consensus_feature(): u64 { JWK_CONSENSUS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_jwk_consensus_enabled"></a>
 
@@ -2347,23 +2533,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_jwk_consensus_enabled">jwk_consensus_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_jwk_consensus_enabled">jwk_consensus_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_JWK_CONSENSUS">JWK_CONSENSUS</a>)
+```move
+module 0x1::features {
+    public fun jwk_consensus_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun jwk_consensus_enabled(): bool acquires Features {
+        is_enabled(JWK_CONSENSUS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_concurrent_fungible_assets_feature"></a>
 
@@ -2371,21 +2558,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_fungible_assets_feature">get_concurrent_fungible_assets_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_concurrent_fungible_assets_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_fungible_assets_feature">get_concurrent_fungible_assets_feature</a>(): u64 { <a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_ASSETS">CONCURRENT_FUNGIBLE_ASSETS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_concurrent_fungible_assets_feature(): u64 { CONCURRENT_FUNGIBLE_ASSETS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_concurrent_fungible_assets_enabled"></a>
 
@@ -2393,23 +2581,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_fungible_assets_enabled">concurrent_fungible_assets_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_fungible_assets_enabled">concurrent_fungible_assets_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_ASSETS">CONCURRENT_FUNGIBLE_ASSETS</a>)
+```move
+module 0x1::features {
+    public fun concurrent_fungible_assets_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun concurrent_fungible_assets_enabled(): bool acquires Features {
+        is_enabled(CONCURRENT_FUNGIBLE_ASSETS)
+    }
+}
+```
+
 
 <a id="0x1_features_is_object_code_deployment_enabled"></a>
 
@@ -2417,23 +2606,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_is_object_code_deployment_enabled">is_object_code_deployment_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_is_object_code_deployment_enabled">is_object_code_deployment_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_OBJECT_CODE_DEPLOYMENT">OBJECT_CODE_DEPLOYMENT</a>)
+```move
+module 0x1::features {
+    public fun is_object_code_deployment_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun is_object_code_deployment_enabled(): bool acquires Features {
+        is_enabled(OBJECT_CODE_DEPLOYMENT)
+    }
+}
+```
+
 
 <a id="0x1_features_get_max_object_nesting_check_feature"></a>
 
@@ -2441,21 +2631,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_max_object_nesting_check_feature">get_max_object_nesting_check_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_max_object_nesting_check_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_max_object_nesting_check_feature">get_max_object_nesting_check_feature</a>(): u64 { <a href="features.md#0x1_features_MAX_OBJECT_NESTING_CHECK">MAX_OBJECT_NESTING_CHECK</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_max_object_nesting_check_feature(): u64 { MAX_OBJECT_NESTING_CHECK }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_max_object_nesting_check_enabled"></a>
 
@@ -2463,23 +2654,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_max_object_nesting_check_enabled">max_object_nesting_check_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_max_object_nesting_check_enabled">max_object_nesting_check_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MAX_OBJECT_NESTING_CHECK">MAX_OBJECT_NESTING_CHECK</a>)
+```move
+module 0x1::features {
+    public fun max_object_nesting_check_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun max_object_nesting_check_enabled(): bool acquires Features {
+        is_enabled(MAX_OBJECT_NESTING_CHECK)
+    }
+}
+```
+
 
 <a id="0x1_features_get_keyless_accounts_with_passkeys_feature"></a>
 
@@ -2487,21 +2679,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_accounts_with_passkeys_feature">get_keyless_accounts_with_passkeys_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_accounts_with_passkeys_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_keyless_accounts_with_passkeys_feature">get_keyless_accounts_with_passkeys_feature</a>(): u64 { <a href="features.md#0x1_features_KEYLESS_ACCOUNTS_WITH_PASSKEYS">KEYLESS_ACCOUNTS_WITH_PASSKEYS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_keyless_accounts_with_passkeys_feature(): u64 { KEYLESS_ACCOUNTS_WITH_PASSKEYS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_keyless_accounts_with_passkeys_feature_enabled"></a>
 
@@ -2509,23 +2702,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_accounts_with_passkeys_feature_enabled">keyless_accounts_with_passkeys_feature_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_keyless_accounts_with_passkeys_feature_enabled">keyless_accounts_with_passkeys_feature_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_KEYLESS_ACCOUNTS_WITH_PASSKEYS">KEYLESS_ACCOUNTS_WITH_PASSKEYS</a>)
+```move
+module 0x1::features {
+    public fun keyless_accounts_with_passkeys_feature_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun keyless_accounts_with_passkeys_feature_enabled(): bool acquires Features {
+        is_enabled(KEYLESS_ACCOUNTS_WITH_PASSKEYS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_multisig_v2_enhancement_feature"></a>
 
@@ -2533,21 +2727,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_v2_enhancement_feature">get_multisig_v2_enhancement_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_multisig_v2_enhancement_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_multisig_v2_enhancement_feature">get_multisig_v2_enhancement_feature</a>(): u64 { <a href="features.md#0x1_features_MULTISIG_V2_ENHANCEMENT">MULTISIG_V2_ENHANCEMENT</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_multisig_v2_enhancement_feature(): u64 { MULTISIG_V2_ENHANCEMENT }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_multisig_v2_enhancement_feature_enabled"></a>
 
@@ -2555,23 +2750,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_v2_enhancement_feature_enabled">multisig_v2_enhancement_feature_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_multisig_v2_enhancement_feature_enabled">multisig_v2_enhancement_feature_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MULTISIG_V2_ENHANCEMENT">MULTISIG_V2_ENHANCEMENT</a>)
+```move
+module 0x1::features {
+    public fun multisig_v2_enhancement_feature_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun multisig_v2_enhancement_feature_enabled(): bool acquires Features {
+        is_enabled(MULTISIG_V2_ENHANCEMENT)
+    }
+}
+```
+
 
 <a id="0x1_features_get_delegation_pool_allowlisting_feature"></a>
 
@@ -2579,21 +2775,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pool_allowlisting_feature">get_delegation_pool_allowlisting_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pool_allowlisting_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_delegation_pool_allowlisting_feature">get_delegation_pool_allowlisting_feature</a>(): u64 { <a href="features.md#0x1_features_DELEGATION_POOL_ALLOWLISTING">DELEGATION_POOL_ALLOWLISTING</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_delegation_pool_allowlisting_feature(): u64 { DELEGATION_POOL_ALLOWLISTING }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_delegation_pool_allowlisting_enabled"></a>
 
@@ -2601,23 +2798,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pool_allowlisting_enabled">delegation_pool_allowlisting_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_delegation_pool_allowlisting_enabled">delegation_pool_allowlisting_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_DELEGATION_POOL_ALLOWLISTING">DELEGATION_POOL_ALLOWLISTING</a>)
+```move
+module 0x1::features {
+    public fun delegation_pool_allowlisting_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun delegation_pool_allowlisting_enabled(): bool acquires Features {
+        is_enabled(DELEGATION_POOL_ALLOWLISTING)
+    }
+}
+```
+
 
 <a id="0x1_features_get_module_event_migration_feature"></a>
 
@@ -2625,21 +2823,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_module_event_migration_feature">get_module_event_migration_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_module_event_migration_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_module_event_migration_feature">get_module_event_migration_feature</a>(): u64 { <a href="features.md#0x1_features_MODULE_EVENT_MIGRATION">MODULE_EVENT_MIGRATION</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_module_event_migration_feature(): u64 { MODULE_EVENT_MIGRATION }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_module_event_migration_enabled"></a>
 
@@ -2647,23 +2846,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_module_event_migration_enabled">module_event_migration_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_module_event_migration_enabled">module_event_migration_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_MODULE_EVENT_MIGRATION">MODULE_EVENT_MIGRATION</a>)
+```move
+module 0x1::features {
+    public fun module_event_migration_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun module_event_migration_enabled(): bool acquires Features {
+        is_enabled(MODULE_EVENT_MIGRATION)
+    }
+}
+```
+
 
 <a id="0x1_features_get_transaction_context_extension_feature"></a>
 
@@ -2671,21 +2871,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_transaction_context_extension_feature">get_transaction_context_extension_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_transaction_context_extension_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_transaction_context_extension_feature">get_transaction_context_extension_feature</a>(): u64 { <a href="features.md#0x1_features_TRANSACTION_CONTEXT_EXTENSION">TRANSACTION_CONTEXT_EXTENSION</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_transaction_context_extension_feature(): u64 { TRANSACTION_CONTEXT_EXTENSION }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_transaction_context_extension_enabled"></a>
 
@@ -2693,23 +2894,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_transaction_context_extension_enabled">transaction_context_extension_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_transaction_context_extension_enabled">transaction_context_extension_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_TRANSACTION_CONTEXT_EXTENSION">TRANSACTION_CONTEXT_EXTENSION</a>)
+```move
+module 0x1::features {
+    public fun transaction_context_extension_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun transaction_context_extension_enabled(): bool acquires Features {
+        is_enabled(TRANSACTION_CONTEXT_EXTENSION)
+    }
+}
+```
+
 
 <a id="0x1_features_get_coin_to_fungible_asset_migration_feature"></a>
 
@@ -2717,21 +2919,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_coin_to_fungible_asset_migration_feature">get_coin_to_fungible_asset_migration_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_coin_to_fungible_asset_migration_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_coin_to_fungible_asset_migration_feature">get_coin_to_fungible_asset_migration_feature</a>(): u64 { <a href="features.md#0x1_features_COIN_TO_FUNGIBLE_ASSET_MIGRATION">COIN_TO_FUNGIBLE_ASSET_MIGRATION</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_coin_to_fungible_asset_migration_feature(): u64 { COIN_TO_FUNGIBLE_ASSET_MIGRATION }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_coin_to_fungible_asset_migration_feature_enabled"></a>
 
@@ -2739,23 +2942,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_coin_to_fungible_asset_migration_feature_enabled">coin_to_fungible_asset_migration_feature_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_coin_to_fungible_asset_migration_feature_enabled">coin_to_fungible_asset_migration_feature_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_COIN_TO_FUNGIBLE_ASSET_MIGRATION">COIN_TO_FUNGIBLE_ASSET_MIGRATION</a>)
+```move
+module 0x1::features {
+    public fun coin_to_fungible_asset_migration_feature_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun coin_to_fungible_asset_migration_feature_enabled(): bool acquires Features {
+        is_enabled(COIN_TO_FUNGIBLE_ASSET_MIGRATION)
+    }
+}
+```
+
 
 <a id="0x1_features_get_primary_apt_fungible_store_at_user_address_feature"></a>
 
@@ -2763,25 +2967,26 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_primary_apt_fungible_store_at_user_address_feature">get_primary_apt_fungible_store_at_user_address_feature</a>(): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_primary_apt_fungible_store_at_user_address_feature">get_primary_apt_fungible_store_at_user_address_feature</a>(
-): u64 {
-    <b>abort</b> <a href="error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="features.md#0x1_features_EINVALID_FEATURE">EINVALID_FEATURE</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun get_primary_apt_fungible_store_at_user_address_feature(): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun get_primary_apt_fungible_store_at_user_address_feature(
+    ): u64 {
+        abort error::invalid_argument(EINVALID_FEATURE)
+    }
+}
+```
+
 
 <a id="0x1_features_primary_apt_fungible_store_at_user_address_enabled"></a>
 
@@ -2789,24 +2994,25 @@ Lifetime: transient
 
 
 
-<pre><code>#[deprecated]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_primary_apt_fungible_store_at_user_address_enabled">primary_apt_fungible_store_at_user_address_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_primary_apt_fungible_store_at_user_address_enabled">primary_apt_fungible_store_at_user_address_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS">PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS</a>)
+```move
+module 0x1::features {
+    #[deprecated]
+    public fun primary_apt_fungible_store_at_user_address_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun primary_apt_fungible_store_at_user_address_enabled(): bool acquires Features {
+        is_enabled(PRIMARY_APT_FUNGIBLE_STORE_AT_USER_ADDRESS)
+    }
+}
+```
+
 
 <a id="0x1_features_aggregator_v2_is_at_least_api_enabled"></a>
 
@@ -2814,23 +3020,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_v2_is_at_least_api_enabled">aggregator_v2_is_at_least_api_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_aggregator_v2_is_at_least_api_enabled">aggregator_v2_is_at_least_api_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_AGGREGATOR_V2_IS_AT_LEAST_API">AGGREGATOR_V2_IS_AT_LEAST_API</a>)
+```move
+module 0x1::features {
+    public fun aggregator_v2_is_at_least_api_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun aggregator_v2_is_at_least_api_enabled(): bool acquires Features {
+        is_enabled(AGGREGATOR_V2_IS_AT_LEAST_API)
+    }
+}
+```
+
 
 <a id="0x1_features_get_object_native_derived_address_feature"></a>
 
@@ -2838,21 +3045,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_object_native_derived_address_feature">get_object_native_derived_address_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_object_native_derived_address_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_object_native_derived_address_feature">get_object_native_derived_address_feature</a>(): u64 { <a href="features.md#0x1_features_OBJECT_NATIVE_DERIVED_ADDRESS">OBJECT_NATIVE_DERIVED_ADDRESS</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_object_native_derived_address_feature(): u64 { OBJECT_NATIVE_DERIVED_ADDRESS }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_object_native_derived_address_enabled"></a>
 
@@ -2860,23 +3068,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_object_native_derived_address_enabled">object_native_derived_address_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_object_native_derived_address_enabled">object_native_derived_address_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_OBJECT_NATIVE_DERIVED_ADDRESS">OBJECT_NATIVE_DERIVED_ADDRESS</a>)
+```move
+module 0x1::features {
+    public fun object_native_derived_address_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun object_native_derived_address_enabled(): bool acquires Features {
+        is_enabled(OBJECT_NATIVE_DERIVED_ADDRESS)
+    }
+}
+```
+
 
 <a id="0x1_features_get_dispatchable_fungible_asset_feature"></a>
 
@@ -2884,21 +3093,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_dispatchable_fungible_asset_feature">get_dispatchable_fungible_asset_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_dispatchable_fungible_asset_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_dispatchable_fungible_asset_feature">get_dispatchable_fungible_asset_feature</a>(): u64 { <a href="features.md#0x1_features_DISPATCHABLE_FUNGIBLE_ASSET">DISPATCHABLE_FUNGIBLE_ASSET</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_dispatchable_fungible_asset_feature(): u64 { DISPATCHABLE_FUNGIBLE_ASSET }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_dispatchable_fungible_asset_enabled"></a>
 
@@ -2906,23 +3116,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_dispatchable_fungible_asset_enabled">dispatchable_fungible_asset_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_dispatchable_fungible_asset_enabled">dispatchable_fungible_asset_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_DISPATCHABLE_FUNGIBLE_ASSET">DISPATCHABLE_FUNGIBLE_ASSET</a>)
+```move
+module 0x1::features {
+    public fun dispatchable_fungible_asset_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun dispatchable_fungible_asset_enabled(): bool acquires Features {
+        is_enabled(DISPATCHABLE_FUNGIBLE_ASSET)
+    }
+}
+```
+
 
 <a id="0x1_features_get_new_accounts_default_to_fa_apt_store_feature"></a>
 
@@ -2930,21 +3141,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_new_accounts_default_to_fa_apt_store_feature">get_new_accounts_default_to_fa_apt_store_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_new_accounts_default_to_fa_apt_store_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_new_accounts_default_to_fa_apt_store_feature">get_new_accounts_default_to_fa_apt_store_feature</a>(): u64 { <a href="features.md#0x1_features_NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE">NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_new_accounts_default_to_fa_apt_store_feature(): u64 { NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_new_accounts_default_to_fa_apt_store_enabled"></a>
 
@@ -2952,23 +3164,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_new_accounts_default_to_fa_apt_store_enabled">new_accounts_default_to_fa_apt_store_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_new_accounts_default_to_fa_apt_store_enabled">new_accounts_default_to_fa_apt_store_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE">NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE</a>)
+```move
+module 0x1::features {
+    public fun new_accounts_default_to_fa_apt_store_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun new_accounts_default_to_fa_apt_store_enabled(): bool acquires Features {
+        is_enabled(NEW_ACCOUNTS_DEFAULT_TO_FA_APT_STORE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_operations_default_to_fa_apt_store_feature"></a>
 
@@ -2976,21 +3189,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_operations_default_to_fa_apt_store_feature">get_operations_default_to_fa_apt_store_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_operations_default_to_fa_apt_store_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_operations_default_to_fa_apt_store_feature">get_operations_default_to_fa_apt_store_feature</a>(): u64 { <a href="features.md#0x1_features_OPERATIONS_DEFAULT_TO_FA_APT_STORE">OPERATIONS_DEFAULT_TO_FA_APT_STORE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_operations_default_to_fa_apt_store_feature(): u64 { OPERATIONS_DEFAULT_TO_FA_APT_STORE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_operations_default_to_fa_apt_store_enabled"></a>
 
@@ -2998,23 +3212,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_operations_default_to_fa_apt_store_enabled">operations_default_to_fa_apt_store_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_operations_default_to_fa_apt_store_enabled">operations_default_to_fa_apt_store_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_OPERATIONS_DEFAULT_TO_FA_APT_STORE">OPERATIONS_DEFAULT_TO_FA_APT_STORE</a>)
+```move
+module 0x1::features {
+    public fun operations_default_to_fa_apt_store_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun operations_default_to_fa_apt_store_enabled(): bool acquires Features {
+        is_enabled(OPERATIONS_DEFAULT_TO_FA_APT_STORE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_concurrent_fungible_balance_feature"></a>
 
@@ -3022,21 +3237,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_fungible_balance_feature">get_concurrent_fungible_balance_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_concurrent_fungible_balance_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_concurrent_fungible_balance_feature">get_concurrent_fungible_balance_feature</a>(): u64 { <a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_BALANCE">CONCURRENT_FUNGIBLE_BALANCE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_concurrent_fungible_balance_feature(): u64 { CONCURRENT_FUNGIBLE_BALANCE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_concurrent_fungible_balance_enabled"></a>
 
@@ -3044,23 +3260,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_fungible_balance_enabled">concurrent_fungible_balance_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_concurrent_fungible_balance_enabled">concurrent_fungible_balance_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_CONCURRENT_FUNGIBLE_BALANCE">CONCURRENT_FUNGIBLE_BALANCE</a>)
+```move
+module 0x1::features {
+    public fun concurrent_fungible_balance_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun concurrent_fungible_balance_enabled(): bool acquires Features {
+        is_enabled(CONCURRENT_FUNGIBLE_BALANCE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_default_to_concurrent_fungible_balance_feature"></a>
 
@@ -3068,21 +3285,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_default_to_concurrent_fungible_balance_feature">get_default_to_concurrent_fungible_balance_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_default_to_concurrent_fungible_balance_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_default_to_concurrent_fungible_balance_feature">get_default_to_concurrent_fungible_balance_feature</a>(): u64 { <a href="features.md#0x1_features_DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE">DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_default_to_concurrent_fungible_balance_feature(): u64 { DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_default_to_concurrent_fungible_balance_enabled"></a>
 
@@ -3090,23 +3308,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_default_to_concurrent_fungible_balance_enabled">default_to_concurrent_fungible_balance_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_default_to_concurrent_fungible_balance_enabled">default_to_concurrent_fungible_balance_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE">DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE</a>)
+```move
+module 0x1::features {
+    public fun default_to_concurrent_fungible_balance_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun default_to_concurrent_fungible_balance_enabled(): bool acquires Features {
+        is_enabled(DEFAULT_TO_CONCURRENT_FUNGIBLE_BALANCE)
+    }
+}
+```
+
 
 <a id="0x1_features_get_abort_if_multisig_payload_mismatch_feature"></a>
 
@@ -3114,21 +3333,22 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_abort_if_multisig_payload_mismatch_feature">get_abort_if_multisig_payload_mismatch_feature</a>(): u64
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_abort_if_multisig_payload_mismatch_feature(): u64
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_get_abort_if_multisig_payload_mismatch_feature">get_abort_if_multisig_payload_mismatch_feature</a>(): u64 { <a href="features.md#0x1_features_ABORT_IF_MULTISIG_PAYLOAD_MISMATCH">ABORT_IF_MULTISIG_PAYLOAD_MISMATCH</a> }
-</code></pre>
+```move
+module 0x1::features {
+    public fun get_abort_if_multisig_payload_mismatch_feature(): u64 { ABORT_IF_MULTISIG_PAYLOAD_MISMATCH }
+}
+```
 
-
-
-</details>
 
 <a id="0x1_features_abort_if_multisig_payload_mismatch_enabled"></a>
 
@@ -3136,23 +3356,24 @@ Lifetime: transient
 
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_abort_if_multisig_payload_mismatch_enabled">abort_if_multisig_payload_mismatch_enabled</a>(): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_abort_if_multisig_payload_mismatch_enabled">abort_if_multisig_payload_mismatch_enabled</a>(): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_is_enabled">is_enabled</a>(<a href="features.md#0x1_features_ABORT_IF_MULTISIG_PAYLOAD_MISMATCH">ABORT_IF_MULTISIG_PAYLOAD_MISMATCH</a>)
+```move
+module 0x1::features {
+    public fun abort_if_multisig_payload_mismatch_enabled(): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun abort_if_multisig_payload_mismatch_enabled(): bool acquires Features {
+        is_enabled(ABORT_IF_MULTISIG_PAYLOAD_MISMATCH)
+    }
+}
+```
+
 
 <a id="0x1_features_change_feature_flags"></a>
 
@@ -3160,28 +3381,29 @@ Lifetime: transient
 
 Deprecated to prevent validator set changes during DKG.
 
-Genesis/tests should use <code><a href="features.md#0x1_features_change_feature_flags_internal">change_feature_flags_internal</a>()</code> for feature vec initialization.
+Genesis/tests should use `change_feature_flags_internal()` for feature vec initialization.
 
-Governance proposals should use <code><a href="features.md#0x1_features_change_feature_flags_for_next_epoch">change_feature_flags_for_next_epoch</a>()</code> to enable/disable features.
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags">change_feature_flags</a>(_framework: &<a href="signer.md#0x1_signer">signer</a>, _enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, _disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
+Governance proposals should use `change_feature_flags_for_next_epoch()` to enable/disable features.
 
 
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags">change_feature_flags</a>(_framework: &<a href="signer.md#0x1_signer">signer</a>, _enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, _disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;) {
-    <b>abort</b> (<a href="error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="features.md#0x1_features_EAPI_DISABLED">EAPI_DISABLED</a>))
+```move
+module 0x1::features {
+    public fun change_feature_flags(_framework: &signer, _enable: vector<u64>, _disable: vector<u64>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun change_feature_flags(_framework: &signer, _enable: vector<u64>, _disable: vector<u64>) {
+        abort (error::invalid_state(EAPI_DISABLED))
+    }
+}
+```
+
 
 <a id="0x1_features_change_feature_flags_internal"></a>
 
@@ -3190,33 +3412,34 @@ Governance proposals should use <code><a href="features.md#0x1_features_change_f
 Update feature flags directly. Only used in genesis/tests.
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_change_feature_flags_internal">change_feature_flags_internal</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="features.md#0x1_features_change_feature_flags_internal">change_feature_flags_internal</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;) <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <b>assert</b>!(<a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework) == @std, <a href="error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="features.md#0x1_features_EFRAMEWORK_SIGNER_NEEDED">EFRAMEWORK_SIGNER_NEEDED</a>));
-    <b>if</b> (!<b>exists</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std)) {
-        <b>move_to</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(framework, <a href="features.md#0x1_features_Features">Features</a> { <a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>[] })
-    };
-    <b>let</b> <a href="features.md#0x1_features">features</a> = &<b>mut</b> <b>borrow_global_mut</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std).<a href="features.md#0x1_features">features</a>;
-    <a href="vector.md#0x1_vector_for_each_ref">vector::for_each_ref</a>(&enable, |feature| {
-        <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>, *feature, <b>true</b>);
-    });
-    <a href="vector.md#0x1_vector_for_each_ref">vector::for_each_ref</a>(&disable, |feature| {
-        <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>, *feature, <b>false</b>);
-    });
+```move
+module 0x1::features {
+    fun change_feature_flags_internal(framework: &signer, enable: vector<u64>, disable: vector<u64>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    fun change_feature_flags_internal(framework: &signer, enable: vector<u64>, disable: vector<u64>) acquires Features {
+        assert!(signer::address_of(framework) == @std, error::permission_denied(EFRAMEWORK_SIGNER_NEEDED));
+        if (!exists<Features>(@std)) {
+            move_to<Features>(framework, Features { features: vector[] })
+        };
+        let features = &mut borrow_global_mut<Features>(@std).features;
+        vector::for_each_ref(&enable, |feature| {
+            set(features, *feature, true);
+        });
+        vector::for_each_ref(&disable, |feature| {
+            set(features, *feature, false);
+        });
+    }
+}
+```
+
 
 <a id="0x1_features_change_feature_flags_for_next_epoch"></a>
 
@@ -3225,44 +3448,45 @@ Update feature flags directly. Only used in genesis/tests.
 Enable and disable features for the next epoch.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags_for_next_epoch">change_feature_flags_for_next_epoch</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags_for_next_epoch">change_feature_flags_for_next_epoch</a>(
-    framework: &<a href="signer.md#0x1_signer">signer</a>,
-    enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;,
-    disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;
-) <b>acquires</b> <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>, <a href="features.md#0x1_features_Features">Features</a> {
-    <b>assert</b>!(<a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework) == @std, <a href="error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="features.md#0x1_features_EFRAMEWORK_SIGNER_NEEDED">EFRAMEWORK_SIGNER_NEEDED</a>));
-
-    // Figure out the baseline feature vec that the diff will be applied <b>to</b>.
-    <b>let</b> new_feature_vec = <b>if</b> (<b>exists</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std)) {
-        // If there is a buffered feature vec, <b>use</b> it <b>as</b> the baseline.
-        <b>let</b> <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> { <a href="features.md#0x1_features">features</a> } = <b>move_from</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std);
-        <a href="features.md#0x1_features">features</a>
-    } <b>else</b> <b>if</b> (<b>exists</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std)) {
-        // Otherwise, <b>use</b> the currently effective feature flag vec <b>as</b> the baseline, <b>if</b> it <b>exists</b>.
-        <b>borrow_global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std).<a href="features.md#0x1_features">features</a>
-    } <b>else</b> {
-        // Otherwise, <b>use</b> an empty feature vec.
-        <a href="vector.md#0x1_vector">vector</a>[]
-    };
-
-    // Apply the diff and save it <b>to</b> the buffer.
-    <a href="features.md#0x1_features_apply_diff">apply_diff</a>(&<b>mut</b> new_feature_vec, enable, disable);
-    <b>move_to</b>(framework, <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> { <a href="features.md#0x1_features">features</a>: new_feature_vec });
+```move
+module 0x1::features {
+    public fun change_feature_flags_for_next_epoch(framework: &signer, enable: vector<u64>, disable: vector<u64>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun change_feature_flags_for_next_epoch(
+        framework: &signer,
+        enable: vector<u64>,
+        disable: vector<u64>
+    ) acquires PendingFeatures, Features {
+        assert!(signer::address_of(framework) == @std, error::permission_denied(EFRAMEWORK_SIGNER_NEEDED));
+
+        // Figure out the baseline feature vec that the diff will be applied to.
+        let new_feature_vec = if (exists<PendingFeatures>(@std)) {
+            // If there is a buffered feature vec, use it as the baseline.
+            let PendingFeatures { features } = move_from<PendingFeatures>(@std);
+            features
+        } else if (exists<Features>(@std)) {
+            // Otherwise, use the currently effective feature flag vec as the baseline, if it exists.
+            borrow_global<Features>(@std).features
+        } else {
+            // Otherwise, use an empty feature vec.
+            vector[]
+        };
+
+        // Apply the diff and save it to the buffer.
+        apply_diff(&mut new_feature_vec, enable, disable);
+        move_to(framework, PendingFeatures { features: new_feature_vec });
+    }
+}
+```
+
 
 <a id="0x1_features_on_new_epoch"></a>
 
@@ -3270,35 +3494,36 @@ Enable and disable features for the next epoch.
 
 Apply all the pending feature flag changes. Should only be used at the end of a reconfiguration with DKG.
 
-While the scope is public, it can only be usd in system transactions like <code>block_prologue</code> and governance proposals,
-who have permission to set the flag that's checked in <code>extract()</code>.
+While the scope is public, it can only be usd in system transactions like `block_prologue` and governance proposals,
+who have permission to set the flag that&apos;s checked in `extract()`.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_on_new_epoch">on_new_epoch</a>(framework: &<a href="signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::features {
+    public fun on_new_epoch(framework: &signer)
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_on_new_epoch">on_new_epoch</a>(framework: &<a href="signer.md#0x1_signer">signer</a>) <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a>, <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> {
-    <a href="features.md#0x1_features_ensure_framework_signer">ensure_framework_signer</a>(framework);
-    <b>if</b> (<b>exists</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std)) {
-        <b>let</b> <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> { <a href="features.md#0x1_features">features</a> } = <b>move_from</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std);
-        <b>if</b> (<b>exists</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std)) {
-            <b>borrow_global_mut</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std).<a href="features.md#0x1_features">features</a> = <a href="features.md#0x1_features">features</a>;
-        } <b>else</b> {
-            <b>move_to</b>(framework, <a href="features.md#0x1_features_Features">Features</a> { <a href="features.md#0x1_features">features</a> })
+```move
+module 0x1::features {
+    public fun on_new_epoch(framework: &signer) acquires Features, PendingFeatures {
+        ensure_framework_signer(framework);
+        if (exists<PendingFeatures>(@std)) {
+            let PendingFeatures { features } = move_from<PendingFeatures>(@std);
+            if (exists<Features>(@std)) {
+                borrow_global_mut<Features>(@std).features = features;
+            } else {
+                move_to(framework, Features { features })
+            }
         }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_features_is_enabled"></a>
 
@@ -3307,25 +3532,26 @@ who have permission to set the flag that's checked in <code>extract()</code>.
 Check whether the feature is enabled.
 
 
-<pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_is_enabled">is_enabled</a>(feature: u64): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_is_enabled">is_enabled</a>(feature: u64): bool <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <b>exists</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std) &&
-        <a href="features.md#0x1_features_contains">contains</a>(&<b>borrow_global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std).<a href="features.md#0x1_features">features</a>, feature)
+```move
+module 0x1::features {
+    #[view]
+    public fun is_enabled(feature: u64): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun is_enabled(feature: u64): bool acquires Features {
+        exists<Features>(@std) &&
+            contains(&borrow_global<Features>(@std).features, feature)
+    }
+}
+```
+
 
 <a id="0x1_features_set"></a>
 
@@ -3334,32 +3560,33 @@ Check whether the feature is enabled.
 Helper to include or exclude a feature flag.
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64, <b>include</b>: bool)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64, <b>include</b>: bool) {
-    <b>let</b> byte_index = feature / 8;
-    <b>let</b> bit_mask = 1 &lt;&lt; ((feature % 8) <b>as</b> u8);
-    <b>while</b> (<a href="vector.md#0x1_vector_length">vector::length</a>(<a href="features.md#0x1_features">features</a>) &lt;= byte_index) {
-        <a href="vector.md#0x1_vector_push_back">vector::push_back</a>(<a href="features.md#0x1_features">features</a>, 0)
-    };
-    <b>let</b> entry = <a href="vector.md#0x1_vector_borrow_mut">vector::borrow_mut</a>(<a href="features.md#0x1_features">features</a>, byte_index);
-    <b>if</b> (<b>include</b>)
-        *entry = *entry | bit_mask
-    <b>else</b>
-        *entry = *entry & (0xff ^ bit_mask)
+```move
+module 0x1::features {
+    fun set(features: &mut vector<u8>, feature: u64, include: bool)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    fun set(features: &mut vector<u8>, feature: u64, include: bool) {
+        let byte_index = feature / 8;
+        let bit_mask = 1 << ((feature % 8) as u8);
+        while (vector::length(features) <= byte_index) {
+            vector::push_back(features, 0)
+        };
+        let entry = vector::borrow_mut(features, byte_index);
+        if (include)
+            *entry = *entry | bit_mask
+        else
+            *entry = *entry & (0xff ^ bit_mask)
+    }
+}
+```
+
 
 <a id="0x1_features_contains"></a>
 
@@ -3368,25 +3595,26 @@ Helper to include or exclude a feature flag.
 Helper to check whether a feature flag is enabled.
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_contains">contains</a>(<a href="features.md#0x1_features">features</a>: &<a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="features.md#0x1_features_contains">contains</a>(<a href="features.md#0x1_features">features</a>: &<a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64): bool {
-    <b>let</b> byte_index = feature / 8;
-    <b>let</b> bit_mask = 1 &lt;&lt; ((feature % 8) <b>as</b> u8);
-    byte_index &lt; <a href="vector.md#0x1_vector_length">vector::length</a>(<a href="features.md#0x1_features">features</a>) && (*<a href="vector.md#0x1_vector_borrow">vector::borrow</a>(<a href="features.md#0x1_features">features</a>, byte_index) & bit_mask) != 0
+```move
+module 0x1::features {
+    fun contains(features: &vector<u8>, feature: u64): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    fun contains(features: &vector<u8>, feature: u64): bool {
+        let byte_index = feature / 8;
+        let bit_mask = 1 << ((feature % 8) as u8);
+        byte_index < vector::length(features) && (*vector::borrow(features, byte_index) & bit_mask) != 0
+    }
+}
+```
+
 
 <a id="0x1_features_apply_diff"></a>
 
@@ -3394,28 +3622,29 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_apply_diff">apply_diff</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="features.md#0x1_features_apply_diff">apply_diff</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;) {
-    <a href="vector.md#0x1_vector_for_each">vector::for_each</a>(enable, |feature| {
-        <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>, feature, <b>true</b>);
-    });
-    <a href="vector.md#0x1_vector_for_each">vector::for_each</a>(disable, |feature| {
-        <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>, feature, <b>false</b>);
-    });
+```move
+module 0x1::features {
+    fun apply_diff(features: &mut vector<u8>, enable: vector<u64>, disable: vector<u64>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    fun apply_diff(features: &mut vector<u8>, enable: vector<u64>, disable: vector<u64>) {
+        vector::for_each(enable, |feature| {
+            set(features, feature, true);
+        });
+        vector::for_each(disable, |feature| {
+            set(features, feature, false);
+        });
+    }
+}
+```
+
 
 <a id="0x1_features_ensure_framework_signer"></a>
 
@@ -3423,24 +3652,25 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_ensure_framework_signer">ensure_framework_signer</a>(account: &<a href="signer.md#0x1_signer">signer</a>)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>fun</b> <a href="features.md#0x1_features_ensure_framework_signer">ensure_framework_signer</a>(account: &<a href="signer.md#0x1_signer">signer</a>) {
-    <b>let</b> addr = <a href="signer.md#0x1_signer_address_of">signer::address_of</a>(account);
-    <b>assert</b>!(addr == @std, <a href="error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="features.md#0x1_features_EFRAMEWORK_SIGNER_NEEDED">EFRAMEWORK_SIGNER_NEEDED</a>));
+```move
+module 0x1::features {
+    fun ensure_framework_signer(account: &signer)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    fun ensure_framework_signer(account: &signer) {
+        let addr = signer::address_of(account);
+        assert!(addr == @std, error::permission_denied(EFRAMEWORK_SIGNER_NEEDED));
+    }
+}
+```
+
 
 <a id="0x1_features_change_feature_flags_for_verification"></a>
 
@@ -3448,28 +3678,29 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code>#[verify_only]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags_for_verification">change_feature_flags_for_verification</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags_for_verification">change_feature_flags_for_verification</a>(
-    framework: &<a href="signer.md#0x1_signer">signer</a>,
-    enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;,
-    disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;
-) <b>acquires</b> <a href="features.md#0x1_features_Features">Features</a> {
-    <a href="features.md#0x1_features_change_feature_flags_internal">change_feature_flags_internal</a>(framework, enable, disable)
+```move
+module 0x1::features {
+    #[verify_only]
+    public fun change_feature_flags_for_verification(framework: &signer, enable: vector<u64>, disable: vector<u64>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::features {
+    public fun change_feature_flags_for_verification(
+        framework: &signer,
+        enable: vector<u64>,
+        disable: vector<u64>
+    ) acquires Features {
+        change_feature_flags_internal(framework, enable, disable)
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -3481,14 +3712,16 @@ Helper to check whether a feature flag is enabled.
 ### Resource `Features`
 
 
-<pre><code><b>struct</b> <a href="features.md#0x1_features_Features">Features</a> <b>has</b> key
-</code></pre>
-
+```move
+module 0x1::features {
+    struct Features has key
+}
+```
 
 
 <dl>
 <dt>
-<code><a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`features: vector<u8>`
 </dt>
 <dd>
 
@@ -3497,9 +3730,11 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>pragma</b> bv=b"0";
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma bv=b"0";
+}
+```
 
 
 <a id="@Specification_1_PendingFeatures"></a>
@@ -3507,14 +3742,16 @@ Helper to check whether a feature flag is enabled.
 ### Resource `PendingFeatures`
 
 
-<pre><code><b>struct</b> <a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a> <b>has</b> key
-</code></pre>
-
+```move
+module 0x1::features {
+    struct PendingFeatures has key
+}
+```
 
 
 <dl>
 <dt>
-<code><a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;</code>
+`features: vector<u8>`
 </dt>
 <dd>
 
@@ -3523,9 +3760,11 @@ Helper to check whether a feature flag is enabled.
 
 
 
-<pre><code><b>pragma</b> bv=b"0";
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma bv=b"0";
+}
+```
 
 
 <a id="@Specification_1_periodical_reward_rate_decrease_enabled"></a>
@@ -3533,28 +3772,34 @@ Helper to check whether a feature flag is enabled.
 ### Function `periodical_reward_rate_decrease_enabled`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_periodical_reward_rate_decrease_enabled">periodical_reward_rate_decrease_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::features {
+    public fun periodical_reward_rate_decrease_enabled(): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="features.md#0x1_features_spec_periodical_reward_rate_decrease_enabled">spec_periodical_reward_rate_decrease_enabled</a>();
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] result == spec_periodical_reward_rate_decrease_enabled();
+}
+```
 
 
 
 <a id="0x1_features_spec_partial_governance_voting_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_partial_governance_voting_enabled">spec_partial_governance_voting_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_PARTIAL_GOVERNANCE_VOTING">PARTIAL_GOVERNANCE_VOTING</a>)
+```move
+module 0x1::features {
+    fun spec_partial_governance_voting_enabled(): bool {
+       spec_is_enabled(PARTIAL_GOVERNANCE_VOTING)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_partial_governance_voting_enabled"></a>
@@ -3562,17 +3807,21 @@ Helper to check whether a feature flag is enabled.
 ### Function `partial_governance_voting_enabled`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_partial_governance_voting_enabled">partial_governance_voting_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::features {
+    public fun partial_governance_voting_enabled(): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="features.md#0x1_features_spec_partial_governance_voting_enabled">spec_partial_governance_voting_enabled</a>();
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] result == spec_partial_governance_voting_enabled();
+}
+```
 
 
 <a id="@Specification_1_module_event_enabled"></a>
@@ -3580,28 +3829,34 @@ Helper to check whether a feature flag is enabled.
 ### Function `module_event_enabled`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_module_event_enabled">module_event_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::features {
+    public fun module_event_enabled(): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="features.md#0x1_features_spec_module_event_enabled">spec_module_event_enabled</a>();
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] result == spec_module_event_enabled();
+}
+```
 
 
 
 <a id="0x1_features_spec_abort_if_multisig_payload_mismatch_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_abort_if_multisig_payload_mismatch_enabled">spec_abort_if_multisig_payload_mismatch_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_ABORT_IF_MULTISIG_PAYLOAD_MISMATCH">ABORT_IF_MULTISIG_PAYLOAD_MISMATCH</a>)
+```move
+module 0x1::features {
+    fun spec_abort_if_multisig_payload_mismatch_enabled(): bool {
+       spec_is_enabled(ABORT_IF_MULTISIG_PAYLOAD_MISMATCH)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_abort_if_multisig_payload_mismatch_enabled"></a>
@@ -3609,17 +3864,21 @@ Helper to check whether a feature flag is enabled.
 ### Function `abort_if_multisig_payload_mismatch_enabled`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_abort_if_multisig_payload_mismatch_enabled">abort_if_multisig_payload_mismatch_enabled</a>(): bool
-</code></pre>
+```move
+module 0x1::features {
+    public fun abort_if_multisig_payload_mismatch_enabled(): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="features.md#0x1_features_spec_abort_if_multisig_payload_mismatch_enabled">spec_abort_if_multisig_payload_mismatch_enabled</a>();
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] result == spec_abort_if_multisig_payload_mismatch_enabled();
+}
+```
 
 
 <a id="@Specification_1_change_feature_flags_internal"></a>
@@ -3627,17 +3886,21 @@ Helper to check whether a feature flag is enabled.
 ### Function `change_feature_flags_internal`
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_change_feature_flags_internal">change_feature_flags_internal</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
+```move
+module 0x1::features {
+    fun change_feature_flags_internal(framework: &signer, enable: vector<u64>, disable: vector<u64>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>modifies</b> <b>global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std);
-<b>aborts_if</b> <a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework) != @std;
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    modifies global<Features>(@std);
+    aborts_if signer::address_of(framework) != @std;
+}
+```
 
 
 <a id="@Specification_1_change_feature_flags_for_next_epoch"></a>
@@ -3645,30 +3908,36 @@ Helper to check whether a feature flag is enabled.
 ### Function `change_feature_flags_for_next_epoch`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_change_feature_flags_for_next_epoch">change_feature_flags_for_next_epoch</a>(framework: &<a href="signer.md#0x1_signer">signer</a>, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
+```move
+module 0x1::features {
+    public fun change_feature_flags_for_next_epoch(framework: &signer, enable: vector<u64>, disable: vector<u64>)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework) != @std;
-<b>pragma</b> opaque;
-<b>modifies</b> <b>global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std);
-<b>modifies</b> <b>global</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std);
-</code></pre>
-
+```move
+module 0x1::features {
+    aborts_if signer::address_of(framework) != @std;
+    pragma opaque;
+    modifies global<Features>(@std);
+    modifies global<PendingFeatures>(@std);
+}
+```
 
 
 
 <a id="0x1_features_spec_contains"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>: <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64): bool {
-   ((int2bv((((1 <b>as</b> u8) &lt;&lt; ((feature % (8 <b>as</b> u64)) <b>as</b> u64)) <b>as</b> u8)) <b>as</b> u8) & <a href="features.md#0x1_features">features</a>[feature/8] <b>as</b> u8) &gt; (0 <b>as</b> u8)
-       && (feature / 8) &lt; len(<a href="features.md#0x1_features">features</a>)
+```move
+module 0x1::features {
+    fun spec_contains(features: vector<u8>, feature: u64): bool {
+       ((int2bv((((1 as u8) << ((feature % (8 as u64)) as u64)) as u8)) as u8) & features[feature/8] as u8) > (0 as u8)
+           && (feature / 8) < len(features)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_on_new_epoch"></a>
@@ -3676,30 +3945,36 @@ Helper to check whether a feature flag is enabled.
 ### Function `on_new_epoch`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="features.md#0x1_features_on_new_epoch">on_new_epoch</a>(framework: &<a href="signer.md#0x1_signer">signer</a>)
-</code></pre>
+```move
+module 0x1::features {
+    public fun on_new_epoch(framework: &signer)
+}
+```
 
 
 
-
-<pre><code><b>requires</b> @std == <a href="signer.md#0x1_signer_address_of">signer::address_of</a>(framework);
-<b>let</b> features_pending = <b>global</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std).<a href="features.md#0x1_features">features</a>;
-<b>let</b> <b>post</b> features_std = <b>global</b>&lt;<a href="features.md#0x1_features_Features">Features</a>&gt;(@std).<a href="features.md#0x1_features">features</a>;
-<b>ensures</b> <b>exists</b>&lt;<a href="features.md#0x1_features_PendingFeatures">PendingFeatures</a>&gt;(@std) ==&gt; features_std == features_pending;
-<b>aborts_if</b> <b>false</b>;
-</code></pre>
-
+```move
+module 0x1::features {
+    requires @std == signer::address_of(framework);
+    let features_pending = global<PendingFeatures>(@std).features;
+    let post features_std = global<Features>(@std).features;
+    ensures exists<PendingFeatures>(@std) ==> features_std == features_pending;
+    aborts_if false;
+}
+```
 
 
 
 <a id="0x1_features_spec_sha_512_and_ripemd_160_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_sha_512_and_ripemd_160_enabled">spec_sha_512_and_ripemd_160_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_SHA_512_AND_RIPEMD_160_NATIVES">SHA_512_AND_RIPEMD_160_NATIVES</a>)
+```move
+module 0x1::features {
+    fun spec_sha_512_and_ripemd_160_enabled(): bool {
+       spec_is_enabled(SHA_512_AND_RIPEMD_160_NATIVES)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_is_enabled"></a>
@@ -3707,71 +3982,85 @@ Helper to check whether a feature flag is enabled.
 ### Function `is_enabled`
 
 
-<pre><code>#[view]
-<b>public</b> <b>fun</b> <a href="features.md#0x1_features_is_enabled">is_enabled</a>(feature: u64): bool
-</code></pre>
+```move
+module 0x1::features {
+    #[view]
+    public fun is_enabled(feature: u64): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> opaque;
-<b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] result == <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(feature);
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma opaque;
+    aborts_if [abstract] false;
+    ensures [abstract] result == spec_is_enabled(feature);
+}
+```
 
 
 
 <a id="0x1_features_spec_is_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(feature: u64): bool;
-</code></pre>
-
+```move
+module 0x1::features {
+    fun spec_is_enabled(feature: u64): bool;
+}
+```
 
 
 
 <a id="0x1_features_spec_periodical_reward_rate_decrease_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_periodical_reward_rate_decrease_enabled">spec_periodical_reward_rate_decrease_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_PERIODICAL_REWARD_RATE_DECREASE">PERIODICAL_REWARD_RATE_DECREASE</a>)
+```move
+module 0x1::features {
+    fun spec_periodical_reward_rate_decrease_enabled(): bool {
+       spec_is_enabled(PERIODICAL_REWARD_RATE_DECREASE)
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_features_spec_fee_payer_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_fee_payer_enabled">spec_fee_payer_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_FEE_PAYER_ENABLED">FEE_PAYER_ENABLED</a>)
+```move
+module 0x1::features {
+    fun spec_fee_payer_enabled(): bool {
+       spec_is_enabled(FEE_PAYER_ENABLED)
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_features_spec_collect_and_distribute_gas_fees_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_collect_and_distribute_gas_fees_enabled">spec_collect_and_distribute_gas_fees_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_COLLECT_AND_DISTRIBUTE_GAS_FEES">COLLECT_AND_DISTRIBUTE_GAS_FEES</a>)
+```move
+module 0x1::features {
+    fun spec_collect_and_distribute_gas_fees_enabled(): bool {
+       spec_is_enabled(COLLECT_AND_DISTRIBUTE_GAS_FEES)
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_features_spec_module_event_enabled"></a>
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_spec_module_event_enabled">spec_module_event_enabled</a>(): bool {
-   <a href="features.md#0x1_features_spec_is_enabled">spec_is_enabled</a>(<a href="features.md#0x1_features_MODULE_EVENT">MODULE_EVENT</a>)
+```move
+module 0x1::features {
+    fun spec_module_event_enabled(): bool {
+       spec_is_enabled(MODULE_EVENT)
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_set"></a>
@@ -3779,18 +4068,22 @@ Helper to check whether a feature flag is enabled.
 ### Function `set`
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_set">set</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64, <b>include</b>: bool)
-</code></pre>
+```move
+module 0x1::features {
+    fun set(features: &mut vector<u8>, feature: u64, include: bool)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> bv=b"0";
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> feature / 8 &lt; len(<a href="features.md#0x1_features">features</a>);
-<b>ensures</b> <b>include</b> == <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, feature);
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma bv=b"0";
+    aborts_if false;
+    ensures feature / 8 < len(features);
+    ensures include == spec_contains(features, feature);
+}
+```
 
 
 <a id="@Specification_1_contains"></a>
@@ -3798,17 +4091,21 @@ Helper to check whether a feature flag is enabled.
 ### Function `contains`
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_contains">contains</a>(<a href="features.md#0x1_features">features</a>: &<a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, feature: u64): bool
-</code></pre>
+```move
+module 0x1::features {
+    fun contains(features: &vector<u8>, feature: u64): bool
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> bv=b"0";
-<b>aborts_if</b> <b>false</b>;
-<b>ensures</b> result == <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, feature);
-</code></pre>
-
+```move
+module 0x1::features {
+    pragma bv=b"0";
+    aborts_if false;
+    ensures result == spec_contains(features, feature);
+}
+```
 
 
 <a id="@Specification_1_apply_diff"></a>
@@ -3816,18 +4113,20 @@ Helper to check whether a feature flag is enabled.
 ### Function `apply_diff`
 
 
-<pre><code><b>fun</b> <a href="features.md#0x1_features_apply_diff">apply_diff</a>(<a href="features.md#0x1_features">features</a>: &<b>mut</b> <a href="vector.md#0x1_vector">vector</a>&lt;u8&gt;, enable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;, disable: <a href="vector.md#0x1_vector">vector</a>&lt;u64&gt;)
-</code></pre>
+```move
+module 0x1::features {
+    fun apply_diff(features: &mut vector<u8>, enable: vector<u64>, disable: vector<u64>)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> [abstract] <b>false</b>;
-<b>ensures</b> [abstract] <b>forall</b> i in disable: !<a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, i);
-<b>ensures</b> [abstract] <b>forall</b> i in enable: !<a href="vector.md#0x1_vector_spec_contains">vector::spec_contains</a>(disable, i)
-    ==&gt; <a href="features.md#0x1_features_spec_contains">spec_contains</a>(<a href="features.md#0x1_features">features</a>, i);
-<b>pragma</b> opaque;
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```move
+module 0x1::features {
+    aborts_if [abstract] false;
+    ensures [abstract] forall i in disable: !spec_contains(features, i);
+    ensures [abstract] forall i in enable: !vector::spec_contains(disable, i)
+        ==> spec_contains(features, i);
+    pragma opaque;
+}
+```

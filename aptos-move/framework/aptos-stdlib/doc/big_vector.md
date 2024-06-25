@@ -42,11 +42,13 @@
     -  [Function `index_of`](#@Specification_1_index_of)
 
 
-<pre><code><b>use</b> <a href="../../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
-<b>use</b> <a href="table_with_length.md#0x1_table_with_length">0x1::table_with_length</a>;
-<b>use</b> <a href="../../move-stdlib/doc/vector.md#0x1_vector">0x1::vector</a>;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    use 0x1::error;
+    use 0x1::table_with_length;
+    use 0x1::vector;
+}
+```
 
 
 <a id="0x1_big_vector_BigVector"></a>
@@ -54,41 +56,40 @@
 ## Struct `BigVector`
 
 A scalable vector implementation based on tables where elements are grouped into buckets.
-Each bucket has a capacity of <code>bucket_size</code> elements.
+Each bucket has a capacity of `bucket_size` elements.
 
 
-<pre><code><b>struct</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt; <b>has</b> store
-</code></pre>
+```move
+module 0x1::big_vector {
+    struct BigVector<T> has store
+}
+```
 
 
-
-<details>
-<summary>Fields</summary>
+##### Fields
 
 
 <dl>
 <dt>
-<code>buckets: <a href="table_with_length.md#0x1_table_with_length_TableWithLength">table_with_length::TableWithLength</a>&lt;u64, <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;T&gt;&gt;</code>
+`buckets: table_with_length::TableWithLength<u64, vector<T>>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>end_index: u64</code>
+`end_index: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>bucket_size: u64</code>
+`bucket_size: u64`
 </dt>
 <dd>
 
 </dd>
 </dl>
 
-
-</details>
 
 <a id="@Constants_0"></a>
 
@@ -100,9 +101,11 @@ Each bucket has a capacity of <code>bucket_size</code> elements.
 Vector index is out of bounds
 
 
-<pre><code><b>const</b> <a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>: u64 = 1;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    const EINDEX_OUT_OF_BOUNDS: u64 = 1;
+}
+```
 
 
 <a id="0x1_big_vector_EVECTOR_EMPTY"></a>
@@ -110,19 +113,23 @@ Vector index is out of bounds
 Cannot pop back from an empty vector
 
 
-<pre><code><b>const</b> <a href="big_vector.md#0x1_big_vector_EVECTOR_EMPTY">EVECTOR_EMPTY</a>: u64 = 3;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    const EVECTOR_EMPTY: u64 = 3;
+}
+```
 
 
 <a id="0x1_big_vector_EVECTOR_NOT_EMPTY"></a>
 
-Cannot destroy a non-empty vector
+Cannot destroy a non&#45;empty vector
 
 
-<pre><code><b>const</b> <a href="big_vector.md#0x1_big_vector_EVECTOR_NOT_EMPTY">EVECTOR_NOT_EMPTY</a>: u64 = 2;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    const EVECTOR_NOT_EMPTY: u64 = 2;
+}
+```
 
 
 <a id="0x1_big_vector_EZERO_BUCKET_SIZE"></a>
@@ -130,9 +137,11 @@ Cannot destroy a non-empty vector
 bucket_size cannot be 0
 
 
-<pre><code><b>const</b> <a href="big_vector.md#0x1_big_vector_EZERO_BUCKET_SIZE">EZERO_BUCKET_SIZE</a>: u64 = 4;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    const EZERO_BUCKET_SIZE: u64 = 4;
+}
+```
 
 
 <a id="0x1_big_vector_empty"></a>
@@ -143,28 +152,29 @@ Regular Vector API
 Create an empty vector.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_empty">empty</a>&lt;T: store&gt;(bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;
-</code></pre>
+```move
+module 0x1::big_vector {
+    public(friend) fun empty<T: store>(bucket_size: u64): big_vector::BigVector<T>
+}
+```
 
 
-
-<details>
-<summary>Implementation</summary>
+##### Implementation
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_empty">empty</a>&lt;T: store&gt;(bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt; {
-    <b>assert</b>!(bucket_size &gt; 0, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EZERO_BUCKET_SIZE">EZERO_BUCKET_SIZE</a>));
-    <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a> {
-        buckets: <a href="table_with_length.md#0x1_table_with_length_new">table_with_length::new</a>(),
-        end_index: 0,
-        bucket_size,
+```move
+module 0x1::big_vector {
+    public(friend) fun empty<T: store>(bucket_size: u64): BigVector<T> {
+        assert!(bucket_size > 0, error::invalid_argument(EZERO_BUCKET_SIZE));
+        BigVector {
+            buckets: table_with_length::new(),
+            end_index: 0,
+            bucket_size,
+        }
     }
 }
-</code></pre>
+```
 
-
-
-</details>
 
 <a id="0x1_big_vector_singleton"></a>
 
@@ -173,139 +183,144 @@ Create an empty vector.
 Create a vector of length 1 containing the passed in element.
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_singleton">singleton</a>&lt;T: store&gt;(element: T, bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_singleton">singleton</a>&lt;T: store&gt;(element: T, bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt; {
-    <b>let</b> v = <a href="big_vector.md#0x1_big_vector_empty">empty</a>(bucket_size);
-    <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>(&<b>mut</b> v, element);
-    v
+```move
+module 0x1::big_vector {
+    public(friend) fun singleton<T: store>(element: T, bucket_size: u64): big_vector::BigVector<T>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public(friend) fun singleton<T: store>(element: T, bucket_size: u64): BigVector<T> {
+        let v = empty(bucket_size);
+        push_back(&mut v, element);
+        v
+    }
+}
+```
+
 
 <a id="0x1_big_vector_destroy_empty"></a>
 
 ## Function `destroy_empty`
 
-Destroy the vector <code>v</code>.
-Aborts if <code>v</code> is not empty.
+Destroy the vector `v`.
+Aborts if `v` is not empty.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_destroy_empty">destroy_empty</a>&lt;T&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_destroy_empty">destroy_empty</a>&lt;T&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;) {
-    <b>assert</b>!(<a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>(&v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EVECTOR_NOT_EMPTY">EVECTOR_NOT_EMPTY</a>));
-    <b>let</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a> { buckets, end_index: _, bucket_size: _ } = v;
-    <a href="table_with_length.md#0x1_table_with_length_destroy_empty">table_with_length::destroy_empty</a>(buckets);
+```move
+module 0x1::big_vector {
+    public fun destroy_empty<T>(v: big_vector::BigVector<T>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun destroy_empty<T>(v: BigVector<T>) {
+        assert!(is_empty(&v), error::invalid_argument(EVECTOR_NOT_EMPTY));
+        let BigVector { buckets, end_index: _, bucket_size: _ } = v;
+        table_with_length::destroy_empty(buckets);
+    }
+}
+```
+
 
 <a id="0x1_big_vector_destroy"></a>
 
 ## Function `destroy`
 
-Destroy the vector <code>v</code> if T has <code>drop</code>
+Destroy the vector `v` if T has `drop`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_destroy">destroy</a>&lt;T: drop&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_destroy">destroy</a>&lt;T: drop&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;) {
-    <b>let</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a> { buckets, end_index, bucket_size: _ } = v;
-    <b>let</b> i = 0;
-    <b>while</b> (end_index &gt; 0) {
-        <b>let</b> num_elements = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&<a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> buckets, i));
-        end_index = end_index - num_elements;
-        i = i + 1;
-    };
-    <a href="table_with_length.md#0x1_table_with_length_destroy_empty">table_with_length::destroy_empty</a>(buckets);
+```move
+module 0x1::big_vector {
+    public fun destroy<T: drop>(v: big_vector::BigVector<T>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun destroy<T: drop>(v: BigVector<T>) {
+        let BigVector { buckets, end_index, bucket_size: _ } = v;
+        let i = 0;
+        while (end_index > 0) {
+            let num_elements = vector::length(&table_with_length::remove(&mut buckets, i));
+            end_index = end_index - num_elements;
+            i = i + 1;
+        };
+        table_with_length::destroy_empty(buckets);
+    }
+}
+```
+
 
 <a id="0x1_big_vector_borrow"></a>
 
 ## Function `borrow`
 
-Acquire an immutable reference to the <code>i</code>th element of the vector <code>v</code>.
-Aborts if <code>i</code> is out of bounds.
+Acquire an immutable reference to the `i`th element of the vector `v`.
+Aborts if `i` is out of bounds.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow">borrow</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): &T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow">borrow</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64): &T {
-    <b>assert</b>!(i &lt; <a href="big_vector.md#0x1_big_vector_length">length</a>(v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>));
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow">vector::borrow</a>(<a href="table_with_length.md#0x1_table_with_length_borrow">table_with_length::borrow</a>(&v.buckets, i / v.bucket_size), i % v.bucket_size)
+```move
+module 0x1::big_vector {
+    public fun borrow<T>(v: &big_vector::BigVector<T>, i: u64): &T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun borrow<T>(v: &BigVector<T>, i: u64): &T {
+        assert!(i < length(v), error::invalid_argument(EINDEX_OUT_OF_BOUNDS));
+        vector::borrow(table_with_length::borrow(&v.buckets, i / v.bucket_size), i % v.bucket_size)
+    }
+}
+```
+
 
 <a id="0x1_big_vector_borrow_mut"></a>
 
 ## Function `borrow_mut`
 
-Return a mutable reference to the <code>i</code>th element in the vector <code>v</code>.
-Aborts if <code>i</code> is out of bounds.
+Return a mutable reference to the `i`th element in the vector `v`.
+Aborts if `i` is out of bounds.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow_mut">borrow_mut</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): &<b>mut</b> T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow_mut">borrow_mut</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64): &<b>mut</b> T {
-    <b>assert</b>!(i &lt; <a href="big_vector.md#0x1_big_vector_length">length</a>(v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>));
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_borrow_mut">vector::borrow_mut</a>(<a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, i / v.bucket_size), i % v.bucket_size)
+```move
+module 0x1::big_vector {
+    public fun borrow_mut<T>(v: &mut big_vector::BigVector<T>, i: u64): &mut T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun borrow_mut<T>(v: &mut BigVector<T>, i: u64): &mut T {
+        assert!(i < length(v), error::invalid_argument(EINDEX_OUT_OF_BOUNDS));
+        vector::borrow_mut(table_with_length::borrow_mut(&mut v.buckets, i / v.bucket_size), i % v.bucket_size)
+    }
+}
+```
+
 
 <a id="0x1_big_vector_append"></a>
 
@@ -316,104 +331,107 @@ same order as they occurred in other.
 Disclaimer: This function is costly. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_append">append</a>&lt;T: store&gt;(lhs: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, other: <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_append">append</a>&lt;T: store&gt;(lhs: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, other: <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;) {
-    <b>let</b> other_len = <a href="big_vector.md#0x1_big_vector_length">length</a>(&other);
-    <b>let</b> half_other_len = other_len / 2;
-    <b>let</b> i = 0;
-    <b>while</b> (i &lt; half_other_len) {
-        <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>(lhs, <a href="big_vector.md#0x1_big_vector_swap_remove">swap_remove</a>(&<b>mut</b> other, i));
-        i = i + 1;
-    };
-    <b>while</b> (i &lt; other_len) {
-        <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>(lhs, <a href="big_vector.md#0x1_big_vector_pop_back">pop_back</a>(&<b>mut</b> other));
-        i = i + 1;
-    };
-    <a href="big_vector.md#0x1_big_vector_destroy_empty">destroy_empty</a>(other);
+```move
+module 0x1::big_vector {
+    public fun append<T: store>(lhs: &mut big_vector::BigVector<T>, other: big_vector::BigVector<T>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun append<T: store>(lhs: &mut BigVector<T>, other: BigVector<T>) {
+        let other_len = length(&other);
+        let half_other_len = other_len / 2;
+        let i = 0;
+        while (i < half_other_len) {
+            push_back(lhs, swap_remove(&mut other, i));
+            i = i + 1;
+        };
+        while (i < other_len) {
+            push_back(lhs, pop_back(&mut other));
+            i = i + 1;
+        };
+        destroy_empty(other);
+    }
+}
+```
+
 
 <a id="0x1_big_vector_push_back"></a>
 
 ## Function `push_back`
 
-Add element <code>val</code> to the end of the vector <code>v</code>. It grows the buckets when the current buckets are full.
+Add element `val` to the end of the vector `v`. It grows the buckets when the current buckets are full.
 This operation will cost more gas when it adds new bucket.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>&lt;T: store&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, val: T)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>&lt;T: store&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, val: T) {
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>if</b> (v.end_index == num_buckets * v.bucket_size) {
-        <a href="table_with_length.md#0x1_table_with_length_add">table_with_length::add</a>(&<b>mut</b> v.buckets, num_buckets, <a href="../../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>());
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(<a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, num_buckets), val);
-    } <b>else</b> {
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(<a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, num_buckets - 1), val);
-    };
-    v.end_index = v.end_index + 1;
+```move
+module 0x1::big_vector {
+    public fun push_back<T: store>(v: &mut big_vector::BigVector<T>, val: T)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun push_back<T: store>(v: &mut BigVector<T>, val: T) {
+        let num_buckets = table_with_length::length(&v.buckets);
+        if (v.end_index == num_buckets * v.bucket_size) {
+            table_with_length::add(&mut v.buckets, num_buckets, vector::empty());
+            vector::push_back(table_with_length::borrow_mut(&mut v.buckets, num_buckets), val);
+        } else {
+            vector::push_back(table_with_length::borrow_mut(&mut v.buckets, num_buckets - 1), val);
+        };
+        v.end_index = v.end_index + 1;
+    }
+}
+```
+
 
 <a id="0x1_big_vector_pop_back"></a>
 
 ## Function `pop_back`
 
-Pop an element from the end of vector <code>v</code>. It doesn't shrink the buckets even if they're empty.
-Call <code>shrink_to_fit</code> explicity to deallocate empty buckets.
-Aborts if <code>v</code> is empty.
+Pop an element from the end of vector `v`. It doesn&apos;t shrink the buckets even if they&apos;re empty.
+Call `shrink_to_fit` explicity to deallocate empty buckets.
+Aborts if `v` is empty.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_pop_back">pop_back</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;): T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_pop_back">pop_back</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;): T {
-    <b>assert</b>!(!<a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>(v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="big_vector.md#0x1_big_vector_EVECTOR_EMPTY">EVECTOR_EMPTY</a>));
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>let</b> last_bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, num_buckets - 1);
-    <b>let</b> val = <a href="../../move-stdlib/doc/vector.md#0x1_vector_pop_back">vector::pop_back</a>(last_bucket);
-    // Shrink the <a href="table.md#0x1_table">table</a> <b>if</b> the last <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a> is empty.
-    <b>if</b> (<a href="../../move-stdlib/doc/vector.md#0x1_vector_is_empty">vector::is_empty</a>(last_bucket)) {
-        <b>move</b> last_bucket;
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy_empty">vector::destroy_empty</a>(<a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> v.buckets, num_buckets - 1));
-    };
-    v.end_index = v.end_index - 1;
-    val
+```move
+module 0x1::big_vector {
+    public fun pop_back<T>(v: &mut big_vector::BigVector<T>): T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun pop_back<T>(v: &mut BigVector<T>): T {
+        assert!(!is_empty(v), error::invalid_state(EVECTOR_EMPTY));
+        let num_buckets = table_with_length::length(&v.buckets);
+        let last_bucket = table_with_length::borrow_mut(&mut v.buckets, num_buckets - 1);
+        let val = vector::pop_back(last_bucket);
+        // Shrink the table if the last vector is empty.
+        if (vector::is_empty(last_bucket)) {
+            move last_bucket;
+            vector::destroy_empty(table_with_length::remove(&mut v.buckets, num_buckets - 1));
+        };
+        v.end_index = v.end_index - 1;
+        val
+    }
+}
+```
+
 
 <a id="0x1_big_vector_remove"></a>
 
@@ -424,205 +442,209 @@ All elements occurring at indices greater than i will be shifted down by 1. Will
 Disclaimer: This function is costly. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_remove">remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_remove">remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64): T {
-    <b>let</b> len = <a href="big_vector.md#0x1_big_vector_length">length</a>(v);
-    <b>assert</b>!(i &lt; len, <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>));
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>let</b> cur_bucket_index = i / v.bucket_size + 1;
-    <b>let</b> cur_bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, cur_bucket_index - 1);
-    <b>let</b> res = <a href="../../move-stdlib/doc/vector.md#0x1_vector_remove">vector::remove</a>(cur_bucket, i % v.bucket_size);
-    v.end_index = v.end_index - 1;
-    <b>move</b> cur_bucket;
-    <b>while</b> ({
-        <b>spec</b> {
-            <b>invariant</b> cur_bucket_index &lt;= num_buckets;
-            <b>invariant</b> <a href="table_with_length.md#0x1_table_with_length_spec_len">table_with_length::spec_len</a>(v.buckets) == num_buckets;
-        };
-        (cur_bucket_index &lt; num_buckets)
-    }) {
-        // remove one element from the start of current <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>
-        <b>let</b> cur_bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, cur_bucket_index);
-        <b>let</b> t = <a href="../../move-stdlib/doc/vector.md#0x1_vector_remove">vector::remove</a>(cur_bucket, 0);
-        <b>move</b> cur_bucket;
-        // and put it at the end of the last one
-        <b>let</b> prev_bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, cur_bucket_index - 1);
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(prev_bucket, t);
-        cur_bucket_index = cur_bucket_index + 1;
-    };
-    <b>spec</b> {
-        <b>assert</b> cur_bucket_index == num_buckets;
-    };
-
-    // Shrink the <a href="table.md#0x1_table">table</a> <b>if</b> the last <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a> is empty.
-    <b>let</b> last_bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, num_buckets - 1);
-    <b>if</b> (<a href="../../move-stdlib/doc/vector.md#0x1_vector_is_empty">vector::is_empty</a>(last_bucket)) {
-        <b>move</b> last_bucket;
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy_empty">vector::destroy_empty</a>(<a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> v.buckets, num_buckets - 1));
-    };
-
-    res
+```move
+module 0x1::big_vector {
+    public fun remove<T>(v: &mut big_vector::BigVector<T>, i: u64): T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun remove<T>(v: &mut BigVector<T>, i: u64): T {
+        let len = length(v);
+        assert!(i < len, error::invalid_argument(EINDEX_OUT_OF_BOUNDS));
+        let num_buckets = table_with_length::length(&v.buckets);
+        let cur_bucket_index = i / v.bucket_size + 1;
+        let cur_bucket = table_with_length::borrow_mut(&mut v.buckets, cur_bucket_index - 1);
+        let res = vector::remove(cur_bucket, i % v.bucket_size);
+        v.end_index = v.end_index - 1;
+        move cur_bucket;
+        while ({
+            spec {
+                invariant cur_bucket_index <= num_buckets;
+                invariant table_with_length::spec_len(v.buckets) == num_buckets;
+            };
+            (cur_bucket_index < num_buckets)
+        }) {
+            // remove one element from the start of current vector
+            let cur_bucket = table_with_length::borrow_mut(&mut v.buckets, cur_bucket_index);
+            let t = vector::remove(cur_bucket, 0);
+            move cur_bucket;
+            // and put it at the end of the last one
+            let prev_bucket = table_with_length::borrow_mut(&mut v.buckets, cur_bucket_index - 1);
+            vector::push_back(prev_bucket, t);
+            cur_bucket_index = cur_bucket_index + 1;
+        };
+        spec {
+            assert cur_bucket_index == num_buckets;
+        };
+
+        // Shrink the table if the last vector is empty.
+        let last_bucket = table_with_length::borrow_mut(&mut v.buckets, num_buckets - 1);
+        if (vector::is_empty(last_bucket)) {
+            move last_bucket;
+            vector::destroy_empty(table_with_length::remove(&mut v.buckets, num_buckets - 1));
+        };
+
+        res
+    }
+}
+```
+
 
 <a id="0x1_big_vector_swap_remove"></a>
 
 ## Function `swap_remove`
 
-Swap the <code>i</code>th element of the vector <code>v</code> with the last element and then pop the vector.
+Swap the `i`th element of the vector `v` with the last element and then pop the vector.
 This is O(1), but does not preserve ordering of elements in the vector.
-Aborts if <code>i</code> is out of bounds.
+Aborts if `i` is out of bounds.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap_remove">swap_remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): T
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap_remove">swap_remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64): T {
-    <b>assert</b>!(i &lt; <a href="big_vector.md#0x1_big_vector_length">length</a>(v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>));
-    <b>let</b> last_val = <a href="big_vector.md#0x1_big_vector_pop_back">pop_back</a>(v);
-    // <b>if</b> the requested value is the last one, <b>return</b> it
-    <b>if</b> (v.end_index == i) {
-        <b>return</b> last_val
-    };
-    // because the lack of mem::swap, here we swap remove the requested value from the bucket
-    // and append the last_val <b>to</b> the bucket then swap the last bucket val back
-    <b>let</b> bucket = <a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, i / v.bucket_size);
-    <b>let</b> bucket_len = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(bucket);
-    <b>let</b> val = <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap_remove">vector::swap_remove</a>(bucket, i % v.bucket_size);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(bucket, last_val);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap">vector::swap</a>(bucket, i % v.bucket_size, bucket_len - 1);
-    val
+```move
+module 0x1::big_vector {
+    public fun swap_remove<T>(v: &mut big_vector::BigVector<T>, i: u64): T
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun swap_remove<T>(v: &mut BigVector<T>, i: u64): T {
+        assert!(i < length(v), error::invalid_argument(EINDEX_OUT_OF_BOUNDS));
+        let last_val = pop_back(v);
+        // if the requested value is the last one, return it
+        if (v.end_index == i) {
+            return last_val
+        };
+        // because the lack of mem::swap, here we swap remove the requested value from the bucket
+        // and append the last_val to the bucket then swap the last bucket val back
+        let bucket = table_with_length::borrow_mut(&mut v.buckets, i / v.bucket_size);
+        let bucket_len = vector::length(bucket);
+        let val = vector::swap_remove(bucket, i % v.bucket_size);
+        vector::push_back(bucket, last_val);
+        vector::swap(bucket, i % v.bucket_size, bucket_len - 1);
+        val
+    }
+}
+```
+
 
 <a id="0x1_big_vector_swap"></a>
 
 ## Function `swap`
 
-Swap the elements at the i'th and j'th indices in the vector v. Will abort if either of i or j are out of bounds
+Swap the elements at the i&apos;th and j&apos;th indices in the vector v. Will abort if either of i or j are out of bounds
 for v.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap">swap</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64, j: u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap">swap</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64, j: u64) {
-    <b>assert</b>!(i &lt; <a href="big_vector.md#0x1_big_vector_length">length</a>(v) && j &lt; <a href="big_vector.md#0x1_big_vector_length">length</a>(v), <a href="../../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="big_vector.md#0x1_big_vector_EINDEX_OUT_OF_BOUNDS">EINDEX_OUT_OF_BOUNDS</a>));
-    <b>let</b> i_bucket_index = i / v.bucket_size;
-    <b>let</b> j_bucket_index = j / v.bucket_size;
-    <b>let</b> i_vector_index = i % v.bucket_size;
-    <b>let</b> j_vector_index = j % v.bucket_size;
-    <b>if</b> (i_bucket_index == j_bucket_index) {
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap">vector::swap</a>(<a href="table_with_length.md#0x1_table_with_length_borrow_mut">table_with_length::borrow_mut</a>(&<b>mut</b> v.buckets, i_bucket_index), i_vector_index, j_vector_index);
-        <b>return</b>
-    };
-    // If i and j are in different buckets, take the buckets out first for easy mutation.
-    <b>let</b> bucket_i = <a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> v.buckets, i_bucket_index);
-    <b>let</b> bucket_j = <a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> v.buckets, j_bucket_index);
-    // Get the elements from buckets by calling `swap_remove`.
-    <b>let</b> element_i = <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap_remove">vector::swap_remove</a>(&<b>mut</b> bucket_i, i_vector_index);
-    <b>let</b> element_j = <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap_remove">vector::swap_remove</a>(&<b>mut</b> bucket_j, j_vector_index);
-    // Swap the elements and push back <b>to</b> the other bucket.
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> bucket_i, element_j);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> bucket_j, element_i);
-    <b>let</b> last_index_in_bucket_i = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&bucket_i) - 1;
-    <b>let</b> last_index_in_bucket_j = <a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&bucket_j) - 1;
-    // Re-position the swapped elements <b>to</b> the right index.
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap">vector::swap</a>(&<b>mut</b> bucket_i, i_vector_index, last_index_in_bucket_i);
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_swap">vector::swap</a>(&<b>mut</b> bucket_j, j_vector_index, last_index_in_bucket_j);
-    // Add back the buckets.
-    <a href="table_with_length.md#0x1_table_with_length_add">table_with_length::add</a>(&<b>mut</b> v.buckets, i_bucket_index, bucket_i);
-    <a href="table_with_length.md#0x1_table_with_length_add">table_with_length::add</a>(&<b>mut</b> v.buckets, j_bucket_index, bucket_j);
+```move
+module 0x1::big_vector {
+    public fun swap<T>(v: &mut big_vector::BigVector<T>, i: u64, j: u64)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun swap<T>(v: &mut BigVector<T>, i: u64, j: u64) {
+        assert!(i < length(v) && j < length(v), error::invalid_argument(EINDEX_OUT_OF_BOUNDS));
+        let i_bucket_index = i / v.bucket_size;
+        let j_bucket_index = j / v.bucket_size;
+        let i_vector_index = i % v.bucket_size;
+        let j_vector_index = j % v.bucket_size;
+        if (i_bucket_index == j_bucket_index) {
+            vector::swap(table_with_length::borrow_mut(&mut v.buckets, i_bucket_index), i_vector_index, j_vector_index);
+            return
+        };
+        // If i and j are in different buckets, take the buckets out first for easy mutation.
+        let bucket_i = table_with_length::remove(&mut v.buckets, i_bucket_index);
+        let bucket_j = table_with_length::remove(&mut v.buckets, j_bucket_index);
+        // Get the elements from buckets by calling `swap_remove`.
+        let element_i = vector::swap_remove(&mut bucket_i, i_vector_index);
+        let element_j = vector::swap_remove(&mut bucket_j, j_vector_index);
+        // Swap the elements and push back to the other bucket.
+        vector::push_back(&mut bucket_i, element_j);
+        vector::push_back(&mut bucket_j, element_i);
+        let last_index_in_bucket_i = vector::length(&bucket_i) - 1;
+        let last_index_in_bucket_j = vector::length(&bucket_j) - 1;
+        // Re-position the swapped elements to the right index.
+        vector::swap(&mut bucket_i, i_vector_index, last_index_in_bucket_i);
+        vector::swap(&mut bucket_j, j_vector_index, last_index_in_bucket_j);
+        // Add back the buckets.
+        table_with_length::add(&mut v.buckets, i_bucket_index, bucket_i);
+        table_with_length::add(&mut v.buckets, j_bucket_index, bucket_j);
+    }
+}
+```
+
 
 <a id="0x1_big_vector_reverse"></a>
 
 ## Function `reverse`
 
-Reverse the order of the elements in the vector v in-place.
+Reverse the order of the elements in the vector v in&#45;place.
 Disclaimer: This function is costly. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_reverse">reverse</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_reverse">reverse</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;) {
-    <b>let</b> new_buckets = <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>[];
-    <b>let</b> push_bucket = <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>[];
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>let</b> num_buckets_left = num_buckets;
-
-    <b>while</b> (num_buckets_left &gt; 0) {
-        <b>let</b> pop_bucket = <a href="table_with_length.md#0x1_table_with_length_remove">table_with_length::remove</a>(&<b>mut</b> v.buckets, num_buckets_left - 1);
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_for_each_reverse">vector::for_each_reverse</a>(pop_bucket, |val| {
-            <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> push_bucket, val);
-            <b>if</b> (<a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&push_bucket) == v.bucket_size) {
-                <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> new_buckets, push_bucket);
-                push_bucket = <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>[];
-            };
-        });
-        num_buckets_left = num_buckets_left - 1;
-    };
-
-    <b>if</b> (<a href="../../move-stdlib/doc/vector.md#0x1_vector_length">vector::length</a>(&push_bucket) &gt; 0) {
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_push_back">vector::push_back</a>(&<b>mut</b> new_buckets, push_bucket);
-    } <b>else</b> {
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy_empty">vector::destroy_empty</a>(push_bucket);
-    };
-
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_reverse">vector::reverse</a>(&<b>mut</b> new_buckets);
-    <b>let</b> i = 0;
-    <b>assert</b>!(<a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets) == 0, 0);
-    <b>while</b> (i &lt; num_buckets) {
-        <a href="table_with_length.md#0x1_table_with_length_add">table_with_length::add</a>(&<b>mut</b> v.buckets, i, <a href="../../move-stdlib/doc/vector.md#0x1_vector_pop_back">vector::pop_back</a>(&<b>mut</b> new_buckets));
-        i = i + 1;
-    };
-    <a href="../../move-stdlib/doc/vector.md#0x1_vector_destroy_empty">vector::destroy_empty</a>(new_buckets);
+```move
+module 0x1::big_vector {
+    public fun reverse<T>(v: &mut big_vector::BigVector<T>)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun reverse<T>(v: &mut BigVector<T>) {
+        let new_buckets = vector[];
+        let push_bucket = vector[];
+        let num_buckets = table_with_length::length(&v.buckets);
+        let num_buckets_left = num_buckets;
+
+        while (num_buckets_left > 0) {
+            let pop_bucket = table_with_length::remove(&mut v.buckets, num_buckets_left - 1);
+            vector::for_each_reverse(pop_bucket, |val| {
+                vector::push_back(&mut push_bucket, val);
+                if (vector::length(&push_bucket) == v.bucket_size) {
+                    vector::push_back(&mut new_buckets, push_bucket);
+                    push_bucket = vector[];
+                };
+            });
+            num_buckets_left = num_buckets_left - 1;
+        };
+
+        if (vector::length(&push_bucket) > 0) {
+            vector::push_back(&mut new_buckets, push_bucket);
+        } else {
+            vector::destroy_empty(push_bucket);
+        };
+
+        vector::reverse(&mut new_buckets);
+        let i = 0;
+        assert!(table_with_length::length(&v.buckets) == 0, 0);
+        while (i < num_buckets) {
+            table_with_length::add(&mut v.buckets, i, vector::pop_back(&mut new_buckets));
+            i = i + 1;
+        };
+        vector::destroy_empty(new_buckets);
+    }
+}
+```
+
 
 <a id="0x1_big_vector_index_of"></a>
 
@@ -633,33 +655,34 @@ element was found, and (false, 0) otherwise.
 Disclaimer: This function is costly. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_index_of">index_of</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, val: &T): (bool, u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_index_of">index_of</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, val: &T): (bool, u64) {
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>let</b> bucket_index = 0;
-    <b>while</b> (bucket_index &lt; num_buckets) {
-        <b>let</b> cur = <a href="table_with_length.md#0x1_table_with_length_borrow">table_with_length::borrow</a>(&v.buckets, bucket_index);
-        <b>let</b> (found, i) = <a href="../../move-stdlib/doc/vector.md#0x1_vector_index_of">vector::index_of</a>(cur, val);
-        <b>if</b> (found) {
-            <b>return</b> (<b>true</b>, bucket_index * v.bucket_size + i)
-        };
-        bucket_index = bucket_index + 1;
-    };
-    (<b>false</b>, 0)
+```move
+module 0x1::big_vector {
+    public fun index_of<T>(v: &big_vector::BigVector<T>, val: &T): (bool, u64)
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun index_of<T>(v: &BigVector<T>, val: &T): (bool, u64) {
+        let num_buckets = table_with_length::length(&v.buckets);
+        let bucket_index = 0;
+        while (bucket_index < num_buckets) {
+            let cur = table_with_length::borrow(&v.buckets, bucket_index);
+            let (found, i) = vector::index_of(cur, val);
+            if (found) {
+                return (true, bucket_index * v.bucket_size + i)
+            };
+            bucket_index = bucket_index + 1;
+        };
+        (false, 0)
+    }
+}
+```
+
 
 <a id="0x1_big_vector_contains"></a>
 
@@ -669,25 +692,26 @@ Return if an element equal to e exists in the vector v.
 Disclaimer: This function is costly. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_contains">contains</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, val: &T): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_contains">contains</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, val: &T): bool {
-    <b>if</b> (<a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>(v)) <b>return</b> <b>false</b>;
-    <b>let</b> (exist, _) = <a href="big_vector.md#0x1_big_vector_index_of">index_of</a>(v, val);
-    exist
+```move
+module 0x1::big_vector {
+    public fun contains<T>(v: &big_vector::BigVector<T>, val: &T): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun contains<T>(v: &BigVector<T>, val: &T): bool {
+        if (is_empty(v)) return false;
+        let (exist, _) = index_of(v, val);
+        exist
+    }
+}
+```
+
 
 <a id="0x1_big_vector_to_vector"></a>
 
@@ -698,30 +722,31 @@ atomic view of the whole vector.
 Disclaimer: This function may be costly as the big vector may be huge in size. Use it at your own discretion.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_to_vector">to_vector</a>&lt;T: <b>copy</b>&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;T&gt;
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_to_vector">to_vector</a>&lt;T: <b>copy</b>&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;): <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;T&gt; {
-    <b>let</b> res = <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>[];
-    <b>let</b> num_buckets = <a href="table_with_length.md#0x1_table_with_length_length">table_with_length::length</a>(&v.buckets);
-    <b>let</b> i = 0;
-    <b>while</b> (i &lt; num_buckets) {
-        <a href="../../move-stdlib/doc/vector.md#0x1_vector_append">vector::append</a>(&<b>mut</b> res, *<a href="table_with_length.md#0x1_table_with_length_borrow">table_with_length::borrow</a>(&v.buckets, i));
-        i = i + 1;
-    };
-    res
+```move
+module 0x1::big_vector {
+    public fun to_vector<T: copy>(v: &big_vector::BigVector<T>): vector<T>
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun to_vector<T: copy>(v: &BigVector<T>): vector<T> {
+        let res = vector[];
+        let num_buckets = table_with_length::length(&v.buckets);
+        let i = 0;
+        while (i < num_buckets) {
+            vector::append(&mut res, *table_with_length::borrow(&v.buckets, i));
+            i = i + 1;
+        };
+        res
+    }
+}
+```
+
 
 <a id="0x1_big_vector_length"></a>
 
@@ -730,48 +755,50 @@ Disclaimer: This function may be costly as the big vector may be huge in size. U
 Return the length of the vector.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_length">length</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;): u64
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_length">length</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;): u64 {
-    v.end_index
+```move
+module 0x1::big_vector {
+    public fun length<T>(v: &big_vector::BigVector<T>): u64
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun length<T>(v: &BigVector<T>): u64 {
+        v.end_index
+    }
+}
+```
+
 
 <a id="0x1_big_vector_is_empty"></a>
 
 ## Function `is_empty`
 
-Return <code><b>true</b></code> if the vector <code>v</code> has no elements and <code><b>false</b></code> otherwise.
+Return `true` if the vector `v` has no elements and `false` otherwise.
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;): bool
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;): bool {
-    <a href="big_vector.md#0x1_big_vector_length">length</a>(v) == 0
+```move
+module 0x1::big_vector {
+    public fun is_empty<T>(v: &big_vector::BigVector<T>): bool
 }
-</code></pre>
+```
 
 
+##### Implementation
 
-</details>
+
+```move
+module 0x1::big_vector {
+    public fun is_empty<T>(v: &BigVector<T>): bool {
+        length(v) == 0
+    }
+}
+```
+
 
 <a id="@Specification_1"></a>
 
@@ -783,26 +810,28 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Struct `BigVector`
 
 
-<pre><code><b>struct</b> <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt; <b>has</b> store
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    struct BigVector<T> has store
+}
+```
 
 
 <dl>
 <dt>
-<code>buckets: <a href="table_with_length.md#0x1_table_with_length_TableWithLength">table_with_length::TableWithLength</a>&lt;u64, <a href="../../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;T&gt;&gt;</code>
+`buckets: table_with_length::TableWithLength<u64, vector<T>>`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>end_index: u64</code>
+`end_index: u64`
 </dt>
 <dd>
 
 </dd>
 <dt>
-<code>bucket_size: u64</code>
+`bucket_size: u64`
 </dt>
 <dd>
 
@@ -811,28 +840,30 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 
 
 
-<pre><code><b>invariant</b> bucket_size != 0;
-<b>invariant</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0 ==&gt; end_index == 0;
-<b>invariant</b> end_index == 0 ==&gt; <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0;
-<b>invariant</b> end_index &lt;= <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) * bucket_size;
-<b>invariant</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0
-    || (<b>forall</b> i in 0..<a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets)-1: len(<a href="table_with_length.md#0x1_table_with_length_spec_get">table_with_length::spec_get</a>(buckets, i)) == bucket_size);
-<b>invariant</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0
-    || len(<a href="table_with_length.md#0x1_table_with_length_spec_get">table_with_length::spec_get</a>(buckets, <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) -1 )) &lt;= bucket_size;
-<b>invariant</b> <b>forall</b> i in 0..<a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets): <a href="big_vector.md#0x1_big_vector_spec_table_contains">spec_table_contains</a>(buckets, i);
-<b>invariant</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == (end_index + bucket_size - 1) / bucket_size;
-<b>invariant</b> (<a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0 && end_index == 0)
-    || (<a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) != 0 && ((<a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) - 1) * bucket_size) + (len(<a href="table_with_length.md#0x1_table_with_length_spec_get">table_with_length::spec_get</a>(buckets, <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) - 1))) == end_index);
-<b>invariant</b> <b>forall</b> i: u64 <b>where</b> i &gt;= <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets):  {
-    !<a href="big_vector.md#0x1_big_vector_spec_table_contains">spec_table_contains</a>(buckets, i)
-};
-<b>invariant</b> <b>forall</b> i: u64 <b>where</b> i &lt; <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets):  {
-    <a href="big_vector.md#0x1_big_vector_spec_table_contains">spec_table_contains</a>(buckets, i)
-};
-<b>invariant</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) == 0
-    || (len(<a href="table_with_length.md#0x1_table_with_length_spec_get">table_with_length::spec_get</a>(buckets, <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(buckets) - 1)) &gt; 0);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    invariant bucket_size != 0;
+    invariant spec_table_len(buckets) == 0 ==> end_index == 0;
+    invariant end_index == 0 ==> spec_table_len(buckets) == 0;
+    invariant end_index <= spec_table_len(buckets) * bucket_size;
+    invariant spec_table_len(buckets) == 0
+        || (forall i in 0..spec_table_len(buckets)-1: len(table_with_length::spec_get(buckets, i)) == bucket_size);
+    invariant spec_table_len(buckets) == 0
+        || len(table_with_length::spec_get(buckets, spec_table_len(buckets) -1 )) <= bucket_size;
+    invariant forall i in 0..spec_table_len(buckets): spec_table_contains(buckets, i);
+    invariant spec_table_len(buckets) == (end_index + bucket_size - 1) / bucket_size;
+    invariant (spec_table_len(buckets) == 0 && end_index == 0)
+        || (spec_table_len(buckets) != 0 && ((spec_table_len(buckets) - 1) * bucket_size) + (len(table_with_length::spec_get(buckets, spec_table_len(buckets) - 1))) == end_index);
+    invariant forall i: u64 where i >= spec_table_len(buckets):  {
+        !spec_table_contains(buckets, i)
+    };
+    invariant forall i: u64 where i < spec_table_len(buckets):  {
+        spec_table_contains(buckets, i)
+    };
+    invariant spec_table_len(buckets) == 0
+        || (len(table_with_length::spec_get(buckets, spec_table_len(buckets) - 1)) > 0);
+}
+```
 
 
 <a id="@Specification_1_empty"></a>
@@ -840,17 +871,21 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `empty`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_empty">empty</a>&lt;T: store&gt;(bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;
-</code></pre>
+```move
+module 0x1::big_vector {
+    public(friend) fun empty<T: store>(bucket_size: u64): big_vector::BigVector<T>
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> bucket_size == 0;
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(result) == 0;
-<b>ensures</b> result.bucket_size == bucket_size;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if bucket_size == 0;
+    ensures length(result) == 0;
+    ensures result.bucket_size == bucket_size;
+}
+```
 
 
 <a id="@Specification_1_singleton"></a>
@@ -858,17 +893,21 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `singleton`
 
 
-<pre><code><b>public</b>(<b>friend</b>) <b>fun</b> <a href="big_vector.md#0x1_big_vector_singleton">singleton</a>&lt;T: store&gt;(element: T, bucket_size: u64): <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;
-</code></pre>
+```move
+module 0x1::big_vector {
+    public(friend) fun singleton<T: store>(element: T, bucket_size: u64): big_vector::BigVector<T>
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> bucket_size == 0;
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(result) == 1;
-<b>ensures</b> result.bucket_size == bucket_size;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if bucket_size == 0;
+    ensures length(result) == 1;
+    ensures result.bucket_size == bucket_size;
+}
+```
 
 
 <a id="@Specification_1_destroy_empty"></a>
@@ -876,15 +915,19 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `destroy_empty`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_destroy_empty">destroy_empty</a>&lt;T&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun destroy_empty<T>(v: big_vector::BigVector<T>)
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> !<a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>(v);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if !is_empty(v);
+}
+```
 
 
 <a id="@Specification_1_borrow"></a>
@@ -892,16 +935,20 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `borrow`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow">borrow</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): &T
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun borrow<T>(v: &big_vector::BigVector<T>, i: u64): &T
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> i &gt;= <a href="big_vector.md#0x1_big_vector_length">length</a>(v);
-<b>ensures</b> result == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, i);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if i >= length(v);
+    ensures result == spec_at(v, i);
+}
+```
 
 
 <a id="@Specification_1_borrow_mut"></a>
@@ -909,16 +956,20 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `borrow_mut`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_borrow_mut">borrow_mut</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): &<b>mut</b> T
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun borrow_mut<T>(v: &mut big_vector::BigVector<T>, i: u64): &mut T
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> i &gt;= <a href="big_vector.md#0x1_big_vector_length">length</a>(v);
-<b>ensures</b> result == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, i);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if i >= length(v);
+    ensures result == spec_at(v, i);
+}
+```
 
 
 <a id="@Specification_1_append"></a>
@@ -926,15 +977,19 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `append`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_append">append</a>&lt;T: store&gt;(lhs: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, other: <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun append<T: store>(lhs: &mut big_vector::BigVector<T>, other: big_vector::BigVector<T>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify=false;
+}
+```
 
 
 <a id="@Specification_1_push_back"></a>
@@ -942,35 +997,41 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `push_back`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_push_back">push_back</a>&lt;T: store&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, val: T)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun push_back<T: store>(v: &mut big_vector::BigVector<T>, val: T)
+}
+```
 
 
 
-
-<pre><code><b>let</b> num_buckets = <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(v.buckets);
-<b>include</b> <a href="big_vector.md#0x1_big_vector_PushbackAbortsIf">PushbackAbortsIf</a>&lt;T&gt;;
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(v) == <a href="big_vector.md#0x1_big_vector_length">length</a>(<b>old</b>(v)) + 1;
-<b>ensures</b> v.end_index == <b>old</b>(v.end_index) + 1;
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, v.end_index-1) == val;
-<b>ensures</b> <b>forall</b> i in 0..v.end_index-1: <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, i) == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), i);
-<b>ensures</b> v.bucket_size == <b>old</b>(v).bucket_size;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    let num_buckets = spec_table_len(v.buckets);
+    include PushbackAbortsIf<T>;
+    ensures length(v) == length(old(v)) + 1;
+    ensures v.end_index == old(v.end_index) + 1;
+    ensures spec_at(v, v.end_index-1) == val;
+    ensures forall i in 0..v.end_index-1: spec_at(v, i) == spec_at(old(v), i);
+    ensures v.bucket_size == old(v).bucket_size;
+}
+```
 
 
 
 <a id="0x1_big_vector_PushbackAbortsIf"></a>
 
 
-<pre><code><b>schema</b> <a href="big_vector.md#0x1_big_vector_PushbackAbortsIf">PushbackAbortsIf</a>&lt;T&gt; {
-    v: <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;;
-    <b>let</b> num_buckets = <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>(v.buckets);
-    <b>aborts_if</b> num_buckets * v.bucket_size &gt; MAX_U64;
-    <b>aborts_if</b> v.end_index + 1 &gt; MAX_U64;
+```move
+module 0x1::big_vector {
+    schema PushbackAbortsIf<T> {
+        v: BigVector<T>;
+        let num_buckets = spec_table_len(v.buckets);
+        aborts_if num_buckets * v.bucket_size > MAX_U64;
+        aborts_if v.end_index + 1 > MAX_U64;
+    }
 }
-</code></pre>
-
+```
 
 
 <a id="@Specification_1_pop_back"></a>
@@ -978,18 +1039,22 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `pop_back`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_pop_back">pop_back</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;): T
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun pop_back<T>(v: &mut big_vector::BigVector<T>): T
+}
+```
 
 
 
-
-<pre><code><b>aborts_if</b> <a href="big_vector.md#0x1_big_vector_is_empty">is_empty</a>(v);
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(v) == <a href="big_vector.md#0x1_big_vector_length">length</a>(<b>old</b>(v)) - 1;
-<b>ensures</b> result == <b>old</b>(<a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, v.end_index-1));
-<b>ensures</b> <b>forall</b> i in 0..v.end_index: <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, i) == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), i);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    aborts_if is_empty(v);
+    ensures length(v) == length(old(v)) - 1;
+    ensures result == old(spec_at(v, v.end_index-1));
+    ensures forall i in 0..v.end_index: spec_at(v, i) == spec_at(old(v), i);
+}
+```
 
 
 <a id="@Specification_1_remove"></a>
@@ -997,15 +1062,19 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `remove`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_remove">remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): T
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun remove<T>(v: &mut big_vector::BigVector<T>, i: u64): T
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify=false;
+}
+```
 
 
 <a id="@Specification_1_swap_remove"></a>
@@ -1013,18 +1082,22 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `swap_remove`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap_remove">swap_remove</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64): T
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun swap_remove<T>(v: &mut big_vector::BigVector<T>, i: u64): T
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify_duration_estimate = 120;
-<b>aborts_if</b> i &gt;= <a href="big_vector.md#0x1_big_vector_length">length</a>(v);
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(v) == <a href="big_vector.md#0x1_big_vector_length">length</a>(<b>old</b>(v)) - 1;
-<b>ensures</b> result == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), i);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify_duration_estimate = 120;
+    aborts_if i >= length(v);
+    ensures length(v) == length(old(v)) - 1;
+    ensures result == spec_at(old(v), i);
+}
+```
 
 
 <a id="@Specification_1_swap"></a>
@@ -1032,22 +1105,26 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `swap`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_swap">swap</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, i: u64, j: u64)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun swap<T>(v: &mut big_vector::BigVector<T>, i: u64, j: u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify_duration_estimate = 1000;
-<b>aborts_if</b> i &gt;= <a href="big_vector.md#0x1_big_vector_length">length</a>(v) || j &gt;= <a href="big_vector.md#0x1_big_vector_length">length</a>(v);
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_length">length</a>(v) == <a href="big_vector.md#0x1_big_vector_length">length</a>(<b>old</b>(v));
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, i) == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), j);
-<b>ensures</b> <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, j) == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), i);
-<b>ensures</b> <b>forall</b> idx in 0..<a href="big_vector.md#0x1_big_vector_length">length</a>(v)
-    <b>where</b> idx != i && idx != j:
-    <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(v, idx) == <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>(<b>old</b>(v), idx);
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify_duration_estimate = 1000;
+    aborts_if i >= length(v) || j >= length(v);
+    ensures length(v) == length(old(v));
+    ensures spec_at(v, i) == spec_at(old(v), j);
+    ensures spec_at(v, j) == spec_at(old(v), i);
+    ensures forall idx in 0..length(v)
+        where idx != i && idx != j:
+        spec_at(v, idx) == spec_at(old(v), idx);
+}
+```
 
 
 <a id="@Specification_1_reverse"></a>
@@ -1055,15 +1132,19 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `reverse`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_reverse">reverse</a>&lt;T&gt;(v: &<b>mut</b> <a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun reverse<T>(v: &mut big_vector::BigVector<T>)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify=false;
+}
+```
 
 
 <a id="@Specification_1_index_of"></a>
@@ -1071,50 +1152,58 @@ Return <code><b>true</b></code> if the vector <code>v</code> has no elements and
 ### Function `index_of`
 
 
-<pre><code><b>public</b> <b>fun</b> <a href="big_vector.md#0x1_big_vector_index_of">index_of</a>&lt;T&gt;(v: &<a href="big_vector.md#0x1_big_vector_BigVector">big_vector::BigVector</a>&lt;T&gt;, val: &T): (bool, u64)
-</code></pre>
+```move
+module 0x1::big_vector {
+    public fun index_of<T>(v: &big_vector::BigVector<T>, val: &T): (bool, u64)
+}
+```
 
 
 
-
-<pre><code><b>pragma</b> verify=<b>false</b>;
-</code></pre>
-
+```move
+module 0x1::big_vector {
+    pragma verify=false;
+}
+```
 
 
 
 <a id="0x1_big_vector_spec_table_len"></a>
 
 
-<pre><code><b>fun</b> <a href="big_vector.md#0x1_big_vector_spec_table_len">spec_table_len</a>&lt;K, V&gt;(t: TableWithLength&lt;K, V&gt;): u64 {
-   <a href="table_with_length.md#0x1_table_with_length_spec_len">table_with_length::spec_len</a>(t)
+```move
+module 0x1::big_vector {
+    fun spec_table_len<K, V>(t: TableWithLength<K, V>): u64 {
+       table_with_length::spec_len(t)
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_big_vector_spec_table_contains"></a>
 
 
-<pre><code><b>fun</b> <a href="big_vector.md#0x1_big_vector_spec_table_contains">spec_table_contains</a>&lt;K, V&gt;(t: TableWithLength&lt;K, V&gt;, k: K): bool {
-   <a href="table_with_length.md#0x1_table_with_length_spec_contains">table_with_length::spec_contains</a>(t, k)
+```move
+module 0x1::big_vector {
+    fun spec_table_contains<K, V>(t: TableWithLength<K, V>, k: K): bool {
+       table_with_length::spec_contains(t, k)
+    }
 }
-</code></pre>
-
+```
 
 
 
 <a id="0x1_big_vector_spec_at"></a>
 
 
-<pre><code><b>fun</b> <a href="big_vector.md#0x1_big_vector_spec_at">spec_at</a>&lt;T&gt;(v: <a href="big_vector.md#0x1_big_vector_BigVector">BigVector</a>&lt;T&gt;, i: u64): T {
-   <b>let</b> bucket = i / v.bucket_size;
-   <b>let</b> idx = i % v.bucket_size;
-   <b>let</b> v = <a href="table_with_length.md#0x1_table_with_length_spec_get">table_with_length::spec_get</a>(v.buckets, bucket);
-   v[idx]
+```move
+module 0x1::big_vector {
+    fun spec_at<T>(v: BigVector<T>, i: u64): T {
+       let bucket = i / v.bucket_size;
+       let idx = i % v.bucket_size;
+       let v = table_with_length::spec_get(v.buckets, bucket);
+       v[idx]
+    }
 }
-</code></pre>
-
-
-[move-book]: https://aptos.dev/move/book/SUMMARY
+```
