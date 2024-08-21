@@ -189,6 +189,28 @@ pub struct OfflineArgs {
     #[clap(long, default_value_t = DEFAULT_MAX_PAGE_SIZE)]
     transactions_page_size: u16,
 
+    /// A file of currencies to support other than APT
+    ///
+    /// Example file for testnet:
+    /// ```json
+    /// [
+    ///   {
+    ///     "symbol": "TC",
+    ///     "decimals": 4,
+    ///     "metadata": {
+    ///       "fa_address": "0xb528ad40e472f8fcf0f21aa78aecd09fe68f6208036a5845e6d16b7d561c83b8",
+    ///       "move_type": "0xf5a9b6ccc95f8ad3c671ddf1e227416e71f7bcd3c971efe83c0ae8e5e028350f::test_faucet::TestFaucetCoin"
+    ///     }
+    ///   },
+    ///   {
+    ///     "symbol": "TFA",
+    ///     "decimals": 4,
+    ///     "metadata": {
+    ///       "fa_address": "0x7e51ad6e79cd113f5abe08f53ed6a3c2bfbf88561a24ae10b9e1e822e0623dfd"
+    ///     }
+    ///   }
+    /// ]
+    /// ```
     #[clap(long)]
     currency_config_file: Option<PathBuf>,
 }
