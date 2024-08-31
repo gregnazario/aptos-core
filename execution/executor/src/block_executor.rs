@@ -14,6 +14,7 @@ use crate::{
         APTOS_EXECUTOR_EXECUTE_BLOCK_SECONDS, APTOS_EXECUTOR_LEDGER_UPDATE_SECONDS,
         APTOS_EXECUTOR_OTHER_TIMERS_SECONDS, APTOS_EXECUTOR_SAVE_TRANSACTIONS_SECONDS,
         APTOS_EXECUTOR_TRANSACTIONS_SAVED, APTOS_EXECUTOR_VM_EXECUTE_BLOCK_SECONDS,
+        CONCURRENCY_GAUGE,
     },
 };
 use anyhow::Result;
@@ -25,7 +26,7 @@ use aptos_executor_types::{
 use aptos_experimental_runtimes::thread_manager::THREAD_MANAGER;
 use aptos_infallible::RwLock;
 use aptos_logger::prelude::*;
-use aptos_metrics_core::TimerHelper;
+use aptos_metrics_core::{IntGaugeHelper, TimerHelper};
 use aptos_scratchpad::SparseMerkleTree;
 use aptos_storage_interface::{
     async_proof_fetcher::AsyncProofFetcher, cached_state_view::CachedStateView, DbReaderWriter,
@@ -97,6 +98,8 @@ where
     V: TransactionBlockExecutor,
 {
     fn committed_block_id(&self) -> HashValue {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "committed_block_id"]);
+
         self.maybe_initialize().expect("Failed to initialize.");
         self.inner
             .read()
@@ -106,6 +109,8 @@ where
     }
 
     fn reset(&self) -> Result<()> {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "reset"]);
+
         *self.inner.write() = Some(BlockExecutorInner::new(self.db.clone())?);
         Ok(())
     }
@@ -116,6 +121,8 @@ where
         parent_block_id: HashValue,
         onchain_config: BlockExecutorConfigFromOnchain,
     ) -> ExecutorResult<StateCheckpointOutput> {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "execute_and_state_checkpoint"]);
+
         self.maybe_initialize()?;
         self.inner
             .read()
@@ -130,6 +137,8 @@ where
         parent_block_id: HashValue,
         state_checkpoint_output: StateCheckpointOutput,
     ) -> ExecutorResult<StateComputeResult> {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "ledger_update"]);
+
         self.maybe_initialize()?;
         self.inner
             .read()
@@ -143,6 +152,8 @@ where
         block_id: HashValue,
         parent_block_id: HashValue,
     ) -> ExecutorResult<()> {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "pre_commit_block"]);
+
         self.inner
             .read()
             .as_ref()
@@ -151,6 +162,8 @@ where
     }
 
     fn commit_ledger(&self, ledger_info_with_sigs: LedgerInfoWithSignatures) -> ExecutorResult<()> {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "commit_ledger"]);
+
         self.inner
             .read()
             .as_ref()
@@ -159,6 +172,8 @@ where
     }
 
     fn finish(&self) {
+        let _guard = CONCURRENCY_GAUGE.concurrency_with(&["block", "finish"]);
+
         *self.inner.write() = None;
     }
 }
@@ -380,6 +395,7 @@ where
 
     fn commit_ledger(&self, ledger_info_with_sigs: LedgerInfoWithSignatures) -> ExecutorResult<()> {
         let _timer = APTOS_CHUNK_EXECUTOR_OTHER_SECONDS.timer_with(&["commit_ledger"]);
+
         let block_id = ledger_info_with_sigs.ledger_info().consensus_block_id();
         info!(
             LogSchema::new(LogEntry::BlockExecutor).block_id(block_id),
