@@ -21,37 +21,37 @@ on:
         description: "Dry run - If checked, the release will not be created"
 
 jobs:
-  build-ubuntu20-binary:
-    name: "Build Ubuntu 20.04 binary"
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/gregnazario/.github/actions/rust-setup@main
-      - name: Build CLI
-        run: scripts/cli/build_cli_release.sh "Ubuntu" "${{inputs.release_version}}"
-      - name: Upload Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: cli-builds-ubuntu-20.04
-          path: aptos-cli-*.zip
-
-  build-ubuntu22-binary:
-    name: "Build Ubuntu 22.04 binary"
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
-      - name: Build CLI
-        run: scripts/cli/build_cli_release.sh "Ubuntu-22.04" "${{inputs.release_version}}"
-      - name: Upload Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: cli-builds-ubuntu-22.04
-          path: aptos-cli-*.zip
+#  build-ubuntu20-binary:
+  #    name: "Build Ubuntu 20.04 binary"
+  #    runs-on: ubuntu-20.04
+  #    steps:
+  #      - uses: actions/checkout@v4
+  #        with:
+  #          ref: ${{ github.event.inputs.source_git_ref_override }}
+  #      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+  #      - name: Build CLI
+  #        run: scripts/cli/build_cli_release.sh "Ubuntu" "${{inputs.release_version}}"
+  #      - name: Upload Binary
+  #        uses: actions/upload-artifact@v4
+  #        with:
+  #          name: cli-builds-ubuntu-20.04
+  #          path: aptos-cli-*.zip
+  #
+  #  build-ubuntu22-binary:
+  #    name: "Build Ubuntu 22.04 binary"
+  #    runs-on: ubuntu-22.04
+  #    steps:
+  #      - uses: actions/checkout@v4
+  #        with:
+  #          ref: ${{ github.event.inputs.source_git_ref_override }}
+  #      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+  #      - name: Build CLI
+  #        run: scripts/cli/build_cli_release.sh "Ubuntu-22.04" "${{inputs.release_version}}"
+  #      - name: Upload Binary
+  #        uses: actions/upload-artifact@v4
+  #        with:
+  #          name: cli-builds-ubuntu-22.04
+  #          path: aptos-cli-*.zip
 
   build-linux-binary:
     name: "Build Linux binary"
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/gregnazario/.github/actions/rust-setup-mac@main
+      - uses: gregnazario/aptos-core/.github/actions/rust-setup-mac@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "macOS" "${{inputs.release_version}}"
       - name: Upload Binary
@@ -92,7 +92,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/gregnazario/.github/actions/rust-setup-mac@main
+      - uses: gregnazario/aptos-core/.github/actions/rust-setup-mac@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "macOS" "${{inputs.release_version}}"
       - name: Upload Binary
@@ -101,27 +101,27 @@ jobs:
           name: cli-builds-macos-arm
           path: aptos-cli-*.zip
 
-  build-windows-binary:
-    name: "Build Windows binary"
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.source_git_ref_override }}
-      - name: Build CLI
-        run: scripts\cli\build_cli_release.ps1
-      - name: Upload Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: cli-builds-windows
-          path: aptos-cli-*.zip
+#  build-windows-binary:
+#    name: "Build Windows binary"
+#    runs-on: windows-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.event.inputs.source_git_ref_override }}
+#      - name: Build CLI
+#        run: scripts\cli\build_cli_release.ps1
+#      - name: Upload Binary
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: cli-builds-windows
+#          path: aptos-cli-*.zip
 
   release-binaries:
     name: "Release binaries"
     needs:
-      - build-ubuntu20-binary
-      - build-ubuntu22-binary
-      - build-windows-binary
+      #- build-ubuntu20-binary
+      #- build-ubuntu22-binary
+      #- build-windows-binary
       - build-linux-binary
       - build-macos-arm-binary
       - build-macos-x86_64-binary
