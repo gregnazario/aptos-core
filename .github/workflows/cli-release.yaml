@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+      - uses: aptos-labs/gregnazario/.github/actions/rust-setup@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Ubuntu" "${{inputs.release_version}}"
       - name: Upload Binary
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+      - uses: aptos-labs/gregnazario/.github/actions/rust-setup-mac@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "macOS" "${{inputs.release_version}}"
       - name: Upload Binary
@@ -92,7 +92,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+      - uses: aptos-labs/gregnazario/.github/actions/rust-setup-mac@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "macOS" "${{inputs.release_version}}"
       - name: Upload Binary
