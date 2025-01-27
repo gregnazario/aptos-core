@@ -169,23 +169,23 @@ jobs:
           files: |
             aptos-cli-*.zip
 
-  bump-homebrew-version-pr:
-    name: "Make PR to bump version in Homebrew"
-    needs:
-      - release-binaries
-    runs-on: ubuntu-latest
-    steps:
-      - uses: mislav/bump-homebrew-formula-action@v3
-        with:
-          formula-name: aptos
-          tag-name: "${{ format('aptos-cli-v{0}', inputs.release_version) }}"
-          base-branch: master
-          create-pullrequest: true
-          commit-message: |
-            {{formulaName}} {{version}}
-
-            Created by https://github.com/mislav/bump-homebrew-formula-action
-
-            From CLI release run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          COMMITTER_TOKEN: ${{ secrets.APTOS_BOT_GH_PAT_APTOS_CORE_HOMEBREW_BUMPER }}
+#  bump-homebrew-version-pr:
+#    name: "Make PR to bump version in Homebrew"
+#    needs:
+#      - release-binaries
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: mislav/bump-homebrew-formula-action@v3
+#        with:
+#          formula-name: aptos
+#          tag-name: "${{ format('aptos-cli-v{0}', inputs.release_version) }}"
+#          base-branch: master
+#          create-pullrequest: true
+#          commit-message: |
+#            {{formulaName}} {{version}}
+#
+#            Created by https://github.com/mislav/bump-homebrew-formula-action
+#
+#            From CLI release run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#        env:
+#          COMMITTER_TOKEN: ${{ secrets.APTOS_BOT_GH_PAT_APTOS_CORE_HOMEBREW_BUMPER }}
