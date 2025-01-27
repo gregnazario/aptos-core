@@ -24,6 +24,9 @@ PowerShell -ExecutionPolicy Bypass -File scripts/windows_dev_setup.ps1
 echo "Installing OpenSSL"
 vcpkg install openssl:x64-windows-static-md --clean-after-build
 
+# Note, we need to enable Git long paths
+git config --system core.longpaths true
+
 # Build the CLI.
 echo "Building release $VERSION of $NAME for Windows"
 cargo build -p $CRATE_NAME --profile cli
