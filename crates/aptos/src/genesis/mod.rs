@@ -12,10 +12,7 @@ use crate::{
         types::{CliError, CliTypedResult, PromptOptions},
         utils::{check_if_file_exists, dir_default_to_current, write_to_file},
     },
-    genesis::git::{
-        Client, GitOptions, BALANCES_FILE, EMPLOYEE_VESTING_ACCOUNTS_FILE, LAYOUT_FILE,
-        OPERATOR_FILE, OWNER_FILE,
-    },
+    genesis::git::{Client, GitOptions, BALANCES_FILE, LAYOUT_FILE, OPERATOR_FILE, OWNER_FILE},
     CliCommand, CliResult,
 };
 use aptos_crypto::{
@@ -25,7 +22,7 @@ use aptos_crypto::{
 use aptos_genesis::{
     builder::GenesisConfiguration,
     config::{
-        AccountBalanceMap, EmployeePoolMap, HostAndPort, Layout, StringOperatorConfiguration,
+        AccountBalanceMap, HostAndPort, Layout, StringOperatorConfiguration,
         StringOwnerConfiguration, ValidatorConfiguration,
     },
     mainnet::MainnetGenesisInfo,
@@ -164,17 +161,11 @@ pub fn fetch_mainnet_genesis_info(git_options: GitOptions) -> CliTypedResult<Mai
     // Check that the user has a reasonable amount of APT, since below the minimum gas amount is
     // not useful 1 APT minimally
     const MIN_USEFUL_AMOUNT: u64 = 200000000;
-    let ten_percent_of_total = total_supply / 10;
     for account in accounts.iter() {
         if account.balance != 0 && account.balance < MIN_USEFUL_AMOUNT {
             return Err(CliError::UnexpectedError(format!(
                 "Account {} has an initial supply below expected amount {} < {}",
                 account.account_address, account.balance, MIN_USEFUL_AMOUNT
-            )));
-        } else if account.balance > ten_percent_of_total {
-            return Err(CliError::UnexpectedError(format!(
-                "Account {} has an more than 10% of the total balance {} > {}",
-                account.account_address, account.balance, ten_percent_of_total
             )));
         }
     }
@@ -185,15 +176,8 @@ pub fn fetch_mainnet_genesis_info(git_options: GitOptions) -> CliTypedResult<Mai
         .map(|inner| (inner.account_address, inner.balance))
         .collect();
 
-    let employee_vesting_accounts: EmployeePoolMap =
-        client.get(Path::new(EMPLOYEE_VESTING_ACCOUNTS_FILE))?;
-
-    let employee_validators: Vec<_> = employee_vesting_accounts
-        .inner
-        .iter()
-        .map(|inner| inner.validator.clone())
-        .collect();
-    let employee_vesting_accounts: Vec<EmployeePool> = employee_vesting_accounts.try_into()?;
+    let employee_validators: Vec<_> = vec![];
+    let employee_vesting_accounts: Vec<EmployeePool> = vec![];
     let validators = get_validator_configs(&client, &layout, true).map_err(parse_error)?;
     let mut unique_accounts = BTreeSet::new();
     let mut unique_network_keys = HashSet::new();
@@ -411,22 +395,10 @@ fn get_config(
     )?;
 
     // Default to 0 for commission percentage if missing.
-    let commission_percentage = parse_optional_option(
-        &owner_config.commission_percentage,
-        owner_file,
-        "commission_percentage",
-        u64::from_str,
-    )?
-    .unwrap_or(0);
+    let commission_percentage = 0;
 
     // Default to true for whether the validator should be joining during genesis.
-    let join_during_genesis = parse_optional_option(
-        &owner_config.join_during_genesis,
-        owner_file,
-        "join_during_genesis",
-        bool::from_str,
-    )?
-    .unwrap_or(true);
+    let join_during_genesis = true;
 
     // We don't require the operator file if the validator is not joining during genesis.
     if is_mainnet && !join_during_genesis {
@@ -680,15 +652,6 @@ fn validate_validators(
                 validator.owner_account_address, name
             )));
         }
-        unique_accounts.insert(validator.owner_account_address.into());
-
-        if unique_accounts.contains(&validator.operator_account_address.into()) {
-            errors.push(CliError::UnexpectedError(format!(
-                "Operator '{}' in validator {} has already been seen elsewhere",
-                validator.operator_account_address, name
-            )));
-        }
-        unique_accounts.insert(validator.operator_account_address.into());
 
         // Pooled validators have a combined balance
         // TODO: Make this field optional but checked
