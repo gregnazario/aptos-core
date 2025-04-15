@@ -96,8 +96,6 @@
 //! }
 //! ```
 
-#![forbid(unsafe_code)]
-
 extern crate proc_macro;
 
 mod hasher;
@@ -374,6 +372,7 @@ pub fn hasher_dispatch(input: TokenStream) -> TokenStream {
         quote!()
     } else {
         let args = proc_macro2::TokenStream::from_iter(
+            #[allow(clippy::manual_repeat_n)] // TODO: fix when fully moved to 1.86.0
             std::iter::repeat(quote!((),)).take(item.generics.params.len()),
         );
         quote!(<#args>)

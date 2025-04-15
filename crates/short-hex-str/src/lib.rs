@@ -93,6 +93,7 @@ fn byte2hex(byte: u8) -> (u8, u8) {
 #[inline(always)]
 #[allow(clippy::arithmetic_side_effects)] // debug only assertion
 fn hex_encode(src: &[u8], dst: &mut [u8]) {
+    #[allow(unexpected_cfgs)]
     debug_checked_precondition!(dst.len() == 2 * src.len());
 
     for (byte, out) in src.iter().zip(dst.chunks_mut(2)) {
