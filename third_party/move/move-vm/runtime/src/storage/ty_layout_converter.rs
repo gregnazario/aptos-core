@@ -18,7 +18,7 @@ use std::sync::Arc;
 
 /// Maximal nodes which are allowed when converting to layout. This includes the types of
 /// fields for struct types.
-const MAX_TYPE_TO_LAYOUT_NODES: u64 = 256;
+const MAX_TYPE_TO_LAYOUT_NODES: u64 = 512;
 
 /// Maximal depth of a value in terms of type depth.
 const VALUE_DEPTH_MAX: u64 = 128;
@@ -77,8 +77,8 @@ pub(crate) trait LayoutConverterBase {
         if node_count > MAX_TYPE_TO_LAYOUT_NODES {
             return Err(
                 PartialVMError::new(StatusCode::TOO_MANY_TYPE_NODES).with_message(format!(
-                    "Number of type nodes when constructing type layout exceeded the maximum of {}",
-                    MAX_TYPE_TO_LAYOUT_NODES
+                    "Number of type {} nodes when constructing type layout exceeded the maximum of {}",
+                    node_count, MAX_TYPE_TO_LAYOUT_NODES
                 )),
             );
         }
@@ -301,8 +301,8 @@ pub(crate) trait LayoutConverterBase {
         if *count > MAX_TYPE_TO_LAYOUT_NODES {
             return Err(
                 PartialVMError::new(StatusCode::TOO_MANY_TYPE_NODES).with_message(format!(
-                    "Number of type nodes when constructing type layout exceeded the maximum of {}",
-                    MAX_TYPE_TO_LAYOUT_NODES
+                    "Number of type nodes {} when constructing type layout exceeded the maximum of {}",
+                    *count, MAX_TYPE_TO_LAYOUT_NODES
                 )),
             );
         }
