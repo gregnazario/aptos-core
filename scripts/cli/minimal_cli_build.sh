@@ -16,16 +16,16 @@ case "$OS" in
   Linux)
     if command -v apt-get &>/dev/null; then
       # Ubuntu / Debian based APT-GET
-      sh install_pkg.sh build-essential pkg-config libssl-dev git rustup libudev-dev lld libdw-dev clang llvm cmake
-    elif command -v apt &>/dev/null; then
-      # Ubuntu / Debian based APT
+      sudo apt-get update
       sh install_pkg.sh build-essential pkg-config libssl-dev git rustup libudev-dev lld libdw-dev clang llvm cmake
     elif command -v dnf &>/dev/null; then
       # RHEL / CentOS based DNF
+      sudo dnf update
       sh install_pkg.sh gcc gcc-c++ make pkgconfig openssl-devel git rustup rust-libudev-devel lld libdwarf-devel clang llvm cmake
     elif command -v yum &>/dev/null; then
       # RHEL / CentOS based YUM
       echo "Not supported fully, libdw does not work"
+      sudo yum update
       sh install_pkg.sh gcc gcc-c++ make pkgconfig openssl-devel git rustup rust-libudev-devel lld libdwarf-devel clang llvm cmake
     elif command -v pacman &>/dev/null; then
       # Arch based PACMAN
