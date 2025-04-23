@@ -17,31 +17,28 @@ case "$OS" in
     if command -v apt-get &>/dev/null; then
       # Ubuntu / Debian based APT-GET
       sudo apt-get update
-      sh install_pkg.sh build-essential pkg-config libssl-dev git rustup libudev-dev lld libdw-dev clang llvm cmake
+      sh install_pkg.sh build-essential pkgconf libssl-dev git rustup libudev-dev lld libdw-dev clang llvm cmake
     elif command -v dnf &>/dev/null; then
       # RHEL / CentOS based DNF
-      sudo dnf update
-      sh install_pkg.sh gcc gcc-c++ make pkgconfig openssl-devel git rustup rust-libudev-devel lld libdwarf-devel clang llvm cmake
+      sh install_pkg.sh gcc gcc-c++ make pkgconf openssl-devel git rustup rust-libudev-devel lld elfutils-devel clang llvm cmake
+      /usr/bin/rustup-init -y
     elif command -v yum &>/dev/null; then
       # RHEL / CentOS based YUM
-      echo "Not supported fully, libdw does not work"
-      sudo yum update
-      sh install_pkg.sh gcc gcc-c++ make pkgconfig openssl-devel git rustup rust-libudev-devel lld libdwarf-devel clang llvm cmake
+      sh install_pkg.sh gcc gcc-c++ make pkgconf openssl-devel git rustup rust-libudev-devel lld elfutils-devel clang llvm cmake
+      /usr/bin/rustup-init -y
     elif command -v pacman &>/dev/null; then
       # Arch based PACMAN
       sh install_pkg.sh base-devel pkgconf openssl git rustup lld clang llvm cmake
     elif command -v apk &>/dev/null; then
       # Alpine based APK
-      echo "Not supported fully, libudev does not work"
-      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git rustup eudev-dev lld libdwarf-dev clang llvm cmake libc-dev
+      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git rustup eudev-dev lld elfutils-dev clang llvm cmake libc-dev
     elif command -v zypper &>/dev/null; then
       # OpenSUSE zypper
       sh install_pkg.sh gcc make pkg-config libopenssl-devel git rustup libudev-devel lld libdw-devel clang llvm cmake
       sudo zypper install gcc-c++ # TODO: There's something wrong with install_pkg for this one
     elif command -v xbps-install &>/dev/null; then
       # Void linux xbps
-      echo "Not supported fully, libdw does not work"
-      sh install_pkg.sh gcc make pkgconfig libopenssl-devel git rustup eudev-libudev-devel lld libdw-devel clang llvm cmake
+      sh install_pkg.sh gcc make pkgconfig libopenssl-devel git rustup eudev-libudev-devel lld elfutils-devel clang llvm cmake
     else
       # TODO: Support more package managers?
       echo "Unable to find supported package manager (yum, apt-get, dnf, or pacman). Abort"
