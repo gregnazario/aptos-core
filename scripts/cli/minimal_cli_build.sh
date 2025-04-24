@@ -62,7 +62,7 @@ case "$OS" in
   Darwin)
     # TODO: May need to do a different path for macports, but atm brew is expected here
     # TODO: May need other installation tools
-    sh install_pkg.sh pkgconfig openssl git rustup clang llvm cmake
+    sh install_pkg.sh pkgconfig openssl git rustup llvm cmake
   ;;
   *)
     echo "Unknown OS. Abort."
