@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+      - uses: gregnazario/aptos-core/.github/actions/cli-rust-setup@main
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Ubuntu-22.04" "${{inputs.release_version}}" "${{inputs.skip_checks}}"
       - name: Upload Binary

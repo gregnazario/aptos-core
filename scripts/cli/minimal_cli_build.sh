@@ -19,7 +19,7 @@ fi
 # TODO: Do we need to add `ca-certificates`, `curl`, `unzip`, `wget`
 # Install rustup
 if ! command -v rustup&>/dev/null; then
-  curl https://sh.rustup.rs -sSf | sh -s -- -y
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 fi
 
 OS="$(uname)"
