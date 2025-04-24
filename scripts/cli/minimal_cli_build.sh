@@ -20,11 +20,13 @@ case "$OS" in
       sh install_pkg.sh build-essential pkgconf libssl-dev git rustup libudev-dev lld libdw-dev clang llvm cmake
     elif command -v dnf &>/dev/null; then
       # RHEL / CentOS based DNF
-      sh install_pkg.sh gcc gcc-c++ make pkgconf openssl-devel git rustup rust-libudev-devel lld elfutils-devel clang llvm cmake
+      sh install_pkg.sh gcc make pkgconf openssl-devel git rustup rust-libudev-devel lld elfutils-devel clang llvm cmake
+      sudo dnf install gcc-c++ # TODO: There's something wrong with install_pkg for this one
       /usr/bin/rustup-init -y
     elif command -v yum &>/dev/null; then
       # RHEL / CentOS based YUM
       sh install_pkg.sh gcc gcc-c++ make pkgconf openssl-devel git rustup rust-libudev-devel lld elfutils-devel clang llvm cmake
+      sudo yum install gcc-c++ # TODO: There's something wrong with install_pkg for this one
       /usr/bin/rustup-init -y
     elif command -v pacman &>/dev/null; then
       # Arch based PACMAN
