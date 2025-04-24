@@ -7,7 +7,14 @@
 # This script is used to set up a minimal environment for building the Aptos CLI and other tools.
 # The `dev_setup.sh` script is way too complex, and too hard to figure out what is actually happening.  This script
 # simplifies the process
-curl -O https://raw.githubusercontent.com/gregnazario/universal-installer/refs/heads/main/scripts/install_pkg.sh
+if command -v wget &>/dev/null; then
+  wget https://raw.githubusercontent.com/gregnazario/universal-installer/refs/heads/main/scripts/install_pkg.sh
+elif command -v curl &>/dev/null; then
+  curl -O https://raw.githubusercontent.com/gregnazario/universal-installer/refs/heads/main/scripts/install_pkg.sh
+else
+  echo "Unable to download install script, no wget or curl. Abort"
+  exit 1
+fi
 
 # TODO: Do we need to add `ca-certificates`, `curl`, `unzip`, `wget`
 
@@ -33,17 +40,22 @@ case "$OS" in
       sh install_pkg.sh base-devel pkgconf openssl git rustup lld clang llvm cmake
     elif command -v apk &>/dev/null; then
       # Alpine based APK
-      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git rustup eudev-dev lld elfutils-dev clang llvm cmake libc-dev
+      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git rustup lld elfutils-dev clang llvm cmake libc-dev
     elif command -v zypper &>/dev/null; then
       # OpenSUSE zypper
       sh install_pkg.sh gcc make pkg-config libopenssl-devel git rustup libudev-devel lld libdw-devel clang llvm cmake
       sudo zypper install gcc-c++ # TODO: There's something wrong with install_pkg for this one
+    #elif command -v emerge &>/dev/null; then
+      # Gentoo Emerge
+      # TODO: This doesn't quite work correctly yet
+    #  sudo emerge --sync
+    #  sh install_pkg.sh --skip-overrides sys-devel/gcc dev-libs/openssl dev-vcs/git dev-lang/rust
     elif command -v xbps-install &>/dev/null; then
       # Void linux xbps
-      sh install_pkg.sh gcc make pkgconfig libopenssl-devel git rustup eudev-libudev-devel lld elfutils-devel clang llvm cmake
+      sh install_pkg.sh gcc make pkg-config git rustup lld elfutils-devel clang llvm cmake
     else
       # TODO: Support more package managers?
-      echo "Unable to find supported package manager (yum, apt-get, dnf, or pacman). Abort"
+      echo "Unable to find supported package manager (apt-get, dnf, yum, zypper, xbps or pacman). Abort"
       exit 1
     fi
   ;;
