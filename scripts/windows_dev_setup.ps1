@@ -122,14 +122,18 @@ function update_versions {
   }
 }
 
-function verify_architecture {  # Checks whether the Windows machine is 32-bit or 64-bit
-	$result = Get-WmiObject -Class Win32_Processor | Select-Object AddressWidth |ConvertTo-Json -Compress
+function verify_architecture {  # Checks whether the Windows machine is 32-bit, 64-bit, or ARM64
+	$result = Get-WmiObject -Class Win32_Processor | Select-Object AddressWidth, Architecture | ConvertTo-Json -Compress
 	if ($result.Contains("64")) {
-		$global:architecture = "64"
+		if ($result.Contains("12")) {  # ARM64 architecture
+			$global:architecture = "arm64"
+		} else {
+			$global:architecture = "64"
 		}
+	}
 	else {
 		$global:architecture = "86"
-		}
+	}
 }
 
 function check_os {
@@ -235,12 +239,20 @@ function install_msvc_build_tools {  # Installs C++ build tools, CMake, and Wind
   }
 }
 
-function select_msvc_variant {  # Decides between the Windows 10 SDK and Windows 11 SDK based on your OS
+function select_msvc_variant {  # Decides between the Windows 10 SDK and Windows 11 SDK based on your OS and architecture
 	if ($global:os -eq "Windows 11") {
-		winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22621 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		if ($global:architecture -eq "arm64") {
+			winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.Windows11SDK.22621 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		} else {
+			winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows11SDK.22621 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		}
 	}
 	else {
-		winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.20348 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		if ($global:architecture -eq "arm64") {
+			winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --add Microsoft.VisualStudio.Component.Windows10SDK.20348 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		} else {
+			winget install Microsoft.VisualStudio.2022.BuildTools --accept-source-agreements --silent --override "--wait --quiet --add ProductLang En-us --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.20348 --add Microsoft.VisualStudio.Component.VC.CMake.Project --includeRecommended"
+		}
 	}
 }
 
@@ -251,7 +263,11 @@ function get_msvc_install_path {
 
 function get_msvc_version {  # Finds the MSVC version number and creates a valid filepath to add as an environment variable
   $global:msvcpath = get_msvc_install_path
-	$pathpattern = "$msvcpath\VC\Tools\MSVC\*\bin\Hostx64\x64\link.exe"
+	if ($global:architecture -eq "arm64") {
+		$pathpattern = "$msvcpath\VC\Tools\MSVC\*\bin\Hostarm64\arm64\link.exe"
+	} else {
+		$pathpattern = "$msvcpath\VC\Tools\MSVC\*\bin\Hostx$global:architecture\x$global:architecture\link.exe"
+	}
 
   # Get the file path that matches the pattern
   $filepath = Get-ChildItem -Path $pathpattern -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -269,7 +285,11 @@ function get_msvc_version {  # Finds the MSVC version number and creates a valid
 
 function set_msvc_env_variables {  # Sets the environment variables based on the architecture and MSVC version
   $msvcversion = get_msvc_version
-  $filepath = "$global:msvcpath\VC\Tools\MSVC\$msvcversion\bin\Hostx$global:architecture\x$global:architecture"
+	if ($global:architecture -eq "arm64") {
+		$filepath = "$global:msvcpath\VC\Tools\MSVC\$msvcversion\bin\Hostarm64\arm64"
+	} else {
+		$filepath = "$global:msvcpath\VC\Tools\MSVC\$msvcversion\bin\Hostx$global:architecture\x$global:architecture"
+	}
 	[Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$filepath\link.exe;$filepath\cl.exe", "User")
 	Write-Host "MSVC added to user PATH environment variable"
 }
@@ -295,6 +315,11 @@ function install_rustup {
 
 function install_protoc {
   if (!(Get-Command protoc -ErrorAction SilentlyContinue)) {
+    if ($global:architecture -eq "arm64") {
+      Write-Host "ARM64 architecture detected. Protoc installation for ARM64 is not currently supported."
+      Write-Host "Please install Protoc manually from https://github.com/protocolbuffers/protobuf/releases"
+      return
+    }
 
     $protoc_zip = "protoc-$global:protoc_version-win$global:architecture.zip"
     $protoc_folder = "protoc-$global:protoc_version-win$global:architecture"
@@ -427,6 +452,11 @@ function install_z3 {
   if (![System.IO.Path]::IsPathRooted($env:Z3_EXE)) {
     Write-Host "Installing Z3..."
     $uri = "z3-$global:z3_version"
+    if ($global:architecture -eq "arm64") {
+      Write-Host "ARM64 architecture detected. Z3 installation for ARM64 is not currently supported."
+      Write-Host "Please install Z3 manually from https://github.com/Z3Prover/z3/releases"
+      return
+    }
     $z3_zip = "z3-$global:z3_version-x$global:architecture-win.zip"
     $z3_filepath = "$env:USERPROFILE\$z3_zip"
 
@@ -439,7 +469,7 @@ function install_z3 {
     $z3_exe_path = "$env:USERPROFILE\z3-$global:z3_version-x$global:architecture-win\bin\z3.exe"
     [Environment]::SetEnvironmentVariable("Z3_EXE", "$z3_exe_path", "User")
     Write-Host "User environment variable set for Z3"
-    }
+  }
   else {
     Write-Host "Z3 is already installed."
   }
