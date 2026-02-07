@@ -500,6 +500,7 @@ dependencies = [
  "base64 0.13.1",
  "bcs 0.1.4",
  "bytes",
+ "criterion",
  "fail",
  "futures",
  "hex",
@@ -7515,6 +7516,7 @@ dependencies = [
  "clap 2.34.0",
  "criterion-plot",
  "csv",
+ "futures",
  "itertools 0.10.5",
  "lazy_static",
  "num-traits",
@@ -7527,6 +7529,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "tinytemplate",
+ "tokio",
  "walkdir",
 ]
 
