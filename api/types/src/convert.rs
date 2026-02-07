@@ -442,6 +442,7 @@ impl<'a, S: StateView> MoveConverter<'a, S> {
                                 bail!(
                                     "Encrypted executable is not supported for multisig transactions"
                                 )
+                            },
                             aptos_types::transaction::TransactionExecutable::Script(script) => {
                                 TransactionPayload::MultisigPayload(MultisigPayload {
                                     multisig_address: multisig_address.into(),
@@ -957,7 +958,6 @@ impl<'a, S: StateView> MoveConverter<'a, S> {
                     Target::Script(try_into_script_payload(script)?)
                 }
             },
-
             TransactionPayload::MultisigPayload(multisig) => {
                 if let Some(nonce) = nonce {
                     let executable = if let Some(payload) = multisig.transaction_payload {

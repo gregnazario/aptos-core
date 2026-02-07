@@ -435,6 +435,10 @@ pub(crate) fn run_multisig_prologue(
                 ),
             ));
         }
+        TransactionExecutableRef::Script(script) => {
+            bcs::to_bytes(&MultisigTransactionPayload::Script(script.clone()))
+                .map_err(|_| unreachable_error.clone())?
+        },
     };
 
     session
