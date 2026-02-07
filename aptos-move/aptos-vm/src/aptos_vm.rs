@@ -1283,6 +1283,7 @@ impl AptosVM {
                     Some("Multisig transaction does not support encrypted payload".to_string()),
                 );
                 return Ok((s, discarded_output(StatusCode::FEATURE_UNDER_GATING)));
+            }
             TransactionExecutableRef::Script(script) => {
                 bcs::to_bytes(&MultisigTransactionPayload::Script(script.clone()))
                     .map_err(|_| invariant_violation_error())?
@@ -3764,7 +3765,7 @@ mod tests {
             NEW_EPOCH_EVENT_MOVE_TYPE_TAG.clone(),
             vec![],
         )
-        .unwrap();
+            .unwrap();
         let new_epoch_event_v2 =
             ContractEvent::new_v2(NEW_EPOCH_EVENT_V2_MOVE_TYPE_TAG.clone(), vec![]).unwrap();
         assert!(AptosVM::should_restart_execution(&[(

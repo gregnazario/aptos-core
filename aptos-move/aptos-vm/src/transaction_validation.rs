@@ -428,6 +428,7 @@ pub(crate) fn run_multisig_prologue(
                         .to_string(),
                 ),
             ));
+        }
         TransactionExecutableRef::Script(script) => {
             bcs::to_bytes(&MultisigTransactionPayload::Script(script.clone()))
                 .map_err(|_| unreachable_error.clone())?
