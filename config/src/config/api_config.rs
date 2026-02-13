@@ -356,7 +356,8 @@ impl ConfigSanitizer for ApiV2Config {
         if v2.websocket_enabled && v2.websocket_max_connections == 0 {
             return Err(Error::ConfigSanitizerFailed(
                 sanitizer_name,
-                "websocket_max_connections must be greater than 0 when WebSocket is enabled!".into(),
+                "websocket_max_connections must be greater than 0 when WebSocket is enabled!"
+                    .into(),
             ));
         }
         if v2.websocket_enabled && v2.websocket_max_subscriptions_per_conn == 0 {
@@ -550,8 +551,7 @@ mod tests {
             runtime_worker_multiplier: 0,
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -575,8 +575,7 @@ mod tests {
             tls_key_path: None,
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -588,8 +587,7 @@ mod tests {
             tls_key_path: Some("/tmp/key.pem".into()),
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -612,8 +610,7 @@ mod tests {
             websocket_max_connections: 0,
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -625,8 +622,7 @@ mod tests {
             websocket_max_subscriptions_per_conn: 0,
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -650,8 +646,7 @@ mod tests {
             json_rpc_batch_max_size: 0,
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -662,8 +657,7 @@ mod tests {
             content_length_limit: Some(0),
             ..Default::default()
         });
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 
@@ -693,8 +687,7 @@ mod tests {
             },
             ..Default::default()
         };
-        let err =
-            ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
         assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
     }
 

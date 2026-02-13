@@ -4,12 +4,12 @@
 //! V2 API context. Wraps the existing v1 Context to share DB/mempool/caches
 //! while adding v2-specific capabilities and decoupling from Poem error traits.
 
+#[cfg(any(feature = "api-v2-websocket", feature = "api-v2-sse"))]
+use super::websocket::{broadcaster, types::WsEvent};
 use super::{
     cursor::Cursor,
     error::{ErrorCode, V2Error},
 };
-#[cfg(any(feature = "api-v2-websocket", feature = "api-v2-sse"))]
-use super::websocket::{broadcaster, types::WsEvent};
 use crate::context::Context;
 use aptos_api_types::LedgerInfo;
 use aptos_config::config::ApiV2Config;
@@ -21,8 +21,7 @@ use aptos_types::{
 use move_core_types::language_storage::{ModuleId, StructTag};
 #[cfg(any(feature = "api-v2-websocket", feature = "api-v2-sse"))]
 use std::sync::atomic::AtomicUsize;
-use std::sync::Arc;
-use std::time::Instant;
+use std::{sync::Arc, time::Instant};
 #[cfg(any(feature = "api-v2-websocket", feature = "api-v2-sse"))]
 use tokio::sync::broadcast;
 use tokio::sync::{watch, RwLock};

@@ -1,8 +1,13 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
-use crate::{
-    context::Context,
+use crate::context::Context;
+#[cfg(all(feature = "api-v1", feature = "api-v2"))]
+use crate::v2::build_combined_router;
+#[cfg(feature = "api-v2")]
+use crate::v2::{
+    build_v2_router,
+    context::{V2Config, V2Context},
 };
 #[cfg(feature = "api-v1")]
 use crate::{
@@ -20,17 +25,10 @@ use crate::{
     transactions::TransactionsApi,
     view_function::ViewFunctionApi,
 };
-#[cfg(feature = "api-v2")]
-use crate::v2::{
-    build_v2_router,
-    context::{V2Config, V2Context},
-};
-#[cfg(all(feature = "api-v1", feature = "api-v2"))]
-use crate::v2::build_combined_router;
-#[cfg(any(feature = "api-v1", feature = "api-v2"))]
-use anyhow::Context as AnyhowContext;
 #[cfg(feature = "api-v1")]
 use anyhow::anyhow;
+#[cfg(any(feature = "api-v1", feature = "api-v2"))]
+use anyhow::Context as AnyhowContext;
 use aptos_config::config::{ApiConfig, NodeConfig};
 use aptos_logger::{info, warn};
 use aptos_mempool::MempoolClientSender;
@@ -48,9 +46,9 @@ use poem::{
 };
 #[cfg(feature = "api-v1")]
 use poem_openapi::{ContactObject, LicenseObject, OpenApiService};
-use std::sync::Arc;
 #[cfg(any(feature = "api-v1", feature = "api-v2"))]
 use std::net::SocketAddr;
+use std::sync::Arc;
 #[cfg(feature = "api-v1")]
 use tokio::runtime::Handle;
 use tokio::runtime::Runtime;
@@ -112,8 +110,10 @@ pub fn bootstrap(
         },
         // ---- No API ----
         (false, false) => {
-            info!("No API enabled (v1={}, v2={}). API server will not start.",
-                config.api.enabled, config.api_v2.enabled);
+            info!(
+                "No API enabled (v1={}, v2={}). API server will not start.",
+                config.api.enabled, config.api_v2.enabled
+            );
         },
     }
 
@@ -130,11 +130,10 @@ pub fn bootstrap(
                     let context_cloned = context_cloned.clone();
                     tokio::task::spawn_blocking(move || {
                         if let Ok(latest_ledger_info) =
-                            context_cloned
-                                .get_latest_ledger_info::<crate::response::BasicError>()
+                            context_cloned.get_latest_ledger_info::<crate::response::BasicError>()
                         {
-                            if let Ok(gas_estimation) =
-                                context_cloned.estimate_gas_price::<crate::response::BasicError>(
+                            if let Ok(gas_estimation) = context_cloned
+                                .estimate_gas_price::<crate::response::BasicError>(
                                     &latest_ledger_info,
                                 )
                             {

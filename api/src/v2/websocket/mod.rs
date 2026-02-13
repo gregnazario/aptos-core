@@ -113,7 +113,7 @@ async fn handle_ws_connection(ctx: V2Context, socket: WebSocket) {
                 Err(_) => continue,
             };
             let mut sender = ws_sender_clone.lock().await;
-            if sender.send(Message::Text(text.into())).await.is_err() {
+            if sender.send(Message::Text(text)).await.is_err() {
                 break;
             }
         }
@@ -223,13 +223,10 @@ async fn handle_text_message(
                 None
             };
 
-            subs.insert(
-                sub_id.clone(),
-                SubscriptionEntry {
-                    sub_type: subscription,
-                    event_filter,
-                },
-            );
+            subs.insert(sub_id.clone(), SubscriptionEntry {
+                sub_type: subscription,
+                event_filter,
+            });
             let _ = out_tx
                 .send(WsServerMessage::Subscribed { id: sub_id })
                 .await;

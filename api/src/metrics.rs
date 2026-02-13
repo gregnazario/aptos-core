@@ -31,8 +31,8 @@ pub const GAS_ESTIMATE_PRIORITIZED: &str = "prioritized";
 /// and some more granularity between 100-250 ms:
 /// 0.125, 0.15, 0.2
 const SUB_MS_BUCKETS: &[f64] = &[
-    0.0001, 0.00025, 0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.125, 0.15, 0.2,
-    0.25, 0.5, 1.0, 2.5, 5.0, 10.0,
+    0.0001, 0.00025, 0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.125, 0.15, 0.2, 0.25,
+    0.5, 1.0, 2.5, 5.0, 10.0,
 ];
 
 static BYTE_BUCKETS: Lazy<Vec<f64>> = Lazy::new(|| {

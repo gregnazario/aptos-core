@@ -46,6 +46,7 @@ pub struct SseEventsParams {
     /// - Exact: `0x1::coin::DepositEvent`
     /// - Module wildcard: `0x1::coin::*`
     /// - Address wildcard: `0x1::*`
+    ///
     /// Multiple patterns use OR logic. Omit to match all event types.
     pub event_types: Option<String>,
     /// Filter by transaction sender address (hex, case-insensitive).
@@ -211,7 +212,12 @@ pub async fn sse_events_handler(
     // Build a compiled EventFilter for efficient per-event matching.
     // We use `from_subscription` with `event_type=None` since we already
     // merged all patterns into the `event_types` vec.
-    let filter = EventFilter::from_subscription(&None, &Some(event_types), &params.sender, &params.start_version);
+    let filter = EventFilter::from_subscription(
+        &None,
+        &Some(event_types),
+        &params.sender,
+        &params.start_version,
+    );
 
     let rx = ctx.ws_subscribe();
     let shutdown_rx = ctx.shutdown_receiver();

@@ -53,8 +53,8 @@ tokio = { workspace = true }
 axum = { workspace = true, features = ["ws"] }
 base64 = { workspace = true }
 http-body-util = { workspace = true }
-hyper1 = { workspace = true }
 hyper-util = { workspace = true }
+hyper1 = { workspace = true }
 rustls = { workspace = true }
 rustls-pemfile = { workspace = true }
 tokio-rustls = { workspace = true }
@@ -66,7 +66,6 @@ uuid = { workspace = true }
 
 [dev-dependencies]
 aptos-api-test-context = { workspace = true }
-criterion = { workspace = true, features = ["async_tokio"] }
 aptos-cached-packages = { workspace = true }
 aptos-framework = { workspace = true }
 aptos-gas-meter = { workspace = true }
@@ -74,6 +73,7 @@ aptos-gas-schedule = { workspace = true, features = ["testing"] }
 aptos-move-stdlib = { workspace = true }
 aptos-proptest-helpers = { workspace = true }
 aptos-transaction-filters = { workspace = true, features = ["fuzzing"] }
+criterion = { workspace = true, features = ["async_tokio"] }
 move-package = { workspace = true }
 passkey-types = { workspace = true }
 percent-encoding = { workspace = true }

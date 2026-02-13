@@ -5,9 +5,9 @@ use super::internal_indexer_db_config::InternalIndexerDBConfig;
 use crate::config::{
     node_config_loader::NodeType,
     utils::{are_failpoints_enabled, get_config_name},
-    AdminServiceConfig, ApiConfig, ApiV2Config, BaseConfig, ConsensusConfig, DagConsensusConfig, Error,
-    ExecutionConfig, IndexerGrpcConfig, InspectionServiceConfig, LoggerConfig, MempoolConfig,
-    NetbenchConfig, NodeConfig, StateSyncConfig, StorageConfig,
+    AdminServiceConfig, ApiConfig, ApiV2Config, BaseConfig, ConsensusConfig, DagConsensusConfig,
+    Error, ExecutionConfig, IndexerGrpcConfig, InspectionServiceConfig, LoggerConfig,
+    MempoolConfig, NetbenchConfig, NodeConfig, StateSyncConfig, StorageConfig,
 };
 use aptos_types::chain_id::ChainId;
 use std::collections::HashSet;

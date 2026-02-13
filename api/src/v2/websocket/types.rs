@@ -46,6 +46,7 @@ pub enum SubscriptionType {
         ///   - `"0x1::coin::DepositEvent"` — exact match
         ///   - `"0x1::coin::*"` — all events from module `0x1::coin`
         ///   - `"0x1::*"` — all events from address `0x1`
+        ///
         /// If both `event_type` and `event_types` are set, they are merged (OR logic).
         event_type: Option<String>,
         /// Multiple event type filters (OR logic). Each entry supports the same

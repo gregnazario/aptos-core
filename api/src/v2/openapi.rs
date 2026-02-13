@@ -6,6 +6,8 @@
 //! Uses `utoipa` derive macros on handlers and types, then serves
 //! the spec as JSON and YAML at `/v2/spec.json` and `/v2/spec.yaml`.
 
+#[cfg(feature = "api-v2-sse")]
+use crate::v2::endpoints::sse;
 use crate::v2::{
     endpoints::{
         account_transactions, accounts, balance, blocks, events, gas_estimation, health, modules,
@@ -14,8 +16,6 @@ use crate::v2::{
     error::{ErrorCode, V2Error},
     types::{HealthResponse, LedgerMetadata, NodeInfo},
 };
-#[cfg(feature = "api-v2-sse")]
-use crate::v2::endpoints::sse;
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},

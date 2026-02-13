@@ -8,6 +8,7 @@
 //! baseline (100ms) and adjusts based on observed block production rate:
 //! - When new blocks arrive, the interval shrinks toward a floor (20ms)
 //! - When no new blocks are found, the interval grows toward a ceiling (500ms)
+//!
 //! This reduces idle CPU usage on slow chains while keeping latency low on
 //! fast chains.
 

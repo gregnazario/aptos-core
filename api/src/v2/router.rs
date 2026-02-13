@@ -3,6 +3,10 @@
 
 //! v2 API router construction.
 
+#[cfg(feature = "api-v2-sse")]
+use super::endpoints::sse;
+#[cfg(feature = "api-v2-websocket")]
+use super::websocket;
 use super::{
     batch,
     context::V2Context,
@@ -13,10 +17,6 @@ use super::{
     middleware, openapi,
     proxy::{self, V1Proxy},
 };
-#[cfg(feature = "api-v2-sse")]
-use super::endpoints::sse;
-#[cfg(feature = "api-v2-websocket")]
-use super::websocket;
 use axum::{
     middleware as axum_middleware,
     routing::{get, post},

@@ -29,7 +29,11 @@ async fn swarm_with_v2() -> Box<dyn Swarm> {
 
 /// Helper: get the base URL for making requests (e.g. `http://127.0.0.1:8080`).
 fn base_url(swarm: &dyn Swarm) -> String {
-    swarm.aptos_public_info().url().trim_end_matches('/').to_string()
+    swarm
+        .aptos_public_info()
+        .url()
+        .trim_end_matches('/')
+        .to_string()
 }
 
 // ======================================================================
@@ -83,9 +87,7 @@ async fn test_v2_cohost_v1_still_works() {
     let base = base_url(&*swarm);
 
     // v2 health should work.
-    let v2_resp = reqwest::get(format!("{}/v2/health", base))
-        .await
-        .unwrap();
+    let v2_resp = reqwest::get(format!("{}/v2/health", base)).await.unwrap();
     assert_eq!(v2_resp.status(), 200);
 
     // v1 ledger info should also work (proxied from Axum to Poem).
@@ -133,8 +135,7 @@ async fn test_v2_account_info() {
 
     let body: serde_json::Value = resp.json().await.unwrap();
     assert!(
-        body["data"]["sequence_number"].is_number()
-            || body["data"]["sequence_number"].is_string(),
+        body["data"]["sequence_number"].is_number() || body["data"]["sequence_number"].is_string(),
         "Account info should have sequence_number, got: {}",
         body
     );
@@ -146,10 +147,7 @@ async fn test_v2_account_not_found() {
     let base = base_url(&*swarm);
 
     // An address with no account should 404.
-    let url = format!(
-        "{}/v2/accounts/0x{:064x}",
-        base, 0xdeadbeef_u64
-    );
+    let url = format!("{}/v2/accounts/0x{:064x}", base, 0xDEADBEEF_u64);
     let resp = reqwest::get(&url).await.unwrap();
     assert_eq!(resp.status(), 404);
 }
@@ -219,10 +217,7 @@ async fn test_v2_submit_and_retrieve_transaction() {
             .payload(aptos_stdlib::aptos_coin_transfer(account2.address(), 1_000)),
     );
     let pending = info.client().submit(&txn).await.unwrap().into_inner();
-    info.client()
-        .wait_for_transaction(&pending)
-        .await
-        .unwrap();
+    info.client().wait_for_transaction(&pending).await.unwrap();
 
     // Retrieve the transaction via v2 by hash (use the hash from the
     // pending transaction response, which is always available).
@@ -294,12 +289,7 @@ async fn test_v2_view_function() {
     });
 
     let client = reqwest::Client::new();
-    let resp = client
-        .post(&url)
-        .json(&body)
-        .send()
-        .await
-        .unwrap();
+    let resp = client.post(&url).json(&body).send().await.unwrap();
     assert_eq!(resp.status(), 200);
 
     let resp_body: serde_json::Value = resp.json().await.unwrap();
@@ -350,10 +340,7 @@ async fn test_v2_openapi_spec() {
         body["openapi"].is_string(),
         "Should be a valid OpenAPI spec"
     );
-    assert!(
-        body["paths"].is_object(),
-        "Should have paths"
-    );
+    assert!(body["paths"].is_object(), "Should have paths");
 }
 
 // ======================================================================
@@ -414,21 +401,12 @@ async fn test_v2_batch_request() {
     ]);
 
     let client = reqwest::Client::new();
-    let resp = client
-        .post(&url)
-        .json(&batch)
-        .send()
-        .await
-        .unwrap();
+    let resp = client.post(&url).json(&batch).send().await.unwrap();
     assert_eq!(resp.status(), 200);
 
     let body: serde_json::Value = resp.json().await.unwrap();
     assert!(body.is_array(), "Batch should return array");
-    assert_eq!(
-        body.as_array().unwrap().len(),
-        2,
-        "Should have 2 responses"
-    );
+    assert_eq!(body.as_array().unwrap().len(), 2, "Should have 2 responses");
     // Both should succeed.
     for item in body.as_array().unwrap() {
         assert!(

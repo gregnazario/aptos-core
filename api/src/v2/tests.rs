@@ -6,16 +6,17 @@
 //! These tests spin up a real v2 Axum server on a random port with a real DB
 //! and mempool, then make HTTP requests using reqwest.
 
-use super::context::{V2Config, V2Context};
-use super::router::{build_combined_router, build_v2_router};
+use super::{
+    context::{V2Config, V2Context},
+    router::{build_combined_router, build_v2_router},
+};
 use crate::context::Context;
 use aptos_api_test_context::{
     new_test_context as create_test_context, new_test_context_no_api, TestContext,
 };
 use aptos_config::config::NodeConfig;
 use aptos_types::chain_id::ChainId;
-use std::net::SocketAddr;
-use std::time::Duration;
+use std::{net::SocketAddr, time::Duration};
 
 /// Helper: build a v2 server from a fresh test context.
 ///
@@ -1977,10 +1978,7 @@ async fn test_v2_sse_blocks_with_after_height() {
 
     // Blocks endpoint should accept after_height query param.
     let resp = client
-        .get(format!(
-            "{}/v2/sse/blocks?after_height=42",
-            base_url(addr)
-        ))
+        .get(format!("{}/v2/sse/blocks?after_height=42", base_url(addr)))
         .send()
         .await
         .unwrap();
@@ -2364,10 +2362,7 @@ async fn test_e2e_full_flow_account_creation() {
 
     // Verify the ledger advanced from the committed transaction.
     assert!(
-        acct_body["ledger"]["ledger_version"]
-            .as_u64()
-            .unwrap_or(0)
-            > 0,
+        acct_body["ledger"]["ledger_version"].as_u64().unwrap_or(0) > 0,
         "Ledger should have advanced past genesis"
     );
 }
