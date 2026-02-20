@@ -217,6 +217,7 @@ impl ConfigSanitizer for ApiConfig {
 /// | `api-v2`             | `enabled: true`           | v2 REST API available          |
 /// | `api-v2-websocket`   | `websocket_enabled: true` | WebSocket endpoint available   |
 /// | `api-v2-sse`         | `sse_enabled: true`       | SSE endpoints available        |
+/// | `api-v2-http3`       | `http3_enabled: true`     | HTTP/3 (QUIC) transport active |
 ///
 /// If a runtime flag is `true` but the corresponding feature was not compiled in,
 /// a warning is logged at startup and the flag is effectively ignored.
@@ -282,6 +283,14 @@ pub struct ApiV2Config {
     /// Path to PEM-encoded TLS private key for HTTPS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_key_path: Option<String>,
+    /// Enables HTTP/3 (QUIC) transport alongside TCP.
+    ///
+    /// Requires the `api-v2-http3` Cargo feature to be compiled in.
+    /// Also requires TLS to be configured (`tls_cert_path` + `tls_key_path`),
+    /// since QUIC mandates TLS. A UDP listener is bound on the same port as
+    /// the TCP listener (TCP and UDP do not conflict).
+    #[serde(default = "default_disabled")]
+    pub http3_enabled: bool,
 }
 
 impl Default for ApiV2Config {
@@ -302,6 +311,7 @@ impl Default for ApiV2Config {
             graceful_shutdown_timeout_ms: 30_000,
             tls_cert_path: None,
             tls_key_path: None,
+            http3_enabled: default_disabled(),
         }
     }
 }
@@ -350,6 +360,14 @@ impl ConfigSanitizer for ApiV2Config {
                 ));
             },
             _ => {},
+        }
+
+        // --- HTTP/3 requires TLS ---
+        if v2.http3_enabled && !v2.tls_enabled() {
+            return Err(Error::ConfigSanitizerFailed(
+                sanitizer_name,
+                "http3_enabled requires TLS. Set both tls_cert_path and tls_key_path.".into(),
+            ));
         }
 
         // --- WebSocket limits ---
@@ -705,6 +723,43 @@ mod tests {
             },
             ..Default::default()
         };
+        ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap();
+    }
+
+    #[test]
+    fn test_v2_sanitize_http3_requires_tls() {
+        let cfg = v2_node_config(ApiV2Config {
+            enabled: true,
+            http3_enabled: true,
+            tls_cert_path: None,
+            tls_key_path: None,
+            ..Default::default()
+        });
+        let err = ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap_err();
+        assert!(matches!(err, Error::ConfigSanitizerFailed(_, _)));
+    }
+
+    #[test]
+    fn test_v2_sanitize_http3_with_tls_ok() {
+        let cfg = v2_node_config(ApiV2Config {
+            enabled: true,
+            http3_enabled: true,
+            tls_cert_path: Some("/tmp/cert.pem".into()),
+            tls_key_path: Some("/tmp/key.pem".into()),
+            ..Default::default()
+        });
+        ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap();
+    }
+
+    #[test]
+    fn test_v2_sanitize_http3_disabled_no_tls_ok() {
+        let cfg = v2_node_config(ApiV2Config {
+            enabled: true,
+            http3_enabled: false,
+            tls_cert_path: None,
+            tls_key_path: None,
+            ..Default::default()
+        });
         ApiV2Config::sanitize(&cfg, NodeType::Validator, None).unwrap();
     }
 

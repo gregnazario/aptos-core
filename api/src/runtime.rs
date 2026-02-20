@@ -197,17 +197,32 @@ fn log_feature_warnings(config: &NodeConfig) {
                  SSE support will not be available."
             );
         }
+        if !cfg!(feature = "api-v2-http3") && config.api_v2.http3_enabled {
+            warn!(
+                "api_v2.http3_enabled is true but the 'api-v2-http3' feature is not compiled in. \
+                 HTTP/3 support will not be available."
+            );
+        }
     }
 }
 
+/// Components returned by `bootstrap_v2_common`.
+#[cfg(feature = "api-v2")]
+struct V2BootstrapComponents {
+    v2_ctx: V2Context,
+    tls_acceptor: Option<tokio_rustls::TlsAcceptor>,
+    #[cfg(feature = "api-v2-http3")]
+    quic_endpoint: Option<quinn::Endpoint>,
+}
+
 /// Bootstrap the v2 API components common to both v1+v2 and v2-only modes.
-/// Returns the V2Context and optional TLS acceptor.
 #[cfg(feature = "api-v2")]
 fn bootstrap_v2_common(
     runtime: &Runtime,
     context: &Context,
     config: &NodeConfig,
-) -> anyhow::Result<(V2Context, Option<tokio_rustls::TlsAcceptor>)> {
+    _listen_addr: SocketAddr,
+) -> anyhow::Result<V2BootstrapComponents> {
     let v2_config = V2Config::from_configs(&config.api_v2, &config.api);
     let v2_ctx = V2Context::new(context.clone(), v2_config);
 
@@ -242,6 +257,28 @@ fn bootstrap_v2_common(
         None
     };
 
+    // Build optional QUIC endpoint for HTTP/3 (same port as TCP, UDP doesn't conflict).
+    #[cfg(feature = "api-v2-http3")]
+    let quic_endpoint = if cfg!(feature = "api-v2-http3")
+        && config.api_v2.http3_enabled
+        && config.api_v2.tls_enabled()
+    {
+        let cert_path = config.api_v2.tls_cert_path.as_ref().unwrap();
+        let key_path = config.api_v2.tls_key_path.as_ref().unwrap();
+        Some(
+            crate::v2::quic::build_quic_endpoint(_listen_addr, cert_path, key_path)
+                .context("Failed to build QUIC endpoint for HTTP/3")?,
+        )
+    } else {
+        if config.api_v2.http3_enabled && !config.api_v2.tls_enabled() {
+            warn!(
+                "api_v2.http3_enabled is true but TLS is not configured. \
+                 HTTP/3 requires TLS -- QUIC listener will not be started."
+            );
+        }
+        None
+    };
+
     // Listen for OS shutdown signals (SIGINT / Ctrl+C) and propagate to
     // the V2Context so background tasks and the server can drain gracefully.
     let ctx_for_signal = v2_ctx.clone();
@@ -251,7 +288,12 @@ fn bootstrap_v2_common(
         ctx_for_signal.trigger_shutdown();
     });
 
-    Ok((v2_ctx, tls_acceptor))
+    Ok(V2BootstrapComponents {
+        v2_ctx,
+        tls_acceptor,
+        #[cfg(feature = "api-v2-http3")]
+        quic_endpoint,
+    })
 }
 
 /// Bootstrap both v1 (Poem) and v2 (Axum) together.
@@ -262,23 +304,31 @@ fn bootstrap_v1_and_v2(
     config: &NodeConfig,
     port_tx: Option<oneshot::Sender<u16>>,
 ) -> anyhow::Result<()> {
-    let (v2_ctx, tls_acceptor) = bootstrap_v2_common(runtime, &context, config)?;
-    let drain_timeout_ms = v2_ctx.v2_config.graceful_shutdown_timeout_ms;
-
     if let Some(v2_address) = config.api_v2.address {
         // ---- Separate port mode ----
-        // Poem serves v1 on the main port; Axum serves v2 on a separate port.
+        let components = bootstrap_v2_common(runtime, &context, config, v2_address)?;
+        let drain_timeout_ms = components.v2_ctx.v2_config.graceful_shutdown_timeout_ms;
+
         attach_poem_to_runtime(runtime.handle(), context, config, false, port_tx)
             .context("Failed to attach poem to runtime")?;
 
-        let v2_router = build_v2_router(v2_ctx.clone());
-        let shutdown_rx = v2_ctx.shutdown_receiver();
+        let v2_router = maybe_add_alt_svc(
+            build_v2_router(components.v2_ctx.clone()),
+            &components,
+            v2_address.port(),
+        );
+        let shutdown_rx = components.v2_ctx.shutdown_receiver();
         info!("Starting v2 API on separate port {}", v2_address);
+
+        // Spawn HTTP/3 server if QUIC endpoint was built.
+        #[cfg(feature = "api-v2-http3")]
+        spawn_h3_server(runtime, &components, v2_router.clone(), drain_timeout_ms);
+
         runtime.spawn(async move {
             let listener = tokio::net::TcpListener::bind(v2_address)
                 .await
                 .expect("Failed to bind v2 API listener");
-            if let Some(tls_acceptor) = tls_acceptor {
+            if let Some(tls_acceptor) = components.tls_acceptor {
                 crate::v2::tls::serve_tls(
                     listener,
                     tls_acceptor,
@@ -295,32 +345,34 @@ fn bootstrap_v1_and_v2(
         });
     } else {
         // ---- Same-port co-hosting mode ----
-        // Start Poem on an internal-only random port, then serve a combined
-        // Axum router on the external port that handles v2 routes directly
-        // and reverse-proxies everything else to the internal Poem server.
-        let poem_address = attach_poem_to_runtime(
-            runtime.handle(),
-            context,
-            config,
-            true, // random_port = true (internal only)
-            None, // port_tx not forwarded; we'll send it from the combined server
-        )
-        .context("Failed to attach internal poem to runtime")?;
+        let listen_addr = config.api.address;
+        let components = bootstrap_v2_common(runtime, &context, config, listen_addr)?;
+        let drain_timeout_ms = components.v2_ctx.v2_config.graceful_shutdown_timeout_ms;
+
+        let poem_address = attach_poem_to_runtime(runtime.handle(), context, config, true, None)
+            .context("Failed to attach internal poem to runtime")?;
 
         info!(
             "v2 API co-hosting: Poem v1 internal on {}, combined server on {}",
-            poem_address, config.api.address
+            poem_address, listen_addr
         );
 
-        let combined = build_combined_router(v2_ctx.clone(), poem_address);
-        let shutdown_rx = v2_ctx.shutdown_receiver();
-        let external_addr = config.api.address;
+        let combined = maybe_add_alt_svc(
+            build_combined_router(components.v2_ctx.clone(), poem_address),
+            &components,
+            listen_addr.port(),
+        );
+        let shutdown_rx = components.v2_ctx.shutdown_receiver();
+
+        // Spawn HTTP/3 server if QUIC endpoint was built.
+        #[cfg(feature = "api-v2-http3")]
+        spawn_h3_server(runtime, &components, combined.clone(), drain_timeout_ms);
 
         runtime.spawn(async move {
-            let listener = tokio::net::TcpListener::bind(external_addr)
+            let listener = tokio::net::TcpListener::bind(listen_addr)
                 .await
                 .expect("Failed to bind combined API listener");
-            if let Some(tls_acceptor) = tls_acceptor {
+            if let Some(tls_acceptor) = components.tls_acceptor {
                 crate::v2::tls::serve_tls(
                     listener,
                     tls_acceptor,
@@ -331,7 +383,6 @@ fn bootstrap_v1_and_v2(
                 )
                 .await;
             } else {
-                // Plain mode: send port, then serve with graceful shutdown.
                 if let Some(port_tx) = port_tx {
                     let _ = port_tx.send(listener.local_addr().unwrap().port());
                 }
@@ -355,15 +406,22 @@ fn bootstrap_v2_only(
     config: &NodeConfig,
     port_tx: Option<oneshot::Sender<u16>>,
 ) -> anyhow::Result<()> {
-    let (v2_ctx, tls_acceptor) = bootstrap_v2_common(runtime, &context, config)?;
-    let drain_timeout_ms = v2_ctx.v2_config.graceful_shutdown_timeout_ms;
-
-    // Use v2-specific address if configured, otherwise fall back to the main api address.
     let listen_addr = config.api_v2.address.unwrap_or(config.api.address);
-    let v2_router = build_v2_router(v2_ctx.clone());
-    let shutdown_rx = v2_ctx.shutdown_receiver();
+    let components = bootstrap_v2_common(runtime, &context, config, listen_addr)?;
+    let drain_timeout_ms = components.v2_ctx.v2_config.graceful_shutdown_timeout_ms;
+
+    let v2_router = maybe_add_alt_svc(
+        build_v2_router(components.v2_ctx.clone()),
+        &components,
+        listen_addr.port(),
+    );
+    let shutdown_rx = components.v2_ctx.shutdown_receiver();
 
     info!("Starting v2-only API (no v1) on {}", listen_addr);
+
+    // Spawn HTTP/3 server if QUIC endpoint was built.
+    #[cfg(feature = "api-v2-http3")]
+    spawn_h3_server(runtime, &components, v2_router.clone(), drain_timeout_ms);
 
     runtime.spawn(async move {
         let listener = tokio::net::TcpListener::bind(listen_addr)
@@ -372,7 +430,7 @@ fn bootstrap_v2_only(
         if let Some(port_tx) = port_tx {
             let _ = port_tx.send(listener.local_addr().unwrap().port());
         }
-        if let Some(tls_acceptor) = tls_acceptor {
+        if let Some(tls_acceptor) = components.tls_acceptor {
             crate::v2::tls::serve_tls(
                 listener,
                 tls_acceptor,
@@ -578,6 +636,43 @@ async fn root_handler() -> Html<&'static str> {
 </body>
 </html>";
     Html(response)
+}
+
+/// Conditionally wrap the router with Alt-Svc middleware when HTTP/3 is active.
+#[cfg(feature = "api-v2")]
+fn maybe_add_alt_svc(
+    router: axum::Router,
+    _components: &V2BootstrapComponents,
+    _port: u16,
+) -> axum::Router {
+    #[cfg(feature = "api-v2-http3")]
+    {
+        if _components.quic_endpoint.is_some() {
+            let alt_svc_value = crate::v2::middleware::alt_svc_header_value(_port);
+            return router.layer(axum::middleware::from_fn(move |req, next| {
+                crate::v2::middleware::alt_svc_layer(alt_svc_value.clone(), req, next)
+            }));
+        }
+    }
+    router
+}
+
+/// Spawn the HTTP/3 server task if a QUIC endpoint is available.
+#[cfg(all(feature = "api-v2", feature = "api-v2-http3"))]
+fn spawn_h3_server(
+    runtime: &Runtime,
+    components: &V2BootstrapComponents,
+    router: axum::Router,
+    drain_timeout_ms: u64,
+) {
+    if let Some(ref endpoint) = components.quic_endpoint {
+        let endpoint = endpoint.clone();
+        let shutdown_rx = components.v2_ctx.shutdown_receiver();
+        runtime.spawn(async move {
+            crate::v2::quic::serve_h3(endpoint, router, shutdown_rx, drain_timeout_ms).await;
+        });
+        info!("[v2] HTTP/3 server spawned alongside TCP");
+    }
 }
 
 #[cfg(feature = "api-v2")]

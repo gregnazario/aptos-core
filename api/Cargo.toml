@@ -64,6 +64,12 @@ utoipa = { workspace = true }
 utoipa-axum = { workspace = true }
 uuid = { workspace = true }
 
+# HTTP/3 dependencies (optional, behind api-v2-http3 feature)
+h3 = { version = "0.0.8", optional = true }
+h3-quinn = { version = "0.0.10", optional = true }
+quinn = { version = "0.11", optional = true, default-features = false, features = ["runtime-tokio", "rustls-ring"] }
+rustls-pemfile-v2 = { package = "rustls-pemfile", version = "2", optional = true }
+
 [dev-dependencies]
 aptos-api-test-context = { workspace = true }
 aptos-cached-packages = { workspace = true }
@@ -79,6 +85,7 @@ passkey-types = { workspace = true }
 percent-encoding = { workspace = true }
 proptest = { workspace = true }
 rand = { workspace = true }
+rcgen = "0.14"
 regex = { workspace = true }
 reqwest = { workspace = true, features = ["rustls-tls"] }
 tempfile = { workspace = true }
@@ -86,11 +93,12 @@ tokio-tungstenite = { workspace = true }
 warp = { workspace = true }
 
 [features]
-default = ["api-v1", "api-v2", "api-v2-websocket", "api-v2-sse"]
+default = ["api-v1", "api-v2", "api-v2-websocket", "api-v2-sse", "api-v2-http3"]
 api-v1 = []          # Poem v1 REST API
 api-v2 = []          # Axum v2 REST API (core endpoints, batch, OpenAPI)
 api-v2-websocket = ["api-v2"]  # WebSocket support (requires api-v2)
 api-v2-sse = ["api-v2"]        # Server-Sent Events (requires api-v2)
+api-v2-http3 = ["api-v2", "dep:quinn", "dep:h3", "dep:h3-quinn", "dep:rustls-pemfile-v2"]  # HTTP/3 over QUIC (requires api-v2 + TLS)
 failpoints = ["fail/failpoints"]
 
 [[bench]]

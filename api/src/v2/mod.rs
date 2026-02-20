@@ -17,6 +17,8 @@ pub mod metrics;
 pub mod middleware;
 pub mod openapi;
 pub mod proxy;
+#[cfg(feature = "api-v2-http3")]
+pub mod quic;
 pub mod router;
 #[cfg(test)]
 mod tests;

@@ -170,6 +170,27 @@ pub fn size_limit_layer(max_bytes: usize) -> tower_http::limit::RequestBodyLimit
     tower_http::limit::RequestBodyLimitLayer::new(max_bytes)
 }
 
+/// Build a Tower layer that injects the `Alt-Svc` response header advertising
+/// HTTP/3 availability. Clients receiving this header on HTTP/1.1 or HTTP/2
+/// responses can upgrade to HTTP/3 on subsequent requests.
+///
+/// The header value is `h3=":PORT"; ma=3600`, indicating that HTTP/3 is
+/// available on the same host at the given port with a max-age of 1 hour.
+#[cfg(feature = "api-v2-http3")]
+pub fn alt_svc_header_value(port: u16) -> HeaderValue {
+    HeaderValue::from_str(&format!("h3=\":{}\"; ma=3600", port))
+        .expect("Alt-Svc header value must be valid")
+}
+
+/// Middleware that injects `Alt-Svc` header into every response to advertise
+/// HTTP/3 availability to clients connected over TCP (HTTP/1.1 or HTTP/2).
+#[cfg(feature = "api-v2-http3")]
+pub async fn alt_svc_layer(alt_svc: HeaderValue, req: Request, next: Next) -> Response {
+    let mut resp = next.run(req).await;
+    resp.headers_mut().insert(header::ALT_SVC, alt_svc.clone());
+    resp
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

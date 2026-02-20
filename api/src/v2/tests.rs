@@ -2366,3 +2366,273 @@ async fn test_e2e_full_flow_account_creation() {
         "Ledger should have advanced past genesis"
     );
 }
+
+// ---- HTTP/3 tests ----
+
+#[cfg(feature = "api-v2-http3")]
+mod http3_tests {
+    use super::*;
+    use bytes::Buf;
+    use std::sync::Arc;
+
+    /// Generate a self-signed TLS cert/key pair suitable for QUIC, writing them
+    /// to temporary files and returning their paths.
+    fn gen_self_signed_cert(dir: &tempfile::TempDir) -> (String, String) {
+        let certified_key = rcgen::generate_simple_self_signed(vec!["localhost".into()]).unwrap();
+        let cert_pem = certified_key.cert.pem();
+        let key_pem = certified_key.signing_key.serialize_pem();
+
+        let cert_path = dir.path().join("cert.pem");
+        let key_path = dir.path().join("key.pem");
+        std::fs::write(&cert_path, &cert_pem).unwrap();
+        std::fs::write(&key_path, &key_pem).unwrap();
+
+        (
+            cert_path.to_str().unwrap().to_owned(),
+            key_path.to_str().unwrap().to_owned(),
+        )
+    }
+
+    /// Start a v2 server with an HTTP/3 QUIC listener on a random port.
+    /// Returns the address and a handle to both TCP and UDP servers.
+    async fn start_h3_server() -> (
+        std::net::SocketAddr,
+        tempfile::TempDir,
+        tokio::task::JoinHandle<()>,
+        tokio::task::JoinHandle<()>,
+    ) {
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let (cert_path, key_path) = gen_self_signed_cert(&tmp_dir);
+
+        let mut node_config = NodeConfig::default();
+        node_config.storage.rocksdb_configs.enable_storage_sharding = false;
+
+        let test_ctx =
+            new_test_context_no_api("v2_h3_test".to_string(), node_config.clone(), false);
+
+        let context = Context::new(
+            ChainId::test(),
+            test_ctx.db.clone(),
+            test_ctx.mempool.ac_client.clone(),
+            node_config.clone(),
+            None,
+        );
+
+        let v2_config = V2Config::from_configs(&node_config.api_v2, &node_config.api);
+        let v2_ctx = V2Context::new(context, v2_config);
+        let router = build_v2_router(v2_ctx);
+
+        // Bind TCP on port 0, then use the assigned port for QUIC as well.
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+            .await
+            .expect("Failed to bind TCP");
+        let addr = listener.local_addr().unwrap();
+
+        let quic_endpoint =
+            crate::v2::quic::build_quic_endpoint(addr, &cert_path, &key_path).unwrap();
+
+        let router_clone = router.clone();
+        let tcp_handle = tokio::spawn(async move {
+            axum::serve(listener, router_clone).await.unwrap();
+        });
+
+        let h3_handle = tokio::spawn(async move {
+            let (shutdown_tx, shutdown_rx) = tokio::sync::watch::channel(false);
+            crate::v2::quic::serve_h3(quic_endpoint, router, shutdown_rx, 5_000).await;
+            drop(shutdown_tx);
+        });
+
+        // Give the servers a moment to start.
+        tokio::time::sleep(Duration::from_millis(50)).await;
+
+        (addr, tmp_dir, tcp_handle, h3_handle)
+    }
+
+    /// Build a Quinn client that trusts any server certificate (for self-signed certs).
+    fn build_h3_client() -> quinn::Endpoint {
+        let mut crypto = quinn::rustls::ClientConfig::builder()
+            .dangerous()
+            .with_custom_certificate_verifier(Arc::new(InsecureCertVerifier))
+            .with_no_client_auth();
+
+        crypto.alpn_protocols = vec![b"h3".to_vec()];
+
+        let mut client_config = quinn::ClientConfig::new(Arc::new(
+            quinn::crypto::rustls::QuicClientConfig::try_from(crypto).unwrap(),
+        ));
+        let mut transport = quinn::TransportConfig::default();
+        transport.max_idle_timeout(Some(Duration::from_secs(10).try_into().unwrap()));
+        client_config.transport_config(Arc::new(transport));
+
+        let mut endpoint = quinn::Endpoint::client("0.0.0.0:0".parse().unwrap()).unwrap();
+        endpoint.set_default_client_config(client_config);
+        endpoint
+    }
+
+    /// Accepts any server cert (for test self-signed certs).
+    #[derive(Debug)]
+    struct InsecureCertVerifier;
+
+    impl quinn::rustls::client::danger::ServerCertVerifier for InsecureCertVerifier {
+        fn verify_server_cert(
+            &self,
+            _end_entity: &quinn::rustls::pki_types::CertificateDer<'_>,
+            _intermediates: &[quinn::rustls::pki_types::CertificateDer<'_>],
+            _server_name: &quinn::rustls::pki_types::ServerName<'_>,
+            _ocsp_response: &[u8],
+            _now: quinn::rustls::pki_types::UnixTime,
+        ) -> Result<quinn::rustls::client::danger::ServerCertVerified, quinn::rustls::Error>
+        {
+            Ok(quinn::rustls::client::danger::ServerCertVerified::assertion())
+        }
+
+        fn verify_tls12_signature(
+            &self,
+            _message: &[u8],
+            _cert: &quinn::rustls::pki_types::CertificateDer<'_>,
+            _dss: &quinn::rustls::DigitallySignedStruct,
+        ) -> Result<quinn::rustls::client::danger::HandshakeSignatureValid, quinn::rustls::Error>
+        {
+            Ok(quinn::rustls::client::danger::HandshakeSignatureValid::assertion())
+        }
+
+        fn verify_tls13_signature(
+            &self,
+            _message: &[u8],
+            _cert: &quinn::rustls::pki_types::CertificateDer<'_>,
+            _dss: &quinn::rustls::DigitallySignedStruct,
+        ) -> Result<quinn::rustls::client::danger::HandshakeSignatureValid, quinn::rustls::Error>
+        {
+            Ok(quinn::rustls::client::danger::HandshakeSignatureValid::assertion())
+        }
+
+        fn supported_verify_schemes(&self) -> Vec<quinn::rustls::SignatureScheme> {
+            vec![
+                quinn::rustls::SignatureScheme::ECDSA_NISTP256_SHA256,
+                quinn::rustls::SignatureScheme::ECDSA_NISTP384_SHA384,
+                quinn::rustls::SignatureScheme::RSA_PSS_SHA256,
+                quinn::rustls::SignatureScheme::RSA_PSS_SHA384,
+                quinn::rustls::SignatureScheme::RSA_PSS_SHA512,
+                quinn::rustls::SignatureScheme::ED25519,
+            ]
+        }
+    }
+
+    /// Make an HTTP/3 GET request and return the response status and body bytes.
+    async fn h3_get(
+        endpoint: &quinn::Endpoint,
+        addr: std::net::SocketAddr,
+        path: &str,
+    ) -> (u16, Vec<u8>) {
+        let conn = endpoint.connect(addr, "localhost").unwrap().await.unwrap();
+
+        let h3_conn = h3_quinn::Connection::new(conn);
+        let (mut driver, mut send_request) = h3::client::new(h3_conn).await.unwrap();
+
+        let drive_handle = tokio::spawn(async move {
+            let _ = futures::future::poll_fn(|cx| driver.poll_close(cx)).await;
+        });
+
+        let request = axum::http::Request::builder()
+            .method("GET")
+            .uri(format!("https://localhost:{}{}", addr.port(), path))
+            .body(())
+            .unwrap();
+
+        let mut stream = send_request.send_request(request).await.unwrap();
+        stream.finish().await.unwrap();
+
+        let response = stream.recv_response().await.unwrap();
+        let status = response.status().as_u16();
+
+        let mut body = Vec::new();
+        while let Some(chunk) = stream.recv_data().await.unwrap() {
+            body.extend_from_slice(chunk.chunk());
+        }
+
+        drive_handle.abort();
+        (status, body)
+    }
+
+    #[tokio::test]
+    async fn test_h3_health_endpoint() {
+        let (addr, _tmp, _tcp, _h3) = start_h3_server().await;
+
+        let client = build_h3_client();
+        let (status, body) = h3_get(&client, addr, "/v2/health").await;
+
+        assert_eq!(status, 200);
+        let body_json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert_eq!(body_json["status"], "ok");
+    }
+
+    #[tokio::test]
+    async fn test_h3_info_endpoint() {
+        let (addr, _tmp, _tcp, _h3) = start_h3_server().await;
+
+        let client = build_h3_client();
+        let (status, body) = h3_get(&client, addr, "/v2/info").await;
+
+        assert_eq!(status, 200);
+        let body_json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(body_json["data"]["chain_id"].is_number());
+    }
+
+    #[tokio::test]
+    async fn test_h3_spec_json_endpoint() {
+        let (addr, _tmp, _tcp, _h3) = start_h3_server().await;
+
+        let client = build_h3_client();
+        let (status, body) = h3_get(&client, addr, "/v2/spec.json").await;
+
+        assert_eq!(status, 200);
+        let body_json: serde_json::Value = serde_json::from_slice(&body).unwrap();
+        assert!(body_json["openapi"].is_string());
+    }
+
+    #[tokio::test]
+    async fn test_h3_404_for_unknown_path() {
+        let (addr, _tmp, _tcp, _h3) = start_h3_server().await;
+
+        let client = build_h3_client();
+        let (status, _body) = h3_get(&client, addr, "/v2/nonexistent").await;
+
+        assert_eq!(status, 404);
+    }
+
+    #[tokio::test]
+    async fn test_build_quic_endpoint_with_self_signed_cert() {
+        let tmp_dir = tempfile::TempDir::new().unwrap();
+        let (cert_path, key_path) = gen_self_signed_cert(&tmp_dir);
+
+        let endpoint = crate::v2::quic::build_quic_endpoint(
+            "127.0.0.1:0".parse().unwrap(),
+            &cert_path,
+            &key_path,
+        );
+        assert!(endpoint.is_ok(), "Should build QUIC endpoint successfully");
+
+        let endpoint = endpoint.unwrap();
+        assert_ne!(
+            endpoint.local_addr().unwrap().port(),
+            0,
+            "Should bind to a real port"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_build_quic_endpoint_missing_cert_fails() {
+        let result = crate::v2::quic::build_quic_endpoint(
+            "127.0.0.1:0".parse().unwrap(),
+            "/nonexistent/cert.pem",
+            "/nonexistent/key.pem",
+        );
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_alt_svc_header_value() {
+        let value = crate::v2::middleware::alt_svc_header_value(4433);
+        assert_eq!(value.to_str().unwrap(), "h3=\":4433\"; ma=3600");
+    }
+}
