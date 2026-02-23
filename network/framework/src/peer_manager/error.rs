@@ -19,9 +19,6 @@ pub enum PeerManagerError {
     #[error("Transport error: {0}")]
     TransportError(::anyhow::Error),
 
-    #[error("Shutting down Peer")]
-    ShuttingDownPeer,
-
     #[error("Not connected with Peer {0}")]
     NotConnected(PeerId),
 

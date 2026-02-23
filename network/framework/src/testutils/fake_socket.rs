@@ -132,12 +132,6 @@ impl ReadOnlyTestSocketVec {
         }
     }
 
-    /// reads will be done byte-by-byte
-    #[allow(dead_code)]
-    pub fn set_fragmented_read(&mut self) {
-        self.fragmented_read = true;
-    }
-
     /// reads will never return pending, but 0s
     pub fn set_trailing(&mut self) {
         self.trailing = true;

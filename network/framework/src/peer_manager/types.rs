@@ -63,7 +63,7 @@ impl fmt::Display for ConnectionNotification {
 }
 
 #[derive(Debug, Serialize)]
-pub enum TransportNotification<TSocket> {
+pub(crate) enum TransportNotification<TSocket> {
     NewConnection(#[serde(skip)] Connection<TSocket>),
     Disconnected(ConnectionMetadata, DisconnectReason),
 }

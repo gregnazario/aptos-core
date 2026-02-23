@@ -38,7 +38,7 @@ use std::{collections::BTreeMap, convert::TryFrom, fmt, io, pin::Pin, sync::Arc,
 mod test;
 
 /// A timeout for the connection to open and complete all of the upgrade steps.
-pub const TRANSPORT_TIMEOUT: Duration = Duration::from_secs(30);
+pub(crate) const TRANSPORT_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// Currently supported messaging protocol version.
 /// TODO: Add ability to support more than one messaging protocol.
@@ -48,7 +48,7 @@ pub const SUPPORTED_MESSAGING_PROTOCOL: MessagingProtocolVersion = MessagingProt
 static CONNECTION_ID_GENERATOR: ConnectionIdGenerator = ConnectionIdGenerator::new();
 
 /// tcp::Transport with Aptos-specific configuration applied.
-pub const APTOS_TCP_TRANSPORT: tcp::TcpTransport = tcp::TcpTransport {
+pub(crate) const APTOS_TCP_TRANSPORT: tcp::TcpTransport = tcp::TcpTransport {
     // Use default options.
     ttl: None,
     // Use TCP_NODELAY for Aptos tcp connections.
@@ -418,7 +418,7 @@ pub async fn upgrade_outbound<T: TSocket>(
 /// the `Handshake` protocol.
 // TODO(philiphayes): rework Transport trait, possibly include Upgrade trait.
 // ideas in this PR thread: https://github.com/aptos-labs/aptos-core/pull/3478#issuecomment-617385633
-pub struct AptosNetTransport<TTransport> {
+pub(crate) struct AptosNetTransport<TTransport> {
     base_transport: TTransport,
     ctxt: Arc<UpgradeContext>,
     time_service: TimeService,

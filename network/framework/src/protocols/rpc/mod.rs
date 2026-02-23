@@ -72,47 +72,9 @@ use futures::{
     stream::{FuturesUnordered, StreamExt},
 };
 use serde::Serialize;
-use std::{cmp::PartialEq, collections::HashMap, fmt::Debug, sync::Arc, time::Duration};
+use std::{collections::HashMap, fmt::Debug, sync::Arc, time::Duration};
 
 pub mod error;
-
-/// A wrapper struct for an inbound rpc request and its associated context.
-#[derive(Debug)]
-pub struct InboundRpcRequest {
-    /// The [`ProtocolId`] for which of our upstream application modules should
-    /// handle (i.e., deserialize and then respond to) this inbound rpc request.
-    ///
-    /// For example, if `protocol_id == ProtocolId::ConsensusRpcBcs`, then this
-    /// inbound rpc request will be dispatched to consensus for handling.
-    pub protocol_id: ProtocolId,
-    /// The serialized request data received from the sender. At this layer in
-    /// the stack, the request data is just an opaque blob and will only be fully
-    /// deserialized later in the handling application module.
-    pub data: Bytes,
-    /// Channel over which the rpc response is sent from the upper application
-    /// layer to the network rpc layer.
-    ///
-    /// The rpc actor holds onto the receiving end of this channel, awaiting the
-    /// response from the upper layer. If there is an error in, e.g.,
-    /// deserializing the request, the upper layer should send an [`RpcError`]
-    /// down the channel to signify that there was an error while handling this
-    /// rpc request. Currently, we just log these errors and drop the request.
-    ///
-    /// The upper client layer should be prepared for `res_tx` to be disconnected
-    /// when trying to send their response, as the rpc call might have timed out
-    /// while handling the request.
-    pub res_tx: oneshot::Sender<Result<Bytes, RpcError>>,
-}
-
-impl SerializedRequest for InboundRpcRequest {
-    fn protocol_id(&self) -> ProtocolId {
-        self.protocol_id
-    }
-
-    fn data(&self) -> &Bytes {
-        &self.data
-    }
-}
 
 /// A wrapper struct for an outbound rpc request and its associated context.
 #[derive(Debug, Serialize)]
@@ -151,19 +113,13 @@ impl SerializedRequest for OutboundRpcRequest {
     }
 }
 
-impl PartialEq for InboundRpcRequest {
-    fn eq(&self, other: &Self) -> bool {
-        self.protocol_id == other.protocol_id && self.data == other.data
-    }
-}
-
 /// `InboundRpcs` handles new inbound rpc requests off the wire, notifies the
 /// `PeerManager` of the new request, and stores the pending response on a queue.
 /// If the response eventually completes, `InboundRpc` records some metrics and
 /// enqueues the response message onto the outbound write queue.
 ///
 /// There is one `InboundRpcs` handler per [`Peer`](crate::peer::Peer).
-pub struct InboundRpcs {
+pub(crate) struct InboundRpcs {
     /// The network instance this Peer actor is running under.
     network_context: NetworkContext,
     /// A handle to a time service for easily mocking time-related operations.
@@ -384,7 +340,7 @@ impl InboundRpcs {
 /// `OutboundRpcs` handles new outbound rpc requests made from the application layer.
 ///
 /// There is one `OutboundRpcs` handler per [`Peer`](crate::peer::Peer).
-pub struct OutboundRpcs {
+pub(crate) struct OutboundRpcs {
     /// The network instance this Peer actor is running under.
     network_context: NetworkContext,
     /// A handle to a time service for easily mocking time-related operations.

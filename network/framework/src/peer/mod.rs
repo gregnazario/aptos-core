@@ -63,7 +63,7 @@ pub mod fuzzing;
 
 /// Requests [`Peer`] receives from the [`PeerManager`](crate::peer_manager::PeerManager).
 #[derive(Debug)]
-pub enum PeerRequest {
+pub(crate) enum PeerRequest {
     /// Send an RPC request to peer.
     SendRpc(OutboundRpcRequest),
     /// Fire-and-forget style message send to peer.
@@ -107,7 +107,7 @@ enum State {
 
 /// The `Peer` actor manages a single connection to another remote peer after
 /// the initial connection establishment and handshake.
-pub struct Peer<TSocket> {
+pub(crate) struct Peer<TSocket> {
     /// The network instance this Peer actor is running under.
     network_context: NetworkContext,
     /// A handle to a tokio executor.

@@ -63,7 +63,8 @@ use crate::{
 use aptos_config::config::PeerRole;
 use aptos_types::account_address::AccountAddress;
 pub use senders::*;
-pub use types::*;
+pub use types::{ConnectionNotification, ConnectionRequest, PeerManagerRequest};
+pub(crate) use types::TransportNotification;
 
 /// Responsible for handling and maintaining connections to other Peers
 pub struct PeerManager<TTransport, TSocket>

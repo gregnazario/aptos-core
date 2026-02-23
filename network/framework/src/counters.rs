@@ -14,35 +14,35 @@ use aptos_types::PeerId;
 use once_cell::sync::Lazy;
 
 // some type labels
-pub const REQUEST_LABEL: &str = "request";
-pub const RESPONSE_LABEL: &str = "response";
+pub(crate) const REQUEST_LABEL: &str = "request";
+pub(crate) const RESPONSE_LABEL: &str = "response";
 
 // some state labels
-pub const CANCELED_LABEL: &str = "canceled";
-pub const DECLINED_LABEL: &str = "declined";
-pub const EXPIRED_LABEL: &str = "expired";
-pub const RECEIVED_LABEL: &str = "received";
-pub const SENT_LABEL: &str = "sent";
-pub const SUCCEEDED_LABEL: &str = "succeeded";
-pub const FAILED_LABEL: &str = "failed";
-pub const UNKNOWN_LABEL: &str = "unknown";
+pub(crate) const CANCELED_LABEL: &str = "canceled";
+pub(crate) const DECLINED_LABEL: &str = "declined";
+pub(crate) const EXPIRED_LABEL: &str = "expired";
+pub(crate) const RECEIVED_LABEL: &str = "received";
+pub(crate) const SENT_LABEL: &str = "sent";
+pub(crate) const SUCCEEDED_LABEL: &str = "succeeded";
+pub(crate) const FAILED_LABEL: &str = "failed";
+pub(crate) const UNKNOWN_LABEL: &str = "unknown";
 
 // Connection operation labels
-pub const DIAL_LABEL: &str = "dial";
-pub const DIAL_PEER_LABEL: &str = "dial_peer";
-pub const DISCONNECT_LABEL: &str = "disconnect";
+pub(crate) const DIAL_LABEL: &str = "dial";
+pub(crate) const DIAL_PEER_LABEL: &str = "dial_peer";
+pub(crate) const DISCONNECT_LABEL: &str = "disconnect";
 
 // Direction labels
-pub const INBOUND_LABEL: &str = "inbound";
-pub const OUTBOUND_LABEL: &str = "outbound";
+pub(crate) const INBOUND_LABEL: &str = "inbound";
+pub(crate) const OUTBOUND_LABEL: &str = "outbound";
 
 // Peer ping labels
 const CONNECTED_LABEL: &str = "connected";
 const PRE_DIAL_LABEL: &str = "pre_dial";
 
 // Serialization labels
-pub const SERIALIZATION_LABEL: &str = "serialization";
-pub const DESERIALIZATION_LABEL: &str = "deserialization";
+pub(crate) const SERIALIZATION_LABEL: &str = "serialization";
+pub(crate) const DESERIALIZATION_LABEL: &str = "deserialization";
 
 pub static APTOS_CONNECTIONS: Lazy<IntGaugeVec> = Lazy::new(|| {
     register_int_gauge_vec!(
