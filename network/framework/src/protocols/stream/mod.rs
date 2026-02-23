@@ -17,7 +17,7 @@ const FRAME_OVERHEAD_BYTES: usize = 64;
 /// A stream message (streams begin with a header, followed by multiple fragments)
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub enum StreamMessage {
+pub(crate) enum StreamMessage {
     Header(StreamHeader),
     Fragment(StreamFragment),
 }
@@ -25,11 +25,10 @@ pub enum StreamMessage {
 /// A header for a stream of fragments
 #[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub struct StreamHeader {
-    pub request_id: u32,
-    pub num_fragments: u8,
-    /// original message with chunked raw data
-    pub message: NetworkMessage,
+pub(crate) struct StreamHeader {
+    pub(crate) request_id: u32,
+    pub(crate) num_fragments: u8,
+    pub(crate) message: NetworkMessage,
 }
 
 impl Debug for StreamHeader {
@@ -45,11 +44,11 @@ impl Debug for StreamHeader {
 /// A single fragment in a stream
 #[derive(Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub struct StreamFragment {
-    pub request_id: u32,
-    pub fragment_id: u8,
+pub(crate) struct StreamFragment {
+    pub(crate) request_id: u32,
+    pub(crate) fragment_id: u8,
     #[serde(with = "serde_bytes")]
-    pub raw_data: Vec<u8>,
+    pub(crate) raw_data: Vec<u8>,
 }
 
 impl Debug for StreamFragment {
@@ -65,7 +64,7 @@ impl Debug for StreamFragment {
 }
 
 /// A buffer for a single inbound fragment stream
-pub struct InboundStreamBuffer {
+pub(crate) struct InboundStreamBuffer {
     stream: Option<InboundStream>,
     max_fragments: usize,
 }
@@ -215,7 +214,7 @@ impl InboundStream {
 }
 
 /// An outbound stream for streaming large messages in fragments
-pub struct OutboundStream {
+pub(crate) struct OutboundStream {
     request_id_gen: U32IdGenerator,
     max_frame_size: usize,
     max_message_size: usize,

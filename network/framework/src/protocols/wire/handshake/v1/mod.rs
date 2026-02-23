@@ -35,8 +35,8 @@ mod test;
 // ProtocolId
 //
 
-pub const USER_INPUT_RECURSION_LIMIT: usize = 32;
-pub const RECURSION_LIMIT: usize = 64;
+const USER_INPUT_RECURSION_LIMIT: usize = 32;
+const RECURSION_LIMIT: usize = 64;
 
 /// Unique identifier associated with each application protocol.
 #[repr(u8)]

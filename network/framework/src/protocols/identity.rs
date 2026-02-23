@@ -10,7 +10,7 @@ use futures::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
 use std::io;
 
 /// The Handshake exchange protocol.
-pub async fn exchange_handshake<T>(
+pub(crate) async fn exchange_handshake<T>(
     own_handshake: &HandshakeMsg,
     socket: &mut T,
 ) -> io::Result<HandshakeMsg>

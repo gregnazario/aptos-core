@@ -46,7 +46,7 @@ pub enum NetworkMessage {
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(Arbitrary))]
-pub enum MultiplexMessage {
+pub(crate) enum MultiplexMessage {
     Message(NetworkMessage),
     Stream(StreamMessage),
 }
@@ -96,13 +96,11 @@ pub enum NotSupportedType {
     DirectSendMsg(ProtocolId),
 }
 
-/// Create alias RequestId for `u32`.
-pub type RequestId = u32;
+pub(crate) type RequestId = u32;
 
-/// Create alias Priority for u8.
-pub type Priority = u8;
+pub(crate) type Priority = u8;
 
-pub trait IncomingRequest {
+pub(crate) trait IncomingRequest {
     fn protocol_id(&self) -> crate::ProtocolId;
     fn data(&self) -> &Vec<u8>;
 
@@ -194,7 +192,7 @@ pub enum WriteError {
 
 /// Returns a fully configured length-delimited codec for writing/reading
 /// serialized [`NetworkMessage`] frames to/from a socket.
-pub fn network_message_frame_codec(max_frame_size: usize) -> LengthDelimitedCodec {
+pub(crate) fn network_message_frame_codec(max_frame_size: usize) -> LengthDelimitedCodec {
     LengthDelimitedCodec::builder()
         .max_frame_length(max_frame_size)
         .length_field_length(4)
@@ -205,7 +203,7 @@ pub fn network_message_frame_codec(max_frame_size: usize) -> LengthDelimitedCode
 /// A `Stream` of inbound `MultiplexMessage`s read and deserialized from an
 /// underlying socket.
 #[pin_project]
-pub struct MultiplexMessageStream<TReadSocket: AsyncRead + Unpin> {
+pub(crate) struct MultiplexMessageStream<TReadSocket: AsyncRead + Unpin> {
     #[pin]
     framed_read: FramedRead<Compat<TReadSocket>, LengthDelimitedCodec>,
 }
@@ -250,7 +248,7 @@ impl<TReadSocket: AsyncRead + Unpin> Stream for MultiplexMessageStream<TReadSock
 /// A `Sink` of outbound `NetworkMessage`s that will be serialized and sent over
 /// an underlying socket.
 #[pin_project]
-pub struct MultiplexMessageSink<TWriteSocket: AsyncWrite> {
+pub(crate) struct MultiplexMessageSink<TWriteSocket: AsyncWrite> {
     #[pin]
     framed_write: FramedWrite<Compat<TWriteSocket>, LengthDelimitedCodec>,
 }
