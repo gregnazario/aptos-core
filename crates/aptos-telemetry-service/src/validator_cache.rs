@@ -10,7 +10,7 @@ use crate::{
     },
     types::common::{ChainCommonName, EpochedPeerStore},
 };
-use aptos_config::config::{Peer, PeerRole, PeerSet};
+use aptos_network_types::{Peer, PeerRole, PeerSet};
 use aptos_infallible::RwLock;
 use aptos_rest_client::Response;
 use aptos_types::{

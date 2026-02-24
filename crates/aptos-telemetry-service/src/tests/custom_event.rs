@@ -9,7 +9,7 @@ use crate::{
         telemetry::{TelemetryDump, TelemetryEvent},
     },
 };
-use aptos_config::config::PeerSet;
+use aptos_network_types::PeerSet;
 use aptos_types::{chain_id::ChainId, PeerId};
 use chrono::Utc;
 use serde_json::json;

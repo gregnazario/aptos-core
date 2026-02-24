@@ -17,11 +17,11 @@ bigquery_integration_tests = []
 
 [dependencies]
 anyhow = { workspace = true }
-aptos-config = { workspace = true }
 aptos-crypto = { workspace = true }
 aptos-infallible = { workspace = true }
 aptos-logger = { workspace = true }
 aptos-metrics-core = { workspace = true }
+aptos-network-types = { workspace = true }
 aptos-rest-client = { workspace = true }
 aptos-types = { workspace = true }
 base64 = { workspace = true }

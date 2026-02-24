@@ -13,7 +13,7 @@ use crate::{
     warn,
 };
 use anyhow::Result;
-use aptos_config::config::{PeerRole, RoleType};
+use aptos_network_types::{PeerRole, RoleType};
 use aptos_crypto::{noise, x25519};
 use aptos_types::{chain_id::ChainId, PeerId};
 use reqwest::header::AUTHORIZATION;

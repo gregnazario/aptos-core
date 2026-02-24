@@ -14,7 +14,7 @@ pub(crate) const MAX_CONCURRENT_OUTBOUND_RPCS: u32 = 100;
 /// Limit on concurrent Inbound RPC requests before backpressure is applied
 pub(crate) const MAX_CONCURRENT_INBOUND_RPCS: u32 = 100;
 
-pub(crate) const NETWORK_CHANNEL_SIZE: usize = 1024;
+pub(crate) use aptos_network_types::NETWORK_CHANNEL_SIZE;
 #[cfg(any(test, feature = "fuzzing"))]
-pub(crate) const MAX_FRAME_SIZE: usize = 4 * 1024 * 1024; /* 4 MiB */
-pub const MAX_MESSAGE_SIZE: usize = 64 * 1024 * 1024; /* 64 MiB */
+pub(crate) use aptos_network_types::MAX_FRAME_SIZE;
+pub use aptos_network_types::MAX_MESSAGE_SIZE;

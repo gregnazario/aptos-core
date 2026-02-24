@@ -565,9 +565,9 @@ name = "aptos-api-types"
 version = "0.0.1"
 dependencies = [
  "anyhow",
- "aptos-config",
  "aptos-crypto",
  "aptos-logger",
+ "aptos-network-types",
  "aptos-openapi",
  "aptos-resource-viewer",
  "aptos-storage-interface",
@@ -3420,6 +3420,7 @@ dependencies = [
  "aptos-netcore",
  "aptos-network",
  "aptos-network-discovery",
+ "aptos-network-types",
  "aptos-time-service",
  "aptos-types",
  "bcs 0.1.4",
@@ -3733,7 +3734,7 @@ dependencies = [
 name = "aptos-peer-monitoring-service-types"
 version = "0.1.0"
 dependencies = [
- "aptos-config",
+ "aptos-network-types",
  "aptos-types",
  "bcs 0.1.4",
  "serde",
@@ -4288,8 +4289,8 @@ dependencies = [
 name = "aptos-storage-service-client"
 version = "0.1.0"
 dependencies = [
- "aptos-config",
  "aptos-network",
+ "aptos-network-types",
  "aptos-storage-service-types",
  "thiserror 1.0.69",
 ]
@@ -4463,11 +4464,11 @@ name = "aptos-telemetry-service"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aptos-config",
  "aptos-crypto",
  "aptos-infallible",
  "aptos-logger",
  "aptos-metrics-core",
+ "aptos-network-types",
  "aptos-rest-client",
  "aptos-types",
  "base64 0.13.1",
@@ -9895,12 +9896,12 @@ version = "0.1.0"
 dependencies = [
  "aptos-api-types",
  "aptos-batch-encryption",
- "aptos-config",
  "aptos-consensus",
  "aptos-consensus-types",
  "aptos-crypto",
  "aptos-crypto-derive",
  "aptos-network",
+ "aptos-network-types",
  "aptos-types",
  "bcs 0.1.4",
  "clap 4.5.21",

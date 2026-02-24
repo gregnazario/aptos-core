@@ -9,14 +9,12 @@
 //! authentication -- a network end-point running with remote authentication enabled will
 //! connect to or accept connections from an end-point running in authenticated mode as
 //! long as the latter is in its trusted peers set.
-use aptos_config::{
-    config::{
-        AccessControlPolicy, DiscoveryMethod, NetworkConfig, Peer, PeerRole, PeerSet, RoleType,
-        CONNECTION_BACKOFF_BASE, CONNECTIVITY_CHECK_INTERVAL_MS, MAX_CONNECTION_DELAY_MS,
-        MAX_FRAME_SIZE, MAX_FULLNODE_OUTBOUND_CONNECTIONS, MAX_INBOUND_CONNECTIONS,
-        NETWORK_CHANNEL_SIZE,
-    },
-    network_id::NetworkContext,
+use aptos_config::config::{DiscoveryMethod, NetworkConfig};
+use aptos_network_types::{
+    AccessControlPolicy, NetworkContext, Peer, PeerRole, PeerSet, RoleType,
+    CONNECTION_BACKOFF_BASE, CONNECTIVITY_CHECK_INTERVAL_MS, MAX_CONNECTION_DELAY_MS,
+    MAX_FRAME_SIZE, MAX_FULLNODE_OUTBOUND_CONNECTIONS, MAX_INBOUND_CONNECTIONS,
+    NETWORK_CHANNEL_SIZE,
 };
 use aptos_event_notifications::{DbBackedOnChainConfig, EventSubscriptionService};
 use aptos_logger::prelude::*;

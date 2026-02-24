@@ -22,7 +22,7 @@ pub type PeerSet = HashMap<PeerId, Peer>;
 /// Downstream -> Downstream, defining a controlled downstream that I always want to connect
 /// Known -> A known peer, but it has no particular role assigned to it
 /// Unknown -> Undiscovered peer, likely due to a non-mutually authenticated connection always downstream
-#[derive(Clone, Copy, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[derive(Clone, Copy, Default, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
 pub enum PeerRole {
     Validator = 0,
     PreferredUpstream,
@@ -30,6 +30,7 @@ pub enum PeerRole {
     ValidatorFullNode,
     Downstream,
     Known,
+    #[default]
     Unknown,
 }
 
@@ -52,12 +53,6 @@ impl PeerRole {
             PeerRole::Known => "known_peer",
             PeerRole::Unknown => "unknown_peer",
         }
-    }
-}
-
-impl Default for PeerRole {
-    fn default() -> Self {
-        PeerRole::Unknown
     }
 }
 

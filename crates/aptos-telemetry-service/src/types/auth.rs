@@ -2,7 +2,7 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use super::common::NodeType;
-use aptos_config::config::RoleType;
+use aptos_network_types::RoleType;
 use aptos_crypto::x25519;
 use aptos_types::{chain_id::ChainId, PeerId};
 use serde::{Deserialize, Serialize};

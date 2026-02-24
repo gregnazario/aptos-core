@@ -9,7 +9,7 @@ use crate::{
         common::NodeType,
     },
 };
-use aptos_config::config::{Peer, PeerRole, PeerSet, RoleType};
+use aptos_network_types::{Peer, PeerRole, PeerSet, RoleType};
 use aptos_crypto::{
     noise,
     noise::{InitiatorHandshakeState, NoiseConfig},

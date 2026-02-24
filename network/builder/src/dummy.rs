@@ -5,9 +5,9 @@
 
 use crate::builder::NetworkBuilder;
 use aptos_channels::aptos_channel;
-use aptos_config::{
-    config::{Peer, PeerRole, PeerSet, RoleType, NETWORK_CHANNEL_SIZE},
-    network_id::{NetworkContext, NetworkId, PeerNetworkId},
+use aptos_network_types::{
+    NetworkContext, NetworkId, Peer, PeerNetworkId, PeerRole, PeerSet, RoleType,
+    NETWORK_CHANNEL_SIZE,
 };
 use aptos_crypto::{test_utils::TEST_SEED, x25519, Uniform};
 use aptos_netcore::transport::ConnectionOrigin;

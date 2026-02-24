@@ -1,7 +1,7 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
-use aptos_config::{config::PeerRole, network_id::PeerNetworkId};
+use aptos_network_types::{PeerNetworkId, PeerRole};
 use aptos_types::{network_address::NetworkAddress, PeerId};
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, fmt, fmt::Display, time::Duration};

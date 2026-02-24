@@ -2,7 +2,7 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use crate::{LedgerInfo, U64};
-use aptos_config::config::RoleType;
+use aptos_network_types::RoleType;
 use poem_openapi::Object as PoemObject;
 use serde::{Deserialize, Serialize};
 
