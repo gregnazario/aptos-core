@@ -1383,7 +1383,7 @@ where
 
     /// Returns a random address to dial for this peer
     fn random_addr<'a>(&self, addrs: &'a Addresses) -> Option<&'a NetworkAddress> {
-        let addr_index = ::rand_latest::thread_rng().gen_range(0..addrs.len());
+        let addr_index = rand_latest::thread_rng().gen_range(0..addrs.len());
         self.get_addr_at_index(addr_index, addrs)
     }
 

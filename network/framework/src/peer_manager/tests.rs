@@ -34,8 +34,7 @@ use aptos_time_service::TimeService;
 use aptos_types::{network_address::NetworkAddress, PeerId};
 use bytes::Bytes;
 use futures::{channel::oneshot, io::AsyncWriteExt, stream::StreamExt};
-use maplit::hashset;
-use std::{collections::HashMap, error::Error};
+use std::{collections::{HashMap, HashSet}, error::Error};
 use tokio::runtime::{Handle, Runtime};
 use tokio_util::compat::{
     FuturesAsyncReadCompatExt, TokioAsyncReadCompatExt, TokioAsyncWriteCompatExt,
@@ -682,7 +681,7 @@ fn test_peer_manager_allow_list_accepts_allowed_peer() {
 
     // Create an allow list with a single allowed peer
     let allowed_peer = PeerId::random();
-    let allow_list = hashset! {allowed_peer};
+    let allow_list = HashSet::from([allowed_peer]);
     let access_control_policy = AccessControlPolicy::AllowList(allow_list);
 
     // Create the peer manager with the allow list
@@ -701,7 +700,7 @@ fn test_peer_manager_allow_list_rejects_non_allowed_peer() {
     // Create an allow list with a single allowed peer
     let allowed_peer = PeerId::random();
     let non_allowed_peer = PeerId::random();
-    let allow_list = hashset! {allowed_peer};
+    let allow_list = HashSet::from([allowed_peer]);
     let access_control_policy = AccessControlPolicy::AllowList(allow_list);
 
     // Create the peer manager with the allow list
@@ -719,7 +718,7 @@ fn test_peer_manager_block_list_rejects_blocked_peer() {
 
     // Create a block list with a single blocked peer
     let blocked_peer = PeerId::random();
-    let block_list = hashset! {blocked_peer};
+    let block_list = HashSet::from([blocked_peer]);
     let access_control_policy = AccessControlPolicy::BlockList(block_list);
 
     // Create the peer manager with the block list
@@ -738,7 +737,7 @@ fn test_peer_manager_block_list_accepts_non_blocked_peer() {
     // Create a block list with a single blocked peer
     let blocked_peer = PeerId::random();
     let non_blocked_peer = PeerId::random();
-    let block_list = hashset! {blocked_peer};
+    let block_list = HashSet::from([blocked_peer]);
     let access_control_policy = AccessControlPolicy::BlockList(block_list);
 
     // Create the peer manager with the block list

@@ -15,8 +15,7 @@ use crate::{
 use aptos_config::network_id::NetworkContext;
 use aptos_logger::prelude::*;
 use aptos_time_service::TimeService;
-use maplit::hashmap;
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 use tokio::runtime::Handle;
 
 pub struct HealthCheckerBuilder {
@@ -34,7 +33,7 @@ impl HealthCheckerBuilder {
         network_rx: HealthCheckerNetworkEvents,
         peers_and_metadata: Arc<PeersAndMetadata>,
     ) -> Self {
-        let network_senders = hashmap! {network_context.network_id() => network_sender};
+        let network_senders = HashMap::from([(network_context.network_id(), network_sender)]);
         let network_client = NetworkClient::new(
             vec![],
             vec![HealthCheckerRpc],

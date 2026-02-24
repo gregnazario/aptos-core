@@ -32,7 +32,6 @@ use aptos_config::{
 use aptos_peer_monitoring_service_types::PeerMonitoringMetadata;
 use aptos_types::{account_address::AccountAddress, PeerId};
 use futures_util::StreamExt;
-use maplit::hashmap;
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet},
@@ -311,9 +310,7 @@ fn test_peers_and_metadata_caching() {
 
     // Verify the states of the VFN maps
     let mut peer_metadata_1 = PeerMetadata::new(connection_1.clone());
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_1.peer_id() => peer_metadata_1.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_1.peer_id(), peer_metadata_1.clone())]);
     verify_internal_map_states(
         &[NetworkId::Vfn],
         peers_and_metadata.clone(),
@@ -324,9 +321,7 @@ fn test_peers_and_metadata_caching() {
 
     // Verify the states of the validator maps
     let peer_metadata_2 = PeerMetadata::new(connection_2.clone());
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_2.peer_id() => peer_metadata_2.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_2.peer_id(), peer_metadata_2.clone())]);
     verify_internal_map_states(
         &[NetworkId::Validator],
         peers_and_metadata.clone(),
@@ -340,9 +335,7 @@ fn test_peers_and_metadata_caching() {
 
     // Verify the states of the VFN maps
     peer_metadata_1.connection_state = ConnectionState::Disconnecting;
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_1.peer_id() => peer_metadata_1.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_1.peer_id(), peer_metadata_1.clone())]);
     verify_internal_map_states(
         &[NetworkId::Vfn],
         peers_and_metadata.clone(),
@@ -352,9 +345,7 @@ fn test_peers_and_metadata_caching() {
     );
 
     // Verify the states of the validator maps
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_2.peer_id() => peer_metadata_2.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_2.peer_id(), peer_metadata_2.clone())]);
     verify_internal_map_states(
         &[NetworkId::Validator],
         peers_and_metadata.clone(),
@@ -372,9 +363,7 @@ fn test_peers_and_metadata_caching() {
     .unwrap();
 
     // Verify the states of the VFN maps
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_1.peer_id() => peer_metadata_1.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_1.peer_id(), peer_metadata_1.clone())]);
     verify_internal_map_states(
         &[NetworkId::Vfn],
         peers_and_metadata.clone(),
@@ -406,9 +395,7 @@ fn test_peers_and_metadata_caching() {
 
     // Verify the states of the VFN maps
     peer_metadata_1.peer_monitoring_metadata = peer_monitoring_metadata;
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_1.peer_id() => peer_metadata_1.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_1.peer_id(), peer_metadata_1.clone())]);
     verify_internal_map_states(
         &[NetworkId::Vfn],
         peers_and_metadata.clone(),
@@ -423,9 +410,7 @@ fn test_peers_and_metadata_caching() {
         .unwrap();
 
     // Verify the states of the validator maps
-    let expected_peers_and_metadata = hashmap! {
-        peer_network_id_2.peer_id() => peer_metadata_2.clone()
-    };
+    let expected_peers_and_metadata = HashMap::from([(peer_network_id_2.peer_id(), peer_metadata_2.clone())]);
     verify_internal_map_states(
         &[NetworkId::Validator],
         peers_and_metadata.clone(),

@@ -22,8 +22,7 @@ use aptos_channels::{aptos_channel, message_queues::QueueStyle};
 use aptos_config::network_id::NetworkId;
 use aptos_time_service::{MockTimeService, TimeService};
 use futures::future;
-use maplit::hashmap;
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 const PING_INTERVAL: Duration = Duration::from_secs(1);
 const PING_TIMEOUT: Duration = Duration::from_millis(500);
@@ -62,7 +61,7 @@ impl TestHarness {
         let network_client = NetworkClient::new(
             vec![],
             vec![HealthCheckerRpc],
-            hashmap! {network_context.network_id() => network_sender},
+            HashMap::from([(network_context.network_id(), network_sender)]),
             peers_and_metadata.clone(),
         );
 

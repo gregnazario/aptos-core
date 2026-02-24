@@ -16,9 +16,8 @@ use aptos_logger::info;
 use aptos_time_service::{MockTimeService, TimeService};
 use aptos_types::{account_address::AccountAddress, network_address::NetworkAddress};
 use futures::{executor::block_on, future, SinkExt};
-use maplit::{hashmap, hashset};
 use rand::{rngs::StdRng, SeedableRng};
-use std::{collections::HashSet, io, str::FromStr};
+use std::{collections::{HashMap, HashSet}, io, str::FromStr};
 use tokio_retry::strategy::FixedInterval;
 
 const MAX_TEST_CONNECTIONS: usize = 3;
@@ -54,7 +53,7 @@ fn test_peer_with_address(
     addr_str: &'static str,
 ) -> (PeerId, Peer, x25519::PublicKey, NetworkAddress) {
     let pubkey = x25519::PrivateKey::generate_for_testing().public_key();
-    let pubkeys = hashset! { pubkey };
+    let pubkeys = HashSet::from([pubkey]);
     let addr = network_address_with_pubkey(addr_str, pubkey);
     (
         peer_id,
@@ -313,7 +312,7 @@ impl TestHarness {
 #[test]
 fn connect_to_seeds_on_startup() {
     let (seed_peer_id, seed_peer, _, seed_addr) = test_peer(AccountAddress::ONE);
-    let seeds: PeerSet = hashmap! {seed_peer_id => seed_peer.clone()};
+    let seeds: PeerSet = HashMap::from([(seed_peer_id, seed_peer.clone())]);
     let (mut mock, conn_mgr) = TestHarness::new(seeds.clone());
 
     let test = async move {
@@ -333,7 +332,7 @@ fn connect_to_seeds_on_startup() {
         // Sending new address of seed peer
         let (new_seed, new_seed_addr) =
             update_peer_with_address(seed_peer, "/ip4/127.0.1.1/tcp/8080");
-        let update = hashmap! {seed_peer_id => new_seed};
+        let update = HashMap::from([(seed_peer_id, new_seed)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -361,7 +360,7 @@ fn addr_change() {
 
     let test = async move {
         // Sending address of other peer
-        let update = hashmap! {other_peer_id => other_peer.clone()};
+        let update = HashMap::from([(other_peer_id, other_peer.clone())]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update.clone())
             .await;
 
@@ -381,7 +380,7 @@ fn addr_change() {
         // Sending new address of other peer
         let (other_peer_new, other_addr_new) =
             update_peer_with_address(other_peer, "/ip4/127.0.1.1/tcp/8080");
-        let update = hashmap! {other_peer_id => other_peer_new};
+        let update = HashMap::from([(other_peer_id, other_peer_new)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
         mock.trigger_connectivity_check().await;
@@ -408,7 +407,7 @@ fn lost_connection() {
 
     let test = async move {
         // Sending address of other peer
-        let update = hashmap! {other_peer_id => other_peer};
+        let update = HashMap::from([(other_peer_id, other_peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -439,7 +438,7 @@ fn disconnect() {
 
     let test = async move {
         // Sending pubkey & address of other peer
-        let peers = hashmap! {other_peer_id => other_peer.clone()};
+        let peers = HashMap::from([(other_peer_id, other_peer.clone())]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -454,7 +453,7 @@ fn disconnect() {
         peer.keys = HashSet::new();
         peer.addresses = vec![network_address(DEFAULT_BASE_ADDR)];
 
-        let peers = hashmap! {other_peer_id => peer};
+        let peers = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -474,7 +473,7 @@ fn retry_on_failure() {
 
     let test = async move {
         // Sending pubkey set and addr of other peer
-        let peers = hashmap! {other_peer_id => peer.clone()};
+        let peers = HashMap::from([(other_peer_id, peer.clone())]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -494,7 +493,7 @@ fn retry_on_failure() {
         let mut peer = peer;
         peer.keys = HashSet::new();
         peer.addresses = vec![network_address(DEFAULT_BASE_ADDR)];
-        let peers = hashmap! {other_peer_id => peer};
+        let peers = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -521,7 +520,7 @@ fn no_op_requests() {
 
     let test = async move {
         // Sending pubkey set and addr of other peer
-        let peers = hashmap! {other_peer_id => peer.clone()};
+        let peers = HashMap::from([(other_peer_id, peer.clone())]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -540,7 +539,7 @@ fn no_op_requests() {
         let mut peer = peer;
         peer.keys = HashSet::new();
         peer.addresses = vec![network_address(DEFAULT_BASE_ADDR)];
-        let peers = hashmap! {other_peer_id => peer};
+        let peers = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -577,7 +576,7 @@ fn backoff_on_failure() {
         let (peer_id_b, peer_b, _, peer_b_addr) = test_peer(generate_account_address(2));
 
         // Sending pubkey set and addr of peers
-        let peers = hashmap! {peer_id_a => peer_a, peer_id_b => peer_b};
+        let peers = HashMap::from([(peer_id_a, peer_a), (peer_id_b, peer_b)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers)
             .await;
 
@@ -617,7 +616,7 @@ fn multiple_addrs_basic() {
         peer.addresses = vec![other_addr_1.clone(), other_addr_2.clone()];
 
         // Sending address of other peer
-        let update = hashmap! {other_peer_id => peer};
+        let update = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -650,7 +649,7 @@ fn multiple_addrs_wrapping() {
         peer.addresses = vec![other_addr_1.clone(), other_addr_2.clone()];
 
         // Sending address of other peer
-        let update = hashmap! {other_peer_id => peer};
+        let update = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -688,7 +687,7 @@ fn multiple_addrs_shrinking() {
         peer.addresses = vec![other_addr_1.clone(), other_addr_2, other_addr_3];
 
         // Sending address of other peer
-        let update = hashmap! {other_peer_id => peer.clone()};
+        let update = HashMap::from([(other_peer_id, peer.clone())]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -702,7 +701,7 @@ fn multiple_addrs_shrinking() {
         peer.addresses = vec![other_addr_4.clone(), other_addr_5];
 
         // The peer issues a new, smaller set of listen addrs.
-        let update = hashmap! {other_peer_id => peer};
+        let update = HashMap::from([(other_peer_id, peer)]);
         mock.send_update_discovered_peers(DiscoverySource::OnChainValidatorSet, update)
             .await;
 
@@ -758,9 +757,9 @@ fn basic_update_discovered_peers() {
     let pubkey_1 = x25519::PrivateKey::generate(&mut rng).public_key();
     let pubkey_2 = x25519::PrivateKey::generate(&mut rng).public_key();
 
-    let pubkeys_1 = hashset! {pubkey_1};
-    let pubkeys_2 = hashset! {pubkey_2};
-    let pubkeys_1_2 = hashset! {pubkey_1, pubkey_2};
+    let pubkeys_1 = HashSet::from([pubkey_1]);
+    let pubkeys_2 = HashSet::from([pubkey_2]);
+    let pubkeys_1_2 = HashSet::from([pubkey_1, pubkey_2]);
 
     let peer_a1 = Peer::new(vec![addr_a.clone()], pubkeys_1.clone(), PeerRole::Validator);
     let peer_a2 = Peer::new(vec![addr_a.clone()], pubkeys_2, PeerRole::Validator);
@@ -768,9 +767,9 @@ fn basic_update_discovered_peers() {
     let peer_a_1_2 = Peer::new(vec![addr_a], pubkeys_1_2, PeerRole::Validator);
 
     let peers_empty = PeerSet::new();
-    let peers_1 = hashmap! {peer_id_a => peer_a1};
-    let peers_2 = hashmap! {peer_id_a => peer_a2, peer_id_b => peer_b1.clone()};
-    let peers_1_2 = hashmap! {peer_id_a => peer_a_1_2, peer_id_b => peer_b1};
+    let peers_1 = HashMap::from([(peer_id_a, peer_a1)]);
+    let peers_2 = HashMap::from([(peer_id_a, peer_a2), (peer_id_b, peer_b1.clone())]);
+    let peers_1_2 = HashMap::from([(peer_id_a, peer_a_1_2), (peer_id_b, peer_b1)]);
 
     // basic one peer one discovery source
     conn_mgr.handle_update_discovered_peers(DiscoverySource::OnChainValidatorSet, peers_1.clone());
@@ -916,15 +915,15 @@ async fn test_allow_list_filters_peers_to_dial() {
     let (peer_id_3, peer_3, _, _) = test_peer(AccountAddress::random());
 
     // Create an allow list (with peer 1 and peer 2)
-    let allow_list = hashset! { peer_id_1, peer_id_2 };
+    let allow_list = HashSet::from([peer_id_1, peer_id_2]);
     let access_control_policy = Some(Arc::new(AccessControlPolicy::AllowList(allow_list)));
 
     // Create a connectivity manager with the allow list
-    let seeds = hashmap! {
-        peer_id_1 => peer_1,
-        peer_id_2 => peer_2,
-        peer_id_3 => peer_3,
-    };
+    let seeds = HashMap::from([
+        (peer_id_1, peer_1),
+        (peer_id_2, peer_2),
+        (peer_id_3, peer_3),
+    ]);
     let mut connectivity_manager =
         create_connectivity_manager_with_policy(seeds, access_control_policy);
 
@@ -949,15 +948,15 @@ async fn test_block_list_filters_peers_to_dial() {
     let (peer_id_3, peer_3, _, _) = test_peer(AccountAddress::random());
 
     // Create a block list with peer 3
-    let block_list = hashset! { peer_id_3 };
+    let block_list = HashSet::from([peer_id_3]);
     let access_control_policy = Some(Arc::new(AccessControlPolicy::BlockList(block_list)));
 
     // Create a connectivity manager with the block list
-    let seeds = hashmap! {
-        peer_id_1 => peer_1,
-        peer_id_2 => peer_2,
-        peer_id_3 => peer_3,
-    };
+    let seeds = HashMap::from([
+        (peer_id_1, peer_1),
+        (peer_id_2, peer_2),
+        (peer_id_3, peer_3),
+    ]);
     let mut connectivity_manager =
         create_connectivity_manager_with_policy(seeds, access_control_policy);
 
@@ -982,11 +981,11 @@ async fn test_no_policy_dials_all_peers() {
     let (peer_id_3, peer_3, _, _) = test_peer(AccountAddress::random());
 
     // Create connectivity manager with no access control policy
-    let seeds = hashmap! {
-        peer_id_1 => peer_1,
-        peer_id_2 => peer_2,
-        peer_id_3 => peer_3,
-    };
+    let seeds = HashMap::from([
+        (peer_id_1, peer_1),
+        (peer_id_2, peer_2),
+        (peer_id_3, peer_3),
+    ]);
     let mut connectivity_manager = create_connectivity_manager_with_policy(seeds, None);
 
     // Get the peers to dial
