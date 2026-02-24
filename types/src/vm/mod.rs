@@ -3,4 +3,5 @@
 
 pub mod code;
 pub mod module_metadata;
+#[cfg(feature = "move-extras")]
 pub mod modules;

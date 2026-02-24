@@ -23,7 +23,7 @@ aptos-infallible = { workspace = true }
 aptos-logger = { workspace = true }
 aptos-metrics-core = { workspace = true }
 aptos-mvhashmap = { workspace = true }
-aptos-types = { workspace = true }
+aptos-types = { workspace = true, features = ["move-extras"] }
 aptos-vm-environment = { workspace = true }
 aptos-vm-logging = { workspace = true }
 aptos-vm-types = { workspace = true }

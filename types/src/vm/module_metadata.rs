@@ -22,6 +22,7 @@ use move_core_types::{
     language_storage::{ModuleId, StructTag},
     metadata::Metadata,
 };
+#[cfg(feature = "move-extras")]
 use move_model::{
     metadata::{CompilationMetadata, COMPILATION_METADATA_KEY},
     model::StructEnv,
@@ -31,8 +32,10 @@ use std::{cell::RefCell, collections::BTreeMap, env, num::NonZeroUsize, str::Fro
 use thiserror::Error;
 
 pub mod prelude {
+    #[cfg(feature = "move-extras")]
+    pub use crate::vm::module_metadata::get_compilation_metadata;
     pub use crate::vm::module_metadata::{
-        get_compilation_metadata, get_metadata_from_compiled_code, RuntimeModuleMetadataV1,
+        get_metadata_from_compiled_code, RuntimeModuleMetadataV1,
     };
 }
 
@@ -267,18 +270,39 @@ fn check_metadata_format(module: &CompiledModule) -> Result<(), MalformedError> 
                 bcs::from_bytes::<RuntimeModuleMetadataV1>(&data.value)
                     .map_err(|e| MalformedError::DeserializedError(data.key.clone(), e))?;
             }
-        } else if data.key == *COMPILATION_METADATA_KEY {
+        } else if is_compilation_metadata_key(&data.key) {
             if compilation_key_exist {
                 return Err(MalformedError::DuplicateKey);
             }
             compilation_key_exist = true;
-            bcs::from_bytes::<CompilationMetadata>(&data.value)
-                .map_err(|e| MalformedError::DeserializedError(data.key.clone(), e))?;
+            check_compilation_metadata_value(&data.value, &data.key)?;
         } else {
             return Err(MalformedError::UnknownKey(data.key.clone()));
         }
     }
 
+    Ok(())
+}
+
+#[cfg(feature = "move-extras")]
+fn is_compilation_metadata_key(key: &[u8]) -> bool {
+    key == COMPILATION_METADATA_KEY
+}
+
+#[cfg(not(feature = "move-extras"))]
+fn is_compilation_metadata_key(_key: &[u8]) -> bool {
+    false
+}
+
+#[cfg(feature = "move-extras")]
+fn check_compilation_metadata_value(value: &[u8], key: &[u8]) -> Result<(), MalformedError> {
+    bcs::from_bytes::<CompilationMetadata>(value)
+        .map_err(|e| MalformedError::DeserializedError(key.to_vec(), e))?;
+    Ok(())
+}
+
+#[cfg(not(feature = "move-extras"))]
+fn check_compilation_metadata_value(_value: &[u8], _key: &[u8]) -> Result<(), MalformedError> {
     Ok(())
 }
 
@@ -307,6 +331,7 @@ pub fn get_metadata_from_compiled_code(
     }
 }
 
+#[cfg(feature = "move-extras")]
 /// Extract compilation metadata from a compiled module or script.
 pub fn get_compilation_metadata(code: &impl CompiledCodeMetadata) -> Option<CompilationMetadata> {
     if let Some(data) = find_metadata(code.metadata(), COMPILATION_METADATA_KEY) {
@@ -700,6 +725,7 @@ impl ResourceGroupScope {
         }
     }
 
+    #[cfg(feature = "move-extras")]
     pub fn are_equal_envs(&self, resource: &StructEnv, group: &StructEnv) -> bool {
         match self {
             ResourceGroupScope::Global => true,

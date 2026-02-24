@@ -21,7 +21,7 @@ aptos-gas-schedule = { workspace = true }
 aptos-move-stdlib = { workspace = true }
 aptos-native-interface = { workspace = true }
 aptos-sdk-builder = { workspace = true }
-aptos-types = { workspace = true }
+aptos-types = { workspace = true, features = ["move-extras"] }
 aptos-vm-types = { workspace = true }
 ark-bls12-381 = { workspace = true }
 ark-bn254 = { workspace = true }

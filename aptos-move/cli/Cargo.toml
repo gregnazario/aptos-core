@@ -29,7 +29,7 @@ aptos-rest-client = { workspace = true }
 aptos-sdk = { workspace = true }
 aptos-transaction-simulation = { workspace = true }
 aptos-transaction-simulation-session = { workspace = true }
-aptos-types = { workspace = true }
+aptos-types = { workspace = true, features = ["move-extras"] }
 aptos-vm = { workspace = true }
 aptos-vm-environment = { workspace = true }
 aptos-vm-logging = { workspace = true }

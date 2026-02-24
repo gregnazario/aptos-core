@@ -65,6 +65,7 @@ pub use utility_coin::*;
 pub mod aggregate_signature;
 pub mod block_executor;
 pub mod bytes;
+#[cfg(feature = "move-extras")]
 pub mod delayed_fields;
 pub mod keyless;
 pub mod state_store;
