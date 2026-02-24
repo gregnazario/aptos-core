@@ -525,7 +525,7 @@ mod test {
         noise::{AntiReplayTimestamps, HandshakeAuthMode, NoiseUpgrader},
         testutils::fake_socket::{ReadOnlyTestSocket, ReadWriteTestSocket},
     };
-    use aptos_config::network_id::NetworkContext;
+    use aptos_network_types::NetworkContext;
     use aptos_crypto::{test_utils::TEST_SEED, traits::Uniform as _, x25519};
     use aptos_memsocket::MemorySocket;
     use futures::{

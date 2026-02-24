@@ -2,7 +2,8 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use crate::testutils::test_node::{ApplicationNode, NodeId};
-use aptos_config::{config::NodeConfig, network_id::PeerNetworkId};
+use aptos_config::config::NodeConfig;
+use aptos_network_types::PeerNetworkId;
 use std::collections::HashMap;
 
 // TODO: this code needs to either be used across applications, or just

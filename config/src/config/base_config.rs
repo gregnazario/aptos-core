@@ -5,12 +5,11 @@ use crate::config::{
     config_sanitizer::ConfigSanitizer, node_config_loader::NodeType, Error, NodeConfig,
     SecureBackend,
 };
+pub use aptos_network_types::{ParseRoleError, RoleType};
 use aptos_secure_storage::{KVStorage, Storage};
 use aptos_types::{chain_id::ChainId, waypoint::Waypoint};
-use poem_openapi::Enum as PoemEnum;
 use serde::{Deserialize, Serialize};
-use std::{fmt, fs, path::PathBuf, str::FromStr};
-use thiserror::Error;
+use std::{fs, path::PathBuf, str::FromStr};
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize)]
 #[serde(default, deny_unknown_fields)]
@@ -122,55 +121,6 @@ impl WaypointConfig {
         }
     }
 }
-
-#[derive(Clone, Copy, Deserialize, Eq, PartialEq, PoemEnum, Serialize)]
-#[serde(rename_all = "snake_case")]
-#[oai(rename_all = "snake_case")]
-pub enum RoleType {
-    Validator,
-    FullNode,
-}
-
-impl RoleType {
-    pub fn is_validator(self) -> bool {
-        self == RoleType::Validator
-    }
-
-    pub fn as_str(self) -> &'static str {
-        match self {
-            RoleType::Validator => "validator",
-            RoleType::FullNode => "full_node",
-        }
-    }
-}
-
-impl FromStr for RoleType {
-    type Err = ParseRoleError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "validator" => Ok(RoleType::Validator),
-            "full_node" => Ok(RoleType::FullNode),
-            _ => Err(ParseRoleError(s.to_string())),
-        }
-    }
-}
-
-impl fmt::Debug for RoleType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-impl fmt::Display for RoleType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.as_str())
-    }
-}
-
-#[derive(Debug, Error)]
-#[error("Invalid node role: {0}")]
-pub struct ParseRoleError(String);
 
 #[cfg(test)]
 mod test {

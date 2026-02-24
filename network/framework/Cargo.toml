@@ -17,7 +17,7 @@ anyhow = { workspace = true }
 aptos-bitvec = { workspace = true }
 aptos-channels = { workspace = true }
 aptos-compression = { workspace = true }
-aptos-config = { workspace = true }
+aptos-config = { workspace = true, optional = true }
 aptos-crypto = { workspace = true }
 aptos-id-generator = { workspace = true }
 aptos-infallible = { workspace = true }
@@ -25,6 +25,7 @@ aptos-logger = { workspace = true }
 aptos-memsocket = { workspace = true, optional = true }
 aptos-metrics-core = { workspace = true }
 aptos-netcore = { workspace = true }
+aptos-network-types = { workspace = true }
 aptos-num-variants = { workspace = true }
 aptos-peer-monitoring-service-types = { workspace = true }
 aptos-proptest-helpers = { workspace = true, optional = true }
@@ -61,6 +62,7 @@ aptos-bitvec = { workspace = true, features = ["fuzzing"] }
 aptos-config = { workspace = true, features = ["testing"] }
 aptos-memsocket = { workspace = true }
 aptos-netcore = { workspace = true, features = ["testing"] }
+aptos-network-types = { workspace = true, features = ["fuzzing"] }
 aptos-proptest-helpers = { workspace = true }
 aptos-time-service = { workspace = true, features = ["testing"] }
 aptos-types = { workspace = true, features = ["fuzzing"] }
@@ -69,8 +71,8 @@ proptest-derive = { workspace = true }
 
 [features]
 default = []
-fuzzing = ["aptos-bitvec/fuzzing", "aptos-config/fuzzing", "aptos-crypto/fuzzing", "aptos-types/fuzzing", "aptos-proptest-helpers", "aptos-time-service/testing", "aptos-types/fuzzing", "aptos-memsocket/testing", "aptos-netcore/fuzzing", "proptest", "proptest-derive"]
-testing = ["aptos-config/testing", "aptos-time-service/testing", "aptos-memsocket/testing", "aptos-netcore/testing"]
+fuzzing = ["aptos-bitvec/fuzzing", "aptos-config", "aptos-config/fuzzing", "aptos-crypto/fuzzing", "aptos-network-types/fuzzing", "aptos-types/fuzzing", "aptos-proptest-helpers", "aptos-time-service/testing", "aptos-types/fuzzing", "aptos-memsocket/testing", "aptos-netcore/fuzzing", "proptest", "proptest-derive"]
+testing = ["aptos-config", "aptos-config/testing", "aptos-network-types/testing", "aptos-time-service/testing", "aptos-memsocket/testing", "aptos-netcore/testing"]
 
 [package.metadata.cargo-machete]
 ignored = ["serde_bytes"]

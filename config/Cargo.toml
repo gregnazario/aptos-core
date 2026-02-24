@@ -17,6 +17,7 @@ anyhow = { workspace = true }
 aptos-crypto = { workspace = true }
 aptos-global-constants = { workspace = true }
 aptos-logger = { workspace = true }
+aptos-network-types = { workspace = true, features = ["openapi"] }
 aptos-secure-storage = { workspace = true }
 aptos-short-hex-str = { workspace = true }
 aptos-temppath = { workspace = true }
@@ -48,9 +49,9 @@ tempfile = { workspace = true }
 [features]
 default = []
 failpoints = []
-fuzzing = ["aptos-crypto/fuzzing", "aptos-types/fuzzing"]
+fuzzing = ["aptos-crypto/fuzzing", "aptos-types/fuzzing", "aptos-network-types/fuzzing"]
 smoke-test = []
-testing = []
+testing = ["aptos-network-types/testing"]
 tokio-console = []
 
 [package.metadata.cargo-machete]

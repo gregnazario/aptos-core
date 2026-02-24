@@ -48,7 +48,7 @@ mod tests {
         },
         ProtocolId,
     };
-    use aptos_config::network_id::NetworkId;
+    use aptos_network_types::NetworkId;
     use aptos_memsocket::MemorySocket;
     use aptos_types::chain_id::ChainId;
     use futures::{executor::block_on, future::join};

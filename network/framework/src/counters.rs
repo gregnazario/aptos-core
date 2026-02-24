@@ -2,7 +2,7 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use crate::protocols::wire::handshake::v1::ProtocolId;
-use aptos_config::network_id::NetworkContext;
+use aptos_network_types::NetworkContext;
 use aptos_metrics_core::{
     exponential_buckets, register_histogram_vec, register_int_counter_vec, register_int_gauge,
     register_int_gauge_vec, Histogram, HistogramTimer, HistogramVec, IntCounter, IntCounterVec,

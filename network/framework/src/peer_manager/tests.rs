@@ -22,9 +22,8 @@ use crate::{
 };
 use anyhow::anyhow;
 use aptos_channels::{aptos_channel, message_queues::QueueStyle};
-use aptos_config::{
-    config::{AccessControlPolicy, PeerRole, MAX_INBOUND_CONNECTIONS},
-    network_id::{NetworkContext, NetworkId},
+use aptos_network_types::{
+    AccessControlPolicy, NetworkContext, NetworkId, PeerRole, MAX_INBOUND_CONNECTIONS,
 };
 use aptos_memsocket::MemorySocket;
 use aptos_netcore::transport::{

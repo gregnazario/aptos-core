@@ -35,7 +35,7 @@ use crate::{
     ProtocolId,
 };
 use aptos_channels::{aptos_channel, message_queues::QueueStyle};
-use aptos_config::network_id::{NetworkContext, PeerNetworkId};
+use aptos_network_types::{NetworkContext, PeerNetworkId};
 use aptos_logger::prelude::*;
 use aptos_short_hex_str::AsShortHexStr;
 use aptos_time_service::{TimeService, TimeServiceTrait};

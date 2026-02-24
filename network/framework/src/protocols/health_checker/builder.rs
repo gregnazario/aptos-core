@@ -12,7 +12,7 @@ use crate::{
         wire::handshake::v1::ProtocolId::HealthCheckerRpc,
     },
 };
-use aptos_config::network_id::NetworkContext;
+use aptos_network_types::NetworkContext;
 use aptos_logger::prelude::*;
 use aptos_time_service::TimeService;
 use std::{collections::HashMap, sync::Arc, time::Duration};

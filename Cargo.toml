@@ -163,6 +163,7 @@ members = [
     "network/framework",
     "network/memsocket",
     "network/netcore",
+    "network/types",
     "peer-monitoring-service/client",
     "peer-monitoring-service/server",
     "peer-monitoring-service/types",
@@ -407,6 +408,7 @@ aptos-network = { path = "network/framework" }
 aptos-network-builder = { path = "network/builder" }
 aptos-network-checker = { path = "crates/aptos-network-checker" }
 aptos-network-discovery = { path = "network/discovery" }
+aptos-network-types = { path = "network/types" }
 aptos-nft-metadata-crawler = { path = "ecosystem/nft-metadata-crawler" }
 aptos-node = { path = "aptos-node" }
 aptos-node-identity = { path = "crates/aptos-node-identity" }

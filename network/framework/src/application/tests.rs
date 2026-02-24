@@ -25,10 +25,7 @@ use crate::{
     transport::ConnectionMetadata,
 };
 use aptos_channels::{aptos_channel, message_queues::QueueStyle};
-use aptos_config::{
-    config::{Peer, PeerRole, PeerSet},
-    network_id::{NetworkId, PeerNetworkId},
-};
+use aptos_network_types::{NetworkId, Peer, PeerNetworkId, PeerRole, PeerSet};
 use aptos_peer_monitoring_service_types::PeerMonitoringMetadata;
 use aptos_types::{account_address::AccountAddress, PeerId};
 use futures_util::StreamExt;

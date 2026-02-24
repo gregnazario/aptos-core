@@ -5,7 +5,7 @@ use crate::{
     connectivity_manager::{DiscoveredPeer, DiscoveredPeerSet},
     logging::NetworkSchema,
 };
-use aptos_config::network_id::NetworkContext;
+use aptos_network_types::NetworkContext;
 use aptos_infallible::RwLock;
 use aptos_logger::error;
 use aptos_types::PeerId;
@@ -223,10 +223,7 @@ fn get_unselected_peer_ids(
 #[cfg(test)]
 mod test {
     use super::*;
-    use aptos_config::{
-        config::{PeerRole, RoleType},
-        network_id::NetworkId,
-    };
+    use aptos_network_types::{NetworkId, PeerRole, RoleType};
     use aptos_types::account_address::AccountAddress;
     use rand_latest::Rng;
     use std::collections::{BinaryHeap, HashMap};

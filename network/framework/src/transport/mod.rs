@@ -9,10 +9,7 @@ use crate::{
         wire::handshake::v1::{HandshakeMsg, MessagingProtocolVersion, ProtocolIdSet},
     },
 };
-use aptos_config::{
-    config::{PeerRole, HANDSHAKE_VERSION},
-    network_id::{NetworkContext, NetworkId},
-};
+use aptos_network_types::{NetworkContext, NetworkId, PeerRole, HANDSHAKE_VERSION};
 use aptos_crypto::x25519;
 use aptos_id_generator::{IdGenerator, U32IdGenerator};
 use aptos_logger::prelude::*;

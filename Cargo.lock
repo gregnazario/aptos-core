@@ -933,6 +933,7 @@ dependencies = [
  "aptos-crypto",
  "aptos-global-constants",
  "aptos-logger",
+ "aptos-network-types",
  "aptos-secure-storage",
  "aptos-short-hex-str",
  "aptos-temppath",
@@ -3375,6 +3376,7 @@ dependencies = [
  "aptos-memsocket",
  "aptos-metrics-core",
  "aptos-netcore",
+ "aptos-network-types",
  "aptos-num-variants",
  "aptos-peer-monitoring-service-types",
  "aptos-proptest-helpers",
@@ -3457,6 +3459,7 @@ dependencies = [
  "aptos-metrics-core",
  "aptos-netcore",
  "aptos-network",
+ "aptos-network-types",
  "aptos-rest-client",
  "aptos-short-hex-str",
  "aptos-temppath",
@@ -3469,6 +3472,22 @@ dependencies = [
  "serde_yaml 0.8.26",
  "tokio",
  "url",
+]
+
+[[package]]
+name = "aptos-network-types"
+version = "0.1.0"
+dependencies = [
+ "aptos-crypto",
+ "aptos-short-hex-str",
+ "aptos-types",
+ "bcs 0.1.4",
+ "poem-openapi",
+ "serde",
+ "serde_yaml 0.8.26",
+ "strum 0.27.1",
+ "strum_macros 0.27.1",
+ "thiserror 1.0.69",
 ]
 
 [[package]]

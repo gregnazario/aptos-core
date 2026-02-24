@@ -5,7 +5,7 @@
 //! This module is to contain all networking logging information.
 //!
 //! ```
-//! use aptos_config::network_id::NetworkContext;
+//! use aptos_network_types::NetworkContext;
 //! use aptos_logger::info;
 //! use aptos_types::{PeerId, network_address::NetworkAddress};
 //! use aptos_network::logging::NetworkSchema;
@@ -24,7 +24,7 @@ use crate::{
     connectivity_manager::DiscoverySource,
     transport::{ConnectionId, ConnectionMetadata},
 };
-use aptos_config::network_id::NetworkContext;
+use aptos_network_types::NetworkContext;
 use aptos_logger::Schema;
 use aptos_netcore::transport::ConnectionOrigin;
 use aptos_types::{network_address::NetworkAddress, PeerId};

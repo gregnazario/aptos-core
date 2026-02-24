@@ -5,7 +5,7 @@ use crate::{
     counters::DISCOVERY_COUNTS, file::FileStream, rest::RestStream,
     validator_set::ValidatorSetStream,
 };
-use aptos_config::{config::PeerSet, network_id::NetworkContext};
+use aptos_network_types::{NetworkContext, PeerSet};
 use aptos_crypto::x25519;
 use aptos_event_notifications::ReconfigNotificationListener;
 use aptos_logger::prelude::*;

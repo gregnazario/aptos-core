@@ -22,10 +22,7 @@ use crate::{
     ProtocolId,
 };
 use aptos_channels::{self, aptos_channel, message_queues::QueueStyle};
-use aptos_config::{
-    config::AccessControlPolicy,
-    network_id::{NetworkContext, PeerNetworkId},
-};
+use aptos_network_types::{AccessControlPolicy, NetworkContext, PeerNetworkId};
 use aptos_logger::prelude::*;
 use aptos_netcore::transport::{ConnectionOrigin, Transport};
 use aptos_short_hex_str::AsShortHexStr;
@@ -60,7 +57,7 @@ use crate::{
     peer_manager::transport::{TransportHandler, TransportRequest},
     protocols::network::{ReceivedMessage, SerializedRequest},
 };
-use aptos_config::config::PeerRole;
+use aptos_network_types::PeerRole;
 use aptos_types::account_address::AccountAddress;
 pub use senders::*;
 pub use types::{ConnectionNotification, ConnectionRequest, PeerManagerRequest};

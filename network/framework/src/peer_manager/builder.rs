@@ -17,10 +17,7 @@ use crate::{
     ProtocolId,
 };
 use aptos_channels::{self, aptos_channel, message_queues::QueueStyle};
-use aptos_config::{
-    config::{AccessControlPolicy, HANDSHAKE_VERSION},
-    network_id::NetworkContext,
-};
+use aptos_network_types::{AccessControlPolicy, NetworkContext, HANDSHAKE_VERSION};
 use aptos_crypto::x25519;
 use aptos_logger::prelude::*;
 #[cfg(any(test, feature = "testing", feature = "fuzzing"))]

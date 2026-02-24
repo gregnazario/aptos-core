@@ -11,10 +11,7 @@ use crate::{
     transport::{ConnectionId, ConnectionMetadata},
     ProtocolId,
 };
-use aptos_config::{
-    config::{Peer, PeerSet},
-    network_id::{NetworkId, PeerNetworkId},
-};
+use aptos_network_types::{NetworkId, Peer, PeerNetworkId, PeerSet};
 use aptos_infallible::{Mutex, RwLock};
 use aptos_logger::{sample, sample::SampleRate, warn};
 use aptos_peer_monitoring_service_types::PeerMonitoringMetadata;

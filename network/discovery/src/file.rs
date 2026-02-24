@@ -2,7 +2,7 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use crate::DiscoveryError;
-use aptos_config::config::PeerSet;
+use aptos_network_types::PeerSet;
 #[cfg(test)]
 use aptos_logger::spawn_named;
 use aptos_time_service::{Interval, TimeService, TimeServiceTrait};
@@ -57,10 +57,7 @@ mod tests {
     use super::*;
     use crate::DiscoveryChangeListener;
     use aptos_channels::Receiver;
-    use aptos_config::{
-        config::{Peer, PeerRole},
-        network_id::NetworkContext,
-    };
+    use aptos_network_types::{NetworkContext, Peer, PeerRole};
     use aptos_event_notifications::DbBackedOnChainConfig;
     use aptos_network::connectivity_manager::{ConnectivityRequest, DiscoverySource};
     use aptos_temppath::TempPath;

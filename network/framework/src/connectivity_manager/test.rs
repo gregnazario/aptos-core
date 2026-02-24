@@ -7,9 +7,8 @@ use crate::{
     transport::ConnectionMetadata,
 };
 use aptos_channels::{aptos_channel, message_queues::QueueStyle};
-use aptos_config::{
-    config::{AccessControlPolicy, Peer, PeerRole, PeerSet, HANDSHAKE_VERSION},
-    network_id::NetworkId,
+use aptos_network_types::{
+    AccessControlPolicy, NetworkId, Peer, PeerRole, PeerSet, HANDSHAKE_VERSION,
 };
 use aptos_crypto::{test_utils::TEST_SEED, x25519, Uniform};
 use aptos_logger::info;

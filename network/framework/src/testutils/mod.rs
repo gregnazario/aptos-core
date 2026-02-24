@@ -2,7 +2,7 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use crate::application::storage::PeersAndMetadata;
-use aptos_config::network_id::NetworkContext;
+use aptos_network_types::NetworkContext;
 use aptos_crypto::x25519::PublicKey;
 use aptos_types::PeerId;
 use std::sync::Arc;

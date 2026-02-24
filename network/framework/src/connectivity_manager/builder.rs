@@ -7,10 +7,7 @@ use crate::{
     counters,
     peer_manager::{conn_notifs_channel, ConnectionRequestSender},
 };
-use aptos_config::{
-    config::{AccessControlPolicy, PeerSet},
-    network_id::NetworkContext,
-};
+use aptos_network_types::{AccessControlPolicy, NetworkContext, PeerSet};
 use aptos_time_service::TimeService;
 use std::{sync::Arc, time::Duration};
 use tokio::runtime::Handle;

@@ -5,10 +5,8 @@ use crate::testutils::{
     test_framework::TestFramework,
     test_node::{NodeId, NodeType, TestNode},
 };
-use aptos_config::{
-    config::NodeConfig,
-    network_id::{NetworkId, PeerNetworkId},
-};
+use aptos_config::config::NodeConfig;
+use aptos_network_types::{NetworkId, PeerNetworkId};
 use rand::{rngs::StdRng, SeedableRng};
 use std::{collections::HashMap, marker::PhantomData};
 

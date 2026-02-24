@@ -9,7 +9,7 @@ use crate::{
         wire::handshake::v1::{ProtocolId, ProtocolIdSet},
     },
 };
-use aptos_config::network_id::{NetworkId, PeerNetworkId};
+use aptos_network_types::{NetworkId, PeerNetworkId};
 use aptos_logger::{prelude::*, sample, sample::SampleRate};
 use aptos_types::{network_address::NetworkAddress, PeerId};
 use async_trait::async_trait;

@@ -19,7 +19,7 @@ use crate::{
     ProtocolId,
 };
 use aptos_channels::{aptos_channel, message_queues::QueueStyle};
-use aptos_config::network_id::NetworkId;
+use aptos_network_types::NetworkId;
 use aptos_time_service::{MockTimeService, TimeService};
 use futures::future;
 use std::{collections::HashMap, sync::Arc};
