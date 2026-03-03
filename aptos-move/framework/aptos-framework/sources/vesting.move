@@ -93,6 +93,24 @@ module aptos_framework::vesting {
     const EVEC_EMPTY_FOR_MANY_FUNCTION: u64 = 16;
     /// Current permissioned signer cannot perform vesting operations.
     const ENO_VESTING_PERMISSION: u64 = 17;
+    /// Vesting schedules of source and target contracts do not match.
+    const EVESTING_SCHEDULES_MISMATCH: u64 = 18;
+    /// Source and target contracts have different operators.
+    const EOPERATOR_MISMATCH: u64 = 19;
+    /// Combined shareholders exceed the maximum allowed.
+    const EMERGE_EXCEEDS_MAX_SHAREHOLDERS: u64 = 20;
+    /// Source contract has not been merged.
+    const ESOURCE_NOT_MERGED: u64 = 21;
+    /// No pending merge exists on the target contract.
+    const ENO_PENDING_MERGE: u64 = 22;
+    /// Source contract has pending active stake that must be resolved first.
+    const EMERGE_PENDING_STAKE_FOUND: u64 = 23;
+    /// Cannot merge a contract with itself.
+    const ECANNOT_MERGE_SELF: u64 = 24;
+    /// A merge is already pending on the target contract.
+    const EMERGE_ALREADY_PENDING: u64 = 25;
+    /// Cannot vest or unlock rewards while a merge is pending finalization.
+    const EMERGE_PENDING_NOT_FINALIZED: u64 = 26;
 
     /// Maximum number of shareholders a vesting pool can support.
     const MAXIMUM_SHAREHOLDERS: u64 = 30;
@@ -102,6 +120,8 @@ module aptos_framework::vesting {
     const VESTING_POOL_ACTIVE: u64 = 1;
     /// Vesting contract has been terminated and all funds have been released back to the withdrawal address.
     const VESTING_POOL_TERMINATED: u64 = 2;
+    /// Vesting contract has been merged into another contract.
+    const VESTING_POOL_MERGED: u64 = 3;
 
     /// Roles that can manage certain aspects of the vesting account beyond the main admin.
     const ROLE_BENEFICIARY_RESETTER: vector<u8> = b"ROLE_BENEFICIARY_RESETTER";
@@ -163,6 +183,11 @@ module aptos_framework::vesting {
 
     struct VestingAccountManagement has key {
         roles: SimpleMap<String, address>,
+    }
+
+    struct PendingMerge has key {
+        source_contract_address: address,
+        source_operator: address,
     }
 
     struct AdminStore has key {
@@ -255,6 +280,26 @@ module aptos_framework::vesting {
         admin: address,
         vesting_contract_address: address,
         amount: u64,
+    }
+
+    #[event]
+    struct MergeVestingContracts has drop, store {
+        admin: address,
+        source_contract_address: address,
+        target_contract_address: address,
+        source_staking_pool_address: address,
+        target_staking_pool_address: address,
+        shareholders_merged: u64,
+        source_remaining_grant: u64,
+        target_new_remaining_grant: u64,
+    }
+
+    #[event]
+    struct FinalizeMerge has drop, store {
+        admin: address,
+        source_contract_address: address,
+        target_contract_address: address,
+        amount_transferred: u64,
     }
 
     struct CreateVestingContractEvent has drop, store {
@@ -520,6 +565,19 @@ module aptos_framework::vesting {
         result
     }
 
+    #[view]
+    /// Return whether the target vesting contract has a pending merge.
+    public fun has_pending_merge(target_contract_address: address): bool {
+        exists<PendingMerge>(target_contract_address)
+    }
+
+    #[view]
+    /// Return the source contract address of a pending merge on the target contract.
+    public fun pending_merge_source(target_contract_address: address): address acquires PendingMerge {
+        assert!(exists<PendingMerge>(target_contract_address), error::not_found(ENO_PENDING_MERGE));
+        borrow_global<PendingMerge>(target_contract_address).source_contract_address
+    }
+
     /// Create a vesting schedule with the given schedule of distributions, a vesting start time and period duration.
     public fun create_vesting_schedule(
         schedule: vector<FixedPoint32>,
@@ -643,6 +701,10 @@ module aptos_framework::vesting {
 
     /// Unlock any accumulated rewards.
     public entry fun unlock_rewards(contract_address: address) acquires VestingContract {
+        assert!(
+            !exists<PendingMerge>(contract_address),
+            error::invalid_state(EMERGE_PENDING_NOT_FINALIZED),
+        );
         let accumulated_rewards = total_accumulated_rewards(contract_address);
         let vesting_contract = borrow_global<VestingContract>(contract_address);
         unlock_stake(vesting_contract, accumulated_rewards);
@@ -1013,6 +1075,194 @@ module aptos_framework::vesting {
         new_beneficiary: address,
     ) {
         staking_contract::set_beneficiary_for_operator(operator, new_beneficiary);
+    }
+
+    /// Merge the source vesting contract into the target vesting contract. Both contracts must have the same admin,
+    /// same operator, and identical vesting schedules. This is phase 1 of a two-phase merge operation.
+    /// After calling this, `finalize_merge` must be called after the source's stake lockup expires to transfer
+    /// the actual stake.
+    public entry fun merge_vesting_contracts(
+        admin: &signer,
+        source_contract_address: address,
+        target_contract_address: address,
+    ) acquires VestingContract {
+        // Cannot merge a contract with itself.
+        assert!(
+            source_contract_address != target_contract_address,
+            error::invalid_argument(ECANNOT_MERGE_SELF),
+        );
+
+        // Both contracts must be active.
+        assert_active_vesting_contract(source_contract_address);
+        assert_active_vesting_contract(target_contract_address);
+
+        // Verify admin owns both contracts.
+        let source_contract = borrow_global<VestingContract>(source_contract_address);
+        verify_admin(admin, source_contract);
+        let target_contract = borrow_global<VestingContract>(target_contract_address);
+        verify_admin(admin, target_contract);
+
+        // Both contracts must have the same operator.
+        assert!(
+            source_contract.staking.operator == target_contract.staking.operator,
+            error::invalid_argument(EOPERATOR_MISMATCH),
+        );
+
+        // Vesting schedules must be identical.
+        assert!(
+            source_contract.vesting_schedule == target_contract.vesting_schedule,
+            error::invalid_argument(EVESTING_SCHEDULES_MISMATCH),
+        );
+
+        // No pending merge already on target.
+        assert!(
+            !exists<PendingMerge>(target_contract_address),
+            error::invalid_state(EMERGE_ALREADY_PENDING),
+        );
+
+        // Source must not have pending_active stake.
+        let (_, _, pending_active, _) = stake::get_stake(source_contract.staking.pool_address);
+        assert!(pending_active == 0, error::invalid_state(EMERGE_PENDING_STAKE_FOUND));
+
+        // Distribute any pending withdrawals from both contracts to flush withdrawable coins.
+        distribute(source_contract_address);
+        distribute(target_contract_address);
+
+        // Count unique shareholders across both pools. Reject if combined > MAXIMUM_SHAREHOLDERS.
+        let source_contract = borrow_global<VestingContract>(source_contract_address);
+        let target_contract = borrow_global<VestingContract>(target_contract_address);
+        let source_shareholders = pool_u64::shareholders(&source_contract.grant_pool);
+        let target_shareholders = pool_u64::shareholders(&target_contract.grant_pool);
+        let unique_count = target_shareholders.length();
+        source_shareholders.for_each_ref(|sh| {
+            let sh: address = *sh;
+            if (!target_shareholders.contains(&sh)) {
+                unique_count = unique_count + 1;
+            };
+        });
+        assert!(
+            unique_count <= MAXIMUM_SHAREHOLDERS,
+            error::invalid_argument(EMERGE_EXCEEDS_MAX_SHAREHOLDERS),
+        );
+
+        // Read source data (immutable borrow).
+        let source_shareholder_list = pool_u64::shareholders(&source_contract.grant_pool);
+        let source_balances = vector::empty<u64>();
+        let source_beneficiary_keys = vector::empty<address>();
+        let source_beneficiary_vals = vector::empty<address>();
+        source_shareholder_list.for_each_ref(|sh| {
+            let sh: address = *sh;
+            source_balances.push_back(pool_u64::balance(&source_contract.grant_pool, sh));
+            if (source_contract.beneficiaries.contains_key(&sh)) {
+                source_beneficiary_keys.push_back(sh);
+                source_beneficiary_vals.push_back(*source_contract.beneficiaries.borrow(&sh));
+            };
+        });
+        let source_remaining_grant = source_contract.remaining_grant;
+        let (source_active_stake, _, _, _) = stake::get_stake(source_contract.staking.pool_address);
+        let source_staking_pool_address = source_contract.staking.pool_address;
+        let source_operator = source_contract.staking.operator;
+        let source_shareholders_count = source_shareholder_list.length();
+
+        // Mutate target: merge grant pools and beneficiaries.
+        let target_contract_mut = borrow_global_mut<VestingContract>(target_contract_address);
+        let i = 0;
+        while (i < source_shareholders_count) {
+            let sh = source_shareholder_list[i];
+            let balance = source_balances[i];
+            pool_u64::buy_in(&mut target_contract_mut.grant_pool, sh, balance);
+            i = i + 1;
+        };
+
+        // Merge beneficiary maps: source entries copied only if shareholder not already mapped in target.
+        let j = 0;
+        while (j < source_beneficiary_keys.length()) {
+            let sh = source_beneficiary_keys[j];
+            let ben = source_beneficiary_vals[j];
+            if (!target_contract_mut.beneficiaries.contains_key(&sh)) {
+                target_contract_mut.beneficiaries.add(sh, ben);
+            };
+            j = j + 1;
+        };
+
+        target_contract_mut.remaining_grant = target_contract_mut.remaining_grant + source_remaining_grant;
+        let target_new_remaining_grant = target_contract_mut.remaining_grant;
+        let target_staking_pool_address = target_contract_mut.staking.pool_address;
+        let admin_address = target_contract_mut.admin;
+
+        // Store PendingMerge at target's resource account.
+        let target_signer = get_vesting_account_signer_internal(target_contract_mut);
+        move_to(&target_signer, PendingMerge {
+            source_contract_address,
+            source_operator,
+        });
+
+        // Mutate source: mark as merged and unlock all active stake.
+        let source_contract_mut = borrow_global_mut<VestingContract>(source_contract_address);
+        source_contract_mut.state = VESTING_POOL_MERGED;
+        source_contract_mut.remaining_grant = 0;
+        unlock_stake(source_contract_mut, source_active_stake);
+
+        emit(MergeVestingContracts {
+            admin: admin_address,
+            source_contract_address,
+            target_contract_address,
+            source_staking_pool_address,
+            target_staking_pool_address,
+            shareholders_merged: source_shareholders_count,
+            source_remaining_grant,
+            target_new_remaining_grant,
+        });
+    }
+
+    /// Finalize a pending merge by transferring unlocked stake from the source contract to the target contract.
+    /// This should be called after the source contract's stake lockup has expired so that the unlocked stake
+    /// can be withdrawn and re-staked into the target's pool.
+    public entry fun finalize_merge(
+        admin: &signer,
+        target_contract_address: address,
+    ) acquires VestingContract, PendingMerge {
+        assert_vesting_contract_exists(target_contract_address);
+        let target_contract = borrow_global<VestingContract>(target_contract_address);
+        verify_admin(admin, target_contract);
+
+        // Assert PendingMerge exists and consume it.
+        assert!(
+            exists<PendingMerge>(target_contract_address),
+            error::not_found(ENO_PENDING_MERGE),
+        );
+        let PendingMerge {
+            source_contract_address,
+            source_operator,
+        } = move_from<PendingMerge>(target_contract_address);
+
+        // Distribute from source's staking contract to move inactive stake to withdrawable.
+        staking_contract::distribute(source_contract_address, source_operator);
+
+        // Withdraw coins from source contract's account.
+        let source_contract = borrow_global<VestingContract>(source_contract_address);
+        let source_balance = coin::balance<AptosCoin>(source_contract_address);
+        let admin_address = source_contract.admin;
+
+        if (source_balance > 0) {
+            let source_signer = get_vesting_account_signer_internal(source_contract);
+            let coins = coin::withdraw<AptosCoin>(&source_signer, source_balance);
+
+            // Deposit coins into target contract's account.
+            let target_contract = borrow_global<VestingContract>(target_contract_address);
+            let target_signer = get_vesting_account_signer_internal(target_contract);
+            coin::deposit(target_contract_address, coins);
+
+            // Add stake into target's pool.
+            staking_contract::add_stake(&target_signer, target_contract.staking.operator, source_balance);
+        };
+
+        emit(FinalizeMerge {
+            admin: admin_address,
+            source_contract_address,
+            target_contract_address,
+            amount_transferred: source_balance,
+        });
     }
 
     public fun get_role_holder(contract_address: address, role: String): address acquires VestingAccountManagement {
@@ -2058,5 +2308,361 @@ module aptos_framework::vesting {
     #[test_only]
     fun fraction(total: u64, numerator: u64, denominator: u64): u64 {
         fixed_point32::multiply_u64(total, fixed_point32::create_from_rational(numerator, denominator))
+    }
+
+    #[test_only]
+    const GRANT_AMOUNT_2: u64 = 10000000000000000; // 100M APT coins with 8 decimals.
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    public entry fun test_merge_basic(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract, PendingMerge {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12, @13, @14]);
+
+        // Create two contracts with disjoint shareholders and the same schedule.
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11, @12], &vector[GRANT_AMOUNT / 2, GRANT_AMOUNT / 2], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@13, @14], &vector[GRANT_AMOUNT_2 / 2, GRANT_AMOUNT_2 / 2], admin_address, 0);
+
+        // Merge contract_1 (source) into contract_2 (target).
+        merge_vesting_contracts(admin, contract_1, contract_2);
+
+        // Source should be in MERGED state.
+        let source = borrow_global<VestingContract>(contract_1);
+        assert!(source.state == VESTING_POOL_MERGED, 0);
+        assert!(source.remaining_grant == 0, 1);
+
+        // Target should have combined remaining grant.
+        let target = borrow_global<VestingContract>(contract_2);
+        assert!(target.remaining_grant == GRANT_AMOUNT + GRANT_AMOUNT_2, 2);
+
+        // Target should have all 4 shareholders.
+        assert!(pool_u64::shareholders_count(&target.grant_pool) == 4, 3);
+
+        // Each shareholder should have their original balance.
+        assert!(pool_u64::balance(&target.grant_pool, @11) == GRANT_AMOUNT / 2, 4);
+        assert!(pool_u64::balance(&target.grant_pool, @12) == GRANT_AMOUNT / 2, 5);
+        assert!(pool_u64::balance(&target.grant_pool, @13) == GRANT_AMOUNT_2 / 2, 6);
+        assert!(pool_u64::balance(&target.grant_pool, @14) == GRANT_AMOUNT_2 / 2, 7);
+
+        // PendingMerge should exist on target.
+        assert!(has_pending_merge(contract_2), 8);
+        assert!(pending_merge_source(contract_2) == contract_1, 9);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    public entry fun test_merge_overlapping_shareholders(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12, @13]);
+
+        // Contract 1: shareholders @11, @12
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11, @12], &vector[GRANT_AMOUNT / 2, GRANT_AMOUNT / 2], admin_address, 0);
+        // Contract 2: shareholders @12, @13 (overlapping @12)
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12, @13], &vector[GRANT_AMOUNT_2 / 2, GRANT_AMOUNT_2 / 2], admin_address, 0);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+
+        let target = borrow_global<VestingContract>(contract_2);
+        // Should have 3 unique shareholders.
+        assert!(pool_u64::shareholders_count(&target.grant_pool) == 3, 0);
+
+        // @12 should have summed shares.
+        let expected_12 = GRANT_AMOUNT / 2 + GRANT_AMOUNT_2 / 2;
+        assert!(pool_u64::balance(&target.grant_pool, @12) == expected_12, 1);
+        assert!(pool_u64::balance(&target.grant_pool, @11) == GRANT_AMOUNT / 2, 2);
+        assert!(pool_u64::balance(&target.grant_pool, @13) == GRANT_AMOUNT_2 / 2, 3);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    public entry fun test_merge_beneficiaries(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12, @13, @0xB1, @0xB2, @0xB3]);
+
+        // Contract 1 (source): shareholders @11, @12 with beneficiaries.
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11, @12], &vector[GRANT_AMOUNT / 2, GRANT_AMOUNT / 2], admin_address, 0);
+        set_beneficiary(admin, contract_1, @11, @0xB1);
+        set_beneficiary(admin, contract_1, @12, @0xB2);
+
+        // Contract 2 (target): shareholders @12, @13. @12 has a different beneficiary in target.
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12, @13], &vector[GRANT_AMOUNT_2 / 2, GRANT_AMOUNT_2 / 2], admin_address, 0);
+        set_beneficiary(admin, contract_2, @12, @0xB3);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+
+        let target = borrow_global<VestingContract>(contract_2);
+        // @11's beneficiary should be copied from source (@0xB1).
+        assert!(get_beneficiary(target, @11) == @0xB1, 0);
+        // @12's beneficiary should remain as target's (@0xB3), not overwritten by source.
+        assert!(get_beneficiary(target, @12) == @0xB3, 1);
+        // @13 has no explicit beneficiary, should return itself.
+        assert!(get_beneficiary(target, @13) == @13, 2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x10012, location = Self)]
+    public entry fun test_merge_schedule_mismatch_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12]);
+
+        // Contract 1 with schedule [3/48, 2/48, 1/48].
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        // Contract 2 with different schedule [1/12, 1/12].
+        let contract_2 = setup_vesting_contract_with_schedule(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0, &vector[1, 1], 12);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123, operator2 = @0x456)]
+    #[expected_failure(abort_code = 0x10013, location = Self)]
+    public entry fun test_merge_different_operator_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+        operator2: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        let operator2_address = signer::address_of(operator2);
+        setup(aptos_framework, &vector[admin_address, @11, @12, operator2_address]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0);
+        // Change operator on contract_2.
+        update_operator(admin, contract_2, operator2_address, 0);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x10014, location = Self)]
+    public entry fun test_merge_exceeds_shareholders_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        // 16 shareholders for contract 1, 16 different for contract 2 = 32 unique > 30.
+        let shareholders_1 = vector[
+            @0x201, @0x202, @0x203, @0x204, @0x205, @0x206, @0x207, @0x208,
+            @0x209, @0x20a, @0x20b, @0x20c, @0x20d, @0x20e, @0x20f, @0x210,
+        ];
+        let shareholders_2 = vector[
+            @0x211, @0x212, @0x213, @0x214, @0x215, @0x216, @0x217, @0x218,
+            @0x219, @0x21a, @0x21b, @0x21c, @0x21d, @0x21e, @0x21f, @0x220,
+        ];
+        let all_accounts = vector[admin_address];
+        shareholders_1.for_each_ref(|a| { all_accounts.push_back(*a); });
+        shareholders_2.for_each_ref(|a| { all_accounts.push_back(*a); });
+        setup(aptos_framework, &all_accounts);
+
+        let shares_1 = vector[
+            MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE,
+            MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE,
+        ];
+        let shares_2 = vector[
+            MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE,
+            MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE, MIN_STAKE,
+        ];
+
+        let contract_1 = setup_vesting_contract(admin, &shareholders_1, &shares_1, admin_address, 0);
+        let contract_2 = setup_vesting_contract(admin, &shareholders_2, &shares_2, admin_address, 0);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x10018, location = Self)]
+    public entry fun test_merge_self_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+
+        merge_vesting_contracts(admin, contract_1, contract_1);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x30008, location = Self)]
+    public entry fun test_merge_terminated_source_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0);
+
+        // Terminate source contract.
+        terminate_vesting_contract(admin, contract_1);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x30017, location = Self)]
+    public entry fun test_merge_pending_active_stake_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0);
+
+        // Join validator set to create pending_active stake, then add more stake to create pending_active.
+        let stake_pool_address = stake_pool_address(contract_1);
+        let (_sk, pk, pop) = stake::generate_identity();
+        stake::join_validator_set_for_test(&pk, &pop, admin, stake_pool_address, true);
+
+        // Add stake to source so it has pending_active.
+        let source_contract = borrow_global<VestingContract>(contract_1);
+        let source_signer = get_vesting_account_signer_internal(source_contract);
+        coin::register<AptosCoin>(&source_signer);
+        let coins = stake::mint_coins(MIN_STAKE);
+        coin::deposit(contract_1, coins);
+        staking_contract::add_stake(&source_signer, admin_address, MIN_STAKE);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x60016, location = Self)]
+    public entry fun test_finalize_no_pending_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract, PendingMerge {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+
+        // Finalize without a pending merge should fail.
+        finalize_merge(admin, contract_1);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x30019, location = Self)]
+    public entry fun test_double_merge_before_finalize_fails(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12, @13]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0);
+        let contract_3 = setup_vesting_contract(
+            admin, &vector[@13], &vector[GRANT_AMOUNT_2], admin_address, 0);
+
+        // First merge succeeds.
+        merge_vesting_contracts(admin, contract_1, contract_3);
+        // Second merge before finalize should fail.
+        merge_vesting_contracts(admin, contract_2, contract_3);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    #[expected_failure(abort_code = 0x3001A, location = Self)]
+    public entry fun test_vest_blocked_during_pending_merge(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12]);
+
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11], &vector[GRANT_AMOUNT], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@12], &vector[GRANT_AMOUNT_2], admin_address, 0);
+
+        merge_vesting_contracts(admin, contract_1, contract_2);
+
+        // Attempting to vest on target with pending merge should fail.
+        timestamp::update_global_time_for_test_secs(vesting_start_secs(contract_2) + VESTING_PERIOD);
+        vest(contract_2);
+    }
+
+    #[test(aptos_framework = @0x1, admin = @0x123)]
+    public entry fun test_merge_and_finalize_e2e(
+        aptos_framework: &signer,
+        admin: &signer,
+    ) acquires AdminStore, VestingContract, PendingMerge {
+        let admin_address = signer::address_of(admin);
+        setup(aptos_framework, &vector[admin_address, @11, @12, @13, @14]);
+
+        // Create two contracts with disjoint shareholders.
+        let contract_1 = setup_vesting_contract(
+            admin, &vector[@11, @12], &vector[GRANT_AMOUNT / 2, GRANT_AMOUNT / 2], admin_address, 0);
+        let contract_2 = setup_vesting_contract(
+            admin, &vector[@13, @14], &vector[GRANT_AMOUNT_2 / 2, GRANT_AMOUNT_2 / 2], admin_address, 0);
+
+        let stake_pool_1 = stake_pool_address(contract_1);
+        let stake_pool_2 = stake_pool_address(contract_2);
+
+        // Join validator set for both pools.
+        let (_sk, pk, pop) = stake::generate_identity();
+        stake::join_validator_set_for_test(&pk, &pop, admin, stake_pool_1, false);
+        let (_sk2, pk2, pop2) = stake::generate_identity();
+        stake::join_validator_set_for_test(&pk2, &pop2, admin, stake_pool_2, false);
+        stake::end_epoch();
+
+        // Merge contract_1 into contract_2.
+        merge_vesting_contracts(admin, contract_1, contract_2);
+
+        // Verify target has combined remaining_grant.
+        assert!(remaining_grant(contract_2) == GRANT_AMOUNT + GRANT_AMOUNT_2, 0);
+
+        // Note: vest() should NOT be called between merge and finalize because the target's
+        // remaining_grant includes the source's grant but the source's stake hasn't been
+        // transferred yet. This would cause total_accumulated_rewards to underflow.
+
+        // Fast forward to unlock source's stake.
+        stake::fast_forward_to_unlock(stake_pool_1);
+
+        // Finalize the merge to transfer the source's unlocked stake to the target.
+        finalize_merge(admin, contract_2);
+
+        // PendingMerge should be consumed.
+        assert!(!has_pending_merge(contract_2), 1);
+
+        // Now vest on the target with the combined grant + stake.
+        timestamp::update_global_time_for_test_secs(vesting_start_secs(contract_2) + VESTING_PERIOD);
+        vest(contract_2);
+        let combined_grant = GRANT_AMOUNT + GRANT_AMOUNT_2;
+        let expected_vested = fraction(combined_grant, 3, 48);
+        assert!(remaining_grant(contract_2) == combined_grant - expected_vested, 2);
+
+        // Verify all 4 shareholders are present in the target.
+        let target = borrow_global<VestingContract>(contract_2);
+        assert!(pool_u64::shareholders_count(&target.grant_pool) == 4, 3);
     }
 }
