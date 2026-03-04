@@ -44,6 +44,7 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 -  [Struct `StakingInfo`](#0x1_vesting_StakingInfo)
 -  [Resource `VestingContract`](#0x1_vesting_VestingContract)
 -  [Resource `VestingAccountManagement`](#0x1_vesting_VestingAccountManagement)
+-  [Resource `PendingMerge`](#0x1_vesting_PendingMerge)
 -  [Resource `AdminStore`](#0x1_vesting_AdminStore)
 -  [Struct `CreateVestingContract`](#0x1_vesting_CreateVestingContract)
 -  [Struct `UpdateOperator`](#0x1_vesting_UpdateOperator)
@@ -55,6 +56,8 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 -  [Struct `Distribute`](#0x1_vesting_Distribute)
 -  [Struct `Terminate`](#0x1_vesting_Terminate)
 -  [Struct `AdminWithdraw`](#0x1_vesting_AdminWithdraw)
+-  [Struct `MergeVestingContracts`](#0x1_vesting_MergeVestingContracts)
+-  [Struct `FinalizeMerge`](#0x1_vesting_FinalizeMerge)
 -  [Struct `CreateVestingContractEvent`](#0x1_vesting_CreateVestingContractEvent)
 -  [Struct `UpdateOperatorEvent`](#0x1_vesting_UpdateOperatorEvent)
 -  [Struct `UpdateVoterEvent`](#0x1_vesting_UpdateVoterEvent)
@@ -83,6 +86,8 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 -  [Function `accumulated_rewards`](#0x1_vesting_accumulated_rewards)
 -  [Function `shareholders`](#0x1_vesting_shareholders)
 -  [Function `shareholder`](#0x1_vesting_shareholder)
+-  [Function `has_pending_merge`](#0x1_vesting_has_pending_merge)
+-  [Function `pending_merge_source`](#0x1_vesting_pending_merge_source)
 -  [Function `create_vesting_schedule`](#0x1_vesting_create_vesting_schedule)
 -  [Function `create_vesting_contract`](#0x1_vesting_create_vesting_contract)
 -  [Function `unlock_rewards`](#0x1_vesting_unlock_rewards)
@@ -103,6 +108,8 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 -  [Function `set_management_role`](#0x1_vesting_set_management_role)
 -  [Function `set_beneficiary_resetter`](#0x1_vesting_set_beneficiary_resetter)
 -  [Function `set_beneficiary_for_operator`](#0x1_vesting_set_beneficiary_for_operator)
+-  [Function `merge_vesting_contracts`](#0x1_vesting_merge_vesting_contracts)
+-  [Function `finalize_merge`](#0x1_vesting_finalize_merge)
 -  [Function `get_role_holder`](#0x1_vesting_get_role_holder)
 -  [Function `get_vesting_account_signer`](#0x1_vesting_get_vesting_account_signer)
 -  [Function `get_vesting_account_signer_internal`](#0x1_vesting_get_vesting_account_signer_internal)
@@ -110,6 +117,7 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 -  [Function `verify_admin`](#0x1_vesting_verify_admin)
 -  [Function `assert_vesting_contract_exists`](#0x1_vesting_assert_vesting_contract_exists)
 -  [Function `assert_active_vesting_contract`](#0x1_vesting_assert_active_vesting_contract)
+-  [Function `assert_not_merged`](#0x1_vesting_assert_not_merged)
 -  [Function `unlock_stake`](#0x1_vesting_unlock_stake)
 -  [Function `withdraw_stake`](#0x1_vesting_withdraw_stake)
 -  [Function `get_beneficiary`](#0x1_vesting_get_beneficiary)
@@ -167,10 +175,15 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 <b>use</b> <a href="aptos_coin.md#0x1_aptos_coin">0x1::aptos_coin</a>;
 <b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/bcs.md#0x1_bcs">0x1::bcs</a>;
 <b>use</b> <a href="coin.md#0x1_coin">0x1::coin</a>;
+<b>use</b> <a href="dispatchable_fungible_asset.md#0x1_dispatchable_fungible_asset">0x1::dispatchable_fungible_asset</a>;
+<b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">0x1::error</a>;
 <b>use</b> <a href="event.md#0x1_event">0x1::event</a>;
 <b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/fixed_point32.md#0x1_fixed_point32">0x1::fixed_point32</a>;
+<b>use</b> <a href="fungible_asset.md#0x1_fungible_asset">0x1::fungible_asset</a>;
+<b>use</b> <a href="object.md#0x1_object">0x1::object</a>;
 <b>use</b> <a href="permissioned_signer.md#0x1_permissioned_signer">0x1::permissioned_signer</a>;
 <b>use</b> <a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64">0x1::pool_u64</a>;
+<b>use</b> <a href="primary_fungible_store.md#0x1_primary_fungible_store">0x1::primary_fungible_store</a>;
 <b>use</b> <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">0x1::signer</a>;
 <b>use</b> <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map">0x1::simple_map</a>;
 <b>use</b> <a href="stake.md#0x1_stake">0x1::stake</a>;
@@ -419,6 +432,39 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 <dl>
 <dt>
 <code>roles: <a href="../../aptos-stdlib/doc/simple_map.md#0x1_simple_map_SimpleMap">simple_map::SimpleMap</a>&lt;<a href="../../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>, <b>address</b>&gt;</code>
+</dt>
+<dd>
+
+</dd>
+</dl>
+
+
+</details>
+
+<a id="0x1_vesting_PendingMerge"></a>
+
+## Resource `PendingMerge`
+
+
+
+<pre><code><b>struct</b> <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> <b>has</b> key
+</code></pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>source_contract_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>source_operator: <b>address</b></code>
 </dt>
 <dd>
 
@@ -951,6 +997,122 @@ withdrawable, admin can call admin_withdraw to withdraw all funds to the vesting
 
 </details>
 
+<a id="0x1_vesting_MergeVestingContracts"></a>
+
+## Struct `MergeVestingContracts`
+
+
+
+<pre><code>#[<a href="event.md#0x1_event">event</a>]
+<b>struct</b> <a href="vesting.md#0x1_vesting_MergeVestingContracts">MergeVestingContracts</a> <b>has</b> drop, store
+</code></pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>admin: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>source_contract_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>target_contract_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>source_staking_pool_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>target_staking_pool_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>shareholders_merged: u64</code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>source_remaining_grant: u64</code>
+</dt>
+<dd>
+
+</dd>
+</dl>
+
+
+</details>
+
+<a id="0x1_vesting_FinalizeMerge"></a>
+
+## Struct `FinalizeMerge`
+
+
+
+<pre><code>#[<a href="event.md#0x1_event">event</a>]
+<b>struct</b> <a href="vesting.md#0x1_vesting_FinalizeMerge">FinalizeMerge</a> <b>has</b> drop, store
+</code></pre>
+
+
+
+<details>
+<summary>Fields</summary>
+
+
+<dl>
+<dt>
+<code>source_contract_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>target_contract_address: <b>address</b></code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>amount_transferred: u64</code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>source_remaining_grant: u64</code>
+</dt>
+<dd>
+
+</dd>
+<dt>
+<code>target_new_remaining_grant: u64</code>
+</dt>
+<dd>
+
+</dd>
+</dl>
+
+
+</details>
+
 <a id="0x1_vesting_CreateVestingContractEvent"></a>
 
 ## Struct `CreateVestingContractEvent`
@@ -1458,6 +1620,16 @@ Permissions to mutate the vesting config for a given account.
 ## Constants
 
 
+<a id="0x1_vesting_ECANNOT_MERGE_SELF"></a>
+
+Cannot merge a contract with itself.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_ECANNOT_MERGE_SELF">ECANNOT_MERGE_SELF</a>: u64 = 24;
+</code></pre>
+
+
+
 <a id="0x1_vesting_EEMPTY_VESTING_SCHEDULE"></a>
 
 Vesting schedule cannot be empty.
@@ -1478,12 +1650,62 @@ Withdrawal address is invalid.
 
 
 
+<a id="0x1_vesting_EMERGE_ALREADY_PENDING"></a>
+
+A merge is already pending on the target contract.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EMERGE_ALREADY_PENDING">EMERGE_ALREADY_PENDING</a>: u64 = 25;
+</code></pre>
+
+
+
+<a id="0x1_vesting_EMERGE_EXCEEDS_MAX_SHAREHOLDERS"></a>
+
+Combined shareholders exceed the maximum allowed.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EMERGE_EXCEEDS_MAX_SHAREHOLDERS">EMERGE_EXCEEDS_MAX_SHAREHOLDERS</a>: u64 = 20;
+</code></pre>
+
+
+
+<a id="0x1_vesting_EMERGE_PENDING_STAKE_FOUND"></a>
+
+Source contract has pending active stake that must be resolved first.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EMERGE_PENDING_STAKE_FOUND">EMERGE_PENDING_STAKE_FOUND</a>: u64 = 23;
+</code></pre>
+
+
+
+<a id="0x1_vesting_EMERGE_SOURCE_STAKE_NOT_READY"></a>
+
+Source stake is still pending inactive.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EMERGE_SOURCE_STAKE_NOT_READY">EMERGE_SOURCE_STAKE_NOT_READY</a>: u64 = 26;
+</code></pre>
+
+
+
 <a id="0x1_vesting_ENOT_ADMIN"></a>
 
 The signer is not the admin of the vesting contract.
 
 
 <pre><code><b>const</b> <a href="vesting.md#0x1_vesting_ENOT_ADMIN">ENOT_ADMIN</a>: u64 = 7;
+</code></pre>
+
+
+
+<a id="0x1_vesting_ENO_PENDING_MERGE"></a>
+
+No pending merge exists on the target contract.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_ENO_PENDING_MERGE">ENO_PENDING_MERGE</a>: u64 = 22;
 </code></pre>
 
 
@@ -1504,6 +1726,16 @@ Current permissioned signer cannot perform vesting operations.
 
 
 <pre><code><b>const</b> <a href="vesting.md#0x1_vesting_ENO_VESTING_PERMISSION">ENO_VESTING_PERMISSION</a>: u64 = 17;
+</code></pre>
+
+
+
+<a id="0x1_vesting_EOPERATOR_MISMATCH"></a>
+
+Source and target contracts have different operators.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EOPERATOR_MISMATCH">EOPERATOR_MISMATCH</a>: u64 = 19;
 </code></pre>
 
 
@@ -1568,6 +1800,16 @@ Vesting account has no other management roles beside admin.
 
 
 
+<a id="0x1_vesting_EVESTING_CONTRACT_MERGED"></a>
+
+Cannot modify a merged vesting contract.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EVESTING_CONTRACT_MERGED">EVESTING_CONTRACT_MERGED</a>: u64 = 21;
+</code></pre>
+
+
+
 <a id="0x1_vesting_EVESTING_CONTRACT_NOT_ACTIVE"></a>
 
 Vesting contract needs to be in active state.
@@ -1594,6 +1836,16 @@ Admin can only withdraw from an inactive (paused or terminated) vesting contract
 
 
 <pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EVESTING_CONTRACT_STILL_ACTIVE">EVESTING_CONTRACT_STILL_ACTIVE</a>: u64 = 9;
+</code></pre>
+
+
+
+<a id="0x1_vesting_EVESTING_SCHEDULES_MISMATCH"></a>
+
+Vesting schedules of source and target contracts do not match.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_EVESTING_SCHEDULES_MISMATCH">EVESTING_SCHEDULES_MISMATCH</a>: u64 = 18;
 </code></pre>
 
 
@@ -1655,6 +1907,16 @@ Vesting contract is active and distributions can be made.
 
 
 <pre><code><b>const</b> <a href="vesting.md#0x1_vesting_VESTING_POOL_ACTIVE">VESTING_POOL_ACTIVE</a>: u64 = 1;
+</code></pre>
+
+
+
+<a id="0x1_vesting_VESTING_POOL_MERGED"></a>
+
+Vesting contract has been merged into another contract.
+
+
+<pre><code><b>const</b> <a href="vesting.md#0x1_vesting_VESTING_POOL_MERGED">VESTING_POOL_MERGED</a>: u64 = 3;
 </code></pre>
 
 
@@ -2177,6 +2439,59 @@ This returns 0x0 if no shareholder is found for the given beneficiary / the addr
     });
 
     result
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_vesting_has_pending_merge"></a>
+
+## Function `has_pending_merge`
+
+Return whether the target vesting contract has a pending merge.
+
+
+<pre><code>#[view]
+<b>public</b> <b>fun</b> <a href="vesting.md#0x1_vesting_has_pending_merge">has_pending_merge</a>(target_contract_address: <b>address</b>): bool
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="vesting.md#0x1_vesting_has_pending_merge">has_pending_merge</a>(target_contract_address: <b>address</b>): bool {
+    <b>exists</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address)
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_vesting_pending_merge_source"></a>
+
+## Function `pending_merge_source`
+
+Return the source contract address of a pending merge on the target contract.
+
+
+<pre><code>#[view]
+<b>public</b> <b>fun</b> <a href="vesting.md#0x1_vesting_pending_merge_source">pending_merge_source</a>(target_contract_address: <b>address</b>): <b>address</b>
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> <b>fun</b> <a href="vesting.md#0x1_vesting_pending_merge_source">pending_merge_source</a>(target_contract_address: <b>address</b>): <b>address</b> <b>acquires</b> <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> {
+    <b>assert</b>!(<b>exists</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="vesting.md#0x1_vesting_ENO_PENDING_MERGE">ENO_PENDING_MERGE</a>));
+    <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address).source_contract_address
 }
 </code></pre>
 
@@ -2716,6 +3031,7 @@ has already been terminated.
 ) <b>acquires</b> <a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a> {
     <b>let</b> vesting_contract = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, vesting_contract);
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
     <b>let</b> contract_signer = &<a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(vesting_contract);
     <b>let</b> old_operator = vesting_contract.staking.operator;
     <a href="staking_contract.md#0x1_staking_contract_switch_operator">staking_contract::switch_operator</a>(contract_signer, old_operator, new_operator, commission_percentage);
@@ -2791,6 +3107,7 @@ has already been terminated.
     <b>let</b> operator = <a href="vesting.md#0x1_vesting_operator">operator</a>(contract_address);
     <b>let</b> vesting_contract = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, vesting_contract);
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
     <b>let</b> contract_signer = &<a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(vesting_contract);
     <a href="staking_contract.md#0x1_staking_contract_update_commision">staking_contract::update_commision</a>(contract_signer, operator, new_commission_percentage);
     vesting_contract.staking.commission_percentage = new_commission_percentage;
@@ -2825,6 +3142,7 @@ has already been terminated.
 ) <b>acquires</b> <a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a> {
     <b>let</b> vesting_contract = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, vesting_contract);
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
     <b>let</b> contract_signer = &<a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(vesting_contract);
     <b>let</b> old_voter = vesting_contract.staking.voter;
     <a href="staking_contract.md#0x1_staking_contract_update_voter">staking_contract::update_voter</a>(contract_signer, vesting_contract.staking.operator, new_voter);
@@ -2867,6 +3185,7 @@ has already been terminated.
 ) <b>acquires</b> <a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a> {
     <b>let</b> vesting_contract = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, vesting_contract);
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
     <b>let</b> contract_signer = &<a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(vesting_contract);
     <a href="staking_contract.md#0x1_staking_contract_reset_lockup">staking_contract::reset_lockup</a>(contract_signer, vesting_contract.staking.operator);
 
@@ -2912,6 +3231,7 @@ has already been terminated.
 
     <b>let</b> vesting_contract = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, vesting_contract);
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
 
     <b>let</b> old_beneficiary = <a href="vesting.md#0x1_vesting_get_beneficiary">get_beneficiary</a>(vesting_contract, shareholder);
     <b>let</b> beneficiaries = &<b>mut</b> vesting_contract.beneficiaries;
@@ -2968,6 +3288,7 @@ account.
             addr == <a href="vesting.md#0x1_vesting_get_role_holder">get_role_holder</a>(contract_address, utf8(<a href="vesting.md#0x1_vesting_ROLE_BENEFICIARY_RESETTER">ROLE_BENEFICIARY_RESETTER</a>)),
         <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_permission_denied">error::permission_denied</a>(<a href="vesting.md#0x1_vesting_EPERMISSION_DENIED">EPERMISSION_DENIED</a>),
     );
+    <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract);
 
     <b>let</b> beneficiaries = &<b>mut</b> vesting_contract.beneficiaries;
     <b>if</b> (beneficiaries.contains_key(&shareholder)) {
@@ -3072,6 +3393,246 @@ Set the beneficiary for the operator.
     new_beneficiary: <b>address</b>,
 ) {
     <a href="staking_contract.md#0x1_staking_contract_set_beneficiary_for_operator">staking_contract::set_beneficiary_for_operator</a>(operator, new_beneficiary);
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_vesting_merge_vesting_contracts"></a>
+
+## Function `merge_vesting_contracts`
+
+Merge the source vesting contract into the target vesting contract. Both contracts must have the same admin,
+same operator, and identical vesting schedules. This is phase 1 of a two-phase merge operation.
+After calling this, <code>finalize_merge</code> must be called after the source's stake lockup expires to transfer
+the actual stake and merge grant pools, beneficiaries, and remaining_grant.
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="vesting.md#0x1_vesting_merge_vesting_contracts">merge_vesting_contracts</a>(admin: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, source_contract_address: <b>address</b>, target_contract_address: <b>address</b>)
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="vesting.md#0x1_vesting_merge_vesting_contracts">merge_vesting_contracts</a>(
+    admin: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+    source_contract_address: <b>address</b>,
+    target_contract_address: <b>address</b>,
+) <b>acquires</b> <a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a> {
+    // Cannot merge a contract <b>with</b> itself.
+    <b>assert</b>!(
+        source_contract_address != target_contract_address,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="vesting.md#0x1_vesting_ECANNOT_MERGE_SELF">ECANNOT_MERGE_SELF</a>),
+    );
+
+    // Both contracts must be active.
+    <a href="vesting.md#0x1_vesting_assert_active_vesting_contract">assert_active_vesting_contract</a>(source_contract_address);
+    <a href="vesting.md#0x1_vesting_assert_active_vesting_contract">assert_active_vesting_contract</a>(target_contract_address);
+
+    // Verify admin owns both contracts.
+    <b>let</b> source_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address);
+    <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, source_contract);
+    <b>let</b> target_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(target_contract_address);
+    <a href="vesting.md#0x1_vesting_verify_admin">verify_admin</a>(admin, target_contract);
+
+    // Both contracts must have the same operator.
+    <b>assert</b>!(
+        source_contract.staking.operator == target_contract.staking.operator,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="vesting.md#0x1_vesting_EOPERATOR_MISMATCH">EOPERATOR_MISMATCH</a>),
+    );
+
+    // Vesting schedules must be identical.
+    <b>assert</b>!(
+        source_contract.vesting_schedule == target_contract.vesting_schedule,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="vesting.md#0x1_vesting_EVESTING_SCHEDULES_MISMATCH">EVESTING_SCHEDULES_MISMATCH</a>),
+    );
+
+    // No pending merge already on target.
+    <b>assert</b>!(
+        !<b>exists</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address),
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="vesting.md#0x1_vesting_EMERGE_ALREADY_PENDING">EMERGE_ALREADY_PENDING</a>),
+    );
+
+    // Source must not have pending_active <a href="stake.md#0x1_stake">stake</a>.
+    <b>let</b> (_, _, pending_active, _) = <a href="stake.md#0x1_stake_get_stake">stake::get_stake</a>(source_contract.staking.pool_address);
+    <b>assert</b>!(pending_active == 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="vesting.md#0x1_vesting_EMERGE_PENDING_STAKE_FOUND">EMERGE_PENDING_STAKE_FOUND</a>));
+
+    // <a href="vesting.md#0x1_vesting_Distribute">Distribute</a> <a href="../../aptos-stdlib/doc/any.md#0x1_any">any</a> pending withdrawals from both contracts <b>to</b> flush withdrawable coins.
+    <a href="vesting.md#0x1_vesting_distribute">distribute</a>(source_contract_address);
+    <a href="vesting.md#0x1_vesting_distribute">distribute</a>(target_contract_address);
+
+    // Count unique shareholders across both pools. Reject <b>if</b> combined &gt; <a href="vesting.md#0x1_vesting_MAXIMUM_SHAREHOLDERS">MAXIMUM_SHAREHOLDERS</a>.
+    <b>let</b> source_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address);
+    <b>let</b> target_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(target_contract_address);
+    <b>let</b> source_shareholders = <a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64_shareholders">pool_u64::shareholders</a>(&source_contract.grant_pool);
+    <b>let</b> target_shareholders = <a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64_shareholders">pool_u64::shareholders</a>(&target_contract.grant_pool);
+    <b>let</b> unique_count = target_shareholders.length();
+    source_shareholders.for_each_ref(|sh| {
+        <b>let</b> sh: <b>address</b> = *sh;
+        <b>if</b> (!target_shareholders.contains(&sh)) {
+            unique_count = unique_count + 1;
+        };
+    });
+    <b>assert</b>!(
+        unique_count &lt;= <a href="vesting.md#0x1_vesting_MAXIMUM_SHAREHOLDERS">MAXIMUM_SHAREHOLDERS</a>,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="vesting.md#0x1_vesting_EMERGE_EXCEEDS_MAX_SHAREHOLDERS">EMERGE_EXCEEDS_MAX_SHAREHOLDERS</a>),
+    );
+
+    // Read source info needed for <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> and the <a href="event.md#0x1_event">event</a>.
+    <b>let</b> source_remaining_grant = source_contract.remaining_grant;
+    <b>let</b> (source_active_stake, _, _, _) = <a href="stake.md#0x1_stake_get_stake">stake::get_stake</a>(source_contract.staking.pool_address);
+    <b>let</b> source_staking_pool_address = source_contract.staking.pool_address;
+    <b>let</b> source_operator = source_contract.staking.operator;
+    <b>let</b> source_shareholders_count = source_shareholders.length();
+    <b>let</b> target_staking_pool_address = target_contract.staking.pool_address;
+    <b>let</b> admin_address = target_contract.admin;
+
+    // Store <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> at target's resource <a href="account.md#0x1_account">account</a>.
+    <b>let</b> target_contract_mut = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(target_contract_address);
+    <b>let</b> target_signer = <a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(target_contract_mut);
+    <b>move_to</b>(&target_signer, <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> {
+        source_contract_address,
+        source_operator,
+    });
+
+    // Mark source <b>as</b> merged and unlock all active <a href="stake.md#0x1_stake">stake</a>.
+    <b>let</b> source_contract_mut = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address);
+    source_contract_mut.state = <a href="vesting.md#0x1_vesting_VESTING_POOL_MERGED">VESTING_POOL_MERGED</a>;
+    <a href="vesting.md#0x1_vesting_unlock_stake">unlock_stake</a>(source_contract_mut, source_active_stake);
+
+    emit(<a href="vesting.md#0x1_vesting_MergeVestingContracts">MergeVestingContracts</a> {
+        admin: admin_address,
+        source_contract_address,
+        target_contract_address,
+        source_staking_pool_address,
+        target_staking_pool_address,
+        shareholders_merged: source_shareholders_count,
+        source_remaining_grant,
+    });
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_vesting_finalize_merge"></a>
+
+## Function `finalize_merge`
+
+Finalize a pending merge by transferring unlocked stake from the source contract to the target contract,
+and merging grant pools, beneficiaries, and remaining_grant. This is permissionless — anyone can call it
+once the source's stake is ready (pending_inactive == 0).
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="vesting.md#0x1_vesting_finalize_merge">finalize_merge</a>(target_contract_address: <b>address</b>)
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="vesting.md#0x1_vesting_finalize_merge">finalize_merge</a>(
+    target_contract_address: <b>address</b>,
+) <b>acquires</b> <a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>, <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> {
+    <a href="vesting.md#0x1_vesting_assert_vesting_contract_exists">assert_vesting_contract_exists</a>(target_contract_address);
+
+    // Assert <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> <b>exists</b>; read it first (don't consume yet).
+    <b>assert</b>!(
+        <b>exists</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address),
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="vesting.md#0x1_vesting_ENO_PENDING_MERGE">ENO_PENDING_MERGE</a>),
+    );
+    <b>let</b> pending = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address);
+    <b>let</b> source_contract_address = pending.source_contract_address;
+    <b>let</b> source_operator = pending.source_operator;
+
+    // <a href="vesting.md#0x1_vesting_Distribute">Distribute</a> from source's staking contract. This triggers <a href="stake.md#0x1_stake_withdraw_with_cap">stake::withdraw_with_cap</a> which
+    // processes pending_inactive → inactive when lockup <b>has</b> expired, then distributes coins.
+    <a href="staking_contract.md#0x1_staking_contract_distribute">staking_contract::distribute</a>(source_contract_address, source_operator);
+
+    // Verify source's pending_inactive <a href="stake.md#0x1_stake">stake</a> is 0 (<a href="stake.md#0x1_stake">stake</a> <b>has</b> fully transitioned).
+    // If lockup hasn't expired yet, pending_inactive will still be non-zero after distribute.
+    <b>let</b> source_pool_address = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address).staking.pool_address;
+    <b>let</b> (_, _, _, pending_inactive) = <a href="stake.md#0x1_stake_get_stake">stake::get_stake</a>(source_pool_address);
+    <b>assert</b>!(pending_inactive == 0, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="vesting.md#0x1_vesting_EMERGE_SOURCE_STAKE_NOT_READY">EMERGE_SOURCE_STAKE_NOT_READY</a>));
+
+    // Now safe <b>to</b> consume <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>.
+    <b>let</b> <a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a> {
+        source_contract_address: _,
+        source_operator: _,
+    } = <b>move_from</b>&lt;<a href="vesting.md#0x1_vesting_PendingMerge">PendingMerge</a>&gt;(target_contract_address);
+
+    // Read source data: shareholders, balances, beneficiaries, remaining_grant.
+    <b>let</b> source_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address);
+    <b>let</b> source_shareholder_list = <a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64_shareholders">pool_u64::shareholders</a>(&source_contract.grant_pool);
+    <b>let</b> source_shareholders_count = source_shareholder_list.length();
+    <b>let</b> source_balances = <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>&lt;u64&gt;();
+    <b>let</b> source_beneficiary_keys = <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>&lt;<b>address</b>&gt;();
+    <b>let</b> source_beneficiary_vals = <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector_empty">vector::empty</a>&lt;<b>address</b>&gt;();
+    source_shareholder_list.for_each_ref(|sh| {
+        <b>let</b> sh: <b>address</b> = *sh;
+        source_balances.push_back(<a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64_balance">pool_u64::balance</a>(&source_contract.grant_pool, sh));
+        <b>if</b> (source_contract.beneficiaries.contains_key(&sh)) {
+            source_beneficiary_keys.push_back(sh);
+            source_beneficiary_vals.push_back(*source_contract.beneficiaries.borrow(&sh));
+        };
+    });
+    <b>let</b> source_remaining_grant = source_contract.remaining_grant;
+
+    // Transfer coins: withdraw from source <a href="account.md#0x1_account">account</a> and deposit+<a href="stake.md#0x1_stake">stake</a> into target.
+    <b>let</b> source_balance = <a href="coin.md#0x1_coin_balance">coin::balance</a>&lt;AptosCoin&gt;(source_contract_address);
+    <b>if</b> (source_balance &gt; 0) {
+        <b>let</b> source_signer = <a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(source_contract);
+        <b>let</b> coins = <a href="coin.md#0x1_coin_withdraw">coin::withdraw</a>&lt;AptosCoin&gt;(&source_signer, source_balance);
+        <a href="coin.md#0x1_coin_deposit">coin::deposit</a>(target_contract_address, coins);
+
+        <b>let</b> target_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(target_contract_address);
+        <b>let</b> target_signer = <a href="vesting.md#0x1_vesting_get_vesting_account_signer_internal">get_vesting_account_signer_internal</a>(target_contract);
+        <a href="staking_contract.md#0x1_staking_contract_add_stake">staking_contract::add_stake</a>(&target_signer, target_contract.staking.operator, source_balance);
+    };
+
+    // Merge grant pool: buy_in for each source shareholder.
+    <b>let</b> target_contract_mut = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(target_contract_address);
+    <b>let</b> i = 0;
+    <b>while</b> (i &lt; source_shareholders_count) {
+        <b>let</b> sh = source_shareholder_list[i];
+        <b>let</b> balance = source_balances[i];
+        <a href="../../aptos-stdlib/doc/pool_u64.md#0x1_pool_u64_buy_in">pool_u64::buy_in</a>(&<b>mut</b> target_contract_mut.grant_pool, sh, balance);
+        i = i + 1;
+    };
+
+    // Merge beneficiary maps: source entries copied only <b>if</b> shareholder not already mapped in target.
+    <b>let</b> j = 0;
+    <b>while</b> (j &lt; source_beneficiary_keys.length()) {
+        <b>let</b> sh = source_beneficiary_keys[j];
+        <b>let</b> ben = source_beneficiary_vals[j];
+        <b>if</b> (!target_contract_mut.beneficiaries.contains_key(&sh)) {
+            target_contract_mut.beneficiaries.add(sh, ben);
+        };
+        j = j + 1;
+    };
+
+    // Update remaining_grant on target and zero out source.
+    target_contract_mut.remaining_grant = target_contract_mut.remaining_grant + source_remaining_grant;
+    <b>let</b> target_new_remaining_grant = target_contract_mut.remaining_grant;
+
+    <b>let</b> source_contract_mut = <b>borrow_global_mut</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(source_contract_address);
+    source_contract_mut.remaining_grant = 0;
+
+    emit(<a href="vesting.md#0x1_vesting_FinalizeMerge">FinalizeMerge</a> {
+        source_contract_address,
+        target_contract_address,
+        amount_transferred: source_balance,
+        source_remaining_grant,
+        target_new_remaining_grant,
+    });
 }
 </code></pre>
 
@@ -3272,6 +3833,33 @@ This address should be deterministic for the same admin and vesting contract cre
     <a href="vesting.md#0x1_vesting_assert_vesting_contract_exists">assert_vesting_contract_exists</a>(contract_address);
     <b>let</b> vesting_contract = <b>borrow_global</b>&lt;<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>&gt;(contract_address);
     <b>assert</b>!(vesting_contract.state == <a href="vesting.md#0x1_vesting_VESTING_POOL_ACTIVE">VESTING_POOL_ACTIVE</a>, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="vesting.md#0x1_vesting_EVESTING_CONTRACT_NOT_ACTIVE">EVESTING_CONTRACT_NOT_ACTIVE</a>));
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_vesting_assert_not_merged"></a>
+
+## Function `assert_not_merged`
+
+
+
+<pre><code><b>fun</b> <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract: &<a href="vesting.md#0x1_vesting_VestingContract">vesting::VestingContract</a>)
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>fun</b> <a href="vesting.md#0x1_vesting_assert_not_merged">assert_not_merged</a>(vesting_contract: &<a href="vesting.md#0x1_vesting_VestingContract">VestingContract</a>) {
+    <b>assert</b>!(
+        vesting_contract.state != <a href="vesting.md#0x1_vesting_VESTING_POOL_MERGED">VESTING_POOL_MERGED</a>,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_state">error::invalid_state</a>(<a href="vesting.md#0x1_vesting_EVESTING_CONTRACT_MERGED">EVESTING_CONTRACT_MERGED</a>),
+    );
 }
 </code></pre>
 

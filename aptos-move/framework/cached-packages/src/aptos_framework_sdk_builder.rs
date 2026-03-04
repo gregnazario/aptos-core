@@ -1176,6 +1176,22 @@ pub enum EntryFunctionCall {
         contract_addresses: Vec<AccountAddress>,
     },
 
+    /// Finalize a pending merge by transferring unlocked stake from the source contract to the target contract,
+    /// and merging grant pools, beneficiaries, and remaining_grant. This is permissionless — anyone can call it
+    /// once the source's stake is ready (pending_inactive == 0).
+    VestingFinalizeMerge {
+        target_contract_address: AccountAddress,
+    },
+
+    /// Merge the source vesting contract into the target vesting contract. Both contracts must have the same admin,
+    /// same operator, and identical vesting schedules. This is phase 1 of a two-phase merge operation.
+    /// After calling this, `finalize_merge` must be called after the source's stake lockup expires to transfer
+    /// the actual stake and merge grant pools, beneficiaries, and remaining_grant.
+    VestingMergeVestingContracts {
+        source_contract_address: AccountAddress,
+        target_contract_address: AccountAddress,
+    },
+
     /// Remove the beneficiary for the given shareholder. All distributions will sent directly to the shareholder
     /// account.
     VestingResetBeneficiary {
@@ -1921,6 +1937,13 @@ impl EntryFunctionCall {
             VestingDistributeMany { contract_addresses } => {
                 vesting_distribute_many(contract_addresses)
             },
+            VestingFinalizeMerge {
+                target_contract_address,
+            } => vesting_finalize_merge(target_contract_address),
+            VestingMergeVestingContracts {
+                source_contract_address,
+                target_contract_address,
+            } => vesting_merge_vesting_contracts(source_contract_address, target_contract_address),
             VestingResetBeneficiary {
                 contract_address,
                 shareholder,
@@ -5221,6 +5244,49 @@ pub fn vesting_distribute_many(contract_addresses: Vec<AccountAddress>) -> Trans
     ))
 }
 
+/// Finalize a pending merge by transferring unlocked stake from the source contract to the target contract,
+/// and merging grant pools, beneficiaries, and remaining_grant. This is permissionless — anyone can call it
+/// once the source's stake is ready (pending_inactive == 0).
+pub fn vesting_finalize_merge(target_contract_address: AccountAddress) -> TransactionPayload {
+    TransactionPayload::EntryFunction(EntryFunction::new(
+        ModuleId::new(
+            AccountAddress::new([
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 1,
+            ]),
+            ident_str!("vesting").to_owned(),
+        ),
+        ident_str!("finalize_merge").to_owned(),
+        vec![],
+        vec![bcs::to_bytes(&target_contract_address).unwrap()],
+    ))
+}
+
+/// Merge the source vesting contract into the target vesting contract. Both contracts must have the same admin,
+/// same operator, and identical vesting schedules. This is phase 1 of a two-phase merge operation.
+/// After calling this, `finalize_merge` must be called after the source's stake lockup expires to transfer
+/// the actual stake and merge grant pools, beneficiaries, and remaining_grant.
+pub fn vesting_merge_vesting_contracts(
+    source_contract_address: AccountAddress,
+    target_contract_address: AccountAddress,
+) -> TransactionPayload {
+    TransactionPayload::EntryFunction(EntryFunction::new(
+        ModuleId::new(
+            AccountAddress::new([
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 1,
+            ]),
+            ident_str!("vesting").to_owned(),
+        ),
+        ident_str!("merge_vesting_contracts").to_owned(),
+        vec![],
+        vec![
+            bcs::to_bytes(&source_contract_address).unwrap(),
+            bcs::to_bytes(&target_contract_address).unwrap(),
+        ],
+    ))
+}
+
 /// Remove the beneficiary for the given shareholder. All distributions will sent directly to the shareholder
 /// account.
 pub fn vesting_reset_beneficiary(
@@ -7346,6 +7412,29 @@ mod decoder {
         }
     }
 
+    pub fn vesting_finalize_merge(payload: &TransactionPayload) -> Option<EntryFunctionCall> {
+        if let TransactionPayload::EntryFunction(script) = payload {
+            Some(EntryFunctionCall::VestingFinalizeMerge {
+                target_contract_address: bcs::from_bytes(script.args().get(0)?).ok()?,
+            })
+        } else {
+            None
+        }
+    }
+
+    pub fn vesting_merge_vesting_contracts(
+        payload: &TransactionPayload,
+    ) -> Option<EntryFunctionCall> {
+        if let TransactionPayload::EntryFunction(script) = payload {
+            Some(EntryFunctionCall::VestingMergeVestingContracts {
+                source_contract_address: bcs::from_bytes(script.args().get(0)?).ok()?,
+                target_contract_address: bcs::from_bytes(script.args().get(1)?).ok()?,
+            })
+        } else {
+            None
+        }
+    }
+
     pub fn vesting_reset_beneficiary(payload: &TransactionPayload) -> Option<EntryFunctionCall> {
         if let TransactionPayload::EntryFunction(script) = payload {
             Some(EntryFunctionCall::VestingResetBeneficiary {
@@ -8112,6 +8201,14 @@ static SCRIPT_FUNCTION_DECODER_MAP: once_cell::sync::Lazy<EntryFunctionDecoderMa
         map.insert(
             "vesting_distribute_many".to_string(),
             Box::new(decoder::vesting_distribute_many),
+        );
+        map.insert(
+            "vesting_finalize_merge".to_string(),
+            Box::new(decoder::vesting_finalize_merge),
+        );
+        map.insert(
+            "vesting_merge_vesting_contracts".to_string(),
+            Box::new(decoder::vesting_merge_vesting_contracts),
         );
         map.insert(
             "vesting_reset_beneficiary".to_string(),
