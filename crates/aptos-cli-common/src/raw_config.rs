@@ -209,18 +209,13 @@ impl RawCliConfig {
 /// Decrypt a field value if it has the `enc:v1:` prefix and a key is available.
 fn maybe_decrypt(
     value: Option<String>,
-    field_name: &str,
+    _field_name: &str,
     key: Option<&DerivedKey>,
 ) -> CliTypedResult<Option<String>> {
     match value {
-        Some(v) if is_encrypted(&v) => {
-            let key = key.ok_or_else(|| {
-                CliError::EncryptionError(format!(
-                    "Field '{}' is encrypted but no decryption key available",
-                    field_name
-                ))
-            })?;
-            Ok(Some(key.decrypt_field(&v)?))
+        Some(v) if is_encrypted(&v) => match key {
+            Some(key) => Ok(Some(key.decrypt_field(&v)?)),
+            None => Ok(None), // encrypted field, no key → skip
         },
         other => Ok(other),
     }

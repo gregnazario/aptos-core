@@ -315,6 +315,75 @@ impl CliConfig {
         })
     }
 
+    /// Load config without decrypting sensitive fields.
+    ///
+    /// Encrypted fields become `None` in the resulting `ProfileConfig`.
+    /// Use this for commands that only need public config data (rest_url,
+    /// network, account, public_key) and don't need private_key, node_api_key,
+    /// or faucet_auth_token.
+    pub fn load_public(mode: ConfigSearchMode) -> CliTypedResult<Self> {
+        let folder = Self::aptos_folder(mode)?;
+        let config_file = folder.join(CONFIG_FILE);
+        let old_config_file = folder.join(LEGACY_CONFIG_FILE);
+
+        let yaml_str = if config_file.exists() {
+            String::from_utf8(read_from_file(config_file.as_path())?).map_err(CliError::from)?
+        } else if old_config_file.exists() {
+            String::from_utf8(read_from_file(old_config_file.as_path())?).map_err(CliError::from)?
+        } else {
+            return Err(CliError::ConfigNotFoundError(format!(
+                "{}",
+                config_file.display()
+            )));
+        };
+
+        let raw: RawCliConfig = serde_yaml::from_str(&yaml_str)
+            .map_err(|e| CliError::UnexpectedError(e.to_string()))?;
+
+        // Skip password/KDF — pass None as key so encrypted fields become None.
+        let profiles = raw
+            .profiles
+            .map(|raw_profiles| {
+                raw_profiles
+                    .into_iter()
+                    .map(|(name, raw_profile)| {
+                        let typed = raw_profile.into_profile_config(None)?;
+                        Ok((name, typed))
+                    })
+                    .collect::<CliTypedResult<BTreeMap<String, ProfileConfig>>>()
+            })
+            .transpose()?;
+
+        Ok(CliConfig {
+            encryption: raw.encryption,
+            profiles,
+        })
+    }
+
+    /// Load a single profile without decrypting sensitive fields.
+    ///
+    /// Encrypted fields become `None`. Use for commands that only need
+    /// public config data.
+    pub fn load_profile_public(
+        profile: Option<&str>,
+        mode: ConfigSearchMode,
+    ) -> CliTypedResult<Option<ProfileConfig>> {
+        let mut config = Self::load_public(mode)?;
+
+        if let Some(profile) = profile {
+            if let Some(account_profile) = config.remove_profile(profile) {
+                Ok(Some(account_profile))
+            } else {
+                Err(CliError::CommandArgumentError(format!(
+                    "Profile {} not found",
+                    profile
+                )))
+            }
+        } else {
+            Ok(config.remove_profile(DEFAULT_PROFILE))
+        }
+    }
+
     pub fn load_profile(
         profile: Option<&str>,
         mode: ConfigSearchMode,

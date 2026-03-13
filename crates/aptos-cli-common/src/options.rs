@@ -293,7 +293,7 @@ impl ExtractEd25519PublicKey for PublicKeyInputOptions {
         } else if let Some(ref key) = self.public_key {
             let key = key.as_bytes().to_vec();
             Ok(encoding.decode_key("--public-key", key)?)
-        } else if let Some(Some(public_key)) = CliConfig::load_profile(
+        } else if let Some(Some(public_key)) = CliConfig::load_profile_public(
             profile.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
         )?
@@ -449,11 +449,12 @@ impl PrivateKeyInputOptions {
                 let address = account_address_from_public_key(&private_key.public_key());
                 Ok((private_key.public_key(), address))
             }
-        } else if let Some((Some(public_key), maybe_config_address)) = CliConfig::load_profile(
-            profile.profile_name(),
-            ConfigSearchMode::CurrentDirAndParents,
-        )?
-        .map(|p| (p.public_key, p.account))
+        } else if let Some((Some(public_key), maybe_config_address)) =
+            CliConfig::load_profile_public(
+                profile.profile_name(),
+                ConfigSearchMode::CurrentDirAndParents,
+            )?
+            .map(|p| (p.public_key, p.account))
         {
             match (maybe_address, maybe_config_address) {
                 (Some(address), _) => Ok((public_key, address)),
@@ -489,11 +490,12 @@ impl PrivateKeyInputOptions {
             // If we use the CLI inputs, then we should derive or use the address from the input
             let address = account_address_from_public_key(&private_key.public_key());
             Ok(address)
-        } else if let Some((Some(public_key), maybe_config_address)) = CliConfig::load_profile(
-            profile.profile_name(),
-            ConfigSearchMode::CurrentDirAndParents,
-        )?
-        .map(|p| (p.public_key, p.account))
+        } else if let Some((Some(public_key), maybe_config_address)) =
+            CliConfig::load_profile_public(
+                profile.profile_name(),
+                ConfigSearchMode::CurrentDirAndParents,
+            )?
+            .map(|p| (p.public_key, p.account))
         {
             if let Some(address) = maybe_config_address {
                 Ok(address)
@@ -624,7 +626,7 @@ impl ExtractEd25519PublicKey for PrivateKeyInputOptions {
         // 3. Else error
         if let Some(key) = private_key {
             Ok(key.public_key())
-        } else if let Some(Some(public_key)) = CliConfig::load_profile(
+        } else if let Some(Some(public_key)) = CliConfig::load_profile_public(
             profile.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
         )?
@@ -759,7 +761,7 @@ impl RestOptions {
         }
 
         // 3-4. Profile rest_url, then profile network default
-        if let Some(profile_config) = CliConfig::load_profile(
+        if let Some(profile_config) = CliConfig::load_profile_public(
             profile.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
         )? {
@@ -785,10 +787,13 @@ impl RestOptions {
 
         // Priority: CLI flag / env var → profile config
         let api_key = self.node_api_key.clone().or_else(|| {
-            CliConfig::load_profile(profile.profile_name(), ConfigSearchMode::CurrentDirAndParents)
-                .ok()
-                .flatten()
-                .and_then(|p| p.node_api_key)
+            CliConfig::load_profile_public(
+                profile.profile_name(),
+                ConfigSearchMode::CurrentDirAndParents,
+            )
+            .ok()
+            .flatten()
+            .and_then(|p| p.node_api_key)
         });
         if let Some(node_api_key) = &api_key {
             client = client.api_key(node_api_key)?;
@@ -826,7 +831,7 @@ pub fn load_account_arg(str: &str) -> Result<AccountAddress, CliError> {
     if let Ok(account_address) = AccountAddress::from_str(str) {
         Ok(account_address)
     } else if let Some(Some(account_address)) =
-        CliConfig::load_profile(Some(str), ConfigSearchMode::CurrentDirAndParents)?
+        CliConfig::load_profile_public(Some(str), ConfigSearchMode::CurrentDirAndParents)?
             .map(|p| p.account)
     {
         Ok(account_address)
@@ -930,7 +935,7 @@ impl FaucetOptions {
         }
 
         // 3-4. Profile faucet_url, then profile network error messages
-        let profile = CliConfig::load_profile(
+        let profile = CliConfig::load_profile_public(
             profile_options.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
         )?;
@@ -977,10 +982,13 @@ impl FaucetOptions {
     ) -> CliTypedResult<()> {
         // Priority: CLI flag / env var → profile config
         let auth_token = self.faucet_auth_token.clone().or_else(|| {
-            CliConfig::load_profile(profile.profile_name(), ConfigSearchMode::CurrentDirAndParents)
-                .ok()
-                .flatten()
-                .and_then(|p| p.faucet_auth_token)
+            CliConfig::load_profile_public(
+                profile.profile_name(),
+                ConfigSearchMode::CurrentDirAndParents,
+            )
+            .ok()
+            .flatten()
+            .and_then(|p| p.faucet_auth_token)
         });
         crate::fund_account(
             rest_client,
