@@ -285,7 +285,7 @@ impl CliConfig {
                     "Config contains encrypted fields but no encryption section".to_string(),
                 )
             })?;
-            let password = get_password(enc_config)?;
+            let password = get_password(enc_config, &folder)?;
             let key = DerivedKey::derive(&password, enc_config)?;
             if !key.verify_key_check(enc_config) {
                 return Err(CliError::WrongPassword);
@@ -432,10 +432,15 @@ impl CliConfig {
             )?;
         }
 
-        // Derive key if encryption is enabled
+        // Derive key if encryption is enabled, and verify it matches the stored key check
         let derived_key = if let Some(ref enc_config) = self.encryption {
-            let password = get_password(enc_config)?;
+            let password = get_password(enc_config, &aptos_folder)?;
             let key = DerivedKey::derive(&password, enc_config)?;
+            if !key.verify_key_check(enc_config) {
+                return Err(CliError::UnexpectedError(
+                    "Wrong password: derived key does not match stored key check".to_string(),
+                ));
+            }
             Some(key)
         } else {
             None
@@ -478,7 +483,7 @@ impl CliConfig {
     }
 
     /// Finds the current directory's .aptos folder
-    fn aptos_folder(mode: ConfigSearchMode) -> CliTypedResult<PathBuf> {
+    pub fn aptos_folder(mode: ConfigSearchMode) -> CliTypedResult<PathBuf> {
         let global_config = GlobalConfig::load()?;
         global_config.get_config_location(mode)
     }

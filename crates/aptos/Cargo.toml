@@ -91,7 +91,7 @@ url = { workspace = true }
 jemallocator = { workspace = true }
 
 [features]
-default = ["keyring-cache"]
+default = []
 keyring-cache = ["aptos-cli-common/keyring-cache"]
 fuzzing = []
 no-upload-proposal = []

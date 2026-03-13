@@ -13,7 +13,7 @@ use argon2::Argon2;
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
-use std::sync::OnceLock;
+use std::{path::Path, sync::OnceLock};
 
 /// Prefix that identifies an encrypted field value.
 const ENC_PREFIX: &str = "enc:v1:";
@@ -113,15 +113,16 @@ impl DerivedKey {
         let mut key = [0u8; KEY_LEN];
         argon2
             .hash_password_into(password.as_bytes(), &salt, &mut key)
-            .map_err(|e| CliError::EncryptionError(format!("Argon2 key derivation failed: {}", e)))?;
+            .map_err(|e| {
+                CliError::EncryptionError(format!("Argon2 key derivation failed: {}", e))
+            })?;
 
         Ok(DerivedKey { key })
     }
 
     /// Compute an HMAC-SHA256 key check value for fast password verification.
     pub fn compute_key_check(&self) -> String {
-        let mut mac =
-            Hmac::<Sha256>::new_from_slice(&self.key).expect("HMAC accepts any key size");
+        let mut mac = Hmac::<Sha256>::new_from_slice(&self.key).expect("HMAC accepts any key size");
         mac.update(KEY_CHECK_TAG);
         hex::encode(mac.finalize().into_bytes())
     }
@@ -188,7 +189,10 @@ impl DerivedKey {
 /// Get the encryption password for an encrypted config.
 ///
 /// Priority: process cache → env var → OS keyring → interactive prompt.
-pub fn get_password(config: &EncryptionConfig) -> CliTypedResult<String> {
+///
+/// `config_dir` is the resolved `.aptos/` directory — used to scope keyring
+/// entries so different project configs don't collide.
+pub fn get_password(config: &EncryptionConfig, config_dir: &Path) -> CliTypedResult<String> {
     // 1. Process-level cache
     if let Some(cached) = PASSWORD_CACHE.get() {
         return Ok(cached.clone());
@@ -202,13 +206,16 @@ pub fn get_password(config: &EncryptionConfig) -> CliTypedResult<String> {
 
     // 3. OS keyring
     #[cfg(feature = "keyring-cache")]
-    if config.use_keyring && let Some(pw) = try_keyring_get() {
+    if config.use_keyring
+        && let Some(pw) = try_keyring_get(config_dir)
+    {
         cache_password(pw.clone());
         return Ok(pw);
     }
 
-    // Suppress unused variable warning when keyring feature is disabled
+    // Suppress unused variable warnings when keyring feature is disabled
     let _ = config;
+    let _ = config_dir;
 
     // 4. Interactive prompt
     let pw = prompt_password("Enter config password: ")?;
@@ -265,30 +272,41 @@ fn cache_password(pw: String) {
 
 // ── Keyring helpers ──
 
+/// Build a keyring entry name scoped to the given `.aptos/` directory so that
+/// different project configs don't collide in the OS credential store.
 #[cfg(feature = "keyring-cache")]
-fn keyring_key() -> String {
-    // Use a fixed key; unique per config path would require passing the path in.
-    "config-password".to_string()
+fn keyring_key(config_dir: &Path) -> String {
+    use std::{
+        collections::hash_map::DefaultHasher,
+        hash::{Hash, Hasher},
+    };
+
+    let canonical = config_dir
+        .canonicalize()
+        .unwrap_or_else(|_| config_dir.to_path_buf());
+    let mut hasher = DefaultHasher::new();
+    canonical.hash(&mut hasher);
+    format!("aptos-config-password-{:x}", hasher.finish())
 }
 
 #[cfg(feature = "keyring-cache")]
-fn try_keyring_get() -> Option<String> {
-    let entry = keyring::Entry::new("aptos-cli", &keyring_key()).ok()?;
+fn try_keyring_get(config_dir: &Path) -> Option<String> {
+    let entry = keyring::Entry::new("aptos-cli", &keyring_key(config_dir)).ok()?;
     entry.get_password().ok()
 }
 
 #[cfg(feature = "keyring-cache")]
-pub fn keyring_store(password: &str) -> CliTypedResult<()> {
-    let entry = keyring::Entry::new("aptos-cli", &keyring_key())
+pub fn keyring_store(password: &str, config_dir: &Path) -> CliTypedResult<()> {
+    let entry = keyring::Entry::new("aptos-cli", &keyring_key(config_dir))
         .map_err(|e| CliError::EncryptionError(format!("Keyring error: {}", e)))?;
-    entry
-        .set_password(password)
-        .map_err(|e| CliError::EncryptionError(format!("Failed to store password in keyring: {}", e)))
+    entry.set_password(password).map_err(|e| {
+        CliError::EncryptionError(format!("Failed to store password in keyring: {}", e))
+    })
 }
 
 #[cfg(feature = "keyring-cache")]
-pub fn keyring_clear() -> CliTypedResult<()> {
-    let entry = keyring::Entry::new("aptos-cli", &keyring_key())
+pub fn keyring_clear(config_dir: &Path) -> CliTypedResult<()> {
+    let entry = keyring::Entry::new("aptos-cli", &keyring_key(config_dir))
         .map_err(|e| CliError::EncryptionError(format!("Keyring error: {}", e)))?;
     // Ignore "not found" errors — the entry may not exist.
     let _ = entry.delete_credential();
