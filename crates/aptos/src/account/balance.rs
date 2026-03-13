@@ -16,15 +16,16 @@ use move_core_types::{
 use serde::Serialize;
 
 /// Show the account's balance of different coins
-///
-/// TODO: Fungible assets
 #[derive(Debug, Parser)]
 pub struct Balance {
     /// Address of the account you want to list resources/modules/balance for
     #[clap(long, value_parser = crate::common::types::load_account_arg)]
     pub(crate) account: Option<AccountAddress>,
 
-    /// Coin type to lookup.  Defaults to 0x1::aptos_coin::AptosCoin
+    /// Coin type or fungible asset address to look up
+    ///
+    /// Accepts a Move type tag (e.g. `0x1::aptos_coin::AptosCoin`) or a fungible asset
+    /// object address (hex literal). Defaults to `0x1::aptos_coin::AptosCoin`.
     #[clap(long)]
     pub(crate) coin_type: Option<String>,
 

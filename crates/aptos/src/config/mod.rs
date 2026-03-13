@@ -127,6 +127,9 @@ impl CliCommand<GlobalConfig> for SetGlobalConfig {
 }
 
 /// Show the private key for the given profile
+///
+/// WARNING: This outputs the private key to stdout in plaintext. Anyone with access
+/// to this key can control the associated account. Use with caution.
 #[derive(Parser, Debug)]
 pub struct ShowPrivateKey {
     /// Which profile's private key to show
@@ -210,7 +213,7 @@ impl CliCommand<BTreeMap<String, ProfileSummary>> for ShowProfiles {
     }
 }
 
-/// Delete the specified profile.
+/// Delete the specified profile
 #[derive(Parser, Debug)]
 pub struct DeleteProfile {
     /// Which profile to delete
@@ -250,7 +253,7 @@ impl CliCommand<String> for DeleteProfile {
     }
 }
 
-/// Rename the specified profile.
+/// Rename the specified profile
 #[derive(Parser, Debug)]
 pub struct RenameProfile {
     /// Which profile to rename
@@ -386,7 +389,7 @@ impl CliCommand<()> for DecryptConfig {
     }
 }
 
-/// Shows the properties in the global config
+/// Show the global configuration stored in ~/.aptos/global_config.yaml
 #[derive(Parser, Debug)]
 pub struct ShowGlobalConfig {}
 
