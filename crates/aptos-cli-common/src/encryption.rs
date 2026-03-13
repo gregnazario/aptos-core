@@ -14,6 +14,7 @@ use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 use std::{path::Path, sync::OnceLock};
+use zeroize::{Zeroize, Zeroizing};
 
 /// Prefix that identifies an encrypted field value.
 const ENC_PREFIX: &str = "enc:v1:";
@@ -87,8 +88,16 @@ impl EncryptionConfig {
 // ── DerivedKey ──
 
 /// A 32-byte AES-256 key derived from a user password via Argon2id.
+///
+/// The key material is zeroed on drop to minimize time secrets reside in memory.
 pub struct DerivedKey {
     key: [u8; KEY_LEN],
+}
+
+impl Drop for DerivedKey {
+    fn drop(&mut self) {
+        self.key.zeroize();
+    }
 }
 
 impl DerivedKey {
@@ -192,16 +201,22 @@ impl DerivedKey {
 ///
 /// `config_dir` is the resolved `.aptos/` directory — used to scope keyring
 /// entries so different project configs don't collide.
-pub fn get_password(config: &EncryptionConfig, config_dir: &Path) -> CliTypedResult<String> {
+///
+/// Returns a `Zeroizing<String>` so the password is zeroed when the caller drops it.
+/// The process-level cache retains a copy for the lifetime of the process.
+pub fn get_password(
+    config: &EncryptionConfig,
+    config_dir: &Path,
+) -> CliTypedResult<Zeroizing<String>> {
     // 1. Process-level cache
     if let Some(cached) = PASSWORD_CACHE.get() {
-        return Ok(cached.clone());
+        return Ok(Zeroizing::new(cached.clone()));
     }
 
     // 2. Environment variable
     if let Ok(pw) = std::env::var("APTOS_CONFIG_PASSWORD") {
         cache_password(pw.clone());
-        return Ok(pw);
+        return Ok(Zeroizing::new(pw));
     }
 
     // 3. OS keyring
@@ -210,7 +225,7 @@ pub fn get_password(config: &EncryptionConfig, config_dir: &Path) -> CliTypedRes
         && let Some(pw) = try_keyring_get(config_dir)
     {
         cache_password(pw.clone());
-        return Ok(pw);
+        return Ok(Zeroizing::new(pw));
     }
 
     // Suppress unused variable warnings when keyring feature is disabled
@@ -219,7 +234,7 @@ pub fn get_password(config: &EncryptionConfig, config_dir: &Path) -> CliTypedRes
 
     // 4. Interactive prompt
     let pw = prompt_password("Enter config password: ")?;
-    cache_password(pw.clone());
+    cache_password(pw.to_string());
     Ok(pw)
 }
 
@@ -227,10 +242,10 @@ pub fn get_password(config: &EncryptionConfig, config_dir: &Path) -> CliTypedRes
 ///
 /// Priority: process cache → `APTOS_CONFIG_PASSWORD` env var → interactive prompt (with confirm).
 /// The env-var path skips confirmation since CI environments can't do interactive prompts.
-pub fn prompt_new_password() -> CliTypedResult<String> {
+pub fn prompt_new_password() -> CliTypedResult<Zeroizing<String>> {
     // Process cache (e.g. already set earlier in this invocation)
     if let Some(cached) = PASSWORD_CACHE.get() {
-        return Ok(cached.clone());
+        return Ok(Zeroizing::new(cached.clone()));
     }
 
     // Environment variable — trusted; skip confirmation
@@ -241,13 +256,14 @@ pub fn prompt_new_password() -> CliTypedResult<String> {
             ));
         }
         cache_password(pw.clone());
+        let pw = Zeroizing::new(pw);
         return Ok(pw);
     }
 
     // Interactive prompt with confirmation
     let pw = prompt_password("Create config password: ")?;
     let confirm = prompt_password("Confirm config password: ")?;
-    if pw != confirm {
+    if *pw != *confirm {
         return Err(CliError::EncryptionError(
             "Passwords do not match".to_string(),
         ));
@@ -257,12 +273,13 @@ pub fn prompt_new_password() -> CliTypedResult<String> {
             "Password cannot be empty".to_string(),
         ));
     }
-    cache_password(pw.clone());
+    cache_password(pw.to_string());
     Ok(pw)
 }
 
-fn prompt_password(prompt: &str) -> CliTypedResult<String> {
+fn prompt_password(prompt: &str) -> CliTypedResult<Zeroizing<String>> {
     rpassword::prompt_password(prompt)
+        .map(Zeroizing::new)
         .map_err(|e| CliError::EncryptionError(format!("Failed to read password: {}", e)))
 }
 
