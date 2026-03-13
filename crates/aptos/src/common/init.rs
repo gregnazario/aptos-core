@@ -147,30 +147,11 @@ impl CliCommand<()> for InitTool {
 
         // Ensure that there is at least a REST URL set for the network
         match network {
-            Network::Mainnet => {
-                profile_config.rest_url =
-                    Some("https://fullnode.mainnet.aptoslabs.com".to_string());
-                profile_config.faucet_url = None;
-            },
-            Network::Testnet => {
-                profile_config.rest_url =
-                    Some("https://fullnode.testnet.aptoslabs.com".to_string());
-                // The faucet in testnet is only accessible with some kind of bypass.
-                // For regular users this can only really mean an auth token. So if
-                // there is no auth token set, we don't set the faucet URL. If the user
-                // is confident they want to use the testnet faucet without a token
-                // they can set it manually with `--network custom` and `--faucet-url`.
-                profile_config.faucet_url = None;
-            },
-            Network::Devnet => {
-                profile_config.rest_url = Some("https://fullnode.devnet.aptoslabs.com".to_string());
-                profile_config.faucet_url = Some("https://faucet.devnet.aptoslabs.com".to_string());
-            },
-            Network::Local => {
-                profile_config.rest_url = Some("http://localhost:8080".to_string());
-                profile_config.faucet_url = Some("http://localhost:8081".to_string());
-            },
             Network::Custom => self.custom_network(&mut profile_config)?,
+            _ => {
+                profile_config.rest_url = network.default_rest_url().map(|s| s.to_string());
+                profile_config.faucet_url = network.default_faucet_url().map(|s| s.to_string());
+            },
         }
 
         // Check if any ledger flag is set

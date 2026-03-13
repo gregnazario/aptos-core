@@ -44,6 +44,28 @@ pub enum Network {
     Custom,
 }
 
+impl Network {
+    /// Returns the default REST API URL for well-known networks.
+    pub fn default_rest_url(&self) -> Option<&'static str> {
+        match self {
+            Network::Mainnet => Some("https://api.mainnet.aptoslabs.com"),
+            Network::Testnet => Some("https://api.testnet.aptoslabs.com"),
+            Network::Devnet => Some("https://api.devnet.aptoslabs.com"),
+            Network::Local => Some("http://localhost:8080"),
+            Network::Custom => None,
+        }
+    }
+
+    /// Returns the default faucet URL for networks that have one.
+    pub fn default_faucet_url(&self) -> Option<&'static str> {
+        match self {
+            Network::Devnet => Some("https://faucet.devnet.aptoslabs.com"),
+            Network::Local => Some("http://localhost:8081"),
+            _ => None,
+        }
+    }
+}
+
 impl Display for Network {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", match self {

@@ -702,6 +702,13 @@ pub struct RestOptions {
     #[clap(long)]
     pub url: Option<reqwest::Url>,
 
+    /// Target network (mainnet, testnet, devnet, local)
+    ///
+    /// Sets the REST URL (and faucet URL where applicable) to the well-known
+    /// endpoint for the given network. Overridden by an explicit `--url`.
+    #[clap(long)]
+    pub network: Option<Network>,
+
     /// Connection timeout in seconds, used for the REST endpoint of the fullnode
     #[clap(long, default_value_t = DEFAULT_EXPIRATION_SECS, alias = "connection-timeout-s")]
     pub connection_timeout_secs: u64,
@@ -717,6 +724,7 @@ impl Default for RestOptions {
     fn default() -> Self {
         Self {
             url: None,
+            network: None,
             connection_timeout_secs: DEFAULT_EXPIRATION_SECS,
             node_api_key: None,
         }
@@ -727,26 +735,47 @@ impl RestOptions {
     pub fn new(url: Option<reqwest::Url>, connection_timeout_secs: Option<u64>) -> Self {
         RestOptions {
             url,
+            network: None,
             connection_timeout_secs: connection_timeout_secs.unwrap_or(DEFAULT_EXPIRATION_SECS),
             node_api_key: None,
         }
     }
 
-    /// Retrieve the URL from the profile or the command line
+    /// Retrieve the URL from the command line, network flag, or profile.
+    ///
+    /// Resolution order: `--url` → `--network` default → profile `rest_url` → profile `network` default → error
     pub fn url(&self, profile: &ProfileOptions) -> CliTypedResult<reqwest::Url> {
+        // 1. Explicit --url flag
         if let Some(ref url) = self.url {
-            Ok(url.clone())
-        } else if let Some(Some(url)) = CliConfig::load_profile(
+            return Ok(url.clone());
+        }
+
+        // 2. --network flag → well-known URL
+        if let Some(ref network) = self.network {
+            if let Some(url) = network.default_rest_url() {
+                return reqwest::Url::parse(url)
+                    .map_err(|err| CliError::UnableToParse("Rest URL", err.to_string()));
+            }
+        }
+
+        // 3-4. Profile rest_url, then profile network default
+        if let Some(profile_config) = CliConfig::load_profile(
             profile.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
-        )?
-        .map(|p| p.rest_url)
-        {
-            reqwest::Url::parse(&url)
-                .map_err(|err| CliError::UnableToParse("Rest URL", err.to_string()))
-        } else {
-            Err(CliError::CommandArgumentError("No rest url given.  Please add --url or add a rest_url to the .aptos/config.yaml for the current profile".to_string()))
+        )? {
+            if let Some(url) = profile_config.rest_url {
+                return reqwest::Url::parse(&url)
+                    .map_err(|err| CliError::UnableToParse("Rest URL", err.to_string()));
+            }
+            if let Some(url) = profile_config.network.and_then(|n| n.default_rest_url()) {
+                return reqwest::Url::parse(url)
+                    .map_err(|err| CliError::UnableToParse("Rest URL", err.to_string()));
+            }
         }
+
+        Err(CliError::CommandArgumentError(
+            "No rest url given. Please add --url, --network, or set rest_url in .aptos/config.yaml for the current profile".to_string(),
+        ))
     }
 
     pub fn client(&self, profile: &ProfileOptions) -> CliTypedResult<Client> {
@@ -877,10 +906,30 @@ impl FaucetOptions {
         }
     }
 
-    pub fn faucet_url(&self, profile_options: &ProfileOptions) -> CliTypedResult<reqwest::Url> {
+    /// Resolve the faucet URL.
+    ///
+    /// Resolution order: `--faucet-url` → `network` default → profile `faucet_url` → profile `network` error messages → error
+    pub fn faucet_url(
+        &self,
+        profile_options: &ProfileOptions,
+        network: Option<Network>,
+    ) -> CliTypedResult<reqwest::Url> {
+        // 1. Explicit --faucet-url flag
         if let Some(ref faucet_url) = self.faucet_url {
             return Ok(faucet_url.clone());
         }
+
+        // 2. --network flag → well-known faucet URL
+        if let Some(ref net) = network {
+            if let Some(url) = net.default_faucet_url() {
+                return reqwest::Url::parse(url)
+                    .map_err(|err| CliError::UnableToParse("Faucet URL", err.to_string()));
+            }
+            // Network was specified but has no faucet — give a targeted error
+            return Self::no_faucet_error(*net);
+        }
+
+        // 3-4. Profile faucet_url, then profile network error messages
         let profile = CliConfig::load_profile(
             profile_options.profile_name(),
             ConfigSearchMode::CurrentDirAndParents,
@@ -895,19 +944,24 @@ impl FaucetOptions {
             },
         };
 
-        match profile.faucet_url {
-            Some(url) => reqwest::Url::parse(&url)
-                .map_err(|err| CliError::UnableToParse("config faucet_url", err.to_string())),
-            None => match profile.network {
-                Some(Network::Mainnet) => {
-                    Err(CliError::CommandArgumentError("There is no faucet for mainnet. Please create and fund the account by transferring funds from another account. If you are confident you want to use a faucet, set --faucet-url or add a faucet URL to .aptos/config.yaml for the current profile".to_string()))
-                },
-                Some(Network::Testnet) => {
-                    Err(CliError::CommandArgumentError(format!("To get testnet APT you must visit {}. If you are confident you want to use a faucet programmatically, set --faucet-url or add a faucet URL to .aptos/config.yaml for the current profile", get_mint_site_url(None))))
-                },
-                _ => {
-                    Err(CliError::CommandArgumentError("No faucet given. Please set --faucet-url or add a faucet URL to .aptos/config.yaml for the current profile".to_string()))
-                },
+        if let Some(url) = profile.faucet_url {
+            return reqwest::Url::parse(&url)
+                .map_err(|err| CliError::UnableToParse("config faucet_url", err.to_string()));
+        }
+
+        Self::no_faucet_error(profile.network.unwrap_or(Network::Custom))
+    }
+
+    fn no_faucet_error(network: Network) -> CliTypedResult<reqwest::Url> {
+        match network {
+            Network::Mainnet => {
+                Err(CliError::CommandArgumentError("There is no faucet for mainnet. Please create and fund the account by transferring funds from another account. If you are confident you want to use a faucet, set --faucet-url or add a faucet URL to .aptos/config.yaml for the current profile".to_string()))
+            },
+            Network::Testnet => {
+                Err(CliError::CommandArgumentError(format!("To get testnet APT you must visit {}. If you are confident you want to use a faucet programmatically, set --faucet-url or add a faucet URL to .aptos/config.yaml for the current profile", get_mint_site_url(None))))
+            },
+            _ => {
+                Err(CliError::CommandArgumentError("No faucet given. Please set --faucet-url, --network, or add a faucet URL to .aptos/config.yaml for the current profile".to_string()))
             },
         }
     }
@@ -917,6 +971,7 @@ impl FaucetOptions {
         &self,
         rest_client: Client,
         profile: &ProfileOptions,
+        network: Option<Network>,
         num_octas: u64,
         address: AccountAddress,
     ) -> CliTypedResult<()> {
@@ -929,7 +984,7 @@ impl FaucetOptions {
         });
         crate::fund_account(
             rest_client,
-            self.faucet_url(profile)?,
+            self.faucet_url(profile, network)?,
             auth_token.as_deref(),
             address,
             num_octas,
