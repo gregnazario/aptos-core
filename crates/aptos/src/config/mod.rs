@@ -12,7 +12,10 @@ use crate::{
     genesis::git::{from_yaml, to_yaml},
     Tool,
 };
-use aptos_cli_common::generate_cli_completions;
+use aptos_cli_common::{
+    encryption::{self, EncryptionConfig},
+    generate_cli_completions,
+};
 use aptos_crypto::ValidCryptoMaterialStringExt;
 use async_trait::async_trait;
 use clap::{Parser, ValueEnum};
@@ -33,12 +36,16 @@ pub enum ConfigTool {
     ShowPrivateKey(ShowPrivateKey),
     RenameProfile(RenameProfile),
     DeleteProfile(DeleteProfile),
+    Encrypt(EncryptConfig),
+    Decrypt(DecryptConfig),
 }
 
 impl ConfigTool {
     pub async fn execute(self) -> CliResult {
         match self {
             ConfigTool::DeleteProfile(tool) => tool.execute_serialized().await,
+            ConfigTool::Encrypt(tool) => tool.execute_serialized_success().await,
+            ConfigTool::Decrypt(tool) => tool.execute_serialized_success().await,
             ConfigTool::GenerateShellCompletions(tool) => tool.execute_serialized_success().await,
             ConfigTool::RenameProfile(tool) => tool.execute_serialized().await,
             ConfigTool::SetGlobalConfig(tool) => tool.execute_serialized().await,
@@ -182,6 +189,7 @@ impl CliCommand<BTreeMap<String, ProfileSummary>> for ShowProfiles {
     async fn execute(self) -> CliTypedResult<BTreeMap<String, ProfileSummary>> {
         // Load the profile config
         let config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+        let is_encrypted = config.encryption.is_some();
         Ok(config
             .profiles
             .unwrap_or_default()
@@ -193,7 +201,11 @@ impl CliCommand<BTreeMap<String, ProfileSummary>> for ShowProfiles {
                     true
                 }
             })
-            .map(|(key, profile)| (key, ProfileSummary::from(&profile)))
+            .map(|(key, profile)| {
+                let mut summary = ProfileSummary::from(&profile);
+                summary.encrypted = is_encrypted;
+                (key, summary)
+            })
             .collect())
     }
 }
@@ -288,6 +300,89 @@ impl CliCommand<String> for RenameProfile {
                 "Config has no profiles".to_string(),
             ))
         }
+    }
+}
+
+/// Encrypt all sensitive fields in the current config
+///
+/// Prompts for a password, derives an AES-256-GCM encryption key via Argon2id,
+/// and encrypts private keys, API keys, and auth tokens in place. Non-sensitive
+/// fields (network, URLs, public keys, account addresses) remain readable.
+#[derive(Parser, Debug)]
+pub struct EncryptConfig {
+    /// Cache the password in the OS keyring so you don't have to re-enter it
+    #[clap(long)]
+    pub use_keyring: bool,
+}
+
+#[async_trait]
+impl CliCommand<()> for EncryptConfig {
+    fn command_name(&self) -> &'static str {
+        "EncryptConfig"
+    }
+
+    async fn execute(self) -> CliTypedResult<()> {
+        // Load existing config (plaintext — will fail if already encrypted and no password)
+        let mut config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+
+        if config.encryption.is_some() {
+            return Err(CliError::CommandArgumentError(
+                "Config is already encrypted. Decrypt first with `aptos config decrypt`."
+                    .to_string(),
+            ));
+        }
+
+        let password = encryption::prompt_new_password()?;
+        let enc_config = EncryptionConfig::new(&password, self.use_keyring)?;
+
+        #[cfg(feature = "keyring-cache")]
+        if self.use_keyring {
+            encryption::keyring_store(&password)?;
+            eprintln!("Password stored in OS keyring.");
+        }
+
+        config.encryption = Some(enc_config);
+        config.save()?;
+
+        eprintln!("Config encrypted successfully.");
+        Ok(())
+    }
+}
+
+/// Decrypt all sensitive fields and remove encryption from the config
+///
+/// Prompts for the config password, decrypts all encrypted fields, removes the
+/// `encryption:` section, and saves as plaintext. Also clears the OS keyring entry
+/// if one was stored.
+#[derive(Parser, Debug)]
+pub struct DecryptConfig {}
+
+#[async_trait]
+impl CliCommand<()> for DecryptConfig {
+    fn command_name(&self) -> &'static str {
+        "DecryptConfig"
+    }
+
+    async fn execute(self) -> CliTypedResult<()> {
+        // Load will decrypt in memory
+        let mut config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+
+        if config.encryption.is_none() {
+            return Err(CliError::CommandArgumentError(
+                "Config is not encrypted.".to_string(),
+            ));
+        }
+
+        // Clear keyring entry if it was stored
+        #[cfg(feature = "keyring-cache")]
+        encryption::keyring_clear()?;
+
+        // Remove encryption section and save as plaintext
+        config.encryption = None;
+        config.save()?;
+
+        eprintln!("Config decrypted successfully.");
+        Ok(())
     }
 }
 

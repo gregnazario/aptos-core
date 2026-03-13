@@ -17,6 +17,7 @@ use crate::{
         },
     },
 };
+use aptos_cli_common::encryption::{self, EncryptionConfig};
 use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey, ValidCryptoMaterialStringExt};
 use aptos_ledger;
 use async_trait::async_trait;
@@ -69,6 +70,17 @@ pub struct InitTool {
     pub(crate) prompt_options: PromptOptions,
     #[clap(flatten)]
     pub(crate) encoding_options: EncodingOptions,
+
+    /// Encrypt the config with a password after initialization
+    ///
+    /// Sensitive fields (private keys, API keys, auth tokens) will be encrypted
+    /// using AES-256-GCM with a key derived from your password via Argon2id.
+    #[clap(long)]
+    pub encrypt: bool,
+
+    /// Cache the encryption password in the OS keyring (requires --encrypt)
+    #[clap(long, requires = "encrypt")]
+    pub use_keyring: bool,
 }
 
 #[async_trait]
@@ -366,6 +378,23 @@ impl CliCommand<()> for InitTool {
                 "See the account here: {}",
                 explorer_account_link(address, Some(network))
             );
+        }
+
+        // Encrypt config if requested
+        if self.encrypt {
+            let mut config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+            let password = encryption::prompt_new_password()?;
+            let enc_config = EncryptionConfig::new(&password, self.use_keyring)?;
+
+            #[cfg(feature = "keyring-cache")]
+            if self.use_keyring {
+                encryption::keyring_store(&password)?;
+                eprintln!("Password stored in OS keyring.");
+            }
+
+            config.encryption = Some(enc_config);
+            config.save()?;
+            eprintln!("Config encrypted successfully.");
         }
 
         Ok(())

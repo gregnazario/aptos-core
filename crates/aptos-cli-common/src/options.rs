@@ -753,7 +753,15 @@ impl RestOptions {
         let mut client = Client::builder(AptosBaseUrl::Custom(self.url(profile)?))
             .timeout(Duration::from_secs(self.connection_timeout_secs))
             .header(aptos_api_types::X_APTOS_CLIENT, X_APTOS_CLIENT_VALUE)?;
-        if let Some(node_api_key) = &self.node_api_key {
+
+        // Priority: CLI flag / env var → profile config
+        let api_key = self.node_api_key.clone().or_else(|| {
+            CliConfig::load_profile(profile.profile_name(), ConfigSearchMode::CurrentDirAndParents)
+                .ok()
+                .flatten()
+                .and_then(|p| p.node_api_key)
+        });
+        if let Some(node_api_key) = &api_key {
             client = client.api_key(node_api_key)?;
         }
         Ok(client.build())
@@ -912,10 +920,17 @@ impl FaucetOptions {
         num_octas: u64,
         address: AccountAddress,
     ) -> CliTypedResult<()> {
+        // Priority: CLI flag / env var → profile config
+        let auth_token = self.faucet_auth_token.clone().or_else(|| {
+            CliConfig::load_profile(profile.profile_name(), ConfigSearchMode::CurrentDirAndParents)
+                .ok()
+                .flatten()
+                .and_then(|p| p.faucet_auth_token)
+        });
         crate::fund_account(
             rest_client,
             self.faucet_url(profile)?,
-            self.faucet_auth_token.as_deref(),
+            auth_token.as_deref(),
             address,
             num_octas,
         )
