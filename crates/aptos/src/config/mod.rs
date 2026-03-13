@@ -308,12 +308,35 @@ impl CliCommand<String> for RenameProfile {
 
 /// Encrypt all sensitive fields in the current config
 ///
-/// Prompts for a password, derives an AES-256-GCM encryption key via Argon2id,
-/// and encrypts private keys, API keys, and auth tokens in place. Non-sensitive
-/// fields (network, URLs, public keys, account addresses) remain readable.
+/// Prompts for a new password (entered twice for confirmation), derives an
+/// AES-256-GCM encryption key via Argon2id, and encrypts sensitive fields in
+/// `.aptos/config.yaml` in place.
+///
+/// Encrypted fields: `private_key`, `node_api_key`, `faucet_auth_token`.
+/// Non-sensitive fields remain in plaintext: `network`, `rest_url`, `faucet_url`,
+/// `public_key`, `account`, `derivation_path`.
+///
+/// Read-only commands (e.g. `account balance`, `account list`) do not require
+/// the password — they skip encrypted fields automatically.
+///
+/// The password can be provided in three ways (checked in order):
+///   1. `APTOS_CONFIG_PASSWORD` environment variable
+///   2. OS keyring (if `--use-keyring` was set during encryption)
+///   3. Interactive terminal prompt
+///
+/// To change your password, decrypt first then re-encrypt:
+///   `aptos config decrypt && aptos config encrypt`
 #[derive(Parser, Debug)]
 pub struct EncryptConfig {
     /// Cache the password in the OS keyring so you don't have to re-enter it
+    ///
+    /// Uses macOS Keychain, Windows Credential Manager, or Linux Secret Service.
+    /// The password persists across terminal sessions until you decrypt or
+    /// clear it manually.
+    ///
+    /// Requires the `keyring-cache` build feature (included in pre-built releases
+    /// for macOS and Windows). On Linux, build with `--features keyring-cache`
+    /// after installing libdbus-1-dev.
     #[clap(long)]
     pub use_keyring: bool,
 }
@@ -340,7 +363,8 @@ impl CliCommand<()> for EncryptConfig {
 
         #[cfg(feature = "keyring-cache")]
         if self.use_keyring {
-            encryption::keyring_store(&password)?;
+            let config_dir = CliConfig::aptos_folder(ConfigSearchMode::CurrentDir)?;
+            encryption::keyring_store(&password, &config_dir)?;
             eprintln!("Password stored in OS keyring.");
         }
 
@@ -354,9 +378,13 @@ impl CliCommand<()> for EncryptConfig {
 
 /// Decrypt all sensitive fields and remove encryption from the config
 ///
-/// Prompts for the config password, decrypts all encrypted fields, removes the
-/// `encryption:` section, and saves as plaintext. Also clears the OS keyring entry
-/// if one was stored.
+/// Prompts for the config password (or reads it from `APTOS_CONFIG_PASSWORD` /
+/// OS keyring), decrypts all encrypted fields, removes the `encryption:` section
+/// from `.aptos/config.yaml`, and saves as plaintext. Also clears the OS keyring
+/// entry if one was stored.
+///
+/// After decryption, sensitive fields (private keys, API keys, auth tokens) will
+/// be visible in plaintext in the config file.
 #[derive(Parser, Debug)]
 pub struct DecryptConfig {}
 
@@ -378,7 +406,10 @@ impl CliCommand<()> for DecryptConfig {
 
         // Clear keyring entry if it was stored
         #[cfg(feature = "keyring-cache")]
-        encryption::keyring_clear()?;
+        {
+            let config_dir = CliConfig::aptos_folder(ConfigSearchMode::CurrentDir)?;
+            encryption::keyring_clear(&config_dir)?;
+        }
 
         // Remove encryption section and save as plaintext
         config.encryption = None;

@@ -369,7 +369,8 @@ impl CliCommand<()> for InitTool {
 
             #[cfg(feature = "keyring-cache")]
             if self.use_keyring {
-                encryption::keyring_store(&password)?;
+                let config_dir = CliConfig::aptos_folder(ConfigSearchMode::CurrentDir)?;
+                encryption::keyring_store(&password, &config_dir)?;
                 eprintln!("Password stored in OS keyring.");
             }
 

@@ -72,19 +72,12 @@ impl Default for RawProfileConfig {
 
 impl RawProfileConfig {
     /// Convert to a typed `ProfileConfig`, decrypting sensitive fields if a key is provided.
-    pub fn into_profile_config(
-        self,
-        key: Option<&DerivedKey>,
-    ) -> CliTypedResult<ProfileConfig> {
+    pub fn into_profile_config(self, key: Option<&DerivedKey>) -> CliTypedResult<ProfileConfig> {
         let private_key_str = maybe_decrypt(self.private_key, "private_key", key)?;
         let public_key_str = maybe_decrypt(self.public_key, "public_key", key)?;
 
-        let private_key = private_key_str
-            .map(|s| parse_private_key(&s))
-            .transpose()?;
-        let public_key = public_key_str
-            .map(|s| parse_public_key(&s))
-            .transpose()?;
+        let private_key = private_key_str.map(|s| parse_private_key(&s)).transpose()?;
+        let public_key = public_key_str.map(|s| parse_public_key(&s)).transpose()?;
 
         let account = self
             .account
@@ -94,14 +87,10 @@ impl RawProfileConfig {
             })
             .transpose()?;
 
-        let network = self
-            .network
-            .map(|s| Network::from_str(&s))
-            .transpose()?;
+        let network = self.network.map(|s| Network::from_str(&s)).transpose()?;
 
         let node_api_key = maybe_decrypt(self.node_api_key, "node_api_key", key)?;
-        let faucet_auth_token =
-            maybe_decrypt(self.faucet_auth_token, "faucet_auth_token", key)?;
+        let faucet_auth_token = maybe_decrypt(self.faucet_auth_token, "faucet_auth_token", key)?;
 
         Ok(ProfileConfig {
             version: self.version,
@@ -140,8 +129,9 @@ pub fn profile_config_to_raw(
         .private_key
         .as_ref()
         .map(|k| {
-            k.to_encoded_string()
-                .map_err(|e| CliError::UnexpectedError(format!("Failed to encode private key: {}", e)))
+            k.to_encoded_string().map_err(|e| {
+                CliError::UnexpectedError(format!("Failed to encode private key: {}", e))
+            })
         })
         .transpose()?;
 
@@ -149,21 +139,20 @@ pub fn profile_config_to_raw(
         .public_key
         .as_ref()
         .map(|k| {
-            k.to_encoded_string()
-                .map_err(|e| CliError::UnexpectedError(format!("Failed to encode public key: {}", e)))
+            k.to_encoded_string().map_err(|e| {
+                CliError::UnexpectedError(format!("Failed to encode public key: {}", e))
+            })
         })
         .transpose()?;
 
     let account_str = config.account.map(|a| a.to_standard_string());
     // Use serde serialization format for network (e.g. "Devnet") to match existing config files
-    let network_str = config
-        .network
-        .map(|n| {
-            serde_yaml::to_value(n)
-                .ok()
-                .and_then(|v| v.as_str().map(String::from))
-                .unwrap_or_else(|| n.to_string())
-        });
+    let network_str = config.network.map(|n| {
+        serde_yaml::to_value(n)
+            .ok()
+            .and_then(|v| v.as_str().map(String::from))
+            .unwrap_or_else(|| n.to_string())
+    });
 
     Ok(RawProfileConfig {
         version: CURRENT_PROFILE_VERSION,
@@ -228,9 +217,7 @@ fn maybe_encrypt(
     key: Option<&DerivedKey>,
 ) -> CliTypedResult<Option<String>> {
     match (value, key) {
-        (Some(v), Some(key)) if is_sensitive_field(field_name) => {
-            Ok(Some(key.encrypt_field(&v)?))
-        },
+        (Some(v), Some(key)) if is_sensitive_field(field_name) => Ok(Some(key.encrypt_field(&v)?)),
         (v, _) => Ok(v),
     }
 }
@@ -294,10 +281,7 @@ mod tests {
 
         // Round-trip back
         let restored = raw.into_profile_config(Some(&key)).unwrap();
-        assert_eq!(
-            restored.node_api_key.as_deref(),
-            Some("secret-api-key")
-        );
+        assert_eq!(restored.node_api_key.as_deref(), Some("secret-api-key"));
         assert_eq!(restored.network, Some(Network::Devnet));
     }
 
@@ -340,18 +324,17 @@ mod tests {
 
         let raw_config = RawCliConfig {
             encryption: Some(enc_config.clone()),
-            profiles: Some(
-                [("default".to_string(), raw_profile)]
-                    .into_iter()
-                    .collect(),
-            ),
+            profiles: Some([("default".to_string(), raw_profile)].into_iter().collect()),
         };
 
         // Serialize to YAML
         let yaml = serde_yaml::to_string(&raw_config).unwrap();
 
         // Verify: sensitive fields are encrypted in the YAML
-        assert!(yaml.contains("enc:v1:"), "YAML should contain encrypted fields");
+        assert!(
+            yaml.contains("enc:v1:"),
+            "YAML should contain encrypted fields"
+        );
         assert!(
             !yaml.contains("my-secret-api-key"),
             "Plaintext API key must NOT appear in YAML"
@@ -377,7 +360,10 @@ mod tests {
         // Decrypt profiles
         let loaded_profiles = loaded_raw.profiles.unwrap();
         let default_raw = loaded_profiles.get("default").unwrap();
-        let restored = default_raw.clone().into_profile_config(Some(&loaded_key)).unwrap();
+        let restored = default_raw
+            .clone()
+            .into_profile_config(Some(&loaded_key))
+            .unwrap();
 
         assert_eq!(restored.network, Some(Network::Testnet));
         assert_eq!(
@@ -439,7 +425,10 @@ rest_url: "https://example.com"
 
         // Serialize to YAML and back
         let yaml = serde_yaml::to_string(&raw).unwrap();
-        assert!(yaml.contains("version: 1"), "YAML should contain version field");
+        assert!(
+            yaml.contains("version: 1"),
+            "YAML should contain version field"
+        );
 
         let raw2: RawProfileConfig = serde_yaml::from_str(&yaml).unwrap();
         assert_eq!(raw2.version, CURRENT_PROFILE_VERSION);
@@ -454,14 +443,11 @@ rest_url: "https://example.com"
         let raw_config = RawCliConfig {
             encryption: None,
             profiles: Some(
-                [(
-                    "default".to_string(),
-                    RawProfileConfig {
-                        network: Some("Devnet".to_string()),
-                        rest_url: Some("https://example.com".to_string()),
-                        ..Default::default()
-                    },
-                )]
+                [("default".to_string(), RawProfileConfig {
+                    network: Some("Devnet".to_string()),
+                    rest_url: Some("https://example.com".to_string()),
+                    ..Default::default()
+                })]
                 .into_iter()
                 .collect(),
             ),
