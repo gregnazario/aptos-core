@@ -1,18 +1,9 @@
 # Portable CLI build overlay — fully static musl binary, CPU-generic.
 # Applied via: cargo --config .cargo/config.portable.toml build ...
-
-# Separate host (build-script) flags from target (final binary) flags.
-# Build scripts need dynamic linking for bindgen's dlopen() of libclang.
-# The final binary uses musl's default +crt-static for full static linking.
-target-applies-to-host = false
-
-[host]
-rustflags = [
-  "--cfg", "tokio_unstable",
-  "-C", "force-frame-pointers=yes",
-  "-C", "force-unwind-tables=yes",
-  "-C", "target-feature=-crt-static",
-]
+#
+# NOTE: target-applies-to-host and [host] rustflags are passed as inline
+# --config flags in build_cli_release.sh (not here) because file-based
+# config does not reliably apply these settings via --config overlays.
 
 # x86_64: static binary, generic CPU (no SSE4.2/AVX/AVX2)
 [target.x86_64-unknown-linux-musl]
