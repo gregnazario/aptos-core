@@ -22,9 +22,9 @@ const ENC_PREFIX: &str = "enc:v1:";
 /// Fields that should be encrypted when encryption is enabled.
 pub const SENSITIVE_FIELDS: &[&str] = &["private_key", "node_api_key", "faucet_auth_token"];
 
-/// Default Argon2 parameters — tuned for ~0.5-1s on modern hardware.
+/// Default Argon2 parameters — ~2-5s on modern hardware with 128 MiB memory.
 const DEFAULT_ARGON2_T_COST: u32 = 2;
-const DEFAULT_ARGON2_M_COST: u32 = 19456; // KiB
+const DEFAULT_ARGON2_M_COST: u32 = 131072; // 128 MiB
 const DEFAULT_ARGON2_P_COST: u32 = 1;
 
 /// Salt length in bytes.
