@@ -53,7 +53,7 @@ case "$OS" in
       sh install_pkg.sh base-devel pkgconf openssl git lld clang llvm cmake
     elif has_command apk; then
       # Alpine based APK
-      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git lld elfutils-dev clang llvm cmake libc-dev
+      sh install_pkg.sh alpine-sdk coreutils pkgconfig openssl-dev git lld elfutils-dev clang clang-dev llvm cmake libc-dev
     elif has_command zypper; then
       # OpenSUSE zypper
       sh install_pkg.sh gcc gcc-c++ make pkg-config libopenssl-devel git libudev-devel lld libdw-devel clang llvm cmake
