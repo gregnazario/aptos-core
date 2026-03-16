@@ -137,20 +137,33 @@ impl DerivedKey {
     }
 
     /// Verify the derived key against the stored key check.
+    ///
+    /// Uses constant-time comparison to prevent timing side-channel attacks.
     pub fn verify_key_check(&self, config: &EncryptionConfig) -> bool {
-        self.compute_key_check() == config.key_check
+        use subtle::ConstantTimeEq;
+        let computed = self.compute_key_check();
+        computed
+            .as_bytes()
+            .ct_eq(config.key_check.as_bytes())
+            .into()
     }
 
     /// Encrypt a plaintext string, returning `enc:v1:<base64(nonce ∥ ciphertext ∥ tag)>`.
-    pub fn encrypt_field(&self, plaintext: &str) -> CliTypedResult<String> {
-        use aes_gcm::KeyInit as _;
+    ///
+    /// `field_name` is bound as AAD so ciphertexts can't be swapped between fields.
+    pub fn encrypt_field(&self, plaintext: &str, field_name: &str) -> CliTypedResult<String> {
+        use aes_gcm::{aead::Payload, KeyInit as _};
 
         let cipher = Aes256Gcm::new((&self.key).into());
         let nonce_bytes = generate_random_nonce();
         let nonce = Nonce::from_slice(&nonce_bytes);
 
+        let payload = Payload {
+            msg: plaintext.as_bytes(),
+            aad: field_name.as_bytes(),
+        };
         let ciphertext = cipher
-            .encrypt(nonce, plaintext.as_bytes())
+            .encrypt(nonce, payload)
             .map_err(|e| CliError::EncryptionError(format!("AES-GCM encryption failed: {}", e)))?;
 
         // Wire format: nonce ∥ ciphertext (which already includes the 16-byte auth tag)
@@ -162,8 +175,10 @@ impl DerivedKey {
     }
 
     /// Decrypt an `enc:v1:...` value back to plaintext.
-    pub fn decrypt_field(&self, encrypted: &str) -> CliTypedResult<String> {
-        use aes_gcm::KeyInit as _;
+    ///
+    /// `field_name` must match the value used during encryption (AAD binding).
+    pub fn decrypt_field(&self, encrypted: &str, field_name: &str) -> CliTypedResult<String> {
+        use aes_gcm::{aead::Payload, KeyInit as _};
 
         let encoded = encrypted
             .strip_prefix(ENC_PREFIX)
@@ -184,8 +199,12 @@ impl DerivedKey {
         let nonce = Nonce::from_slice(nonce_bytes);
 
         let cipher = Aes256Gcm::new((&self.key).into());
+        let payload = Payload {
+            msg: ciphertext,
+            aad: field_name.as_bytes(),
+        };
         let plaintext = cipher
-            .decrypt(nonce, ciphertext)
+            .decrypt(nonce, payload)
             .map_err(|_| CliError::WrongPassword)?;
 
         String::from_utf8(plaintext)
@@ -368,12 +387,12 @@ mod tests {
         let key = DerivedKey::derive("test-password", &config).unwrap();
 
         let plaintext = "ed25519-priv-0xabcdef1234567890";
-        let encrypted = key.encrypt_field(plaintext).unwrap();
+        let encrypted = key.encrypt_field(plaintext, "private_key").unwrap();
 
         assert!(is_encrypted(&encrypted));
         assert!(encrypted.starts_with(ENC_PREFIX));
 
-        let decrypted = key.decrypt_field(&encrypted).unwrap();
+        let decrypted = key.decrypt_field(&encrypted, "private_key").unwrap();
         assert_eq!(decrypted, plaintext);
     }
 
@@ -383,11 +402,25 @@ mod tests {
         let correct_key = DerivedKey::derive("correct-password", &config).unwrap();
         let wrong_key = DerivedKey::derive("wrong-password", &config).unwrap();
 
-        let encrypted = correct_key.encrypt_field("secret").unwrap();
+        let encrypted = correct_key.encrypt_field("secret", "private_key").unwrap();
 
         // Wrong key should fail decryption
-        let result = wrong_key.decrypt_field(&encrypted);
+        let result = wrong_key.decrypt_field(&encrypted, "private_key");
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_aad_field_binding() {
+        let config = EncryptionConfig::new("password", false).unwrap();
+        let key = DerivedKey::derive("password", &config).unwrap();
+
+        let encrypted = key.encrypt_field("secret-value", "private_key").unwrap();
+
+        // Decrypting with the correct field name succeeds
+        assert!(key.decrypt_field(&encrypted, "private_key").is_ok());
+
+        // Decrypting with a different field name fails (AAD mismatch)
+        assert!(key.decrypt_field(&encrypted, "node_api_key").is_err());
     }
 
     #[test]
@@ -438,7 +471,7 @@ mod tests {
     fn test_encrypted_field_format() {
         let config = EncryptionConfig::new("pw", false).unwrap();
         let key = DerivedKey::derive("pw", &config).unwrap();
-        let encrypted = key.encrypt_field("hello").unwrap();
+        let encrypted = key.encrypt_field("hello", "private_key").unwrap();
 
         // Should have prefix
         let encoded = encrypted.strip_prefix(ENC_PREFIX).unwrap();

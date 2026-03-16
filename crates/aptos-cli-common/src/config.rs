@@ -437,9 +437,7 @@ impl CliConfig {
             let password = get_password(enc_config, &aptos_folder)?;
             let key = DerivedKey::derive(&password, enc_config)?;
             if !key.verify_key_check(enc_config) {
-                return Err(CliError::UnexpectedError(
-                    "Wrong password: derived key does not match stored key check".to_string(),
-                ));
+                return Err(CliError::WrongPassword);
             }
             Some(key)
         } else {

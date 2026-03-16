@@ -190,8 +190,8 @@ impl CliCommand<BTreeMap<String, ProfileSummary>> for ShowProfiles {
     }
 
     async fn execute(self) -> CliTypedResult<BTreeMap<String, ProfileSummary>> {
-        // Load the profile config
-        let config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+        // Use load_public so listing profiles never requires a password
+        let config = CliConfig::load_public(ConfigSearchMode::CurrentDir)?;
         let is_encrypted = config.encryption.is_some();
         Ok(config
             .profiles
@@ -348,8 +348,8 @@ impl CliCommand<()> for EncryptConfig {
     }
 
     async fn execute(self) -> CliTypedResult<()> {
-        // Load existing config (plaintext — will fail if already encrypted and no password)
-        let mut config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
+        // Use load_public to avoid prompting for password just to detect already-encrypted state
+        let mut config = CliConfig::load_public(ConfigSearchMode::CurrentDir)?;
 
         if config.encryption.is_some() {
             return Err(CliError::CommandArgumentError(

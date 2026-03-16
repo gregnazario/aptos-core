@@ -198,12 +198,12 @@ impl RawCliConfig {
 /// Decrypt a field value if it has the `enc:v1:` prefix and a key is available.
 fn maybe_decrypt(
     value: Option<String>,
-    _field_name: &str,
+    field_name: &str,
     key: Option<&DerivedKey>,
 ) -> CliTypedResult<Option<String>> {
     match value {
         Some(v) if is_encrypted(&v) => match key {
-            Some(key) => Ok(Some(key.decrypt_field(&v)?)),
+            Some(key) => Ok(Some(key.decrypt_field(&v, field_name)?)),
             None => Ok(None), // encrypted field, no key → skip
         },
         other => Ok(other),
@@ -217,7 +217,9 @@ fn maybe_encrypt(
     key: Option<&DerivedKey>,
 ) -> CliTypedResult<Option<String>> {
     match (value, key) {
-        (Some(v), Some(key)) if is_sensitive_field(field_name) => Ok(Some(key.encrypt_field(&v)?)),
+        (Some(v), Some(key)) if is_sensitive_field(field_name) => {
+            Ok(Some(key.encrypt_field(&v, field_name)?))
+        },
         (v, _) => Ok(v),
     }
 }
