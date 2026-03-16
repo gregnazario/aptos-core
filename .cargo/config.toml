@@ -42,6 +42,9 @@ rustflags = [
   "target-cpu=x86-64-v3",
 ]
 
+# For portable fully-static builds, use the .cargo/config.portable.toml
+# overlay instead (see scripts/cli/build_cli_release.sh "portable" mode).
+#
 # On musl (e.g. Alpine Linux), disable static CRT linking so that build scripts
 # are dynamically linked. This is required because bindgen uses clang-sys with
 # the `runtime` feature, which calls dlopen() to load libclang. dlopen() does

@@ -1,0 +1,43 @@
+# Portable CLI build overlay — fully static musl binary, CPU-generic.
+# Applied via: cargo --config .cargo/config.portable.toml build ...
+
+# Separate host (build-script) flags from target (final binary) flags.
+# Build scripts need dynamic linking for bindgen's dlopen() of libclang.
+# The final binary uses musl's default +crt-static for full static linking.
+target-applies-to-host = false
+
+[host]
+rustflags = [
+  "--cfg", "tokio_unstable",
+  "-C", "force-frame-pointers=yes",
+  "-C", "force-unwind-tables=yes",
+  "-C", "target-feature=-crt-static",
+]
+
+# x86_64: static binary, generic CPU (no SSE4.2/AVX/AVX2)
+[target.x86_64-unknown-linux-musl]
+rustflags = [
+  "--cfg", "tokio_unstable",
+  "-C", "link-arg=-fuse-ld=lld",
+  "-C", "force-frame-pointers=yes",
+  "-C", "force-unwind-tables=yes",
+  "-C", "target-cpu=generic",
+]
+
+# aarch64: static binary, baseline ARMv8-A
+[target.aarch64-unknown-linux-musl]
+rustflags = [
+  "--cfg", "tokio_unstable",
+  "-C", "link-arg=-fuse-ld=lld",
+  "-C", "force-frame-pointers=yes",
+  "-C", "force-unwind-tables=yes",
+]
+
+[env]
+# CPU-generic C/C++ flags for RocksDB, jemalloc, etc.
+CFLAGS_x86_64_unknown_linux_musl = "-march=x86-64"
+CXXFLAGS_x86_64_unknown_linux_musl = "-march=x86-64"
+CFLAGS_aarch64_unknown_linux_musl = "-march=armv8-a"
+CXXFLAGS_aarch64_unknown_linux_musl = "-march=armv8-a"
+# reqwest uses native-tls (OpenSSL) — link statically
+OPENSSL_STATIC = "1"

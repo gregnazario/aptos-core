@@ -61,36 +61,64 @@ jobs:
           name: cli-builds-ubuntu-24.04
           path: aptos-cli-*.zip
 
-  # Generic linux should be the older version, more likely compatible
-  # This actually builds for non-SIMD processors, and an older GLIBC
-  # TODO: Possibly find a way to support a baseline GLIBC rather than just whatever is on 22.04
+  # Portable fully-static Linux binary via musl (runs on any Linux distro)
   build-linux-binary:
-    name: "Build Linux binary"
+    name: "Build Portable Linux binary"
     runs-on: ubuntu-22.04
+    container:
+      image: alpine:3.21
     steps:
+      - name: Install build dependencies
+        run: |
+          apk add --no-cache \
+            build-base coreutils pkgconfig openssl-dev openssl-libs-static \
+            git lld elfutils-dev clang clang-dev llvm cmake libc-dev \
+            curl bash zip perl linux-headers
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          . "$HOME/.cargo/env"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
       - name: Build CLI
-        run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "true"
+        run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "portable"
+      - name: Verify static binary
+        run: |
+          file target/x86_64-unknown-linux-musl/cli/aptos | tee /dev/stderr | grep -q "statically linked"
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
           name: cli-builds-linux
           path: aptos-cli-*.zip
 
-  # Generic linux arm should be the older version, more likely compatible
+  # Portable fully-static Linux ARM binary via musl
   build-linux-arm-binary:
-    name: "Build Linux ARM binary"
+    name: "Build Portable Linux ARM binary"
     runs-on: ubuntu-22.04-arm
+    container:
+      image: alpine:3.21
     steps:
+      - name: Install build dependencies
+        run: |
+          apk add --no-cache \
+            build-base coreutils pkgconfig openssl-dev openssl-libs-static \
+            git lld elfutils-dev clang clang-dev llvm cmake libc-dev \
+            curl bash zip perl linux-headers
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
-      - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          . "$HOME/.cargo/env"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
       - name: Build CLI
-        run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "false"
+        run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "portable"
+      - name: Verify static binary
+        run: |
+          file target/aarch64-unknown-linux-musl/cli/aptos | tee /dev/stderr | grep -q "statically linked"
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
