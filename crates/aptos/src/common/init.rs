@@ -365,10 +365,21 @@ impl CliCommand<()> for InitTool {
         if self.encrypt {
             let mut config = CliConfig::load(ConfigSearchMode::CurrentDir)?;
             let password = encryption::prompt_new_password()?;
-            let enc_config = EncryptionConfig::new(&password, self.use_keyring)?;
+
+            let use_keyring = self.use_keyring;
+            #[cfg(feature = "keyring-cache")]
+            let use_keyring = if !use_keyring && std::env::var("APTOS_CONFIG_PASSWORD").is_err() {
+                crate::common::utils::prompt_yes(
+                    "Would you like to store the password in your OS keyring?",
+                )
+            } else {
+                use_keyring
+            };
+
+            let enc_config = EncryptionConfig::new(&password, use_keyring)?;
 
             #[cfg(feature = "keyring-cache")]
-            if self.use_keyring {
+            if use_keyring {
                 let config_dir = CliConfig::aptos_folder(ConfigSearchMode::CurrentDir)?;
                 encryption::keyring_store(&password, &config_dir)?;
                 eprintln!("Password stored in OS keyring.");

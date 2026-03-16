@@ -7,7 +7,9 @@ use crate::{
             CliCommand, CliConfig, CliError, CliResult, CliTypedResult, ConfigSearchMode,
             ProfileSummary, APTOS_FOLDER_GIT_IGNORE, CONFIG_FOLDER, GIT_IGNORE,
         },
-        utils::{create_dir_if_not_exist, current_dir, read_from_file, write_to_user_only_file},
+        utils::{
+            create_dir_if_not_exist, current_dir, read_from_file, write_to_user_only_file,
+        },
     },
     genesis::git::{from_yaml, to_yaml},
     Tool,
@@ -359,10 +361,23 @@ impl CliCommand<()> for EncryptConfig {
         }
 
         let password = encryption::prompt_new_password()?;
-        let enc_config = EncryptionConfig::new(&password, self.use_keyring)?;
+
+        // If keyring feature is available and user didn't pass --use-keyring,
+        // offer it interactively (skip if password came from env var / cache).
+        let use_keyring = self.use_keyring;
+        #[cfg(feature = "keyring-cache")]
+        let use_keyring = if !use_keyring && std::env::var("APTOS_CONFIG_PASSWORD").is_err() {
+            crate::common::utils::prompt_yes(
+                "Would you like to store the password in your OS keyring?",
+            )
+        } else {
+            use_keyring
+        };
+
+        let enc_config = EncryptionConfig::new(&password, use_keyring)?;
 
         #[cfg(feature = "keyring-cache")]
-        if self.use_keyring {
+        if use_keyring {
             let config_dir = CliConfig::aptos_folder(ConfigSearchMode::CurrentDir)?;
             encryption::keyring_store(&password, &config_dir)?;
             eprintln!("Password stored in OS keyring.");
