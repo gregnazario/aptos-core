@@ -63,6 +63,11 @@ if [[ "$COMPATIBILITY_MODE" == "portable" ]]; then
     *)       echo "Unsupported architecture for portable build: $ARCH"; exit 4 ;;
   esac
   rustup target add "$TARGET_TRIPLE" 2>/dev/null || true
+  # Ensure build scripts link dynamically so bindgen can dlopen() libclang.
+  # Env vars have highest precedence in cargo config, so this reliably
+  # overrides any config-file settings for the host toolchain.
+  export CARGO_TARGET_APPLIES_TO_HOST=false
+  export CARGO_HOST_RUSTFLAGS="--cfg tokio_unstable -C force-frame-pointers=yes -C force-unwind-tables=yes -C target-feature=-crt-static"
   echo "Building portable static binary for $TARGET_TRIPLE"
   cargo --config .cargo/config.portable.toml build \
     --target "$TARGET_TRIPLE" \
