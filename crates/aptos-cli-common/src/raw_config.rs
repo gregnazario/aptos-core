@@ -129,7 +129,7 @@ pub fn profile_config_to_raw(
         .private_key
         .as_ref()
         .map(|k| {
-            k.to_encoded_string().map_err(|e| {
+            k.to_aip_80_string().map_err(|e| {
                 CliError::UnexpectedError(format!("Failed to encode private key: {}", e))
             })
         })
@@ -139,7 +139,7 @@ pub fn profile_config_to_raw(
         .public_key
         .as_ref()
         .map(|k| {
-            k.to_encoded_string().map_err(|e| {
+            k.to_aip_80_string().map_err(|e| {
                 CliError::UnexpectedError(format!("Failed to encode public key: {}", e))
             })
         })

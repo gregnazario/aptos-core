@@ -7,9 +7,7 @@ use crate::{
             CliCommand, CliConfig, CliError, CliResult, CliTypedResult, ConfigSearchMode,
             ProfileSummary, APTOS_FOLDER_GIT_IGNORE, CONFIG_FOLDER, GIT_IGNORE,
         },
-        utils::{
-            create_dir_if_not_exist, current_dir, read_from_file, write_to_user_only_file,
-        },
+        utils::{create_dir_if_not_exist, current_dir, read_from_file, write_to_user_only_file},
     },
     genesis::git::{from_yaml, to_yaml},
     Tool,

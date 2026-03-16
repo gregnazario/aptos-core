@@ -39,8 +39,9 @@ const KEY_LEN: usize = 32;
 /// Domain-separation tag for the key-check HMAC.
 const KEY_CHECK_TAG: &[u8] = b"aptos-cli-config-key-check";
 
-/// Process-level cache for the password so we don't re-prompt within a single invocation.
-static PASSWORD_CACHE: OnceLock<String> = OnceLock::new();
+/// Process-level cache so we don't re-prompt within a single invocation.
+/// Wrapped in `Zeroizing` so the password is zeroed during process teardown.
+static PASSWORD_CACHE: OnceLock<Zeroizing<String>> = OnceLock::new();
 
 // ── EncryptionConfig ──
 
@@ -229,13 +230,13 @@ pub fn get_password(
 ) -> CliTypedResult<Zeroizing<String>> {
     // 1. Process-level cache
     if let Some(cached) = PASSWORD_CACHE.get() {
-        return Ok(Zeroizing::new(cached.clone()));
+        return Ok(cached.clone());
     }
 
     // 2. Environment variable
     if let Ok(pw) = std::env::var("APTOS_CONFIG_PASSWORD") {
-        cache_password(pw.clone());
-        return Ok(Zeroizing::new(pw));
+        cache_password(pw);
+        return Ok(PASSWORD_CACHE.get().unwrap().clone());
     }
 
     // 3. OS keyring
@@ -243,8 +244,8 @@ pub fn get_password(
     if config.use_keyring
         && let Some(pw) = try_keyring_get(config_dir)
     {
-        cache_password(pw.clone());
-        return Ok(Zeroizing::new(pw));
+        cache_password(pw);
+        return Ok(PASSWORD_CACHE.get().unwrap().clone());
     }
 
     // Suppress unused variable warnings when keyring feature is disabled
@@ -254,7 +255,7 @@ pub fn get_password(
     // 4. Interactive prompt
     let pw = prompt_password("Enter config password: ")?;
     cache_password(pw.to_string());
-    Ok(pw)
+    Ok(PASSWORD_CACHE.get().unwrap().clone())
 }
 
 /// Get or prompt for a new password with confirmation.
@@ -264,7 +265,7 @@ pub fn get_password(
 pub fn prompt_new_password() -> CliTypedResult<Zeroizing<String>> {
     // Process cache (e.g. already set earlier in this invocation)
     if let Some(cached) = PASSWORD_CACHE.get() {
-        return Ok(Zeroizing::new(cached.clone()));
+        return Ok(cached.clone());
     }
 
     // Environment variable — trusted; skip confirmation
@@ -274,9 +275,8 @@ pub fn prompt_new_password() -> CliTypedResult<Zeroizing<String>> {
                 "APTOS_CONFIG_PASSWORD is set but empty".to_string(),
             ));
         }
-        cache_password(pw.clone());
-        let pw = Zeroizing::new(pw);
-        return Ok(pw);
+        cache_password(pw);
+        return Ok(PASSWORD_CACHE.get().unwrap().clone());
     }
 
     // Interactive prompt with confirmation
@@ -293,7 +293,7 @@ pub fn prompt_new_password() -> CliTypedResult<Zeroizing<String>> {
         ));
     }
     cache_password(pw.to_string());
-    Ok(pw)
+    Ok(PASSWORD_CACHE.get().unwrap().clone())
 }
 
 fn prompt_password(prompt: &str) -> CliTypedResult<Zeroizing<String>> {
@@ -303,7 +303,7 @@ fn prompt_password(prompt: &str) -> CliTypedResult<Zeroizing<String>> {
 }
 
 fn cache_password(pw: String) {
-    let _ = PASSWORD_CACHE.set(pw);
+    let _ = PASSWORD_CACHE.set(Zeroizing::new(pw));
 }
 
 // ── Keyring helpers ──

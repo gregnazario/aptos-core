@@ -340,6 +340,13 @@ impl CliConfig {
         let raw: RawCliConfig = serde_yaml::from_str(&yaml_str)
             .map_err(|e| CliError::UnexpectedError(e.to_string()))?;
 
+        // Detect corrupted config: encrypted fields without encryption section
+        if raw.has_any_encrypted_fields() && raw.encryption.is_none() {
+            return Err(CliError::EncryptionError(
+                "Config contains encrypted fields but no encryption section".to_string(),
+            ));
+        }
+
         // Skip password/KDF — pass None as key so encrypted fields become None.
         let profiles = raw
             .profiles

@@ -10,7 +10,7 @@ All notable changes to the Aptos CLI will be captured in this file. This project
 - **Lazy decryption**: Read-only commands (`account balance`, `account list`, `config show-profiles`, etc.) skip encrypted fields entirely and never prompt for a password.
 - **`aptos init --encrypt`**: Encrypt the config immediately after initialization.
 - Improved `--help` documentation across CLI commands (governance, staking, accounts, config).
-- Security: constant-time key verification, AES-GCM AAD field binding, zeroized key/password material on drop.
+- Security: constant-time key verification, AES-GCM AAD field binding, `DerivedKey` zeroized on drop, password cache wrapped in `Zeroizing<String>`, AIP-80 key format preserved during encryption round-trips.
 
 ## [8.1.0]
 - Transaction Simulation Session: add gas profiler support
