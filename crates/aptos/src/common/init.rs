@@ -91,6 +91,16 @@ impl CliCommand<()> for InitTool {
 
     #[allow(clippy::literal_string_with_formatting_args)]
     async fn execute(self) -> CliTypedResult<()> {
+        #[cfg(not(feature = "keyring-cache"))]
+        if self.use_keyring {
+            return Err(CliError::CommandArgumentError(
+                "--use-keyring requires the `keyring-cache` build feature. Pre-built releases \
+                 for macOS and Windows include it. On Linux, build with \
+                 `--features keyring-cache` after installing libdbus-1-dev."
+                    .to_string(),
+            ));
+        }
+
         let mut config = if CliConfig::config_exists(ConfigSearchMode::CurrentDir) {
             CliConfig::load(ConfigSearchMode::CurrentDir)?
         } else {

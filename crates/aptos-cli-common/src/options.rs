@@ -704,10 +704,11 @@ pub struct RestOptions {
     #[clap(long)]
     pub url: Option<reqwest::Url>,
 
-    /// Target network (mainnet, testnet, devnet, local)
+    /// Target network (mainnet, testnet, devnet, local, custom)
     ///
     /// Sets the REST URL (and faucet URL where applicable) to the well-known
     /// endpoint for the given network. Overridden by an explicit `--url`.
+    /// `custom` has no default URLs and requires an explicit `--url`.
     #[clap(long)]
     pub network: Option<Network>,
 
@@ -789,7 +790,9 @@ impl RestOptions {
         // Try public load first (no password prompt). If the config is encrypted
         // and the field was set, it'll be None — fall back to full decrypting load.
         let api_key = self.node_api_key.clone().or_else(|| {
-            load_optional_sensitive_field(profile.profile_name(), |p| p.node_api_key.clone())
+            load_optional_sensitive_field(profile.profile_name(), "node_api_key", |p| {
+                p.node_api_key.clone()
+            })
         });
         if let Some(node_api_key) = &api_key {
             client = client.api_key(node_api_key)?;
@@ -979,7 +982,9 @@ impl FaucetOptions {
         // Priority: CLI flag / env var → profile config.
         // Try public load first; fall back to decrypting load if encrypted.
         let auth_token = self.faucet_auth_token.clone().or_else(|| {
-            load_optional_sensitive_field(profile.profile_name(), |p| p.faucet_auth_token.clone())
+            load_optional_sensitive_field(profile.profile_name(), "faucet_auth_token", |p| {
+                p.faucet_auth_token.clone()
+            })
         });
         crate::fund_account(
             rest_client,
@@ -1217,6 +1222,7 @@ pub struct MultisigAccountWithSequenceNumber {
 /// `load_profile` so encrypted API keys and auth tokens are still usable.
 fn load_optional_sensitive_field(
     profile: Option<&str>,
+    field_name: &str,
     extract: impl Fn(&ProfileConfig) -> Option<String>,
 ) -> Option<String> {
     // Fast path: public load (no password prompt)
@@ -1231,14 +1237,13 @@ fn load_optional_sensitive_field(
         }
     }
 
-    // If the config has encryption, the field might be encrypted (returned as None).
-    // Fall back to full decrypting load.
-    let is_encrypted = CliConfig::load_public(ConfigSearchMode::CurrentDirAndParents)
-        .ok()
-        .and_then(|c| c.encryption)
-        .is_some();
-
-    if is_encrypted {
+    // Only fall back to the decrypting load if this specific field is encrypted.
+    // This avoids prompting for a password when the field is simply absent.
+    if CliConfig::is_profile_field_encrypted(
+        profile,
+        ConfigSearchMode::CurrentDirAndParents,
+        field_name,
+    ) {
         CliConfig::load_profile(profile, ConfigSearchMode::CurrentDirAndParents)
             .ok()
             .flatten()

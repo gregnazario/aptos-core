@@ -117,6 +117,18 @@ impl RawProfileConfig {
         .iter()
         .any(|f| f.as_deref().is_some_and(is_encrypted))
     }
+
+    /// Returns true if the named field is present and encrypted.
+    pub fn is_field_encrypted(&self, field_name: &str) -> bool {
+        let value = match field_name {
+            "private_key" => &self.private_key,
+            "public_key" => &self.public_key,
+            "node_api_key" => &self.node_api_key,
+            "faucet_auth_token" => &self.faucet_auth_token,
+            _ => return false,
+        };
+        value.as_deref().is_some_and(is_encrypted)
+    }
 }
 
 /// Convert a typed `ProfileConfig` into a `RawProfileConfig`, encrypting sensitive fields

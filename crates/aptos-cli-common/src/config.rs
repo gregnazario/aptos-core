@@ -391,6 +391,44 @@ impl CliConfig {
         }
     }
 
+    /// Check whether a specific field in a profile is encrypted in the raw YAML.
+    pub fn is_profile_field_encrypted(
+        profile: Option<&str>,
+        mode: ConfigSearchMode,
+        field_name: &str,
+    ) -> bool {
+        let Ok(folder) = Self::aptos_folder(mode) else {
+            return false;
+        };
+        let config_file = folder.join(CONFIG_FILE);
+        let old_config_file = folder.join(LEGACY_CONFIG_FILE);
+
+        let yaml_str = if config_file.exists() {
+            read_from_file(config_file.as_path())
+                .ok()
+                .and_then(|b| String::from_utf8(b).ok())
+        } else if old_config_file.exists() {
+            read_from_file(old_config_file.as_path())
+                .ok()
+                .and_then(|b| String::from_utf8(b).ok())
+        } else {
+            None
+        };
+
+        let Some(yaml_str) = yaml_str else {
+            return false;
+        };
+        let Ok(raw) = serde_yaml::from_str::<RawCliConfig>(&yaml_str) else {
+            return false;
+        };
+
+        let profile_name = profile.unwrap_or(DEFAULT_PROFILE);
+        raw.profiles
+            .as_ref()
+            .and_then(|p| p.get(profile_name))
+            .is_some_and(|p| p.is_field_encrypted(field_name))
+    }
+
     pub fn load_profile(
         profile: Option<&str>,
         mode: ConfigSearchMode,
