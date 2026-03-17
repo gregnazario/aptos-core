@@ -6,7 +6,7 @@ use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
 use itertools::Itertools;
 use std::collections::BTreeMap;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 

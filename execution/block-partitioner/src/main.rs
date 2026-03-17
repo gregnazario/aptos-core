@@ -9,7 +9,7 @@ use clap::Parser;
 use rand::thread_rng;
 use std::time::Instant;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 

@@ -24,7 +24,7 @@ impl MemProfiler {
 }
 
 impl Profiler for MemProfiler {
-    #[cfg(unix)]
+    #[cfg(all(unix, not(target_env = "musl")))]
     fn profile_for(&self, duration_secs: u64, binary_path: &str) -> Result<()> {
         let mut prof_active: bool = true;
 

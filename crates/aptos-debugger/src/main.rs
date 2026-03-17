@@ -7,7 +7,7 @@ use aptos_logger::{Level, Logger};
 use aptos_push_metrics::MetricsPusher;
 use clap::Parser;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 aptos_jemalloc::setup_jemalloc!();
 
 #[tokio::main]

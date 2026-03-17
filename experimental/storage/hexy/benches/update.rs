@@ -12,7 +12,7 @@ use criterion::{
 use rand::Rng;
 use std::sync::Arc;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 

@@ -6,7 +6,7 @@
 use aptos_node::{utils::ERROR_MSG_BAD_FEATURE_FLAGS, AptosNodeArgs};
 use clap::Parser;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 aptos_jemalloc::setup_jemalloc!();
 
 fn main() {

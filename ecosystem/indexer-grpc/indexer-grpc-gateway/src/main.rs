@@ -6,7 +6,7 @@ use aptos_indexer_grpc_gateway::config::IndexerGrpcGatewayConfig;
 use aptos_indexer_grpc_server_framework::ServerArgs;
 use clap::Parser;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 

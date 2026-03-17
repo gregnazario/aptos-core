@@ -48,7 +48,7 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
-#[cfg(unix)]
+#[cfg(all(unix, not(target_env = "musl")))]
 aptos_jemalloc::setup_jemalloc!();
 
 /// This is needed for filters on the Grafana dashboard working as its used to populate the filter
