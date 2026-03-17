@@ -74,6 +74,16 @@ jobs:
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
       - name: Install musl toolchain
         run: sudo apt-get install -y musl-tools
+      - name: Build libusb for musl
+        run: |
+          curl -sL https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2 | tar xj
+          cd libusb-1.0.27
+          CC=musl-gcc ./configure \
+            --host=x86_64-unknown-linux-musl \
+            --prefix=/usr/local/musl-libusb \
+            --enable-static --disable-shared \
+            --disable-udev
+          make -j$(nproc) && sudo make install
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "portable"
       - name: Verify static binary
@@ -97,6 +107,16 @@ jobs:
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
       - name: Install musl toolchain
         run: sudo apt-get install -y musl-tools
+      - name: Build libusb for musl
+        run: |
+          curl -sL https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2 | tar xj
+          cd libusb-1.0.27
+          CC=musl-gcc ./configure \
+            --host=aarch64-unknown-linux-musl \
+            --prefix=/usr/local/musl-libusb \
+            --enable-static --disable-shared \
+            --disable-udev
+          make -j$(nproc) && sudo make install
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Linux" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "portable"
       - name: Verify static binary

@@ -11978,8 +11978,6 @@ dependencies = [
 [[package]]
 name = "ledger-transport-hid"
 version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45ba81a1f5f24396b37211478aff7fbcd605dd4544df8dbed07b9da3c2057aee"
 dependencies = [
  "byteorder",
  "cfg-if",
