@@ -14,6 +14,7 @@ use aptos_crypto::{
     encoding_type::EncodingType,
     PrivateKey, SigningKey,
 };
+#[cfg(feature = "ledger")]
 use aptos_ledger;
 use aptos_rest_client::{error::RestError, Client};
 use aptos_types::{
@@ -168,10 +169,20 @@ impl CliCommand<RotateSummary> for RotateKey {
         };
         let new_derivation_path = new_hardware_wallet_options.extract_derivation_path()?;
         let (new_private_key, new_public_key) = if new_derivation_path.is_some() {
-            (
-                None,
-                aptos_ledger::get_public_key(new_derivation_path.clone().unwrap().as_str(), false)?,
-            )
+            #[cfg(feature = "ledger")]
+            {
+                (
+                    None,
+                    aptos_ledger::get_public_key(
+                        new_derivation_path.clone().unwrap().as_str(),
+                        false,
+                    )?,
+                )
+            }
+            #[cfg(not(feature = "ledger"))]
+            return Err(CliError::UnexpectedError(
+                "Ledger support is not available in this build".to_owned(),
+            ));
         } else {
             let new_private_key = self
                 .extract_private_key(self.txn_options.encoding_options.encoding)?
@@ -205,39 +216,65 @@ impl CliCommand<RotateSummary> for RotateKey {
             bcs::to_bytes(&rotation_proof).map_err(|err| CliError::BCS("rotation_proof", err))?;
 
         // Determine if current and new keys are hardware wallets, for better user feedback.
+        #[cfg_attr(not(feature = "ledger"), allow(unused_variables))]
         let current_is_hardware_wallet = current_derivation_path.is_some();
+        #[cfg_attr(not(feature = "ledger"), allow(unused_variables))]
         let new_is_hardware_wallet = new_derivation_path.is_some();
 
         // Sign the struct using both the current private key and the new private key.
+        #[allow(unused_variables)]
         let rotation_proof_signed_by_current_private_key =
             if let Some(current_derivation_path) = current_derivation_path.clone() {
-                eprintln!("Sign rotation proof challenge on your Ledger device (current key)");
-                let challenge_signature = aptos_ledger::sign_message(
-                    current_derivation_path.as_str(),
-                    &rotation_msg.clone(),
-                )?;
-                eprintln!("Rotation proof challenge successfully signed (current key)");
-                if !new_is_hardware_wallet {
-                    eprintln!("You will still need to sign the transaction on your Ledger device");
+                #[cfg(feature = "ledger")]
+                {
+                    eprintln!(
+                        "Sign rotation proof challenge on your Ledger device (current key)"
+                    );
+                    let challenge_signature = aptos_ledger::sign_message(
+                        current_derivation_path.as_str(),
+                        &rotation_msg.clone(),
+                    )?;
+                    eprintln!("Rotation proof challenge successfully signed (current key)");
+                    if !new_is_hardware_wallet {
+                        eprintln!(
+                            "You will still need to sign the transaction on your Ledger device"
+                        );
+                    }
+                    challenge_signature
                 }
-                challenge_signature
+                #[cfg(not(feature = "ledger"))]
+                return Err(CliError::UnexpectedError(
+                    "Ledger support is not available in this build".to_owned(),
+                ));
             } else {
                 current_private_key
                     .unwrap()
                     .sign_arbitrary_message(&rotation_msg.clone())
             };
+        #[allow(unused_variables)]
         let rotation_proof_signed_by_new_private_key =
             if let Some(new_derivation_path) = new_derivation_path.clone() {
-                eprintln!("Sign rotation proof challenge on your Ledger device (new key)");
-                let challenge_signature = aptos_ledger::sign_message(
-                    new_derivation_path.clone().as_str(),
-                    &rotation_msg.clone(),
-                )?;
-                eprintln!("Rotation proof challenge successfully signed (new key)");
-                if current_is_hardware_wallet {
-                    eprintln!("You will still need to sign the transaction on your Ledger device");
+                #[cfg(feature = "ledger")]
+                {
+                    eprintln!(
+                        "Sign rotation proof challenge on your Ledger device (new key)"
+                    );
+                    let challenge_signature = aptos_ledger::sign_message(
+                        new_derivation_path.clone().as_str(),
+                        &rotation_msg.clone(),
+                    )?;
+                    eprintln!("Rotation proof challenge successfully signed (new key)");
+                    if current_is_hardware_wallet {
+                        eprintln!(
+                            "You will still need to sign the transaction on your Ledger device"
+                        );
+                    }
+                    challenge_signature
                 }
-                challenge_signature
+                #[cfg(not(feature = "ledger"))]
+                return Err(CliError::UnexpectedError(
+                    "Ledger support is not available in this build".to_owned(),
+                ));
             } else {
                 new_private_key
                     .clone()

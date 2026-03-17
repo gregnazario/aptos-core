@@ -67,7 +67,7 @@ if [[ "$COMPATIBILITY_MODE" == "portable" ]]; then
   echo "Building portable static binary for $TARGET_TRIPLE"
   cargo --config .cargo/config.portable.toml build \
     --target "$TARGET_TRIPLE" \
-    --features portable \
+    --no-default-features --features portable \
     -p "$CRATE_NAME" --profile cli
   BUILD_OUTPUT_DIR="target/$TARGET_TRIPLE/cli"
 elif [[ "$COMPATIBILITY_MODE" == "true" ]]; then

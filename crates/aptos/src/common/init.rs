@@ -18,6 +18,7 @@ use crate::{
     },
 };
 use aptos_crypto::{ed25519::Ed25519PrivateKey, PrivateKey, ValidCryptoMaterialStringExt};
+#[cfg(feature = "ledger")]
 use aptos_ledger;
 use async_trait::async_trait;
 use clap::Parser;
@@ -167,32 +168,39 @@ impl CliCommand<()> for InitTool {
         {
             Some(deri_path)
         } else if self.ledger {
-            // Fetch the top 5 (index 0-4) accounts from Ledger
-            let account_map = aptos_ledger::fetch_batch_accounts(Some(0..5))?;
-            eprintln!(
-                "Please choose an index from the following {} ledger accounts, or choose an arbitrary index that you want to use:",
-                account_map.len()
-            );
-
-            // Iterate through the accounts and print them out
-            for (index, (derivation_path, account)) in account_map.iter().enumerate() {
+            #[cfg(feature = "ledger")]
+            {
+                // Fetch the top 5 (index 0-4) accounts from Ledger
+                let account_map = aptos_ledger::fetch_batch_accounts(Some(0..5))?;
                 eprintln!(
-                    "[{}] Derivation path: {} (Address: {})",
-                    index, derivation_path, account
+                    "Please choose an index from the following {} ledger accounts, or choose an arbitrary index that you want to use:",
+                    account_map.len()
                 );
-            }
-            let input_index = read_line("derivation_index")?;
-            let input_index = input_index.trim();
-            let path = aptos_ledger::DERIVATION_PATH.replace("{index}", input_index);
 
-            // Validate the path
-            if !aptos_ledger::validate_derivation_path(&path) {
-                return Err(CliError::UnexpectedError(
-                    "Invalid index input. Please make sure the input is a valid number index"
-                        .to_owned(),
-                ));
+                // Iterate through the accounts and print them out
+                for (index, (derivation_path, account)) in account_map.iter().enumerate() {
+                    eprintln!(
+                        "[{}] Derivation path: {} (Address: {})",
+                        index, derivation_path, account
+                    );
+                }
+                let input_index = read_line("derivation_index")?;
+                let input_index = input_index.trim();
+                let path = aptos_ledger::DERIVATION_PATH.replace("{index}", input_index);
+
+                // Validate the path
+                if !aptos_ledger::validate_derivation_path(&path) {
+                    return Err(CliError::UnexpectedError(
+                        "Invalid index input. Please make sure the input is a valid number index"
+                            .to_owned(),
+                    ));
+                }
+                Some(path)
             }
-            Some(path)
+            #[cfg(not(feature = "ledger"))]
+            return Err(CliError::UnexpectedError(
+                "Ledger support is not available in this build".to_owned(),
+            ));
         } else {
             None
         };
@@ -239,22 +247,29 @@ impl CliCommand<()> for InitTool {
 
         // Public key
         let public_key = if self.is_hardware_wallet() {
-            match aptos_ledger::get_public_key(
-                derivation_path
-                    .ok_or_else(|| {
-                        CliError::UnexpectedError("Invalid derivation path".to_string())
-                    })?
-                    .as_str(),
-                false,
-            ) {
-                Ok(pub_key_str) => pub_key_str,
-                Err(err) => {
-                    return Err(CliError::UnexpectedError(format!(
-                        "Unexpected Ledger Error: {:?}",
-                        err.to_string()
-                    )))
-                },
+            #[cfg(feature = "ledger")]
+            {
+                match aptos_ledger::get_public_key(
+                    derivation_path
+                        .ok_or_else(|| {
+                            CliError::UnexpectedError("Invalid derivation path".to_string())
+                        })?
+                        .as_str(),
+                    false,
+                ) {
+                    Ok(pub_key_str) => pub_key_str,
+                    Err(err) => {
+                        return Err(CliError::UnexpectedError(format!(
+                            "Unexpected Ledger Error: {:?}",
+                            err.to_string()
+                        )))
+                    },
+                }
             }
+            #[cfg(not(feature = "ledger"))]
+            return Err(CliError::UnexpectedError(
+                "Ledger support is not available in this build".to_owned(),
+            ));
         } else {
             private_key.clone().unwrap().public_key()
         };
