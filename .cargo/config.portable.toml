@@ -1,9 +1,8 @@
-# Portable CLI build overlay — fully static musl binary, CPU-generic.
+# Portable CLI build overlay — cross-compile fully static musl binary from Ubuntu.
 # Applied via: cargo --config .cargo/config.portable.toml build ...
 #
-# NOTE: target-applies-to-host and [host] rustflags are passed as inline
-# --config flags in build_cli_release.sh (not here) because file-based
-# config does not reliably apply these settings via --config overlays.
+# Build scripts run on the glibc host (dlopen works naturally).
+# The final binary targets musl (statically linked by default).
 
 # x86_64: static binary, generic CPU (no SSE4.2/AVX/AVX2)
 [target.x86_64-unknown-linux-musl]
@@ -25,10 +24,18 @@ rustflags = [
 ]
 
 [env]
+# C compiler: musl-gcc for correct musl headers and libc
+CC_x86_64_unknown_linux_musl = "musl-gcc"
+CC_aarch64_unknown_linux_musl = "musl-gcc"
+# C++ compiler: system g++ — RocksDB C++ compiles with glibc C++ headers,
+# but the object files link fine against musl at link time (standard POSIX ABI).
+CXX_x86_64_unknown_linux_musl = "g++"
+CXX_aarch64_unknown_linux_musl = "g++"
 # CPU-generic C/C++ flags for RocksDB, jemalloc, etc.
 CFLAGS_x86_64_unknown_linux_musl = "-march=x86-64"
 CXXFLAGS_x86_64_unknown_linux_musl = "-march=x86-64"
 CFLAGS_aarch64_unknown_linux_musl = "-march=armv8-a"
 CXXFLAGS_aarch64_unknown_linux_musl = "-march=armv8-a"
-# reqwest uses native-tls (OpenSSL) — link statically
+# Static OpenSSL (vendored via openssl-src, compiled with musl-gcc)
 OPENSSL_STATIC = "1"
+OPENSSL_NO_PKG_CONFIG = "1"

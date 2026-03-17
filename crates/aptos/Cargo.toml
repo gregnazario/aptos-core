@@ -65,6 +65,7 @@ itertools = { workspace = true }
 maplit = { workspace = true }
 move-core-types = { workspace = true }
 move-prover-boogie-backend = { workspace = true }
+openssl = { workspace = true, optional = true, features = ["vendored"] }
 open = { workspace = true }
 pathsearch = { workspace = true }
 poem = { workspace = true }
@@ -95,6 +96,7 @@ default = []
 fuzzing = []
 no-upload-proposal = []
 cli-framework-test-move = []
+portable = ["dep:openssl"]
 
 [build-dependencies]
 shadow-rs = { workspace = true }

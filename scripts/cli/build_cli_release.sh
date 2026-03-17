@@ -56,22 +56,18 @@ echo "Building release $VERSION of $NAME for $OS-$PLATFORM_NAME on $ARCH"
 BUILD_OUTPUT_DIR="target/cli"
 
 if [[ "$COMPATIBILITY_MODE" == "portable" ]]; then
-  # Fully static musl binary, CPU-generic
+  # Cross-compile fully static musl binary from glibc host.
+  # Build scripts run on glibc (dlopen works), final binary targets musl.
   case "$ARCH" in
     x86_64)  TARGET_TRIPLE="x86_64-unknown-linux-musl" ;;
     aarch64) TARGET_TRIPLE="aarch64-unknown-linux-musl" ;;
     *)       echo "Unsupported architecture for portable build: $ARCH"; exit 4 ;;
   esac
   rustup target add "$TARGET_TRIPLE" 2>/dev/null || true
-  # Build scripts must link dynamically so bindgen can dlopen() libclang.
-  # We pass target-applies-to-host and host.rustflags as inline --config
-  # flags AFTER the overlay file so they get highest precedence.
-  HOST_RUSTFLAGS='["--cfg","tokio_unstable","-C","force-frame-pointers=yes","-C","force-unwind-tables=yes","-C","target-feature=-crt-static"]'
   echo "Building portable static binary for $TARGET_TRIPLE"
-  cargo --config .cargo/config.portable.toml \
-    --config 'target-applies-to-host=false' \
-    --config "host.rustflags=$HOST_RUSTFLAGS" \
-    build --target "$TARGET_TRIPLE" \
+  cargo --config .cargo/config.portable.toml build \
+    --target "$TARGET_TRIPLE" \
+    --features portable \
     -p "$CRATE_NAME" --profile cli
   BUILD_OUTPUT_DIR="target/$TARGET_TRIPLE/cli"
 elif [[ "$COMPATIBILITY_MODE" == "true" ]]; then

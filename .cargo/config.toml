@@ -44,11 +44,11 @@ rustflags = [
 
 # For portable fully-static builds, use the .cargo/config.portable.toml
 # overlay instead (see scripts/cli/build_cli_release.sh "portable" mode).
+# The portable overlay cross-compiles from Ubuntu (glibc) targeting musl,
+# so build scripts run on glibc where dlopen() works naturally.
 #
-# On musl (e.g. Alpine Linux), disable static CRT linking so that build scripts
-# are dynamically linked. This is required because bindgen uses clang-sys with
-# the `runtime` feature, which calls dlopen() to load libclang. dlopen() does
-# not work in statically linked musl binaries.
+# These musl sections are for direct musl-host builds (e.g. Alpine Linux).
+# They disable static CRT linking so bindgen can dlopen() libclang.
 [target.x86_64-unknown-linux-musl]
 rustflags = [
   "--cfg",
