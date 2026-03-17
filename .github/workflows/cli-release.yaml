@@ -74,6 +74,11 @@ jobs:
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
       - name: Install musl toolchain
         run: sudo apt-get install -y musl-tools
+      - name: Expose kernel headers to musl
+        run: |
+          sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
+          sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
+          sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm
       - name: Build libusb for musl
         run: |
           curl -sL https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2 | tar xj
@@ -107,6 +112,11 @@ jobs:
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
       - name: Install musl toolchain
         run: sudo apt-get install -y musl-tools
+      - name: Expose kernel headers to musl
+        run: |
+          sudo ln -s /usr/include/linux /usr/include/aarch64-linux-musl/linux
+          sudo ln -s /usr/include/asm-generic /usr/include/aarch64-linux-musl/asm-generic
+          sudo ln -s /usr/include/aarch64-linux-gnu/asm /usr/include/aarch64-linux-musl/asm
       - name: Build libusb for musl
         run: |
           curl -sL https://github.com/libusb/libusb/releases/download/v1.0.27/libusb-1.0.27.tar.bz2 | tar xj
