@@ -36,6 +36,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
+      - name: Install libusb (needed for Ledger HID support)
+        run: sudo apt-get install -y libusb-1.0-0-dev
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Ubuntu-22.04" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "false"
       - name: Upload Binary
@@ -53,6 +55,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.source_git_ref_override }}
       - uses: aptos-labs/aptos-core/.github/actions/cli-rust-setup@main
+      - name: Install libusb (needed for Ledger HID support)
+        run: sudo apt-get install -y libusb-1.0-0-dev
       - name: Build CLI
         run: scripts/cli/build_cli_release.sh "Ubuntu-24.04" "${{inputs.release_version}}" "${{inputs.skip_checks}}" "false"
       - name: Upload Binary
@@ -181,6 +185,9 @@ jobs:
       - name: Ensure long paths work
         run: git config --global core.longpaths true
         shell: bash
+      - uses: dsherret/rust-toolchain-file@v1
+      - name: Run cargo cache
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # pin@v2.7.8
       - name: Build CLI
         run: scripts\cli\build_cli_release.ps1
       - name: Upload Binary
