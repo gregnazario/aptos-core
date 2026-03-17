@@ -32,7 +32,7 @@ proptest = { workspace = true }
 rand = { workspace = true }
 rocksdb = { workspace = true }
 
-[target.'cfg(unix)'.dev-dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dev-dependencies]
 jemallocator = { workspace = true }
 
 [lib]

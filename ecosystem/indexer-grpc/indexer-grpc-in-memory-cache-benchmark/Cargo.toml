@@ -22,5 +22,5 @@ redis = { workspace = true }
 redis-test = { workspace = true }
 tokio = { workspace = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 jemallocator = { workspace = true }

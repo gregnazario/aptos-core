@@ -26,5 +26,5 @@ serde_json = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 jemallocator = { workspace = true }

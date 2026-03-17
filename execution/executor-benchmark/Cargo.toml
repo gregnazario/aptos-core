@@ -70,7 +70,7 @@ tokio = { workspace = true }
 toml = { workspace = true }
 tonic = { workspace = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 aptos-jemalloc = { workspace = true }
 aptos-profiler = { workspace = true }
 

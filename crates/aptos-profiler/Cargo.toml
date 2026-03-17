@@ -15,6 +15,6 @@ rust-version = { workspace = true }
 anyhow = { workspace = true }
 regex = { workspace = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 jemalloc-sys = { workspace = true }
 pprof = { workspace = true }

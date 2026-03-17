@@ -22,5 +22,5 @@ aptos-push-metrics = { workspace = true }
 clap = { workspace = true }
 tokio = { workspace = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 aptos-jemalloc = { workspace = true }
