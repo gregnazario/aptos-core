@@ -25,29 +25,14 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0 # Fetch all git history for accurate target determination
 
-      - name: Set up WinGet
-        run: Set-Variable ProgressPreference SilentlyContinue ; PowerShell -ExecutionPolicy Bypass -File scripts/windows_dev_setup.ps1
-
-      # Ensure that long paths work
-      - name: Ensure long paths work
-        run: git config --global core.longpaths true
-        shell: bash
+      - name: Set up minimal CLI build environment
+        run: PowerShell -ExecutionPolicy Bypass -File scripts/cli/minimal_cli_build.ps1
 
       # This action will cache ~/.cargo and ./target (or the equivalent on Windows in
       # this case). See more here:
       # https://github.com/Swatinem/rust-cache#cache-details
       - name: Run cargo cache
         uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # pin@v2.7.8
-
-      - name: Install the Developer Tools
-        run: Set-Variable ProgressPreference SilentlyContinue ; PowerShell -ExecutionPolicy Bypass -File scripts/windows_dev_setup.ps1 -t
-
-      # This is required for the openssl-sys crate to build.
-      # See: https://github.com/sfackler/rust-openssl/issues/1542#issuecomment-1399358351
-      - name: Update the VCPKG root
-        run: echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
-      - name: Install OpenSSL
-        run: vcpkg install openssl:x64-windows-static-md --clean-after-build
 
       # Output the changed files
       - name: Output the changed files

@@ -11,18 +11,12 @@
 $NAME="aptos-cli"
 $CRATE_NAME="aptos"
 $CARGO_PATH="crates\$CRATE_NAME\Cargo.toml"
-$Env:VCPKG_ROOT = 'C:\vcpkg\'
-
 # Get the version of the CLI from its Cargo.toml.
 $VERSION = Get-Content $CARGO_PATH | Select-String -Pattern '^\w*version = "(\d*\.\d*.\d*)"' | % {"$($_.matches.groups[1])"}
 
-# Install the developer tools
-echo "Installing developer tools"
-PowerShell -ExecutionPolicy Bypass -File scripts/windows_dev_setup.ps1
-
-# Note: This is required to bypass openssl isssue on Windows.
-echo "Installing OpenSSL"
-vcpkg install openssl:x64-windows-static-md --clean-after-build
+# Set up the minimal build environment (Rust, vcpkg, OpenSSL, MSVC check)
+echo "Setting up minimal CLI build environment"
+PowerShell -ExecutionPolicy Bypass -File scripts/cli/minimal_cli_build.ps1
 
 # Build the CLI.
 echo "Building release $VERSION of $NAME for Windows"
