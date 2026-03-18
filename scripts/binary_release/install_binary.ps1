@@ -88,8 +88,21 @@ Write-Info "Installing $BinaryName for $TARGET_TRIPLE..."
 if ($Version -eq "latest") {
     Write-Info "Fetching latest release version..."
     try {
-        $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases"
-        $latestRelease = $releases | Where-Object { $_.tag_name -like "$BinaryName-v*" } | Select-Object -First 1
+        # Fetch with pagination support (100 per page, max 3 pages = 300 releases)
+        $latestRelease = $null
+        for ($page = 1; $page -le 3; $page++) {
+            $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases?per_page=100&page=$page"
+            $latestRelease = $releases | Where-Object { $_.tag_name -like "$BinaryName-v*" } | Select-Object -First 1
+
+            if ($null -ne $latestRelease) {
+                break
+            }
+
+            # Check if there are more pages
+            if ($releases.Count -eq 0) {
+                break
+            }
+        }
 
         if ($null -eq $latestRelease) {
             Write-Error-Message "Could not determine latest version for $BinaryName"
