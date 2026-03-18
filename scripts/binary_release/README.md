@@ -18,7 +18,7 @@ The binary release workflow allows you to build and release any executable targe
 
 **Unix/Linux/macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- <binary-name>
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- <binary-name>
 ```
 
 **Windows (PowerShell):**
@@ -156,13 +156,13 @@ Examples:
 **Unix/Linux/macOS:**
 ```bash
 # Install latest version
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node
 
 # Install specific version
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node --version 1.2.3
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node --version 1.2.3
 
 # Install to custom directory
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node --bin-dir /usr/local/bin
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node --bin-dir /usr/local/bin
 ```
 
 **Windows (PowerShell):**

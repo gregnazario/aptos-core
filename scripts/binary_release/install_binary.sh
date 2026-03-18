@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Copyright © Aptos Foundation
 # SPDX-License-Identifier: Apache-2.0
 
@@ -7,17 +7,17 @@
 ########################################################
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- <binary-name> [options]
+#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- <binary-name> [options]
 #
 # Examples:
 #   # Install latest version
-#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node
+#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node
 #
 #   # Install specific version
-#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node --version 1.2.3
+#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node --version 1.2.3
 #
 #   # Install to custom directory
-#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- aptos-node --bin-dir /usr/local/bin
+#   curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- aptos-node --bin-dir /usr/local/bin
 
 set -e
 
@@ -26,7 +26,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 # Default values
 BINARY_NAME=""
@@ -40,19 +40,19 @@ GITHUB_RELEASES="https://github.com"
 
 # Functions
 print_error() {
-    echo -e "${RED}Error: $1${NC}" >&2
+    printf "%bError: %s%b\n" "$RED" "$1" "$NC" >&2
 }
 
 print_success() {
-    echo -e "${GREEN}$1${NC}"
+    printf "%b%s%b\n" "$GREEN" "$1" "$NC"
 }
 
 print_info() {
-    echo -e "${BLUE}$1${NC}"
+    printf "%b%s%b\n" "$BLUE" "$1" "$NC"
 }
 
 print_warning() {
-    echo -e "${YELLOW}$1${NC}"
+    printf "%b%s%b\n" "$YELLOW" "$1" "$NC"
 }
 
 usage() {
@@ -79,7 +79,7 @@ EOF
 BINARY_NAME="$1"
 shift || usage
 
-while [[ $# -gt 0 ]]; do
+while [ $# -gt 0 ]; do
     case $1 in
         --version)
             VERSION="$2"
@@ -108,7 +108,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate binary name
-if [[ -z "$BINARY_NAME" ]]; then
+if [ -z "$BINARY_NAME" ]; then
     print_error "Binary name is required"
     usage
 fi
@@ -156,7 +156,7 @@ esac
 print_info "Installing $BINARY_NAME for $TARGET_TRIPLE..."
 
 # Get version if latest
-if [[ "$VERSION" == "latest" ]]; then
+if [ "$VERSION" = "latest" ]; then
     print_info "Fetching latest release version..."
     # Fetch with pagination support (100 per page, max 3 pages = 300 releases)
     VERSION=""
@@ -167,7 +167,7 @@ if [[ "$VERSION" == "latest" ]]; then
                   head -n 1 | \
                   sed 's/.*v\([0-9.]*\).*/\1/')
 
-        if [[ -n "$VERSION" ]]; then
+        if [ -n "$VERSION" ]; then
             break
         fi
 
@@ -177,7 +177,7 @@ if [[ "$VERSION" == "latest" ]]; then
         fi
     done
 
-    if [[ -z "$VERSION" ]]; then
+    if [ -z "$VERSION" ]; then
         print_error "Could not determine latest version for $BINARY_NAME"
         exit 1
     fi
@@ -186,20 +186,24 @@ fi
 
 # Check if already installed
 INSTALLED_PATH="$BIN_DIR/$BINARY_NAME"
-if [[ -f "$INSTALLED_PATH" ]] && [[ "$FORCE" != "true" ]]; then
-    if command -v "$BINARY_NAME" &> /dev/null; then
+if [ -f "$INSTALLED_PATH" ] && [ "$FORCE" != "true" ]; then
+    if command -v "$BINARY_NAME" >/dev/null 2>&1; then
         CURRENT_VERSION=$("$INSTALLED_PATH" --version 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -n 1 || echo "unknown")
-        if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
+        if [ "$CURRENT_VERSION" = "$VERSION" ]; then
             print_success "$BINARY_NAME $VERSION is already installed"
             exit 0
         else
             print_warning "$BINARY_NAME is already installed (version: $CURRENT_VERSION)"
-            if [[ "$YES" != "true" ]]; then
-                read -p "Do you want to upgrade to version $VERSION? [y/N] " -n 1 -r
-                echo
-                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                    exit 0
-                fi
+            if [ "$YES" != "true" ]; then
+                printf "Do you want to upgrade to version %s? [y/N] " "$VERSION"
+                read -r REPLY
+                case "$REPLY" in
+                    [Yy]|[Yy][Ee][Ss])
+                        ;;
+                    *)
+                        exit 0
+                        ;;
+                esac
             fi
         fi
     fi
@@ -215,7 +219,7 @@ print_info "Downloading from: $DOWNLOAD_URL"
 
 # Create temporary directory
 TMP_DIR=$(mktemp -d)
-trap "rm -rf $TMP_DIR" EXIT
+trap "rm -rf $TMP_DIR" EXIT INT TERM
 
 # Download archive
 cd "$TMP_DIR"
@@ -229,12 +233,12 @@ fi
 # Download and verify checksum if available
 if curl -fsSL "$CHECKSUM_URL" -o "$ARCHIVE_NAME.sha256" 2>/dev/null; then
     print_info "Verifying checksum..."
-    if command -v shasum &> /dev/null; then
+    if command -v shasum >/dev/null 2>&1; then
         if ! shasum -a 256 -c "$ARCHIVE_NAME.sha256" 2>/dev/null; then
             print_error "Checksum verification failed"
             exit 1
         fi
-    elif command -v sha256sum &> /dev/null; then
+    elif command -v sha256sum >/dev/null 2>&1; then
         if ! sha256sum -c "$ARCHIVE_NAME.sha256" 2>/dev/null; then
             print_error "Checksum verification failed"
             exit 1
@@ -260,18 +264,21 @@ cp "$BINARY_NAME" "$BIN_DIR/$BINARY_NAME"
 chmod +x "$BIN_DIR/$BINARY_NAME"
 
 # Verify installation
-if [[ -f "$BIN_DIR/$BINARY_NAME" ]]; then
+if [ -f "$BIN_DIR/$BINARY_NAME" ]; then
     print_success "Successfully installed $BINARY_NAME $VERSION"
 
     # Check if bin directory is in PATH
-    if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
-        print_warning "$BIN_DIR is not in your PATH"
-        print_info "Add it to your PATH by running:"
-        print_info "  echo 'export PATH=\"$BIN_DIR:\$PATH\"' >> ~/.bashrc"
-        print_info "  source ~/.bashrc"
-    else
-        print_info "Run '$BINARY_NAME --version' to verify the installation"
-    fi
+    case ":$PATH:" in
+        *":$BIN_DIR:"*)
+            print_info "Run '$BINARY_NAME --version' to verify the installation"
+            ;;
+        *)
+            print_warning "$BIN_DIR is not in your PATH"
+            print_info "Add it to your PATH by running:"
+            print_info "  echo 'export PATH=\"$BIN_DIR:\$PATH\"' >> ~/.profile"
+            print_info "  . ~/.profile"
+            ;;
+    esac
 else
     print_error "Installation failed"
     exit 1
