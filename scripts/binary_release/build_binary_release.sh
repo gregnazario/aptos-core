@@ -126,12 +126,13 @@ echo "Building release $VERSION of $BINARY_NAME for $TARGET_TRIPLE using profile
 cargo build -p "$CRATE_NAME" --profile "$BUILD_PROFILE"
 
 # Determine the output directory based on profile
-if [[ "$BUILD_PROFILE" == "tool" || "$BUILD_PROFILE" == "cli" ]]; then
-  BUILD_DIR="target/$BUILD_PROFILE"
+if [[ "$BUILD_PROFILE" == "tool" ]]; then
+  BUILD_DIR="target/tool"
 elif [[ "$BUILD_PROFILE" == "performance" ]]; then
   BUILD_DIR="target/performance"
 else
-  BUILD_DIR="target/release"
+  # Fallback for other profiles
+  BUILD_DIR="target/$BUILD_PROFILE"
 fi
 
 cd "$BUILD_DIR"

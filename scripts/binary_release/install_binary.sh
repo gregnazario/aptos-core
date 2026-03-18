@@ -158,10 +158,24 @@ print_info "Installing $BINARY_NAME for $TARGET_TRIPLE..."
 # Get version if latest
 if [[ "$VERSION" == "latest" ]]; then
     print_info "Fetching latest release version..."
-    VERSION=$(curl -fsSL "$GITHUB_API/repos/$REPO/releases" | \
-              grep -o "\"tag_name\": \"$BINARY_NAME-v[0-9.]*\"" | \
-              head -n 1 | \
-              sed 's/.*v\([0-9.]*\).*/\1/')
+    # Fetch with pagination support (100 per page, max 3 pages = 300 releases)
+    VERSION=""
+    for page in 1 2 3; do
+        RELEASES=$(curl -fsSL "$GITHUB_API/repos/$REPO/releases?per_page=100&page=$page")
+        VERSION=$(echo "$RELEASES" | \
+                  grep -o "\"tag_name\": \"$BINARY_NAME-v[0-9.]*\"" | \
+                  head -n 1 | \
+                  sed 's/.*v\([0-9.]*\).*/\1/')
+
+        if [[ -n "$VERSION" ]]; then
+            break
+        fi
+
+        # Check if there are more pages
+        if ! echo "$RELEASES" | grep -q "\"tag_name\""; then
+            break
+        fi
+    done
 
     if [[ -z "$VERSION" ]]; then
         print_error "Could not determine latest version for $BINARY_NAME"
@@ -174,7 +188,7 @@ fi
 INSTALLED_PATH="$BIN_DIR/$BINARY_NAME"
 if [[ -f "$INSTALLED_PATH" ]] && [[ "$FORCE" != "true" ]]; then
     if command -v "$BINARY_NAME" &> /dev/null; then
-        CURRENT_VERSION=$("$BINARY_NAME" --version 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -n 1 || echo "unknown")
+        CURRENT_VERSION=$("$INSTALLED_PATH" --version 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -n 1 || echo "unknown")
         if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
             print_success "$BINARY_NAME $VERSION is already installed"
             exit 0
