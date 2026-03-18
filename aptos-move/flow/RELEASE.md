@@ -8,7 +8,7 @@ This document describes how to release and install move-flow binaries.
 
 **Unix/Linux/macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- move-flow
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- move-flow
 ```
 
 **Windows (PowerShell):**
@@ -33,7 +33,7 @@ cargo binstall aptos-move-flow
 
 **Unix/Linux/macOS:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- move-flow --version 0.1.0
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- move-flow --version 0.1.0
 ```
 
 **Windows:**

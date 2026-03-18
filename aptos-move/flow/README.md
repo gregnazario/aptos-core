@@ -14,7 +14,7 @@ For the easiest installation, use our one-line installer:
 
 ```bash
 # Unix/Linux/macOS
-curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | bash -s -- move-flow
+curl -fsSL https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.sh | sh -s -- move-flow
 
 # Windows (PowerShell)
 iwr https://raw.githubusercontent.com/aptos-labs/aptos-core/main/scripts/binary_release/install_binary.ps1 -OutFile install.ps1; .\install.ps1 -BinaryName move-flow
