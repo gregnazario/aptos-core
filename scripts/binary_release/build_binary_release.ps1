@@ -55,8 +55,14 @@ if ($null -eq $CARGO_PATH) {
         if (Test-Path $dir) {
             $foundFiles = Get-ChildItem -Path $dir -Recurse -Filter "Cargo.toml" -ErrorAction SilentlyContinue
             foreach ($file in $foundFiles) {
-                $content = Get-Content $file.FullName -Raw
-                if ($content -match "^name\s*=\s*`"$CrateName`"") {
+                # Read line by line to check for crate name
+                $found = $false
+                Get-Content $file.FullName | ForEach-Object {
+                    if ($_ -match "^name\s*=\s*`"$CrateName`"") {
+                        $found = $true
+                    }
+                }
+                if ($found) {
                     $CARGO_PATH = $file.FullName
                     Write-Host "Found Cargo.toml at: $CARGO_PATH"
                     break
