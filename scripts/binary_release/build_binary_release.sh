@@ -44,8 +44,21 @@ elif [[ -f "$CRATE_NAME/Cargo.toml" ]]; then
 elif [[ -f "aptos-move/$CRATE_NAME/Cargo.toml" ]]; then
   CARGO_PATH="aptos-move/$CRATE_NAME/Cargo.toml"
 else
-  echo "Could not find Cargo.toml for crate $CRATE_NAME"
-  exit 1
+  # Search for Cargo.toml with matching crate name
+  echo "Searching for Cargo.toml with name = \"$CRATE_NAME\"..."
+  CARGO_PATH=$(find crates aptos-move -name "Cargo.toml" -type f 2>/dev/null | while read -r toml; do
+    if grep -q "^name = \"$CRATE_NAME\"" "$toml"; then
+      echo "$toml"
+      break
+    fi
+  done)
+
+  if [[ -z "$CARGO_PATH" ]]; then
+    echo "Could not find Cargo.toml for crate $CRATE_NAME"
+    echo "Searched in: crates/, aptos-move/, and root directory"
+    exit 1
+  fi
+  echo "Found Cargo.toml at: $CARGO_PATH"
 fi
 
 # Get version from Cargo.toml
