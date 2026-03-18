@@ -47,7 +47,31 @@ foreach ($path in $possiblePaths) {
 }
 
 if ($null -eq $CARGO_PATH) {
+    # Search for Cargo.toml with matching crate name
+    Write-Host "Searching for Cargo.toml with name = `"$CrateName`"..."
+    $searchDirs = @("crates", "aptos-move")
+
+    foreach ($dir in $searchDirs) {
+        if (Test-Path $dir) {
+            $foundFiles = Get-ChildItem -Path $dir -Recurse -Filter "Cargo.toml" -ErrorAction SilentlyContinue
+            foreach ($file in $foundFiles) {
+                $content = Get-Content $file.FullName -Raw
+                if ($content -match "^name\s*=\s*`"$CrateName`"") {
+                    $CARGO_PATH = $file.FullName
+                    Write-Host "Found Cargo.toml at: $CARGO_PATH"
+                    break
+                }
+            }
+            if ($null -ne $CARGO_PATH) {
+                break
+            }
+        }
+    }
+}
+
+if ($null -eq $CARGO_PATH) {
     Write-Error "Could not find Cargo.toml for crate $CrateName"
+    Write-Error "Searched in: crates\, aptos-move\, and root directory"
     exit 1
 }
 
