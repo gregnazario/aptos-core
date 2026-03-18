@@ -32,6 +32,9 @@ on:
 jobs:
   release-move-flow:
     name: "Release move-flow"
+    permissions:
+      contents: write
+      pull-requests: read
     uses: ./.github/workflows/binary-release.yaml
     with:
       binary_name: move-flow
