@@ -37,4 +37,6 @@ uuid = { workspace = true }
 
 # indexer deps
 aptos-indexer-processor-sdk = { workspace = true }
+
+[target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 processor = { workspace = true }

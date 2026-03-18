@@ -977,3 +977,10 @@ ark-poly = { git = "https://github.com/aptos-labs/algebra", branch = "fix-fft-pa
 ark-serialize = { git = "https://github.com/aptos-labs/algebra", branch = "fix-fft-parallelism-cutoff" }
 # Use libusb backend instead of hidraw for musl cross-compilation (hidraw requires libudev which is glibc-only)
 ledger-transport-hid = { path = "third_party/ledger-transport-hid" }
+
+# Patch external aptos-core git dependencies to use local workspace versions
+# This ensures external deps (like aptos-indexer-processor-sdk) get our musl-compatible crates
+# instead of old git revisions that don't have jemalloc musl exclusions
+[patch."https://github.com/aptos-labs/aptos-core.git"]
+aptos-profiler = { path = "crates/aptos-profiler" }
+aptos-system-utils = { path = "crates/aptos-system-utils" }

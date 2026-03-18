@@ -69,7 +69,6 @@ openssl = { workspace = true, optional = true, features = ["vendored"] }
 open = { workspace = true }
 pathsearch = { workspace = true }
 poem = { workspace = true }
-processor = { workspace = true }
 rand = { workspace = true }
 regex = { workspace = true }
 reqwest = { workspace = true }
@@ -90,6 +89,7 @@ url = { workspace = true }
 
 [target.'cfg(all(unix, not(target_env = "musl")))'.dependencies]
 jemallocator = { workspace = true }
+processor = { workspace = true }
 
 [features]
 default = ["ledger"]
