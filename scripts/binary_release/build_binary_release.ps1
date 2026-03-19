@@ -126,8 +126,12 @@ if (Test-Path $binaryPath) {
 
 # Compress the binary with 'v' prefix in version
 $ZIP_NAME = "$BinaryName-v$Version-$TARGET_TRIPLE.zip"
+$originalLocation = Get-Location
+$destinationZipPath = Join-Path -Path $originalLocation.Path -ChildPath $ZIP_NAME
 Write-Host "Compressing binary to $ZIP_NAME"
-Compress-Archive -Path $finalBinaryPath -DestinationPath $ZIP_NAME -Force
+Set-Location $BUILD_DIR
+Compress-Archive -Path "$BinaryName.exe" -DestinationPath $destinationZipPath -Force
+Set-Location $originalLocation
 
 # Generate SHA256 checksum
 Write-Host "Generating SHA256 checksum"

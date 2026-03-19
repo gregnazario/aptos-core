@@ -79,7 +79,12 @@ function Write-Warning-Message {
 }
 
 # Detect architecture
-$ARCH = if ([Environment]::Is64BitOperatingSystem) { "x86_64" } else { "i686" }
+if (-not [Environment]::Is64BitOperatingSystem) {
+    Write-Error-Message "32-bit Windows is not supported. Prebuilt binaries are only available for x86_64-pc-windows-msvc."
+    exit 1
+}
+
+$ARCH = "x86_64"
 $TARGET_TRIPLE = "$ARCH-pc-windows-msvc"
 
 Write-Info "Installing $BinaryName for $TARGET_TRIPLE..."
@@ -156,7 +161,14 @@ try {
     # Download archive
     $ArchivePath = Join-Path $TmpDir $ArchiveName
     try {
-        Invoke-WebRequest -Uri $DownloadUrl -OutFile $ArchivePath -UseBasicParsing
+        $archiveRequestParams = @{
+            Uri     = $DownloadUrl
+            OutFile = $ArchivePath
+        }
+        if ((Get-Command Invoke-WebRequest).Parameters.ContainsKey('UseBasicParsing')) {
+            $archiveRequestParams['UseBasicParsing'] = $true
+        }
+        Invoke-WebRequest @archiveRequestParams
     } catch {
         Write-Error-Message "Failed to download $ArchiveName"
         Write-Error-Message "URL: $DownloadUrl"
@@ -167,7 +179,14 @@ try {
     # Download and verify checksum if available
     $ChecksumPath = Join-Path $TmpDir "$ArchiveName.sha256"
     try {
-        Invoke-WebRequest -Uri $ChecksumUrl -OutFile $ChecksumPath -UseBasicParsing
+        $checksumRequestParams = @{
+            Uri     = $ChecksumUrl
+            OutFile = $ChecksumPath
+        }
+        if ((Get-Command Invoke-WebRequest).Parameters.ContainsKey('UseBasicParsing')) {
+            $checksumRequestParams['UseBasicParsing'] = $true
+        }
+        Invoke-WebRequest @checksumRequestParams
         Write-Info "Verifying checksum..."
 
         $expectedHash = (Get-Content $ChecksumPath -Raw).Split()[0].Trim()
@@ -195,7 +214,22 @@ try {
     }
 
     # Install binary
-    $BinaryPath = Join-Path $TmpDir "$BinaryName.exe"
+    # Search recursively for the binary in case the archive contains a directory prefix
+    $binaryMatches = Get-ChildItem -Path $TmpDir -Filter "$BinaryName.exe" -Recurse -File -ErrorAction SilentlyContinue
+
+    if (-not $binaryMatches -or $binaryMatches.Count -eq 0) {
+        Write-Error-Message "Failed to find $BinaryName.exe in extracted archive at $TmpDir"
+        exit 1
+    }
+
+    if ($binaryMatches.Count -gt 1) {
+        Write-Error-Message "Multiple $BinaryName.exe files found in extracted archive:"
+        $binaryMatches | ForEach-Object { Write-Error-Message "  $($_.FullName)" }
+        Write-Error-Message "Please ensure the archive contains a single $BinaryName.exe"
+        exit 1
+    }
+
+    $BinaryPath = $binaryMatches[0].FullName
     Write-Info "Installing to $InstalledPath..."
     Copy-Item -Path $BinaryPath -Destination $InstalledPath -Force
 

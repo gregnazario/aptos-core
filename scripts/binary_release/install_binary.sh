@@ -187,24 +187,22 @@ fi
 # Check if already installed
 INSTALLED_PATH="$BIN_DIR/$BINARY_NAME"
 if [ -f "$INSTALLED_PATH" ] && [ "$FORCE" != "true" ]; then
-    if command -v "$BINARY_NAME" >/dev/null 2>&1; then
-        CURRENT_VERSION=$("$INSTALLED_PATH" --version 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -n 1 || echo "unknown")
-        if [ "$CURRENT_VERSION" = "$VERSION" ]; then
-            print_success "$BINARY_NAME $VERSION is already installed"
-            exit 0
-        else
-            print_warning "$BINARY_NAME is already installed (version: $CURRENT_VERSION)"
-            if [ "$YES" != "true" ]; then
-                printf "Do you want to upgrade to version %s? [y/N] " "$VERSION"
-                read -r REPLY
-                case "$REPLY" in
-                    [Yy]|[Yy][Ee][Ss])
-                        ;;
-                    *)
-                        exit 0
-                        ;;
-                esac
-            fi
+    CURRENT_VERSION=$("$INSTALLED_PATH" --version 2>/dev/null | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | head -n 1 || echo "unknown")
+    if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+        print_success "$BINARY_NAME $VERSION is already installed"
+        exit 0
+    else
+        print_warning "$BINARY_NAME is already installed (version: $CURRENT_VERSION)"
+        if [ "$YES" != "true" ]; then
+            printf "Do you want to upgrade to version %s? [y/N] " "$VERSION"
+            read -r REPLY
+            case "$REPLY" in
+                [Yy]|[Yy][Ee][Ss])
+                    ;;
+                *)
+                    exit 0
+                    ;;
+            esac
         fi
     fi
 fi
@@ -255,12 +253,26 @@ fi
 print_info "Extracting archive..."
 unzip -q "$ARCHIVE_NAME"
 
+# Locate extracted binary
+EXTRACTED_BINARY_PATH=""
+if [ -f "$BINARY_NAME" ]; then
+    EXTRACTED_BINARY_PATH="$BINARY_NAME"
+else
+    # Some archives place binaries in a subdirectory; search for the expected name
+    EXTRACTED_BINARY_PATH=$(find . -maxdepth 3 -type f -name "$BINARY_NAME" 2>/dev/null | head -n 1)
+fi
+
+if [ -z "$EXTRACTED_BINARY_PATH" ]; then
+    print_error "Extracted binary '$BINARY_NAME' not found in archive. Please verify the release contents."
+    exit 1
+fi
+
 # Create bin directory if it doesn't exist
 mkdir -p "$BIN_DIR"
 
 # Install binary
 print_info "Installing to $BIN_DIR/$BINARY_NAME..."
-cp "$BINARY_NAME" "$BIN_DIR/$BINARY_NAME"
+cp "$EXTRACTED_BINARY_PATH" "$BIN_DIR/$BINARY_NAME"
 chmod +x "$BIN_DIR/$BINARY_NAME"
 
 # Verify installation
