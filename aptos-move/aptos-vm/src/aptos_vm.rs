@@ -1285,6 +1285,13 @@ impl AptosVM {
                 return Ok((s, discarded_output(StatusCode::FEATURE_UNDER_GATING)));
             }
             TransactionExecutableRef::Script(script) => {
+                if !self.features().is_multisig_script_enabled() {
+                    let s = VMStatus::error(
+                        StatusCode::FEATURE_UNDER_GATING,
+                        Some("Multisig script payload is not enabled".to_string()),
+                    );
+                    return Ok((s, discarded_output(StatusCode::FEATURE_UNDER_GATING)));
+                }
                 bcs::to_bytes(&MultisigTransactionPayload::Script(script.clone()))
                     .map_err(|_| invariant_violation_error())?
             },

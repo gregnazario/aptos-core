@@ -430,6 +430,12 @@ pub(crate) fn run_multisig_prologue(
             ));
         }
         TransactionExecutableRef::Script(script) => {
+            if !features.is_multisig_script_enabled() {
+                return Err(VMStatus::error(
+                    StatusCode::FEATURE_UNDER_GATING,
+                    Some("Multisig script payload is not enabled".to_string()),
+                ));
+            }
             bcs::to_bytes(&MultisigTransactionPayload::Script(script.clone()))
                 .map_err(|_| unreachable_error.clone())?
         },
