@@ -18,6 +18,7 @@ use anyhow::{Context, Result};
 use aptos_crypto::{ed25519::Ed25519Signature, secp256r1_ecdsa, HashValue, PrivateKey, SigningKey};
 use aptos_ledger::AptosLedgerError;
 use aptos_rest_client::{aptos_api_types::MoveStructTag, Client, PepperRequest, ProverRequest};
+use base64::{Engine as _, engine::general_purpose::{STANDARD, URL_SAFE, URL_SAFE_NO_PAD}};
 pub use aptos_types::*;
 use aptos_types::{
     event::EventKey,
@@ -292,10 +293,7 @@ impl LocalAccount {
                 *keyless::circuit_testcases::SAMPLE_JWK_SK,
                 jwt_msg.as_bytes(),
             );
-            let jwt_sig_b64 = {
-                use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
-                URL_SAFE_NO_PAD.encode(jwt_sig)
-            };
+            let jwt_sig_b64 = URL_SAFE_NO_PAD.encode(jwt_sig);
             let jwt = format!("{}.{}", jwt_msg, jwt_sig_b64);
 
             let pepper = keyless::test_utils::get_sample_pepper();
@@ -1125,21 +1123,14 @@ pub async fn derive_keyless_account(
 
 pub fn extract_claims_from_jwt(jwt: &str) -> Result<Claims> {
     let parts: Vec<&str> = jwt.split('.').collect();
-    let jwt_payload_json =
-{
-        use base64::{Engine as _, engine::general_purpose::URL_SAFE};
-        URL_SAFE.decode(parts.get(1).context("jwt malformed")?)?
-    };
+    let jwt_payload_json = URL_SAFE.decode(parts.get(1).context("jwt malformed")?)?;
     let claims: Claims = serde_json::from_slice(&jwt_payload_json)?;
     Ok(claims)
 }
 
 pub fn extract_header_json_from_jwt(jwt: &str) -> Result<String> {
     let parts: Vec<&str> = jwt.split('.').collect();
-    let header_bytes = {
-        use base64::{Engine as _, engine::general_purpose::STANDARD};
-        STANDARD.decode(parts.first().context("jwt malformed")?)?
-    };
+    let header_bytes = STANDARD.decode(parts.first().context("jwt malformed")?)?;
 
     Ok(String::from_utf8(header_bytes)?)
 }

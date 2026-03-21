@@ -3,6 +3,8 @@
 
 #![forbid(unsafe_code)]
 
+use base64::{Engine as _, engine::general_purpose::STANDARD};
+
 mod crypto_kv_storage;
 mod crypto_storage;
 mod error;
@@ -35,7 +37,6 @@ pub fn to_base64<S>(bytes: &[u8], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
 {
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
     serializer.serialize_str(&STANDARD.encode(bytes))
 }
 
@@ -43,7 +44,6 @@ pub fn from_base64<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
     let s: String = serde::Deserialize::deserialize(deserializer)?;
     STANDARD.decode(s).map_err(serde::de::Error::custom)
 }
