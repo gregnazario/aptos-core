@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Compiler - Browser Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status.loading {
+            background: rgba(255, 193, 7, 0.3);
+        }
+
+        .status.ready {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .examples {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .example-btn:hover {
+            background: #dee2e6;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .output {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .output.show {
+            display: block;
+        }
+
+        .output.success {
+            color: #4caf50;
+        }
+
+        .output.error {
+            color: #f44336;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Move Compiler WASM</h1>
+            <p>Compile Move code directly in your browser!</p>
+        </div>
+
+        <div id="status" class="status loading">
+            <div class="spinner"></div>
+            <span id="status-text">Loading WASM module...</span>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                📝 Write Move Code
+            </div>
+            <div class="card-body">
+                <div class="examples">
+                    <strong style="margin-right: 10px;">Examples:</strong>
+                    <button class="example-btn" data-example="hello">Hello World</button>
+                    <button class="example-btn" data-example="counter">Counter</button>
+                    <button class="example-btn" data-example="math">Math Module</button>
+                    <button class="example-btn" data-example="script">Script</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Move Source Code</label>
+                    <textarea id="source" rows="15">module 0x42::HelloWorld {
+    use std::debug;
+
+    public fun hello(): u64 {
+        42
+    }
+
+    public fun greet(name: vector<u8>) {
+        debug::print(&name);
+    }
+}</textarea>
+                </div>
+
+                <div class="input-grid">
+                    <div class="form-group">
+                        <label class="form-label">Address</label>
+                        <input type="text" id="address" class="form-input" value="0x42" placeholder="0x1 or named address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Module/Script Name</label>
+                        <input type="text" id="moduleName" class="form-input" value="HelloWorld" placeholder="MyModule">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="compileModule">
+                        🔨 Compile Module
+                    </button>
+                    <button class="btn btn-secondary" id="compileScript">
+                        📜 Compile Script
+                    </button>
+                    <button class="btn btn-secondary" id="clearOutput">
+                        🗑️ Clear Output
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="outputCard" style="display: none;">
+            <div class="card-header">
+                📊 Compilation Result
+            </div>
+            <div class="card-body">
+                <div id="output" class="output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, {
+            compile_module,
+            compile_script,
+            init_panic_hook,
+            get_version_info
+        } from '../pkg/move_compiler_wasm.js';
+
+        // Examples
+        const examples = {
+            hello: `module 0x42::HelloWorld {
+    use std::debug;
+
+    public fun hello(): u64 {
+        42
+    }
+
+    public fun greet(name: vector<u8>) {
+        debug::print(&name);
+    }
+}`,
+            counter: `module 0x1::Counter {
+    use std::signer;
+
+    struct CounterResource has key {
+        value: u64
+    }
+
+    public fun init(account: &signer) {
+        move_to(account, CounterResource { value: 0 });
+    }
+
+    public fun increment(account: &signer) acquires CounterResource {
+        let counter = borrow_global_mut<CounterResource>(signer::address_of(account));
+        counter.value = counter.value + 1;
+    }
+
+    public fun get_value(addr: address): u64 acquires CounterResource {
+        borrow_global<CounterResource>(addr).value
+    }
+}`,
+            math: `module 0x1::Math {
+    public fun add(a: u64, b: u64): u64 {
+        a + b
+    }
+
+    public fun multiply(a: u64, b: u64): u64 {
+        a * b
+    }
+
+    public fun max(a: u64, b: u64): u64 {
+        if (a > b) { a } else { b }
+    }
+
+    public fun min(a: u64, b: u64): u64 {
+        if (a < b) { a } else { b }
+    }
+}`,
+            script: `script {
+    use std::debug;
+
+    fun main(account: signer, value: u64) {
+        debug::print(&value);
+    }
+}`
+        };
+
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('status-text');
+        const output = document.getElementById('output');
+        const outputCard = document.getElementById('outputCard');
+
+        function setStatus(state, message) {
+            status.className = `status ${state}`;
+            statusText.textContent = message;
+        }
+
+        async function initWasm() {
+            try {
+                await init();
+                init_panic_hook();
+                const info = get_version_info();
+                console.log('WASM loaded:', info);
+                setStatus('ready', '✅ Ready to compile!');
+            } catch (err) {
+                console.error('Failed to load WASM:', err);
+                setStatus('error', '❌ Failed to load WASM module');
+            }
+        }
+
+        function showOutput(text, isSuccess) {
+            output.textContent = text;
+            output.className = `output show ${isSuccess ? 'success' : 'error'}`;
+            outputCard.style.display = 'block';
+        }
+
+        // Example selection
+        document.querySelectorAll('.example-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const example = btn.dataset.example;
+                document.getElementById('source').value = examples[example];
+
+                if (example === 'script') {
+                    document.getElementById('moduleName').value = 'main';
+                } else {
+                    const match = examples[example].match(/module\s+(?:0x[\da-fA-F]+|[\w_]+)::([\w_]+)/);
+                    if (match) {
+                        document.getElementById('moduleName').value = match[1];
+                    }
+                }
+            });
+        });
+
+        // Compile module
+        document.getElementById('compileModule').addEventListener('click', () => {
+            const source = document.getElementById('source').value;
+            const address = document.getElementById('address').value;
+            const moduleName = document.getElementById('moduleName').value;
+
+            try {
+                setStatus('loading', '🔄 Compiling module...');
+                const result = compile_module(source, address, moduleName);
+
+                if (result.success) {
+                    const bytecode = result.bytecode;
+                    const hex = Array.from(bytecode)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+
+                    showOutput(
+                        `✅ Module compiled successfully!\n\n` +
+                        `Bytecode size: ${bytecode.length} bytes\n` +
+                        `Bytecode (hex):\n${hex.slice(0, 200)}${hex.length > 200 ? '...' : ''}`,
+                        true
+                    );
+                    setStatus('ready', '✅ Compilation successful!');
+                } else {
+                    const errors = JSON.parse(result.errors);
+                    showOutput(
+                        `❌ Compilation failed with ${errors.length} error(s):\n\n` +
+                        errors.join('\n\n'),
+                        false
+                    );
+                    setStatus('error', '❌ Compilation failed');
+                }
+            } catch (e) {
+                showOutput(`❌ Error: ${e}`, false);
+                setStatus('error', '❌ Compilation error');
+            }
+        });
+
+        // Compile script
+        document.getElementById('compileScript').addEventListener('click', () => {
+            const source = document.getElementById('source').value;
+            const address = document.getElementById('address').value;
+
+            try {
+                setStatus('loading', '🔄 Compiling script...');
+                const result = compile_script(source, address);
+
+                if (result.success) {
+                    const bytecode = result.bytecode;
+                    const hex = Array.from(bytecode)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+
+                    showOutput(
+                        `✅ Script compiled successfully!\n\n` +
+                        `Bytecode size: ${bytecode.length} bytes\n` +
+                        `Bytecode (hex):\n${hex.slice(0, 200)}${hex.length > 200 ? '...' : ''}`,
+                        true
+                    );
+                    setStatus('ready', '✅ Compilation successful!');
+                } else {
+                    const errors = JSON.parse(result.errors);
+                    showOutput(
+                        `❌ Compilation failed with ${errors.length} error(s):\n\n` +
+                        errors.join('\n\n'),
+                        false
+                    );
+                    setStatus('error', '❌ Compilation failed');
+                }
+            } catch (e) {
+                showOutput(`❌ Error: ${e}`, false);
+                setStatus('error', '❌ Compilation error');
+            }
+        });
+
+        // Clear output
+        document.getElementById('clearOutput').addEventListener('click', () => {
+            outputCard.style.display = 'none';
+            setStatus('ready', '✅ Ready to compile!');
+        });
+
+        initWasm();
+    </script>
+</body>
+</html>
