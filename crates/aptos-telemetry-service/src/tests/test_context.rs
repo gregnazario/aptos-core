@@ -90,7 +90,10 @@ pub async fn new_test_context_with_multiple_contracts(
     };
 
     let peers = PeerStoreTuple::default();
-    let jwt_service = JsonWebTokenService::from_base64_secret(&base64::encode("jwt_secret_key"));
+    let jwt_service = JsonWebTokenService::from_base64_secret(&{
+        use base64::{Engine as _, engine::general_purpose::STANDARD};
+        STANDARD.encode("jwt_secret_key")
+    });
 
     // Build custom contract clients if configured
     let custom_contract_clients = if !config.custom_contract_configs.is_empty() {

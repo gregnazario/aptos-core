@@ -35,15 +35,17 @@ pub fn to_base64<S>(bytes: &[u8], serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
 {
-    serializer.serialize_str(&base64::encode(bytes))
+    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    serializer.serialize_str(&STANDARD.encode(bytes))
 }
 
 pub fn from_base64<'de, D>(deserializer: D) -> Result<Vec<u8>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
+    use base64::{Engine as _, engine::general_purpose::STANDARD};
     let s: String = serde::Deserialize::deserialize(deserializer)?;
-    base64::decode(s).map_err(serde::de::Error::custom)
+    STANDARD.decode(s).map_err(serde::de::Error::custom)
 }
 
 #[cfg(test)]

@@ -57,7 +57,10 @@ impl EncodingType {
         Ok(match self {
             EncodingType::Hex => hex::encode_upper(key.to_bytes()).into_bytes(),
             EncodingType::BCS => bcs::to_bytes(key).map_err(|err| EncodingError::BCS(name, err))?,
-            EncodingType::Base64 => base64::encode(key.to_bytes()).into_bytes(),
+            EncodingType::Base64 => {
+                use base64::{Engine as _, engine::general_purpose::STANDARD};
+                STANDARD.encode(key.to_bytes()).into_bytes()
+            },
         })
     }
 
@@ -87,8 +90,11 @@ impl EncodingType {
             },
             EncodingType::Base64 => {
                 let string = String::from_utf8(data)?;
-                let bytes = base64::decode(string.trim())
-                    .map_err(|err| EncodingError::UnableToParse(name, err.to_string()))?;
+                let bytes = {
+                    use base64::{Engine as _, engine::general_purpose::STANDARD};
+                    STANDARD.decode(string.trim())
+                        .map_err(|err| EncodingError::UnableToParse(name, err.to_string()))?
+                };
                 Key::try_from(bytes.as_slice()).map_err(|err| {
                     EncodingError::UnableToParse(name, format!("Failed to parse key {:?}", err))
                 })
