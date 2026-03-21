@@ -5,7 +5,7 @@
 //! in different formats used by the blockchain.
 
 use crate::{traits::ValidCryptoMaterialStringExt, ValidCryptoMaterial};
-use base64::{Engine as _, engine::general_purpose::STANDARD};
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 use core::{
     fmt::{Display, Formatter},
     str::FromStr,

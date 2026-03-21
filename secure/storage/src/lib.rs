@@ -3,7 +3,7 @@
 
 #![forbid(unsafe_code)]
 
-use base64::{Engine as _, engine::general_purpose::STANDARD};
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 
 mod crypto_kv_storage;
 mod crypto_storage;

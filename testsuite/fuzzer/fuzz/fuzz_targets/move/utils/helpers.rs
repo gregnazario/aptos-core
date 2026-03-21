@@ -79,6 +79,6 @@ pub(crate) fn compiled_module_serde(module: &CompiledModule) -> Result<(), ()> {
 }
 
 pub(crate) fn base64url_encode_str(data: &str) -> String {
-    use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
+    use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
     URL_SAFE_NO_PAD.encode(data.as_bytes())
 }

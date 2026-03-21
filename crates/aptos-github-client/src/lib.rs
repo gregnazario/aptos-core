@@ -284,7 +284,7 @@ struct GetResponse {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
 
     const OWNER: &str = "OWNER";
     const REPOSITORY: &str = "REPOSITORY";

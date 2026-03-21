@@ -17,7 +17,7 @@ use aptos_crypto_derive::{BCSCryptoHash, CryptoHasher};
 use ark_bn254::Bn254;
 use ark_groth16::PreparedVerifyingKey;
 use ark_serialize::CanonicalSerialize;
-use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use bytes::Bytes;
 use move_core_types::{
     account_address::AccountAddress,

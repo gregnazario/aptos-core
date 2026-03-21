@@ -411,7 +411,7 @@ impl<T: redis::aio::ConnectionLike + Send + Clone> CacheOperator<T> {
 mod tests {
     use super::*;
     use aptos_protos::util::timestamp::Timestamp;
-    use base64::{Engine as _, engine::general_purpose::STANDARD};
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
     use prost::Message;
     use redis_test::{MockCmd, MockRedisConnection};
 

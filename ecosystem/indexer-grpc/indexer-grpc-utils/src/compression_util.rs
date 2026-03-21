@@ -3,7 +3,7 @@
 
 use crate::default_file_storage_format;
 use aptos_protos::{indexer::v1::TransactionsInStorage, transaction::v1::Transaction};
-use base64::{Engine as _, engine::general_purpose::STANDARD as STANDARD_B64};
+use base64::{engine::general_purpose::STANDARD as STANDARD_B64, Engine as _};
 use lz4::{Decoder, EncoderBuilder};
 use prost::Message;
 use ripemd::{Digest, Ripemd128};
@@ -278,8 +278,9 @@ impl FileEntry {
                     .transactions_in_base64
                     .into_iter()
                     .map(|base64| {
-                        let bytes: Vec<u8> =
-                            STANDARD_B64.decode(base64).expect("base64 decoding failed.");
+                        let bytes: Vec<u8> = STANDARD_B64
+                            .decode(base64)
+                            .expect("base64 decoding failed.");
                         Transaction::decode(bytes.as_slice())
                             .expect("proto deserialization failed.")
                     })

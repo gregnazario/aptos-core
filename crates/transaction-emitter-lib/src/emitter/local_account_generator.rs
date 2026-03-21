@@ -42,7 +42,10 @@ pub fn create_keyless_account_generator(
     keyless_config: keyless::Configuration,
 ) -> anyhow::Result<Box<dyn LocalAccountGenerator>> {
     let parts: Vec<&str> = jwt.split('.').collect();
-    use base64::{Engine as _, engine::general_purpose::{STANDARD, URL_SAFE}};
+    use base64::{
+        engine::general_purpose::{STANDARD, URL_SAFE},
+        Engine as _,
+    };
     let header_bytes = STANDARD.decode(parts[0]).unwrap();
     let jwt_header_json = String::from_utf8(header_bytes).unwrap();
     let jwt_payload_json = URL_SAFE.decode(parts[1]).unwrap();

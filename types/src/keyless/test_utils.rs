@@ -26,7 +26,7 @@ use aptos_crypto::{
 };
 use ark_bn254::Bn254;
 use ark_groth16::{prepare_verifying_key, PreparedVerifyingKey};
-use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
+use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use move_core_types::account_address::AccountAddress;
 use once_cell::sync::Lazy;
 use ring::{signature, signature::RsaKeyPair};

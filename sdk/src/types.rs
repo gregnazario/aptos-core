@@ -18,7 +18,6 @@ use anyhow::{Context, Result};
 use aptos_crypto::{ed25519::Ed25519Signature, secp256r1_ecdsa, HashValue, PrivateKey, SigningKey};
 use aptos_ledger::AptosLedgerError;
 use aptos_rest_client::{aptos_api_types::MoveStructTag, Client, PepperRequest, ProverRequest};
-use base64::{Engine as _, engine::general_purpose::{STANDARD, URL_SAFE, URL_SAFE_NO_PAD}};
 pub use aptos_types::*;
 use aptos_types::{
     event::EventKey,
@@ -31,6 +30,10 @@ use aptos_types::{
         authenticator::{AnyPublicKey, EphemeralPublicKey, EphemeralSignature},
         Auth,
     },
+};
+use base64::{
+    engine::general_purpose::{STANDARD, URL_SAFE, URL_SAFE_NO_PAD},
+    Engine as _,
 };
 use bip39::{Language, Mnemonic, Seed};
 use ed25519_dalek_bip32::{DerivationPath, ExtendedSecretKey};
