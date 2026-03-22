@@ -4,10 +4,15 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License
 
-//! Move compiler WASM bindings
+//! Move compiler WASM bindings (filesystem-free implementation)
+//!
+//! This module provides true browser-native compilation using the new
+//! filesystem-free API (`run_move_compiler_from_sources`).
+//!
+//! **NO FILESYSTEM ACCESS** - compiles directly from in-memory strings.
 
 use wasm_bindgen::prelude::*;
-use move_compiler_v2::{run_move_compiler, Options};
+use move_compiler_v2::{run_move_compiler_from_sources, sources::SourceMap, Options};
 use move_compiler_v2::diagnostics::Emitter;
 use move_core_types::account_address::AccountAddress;
 use move_symbol_pool::Symbol;
@@ -35,7 +40,7 @@ impl Emitter for StringEmitter {
     }
 }
 
-/// Compile a single Move module from source code
+/// Compile a single Move module from source code (filesystem-free!)
 ///
 /// # Arguments
 /// * `source` - Move source code
@@ -44,6 +49,9 @@ impl Emitter for StringEmitter {
 ///
 /// # Returns
 /// CompilationResult with bytecode or errors
+///
+/// # Implementation
+/// Uses the new `run_move_compiler_from_sources()` API - no temp files needed!
 #[wasm_bindgen]
 pub fn compile_module(source: String, address: String, module_name: String) -> CompilationResult {
     compile_module_impl(source, address, module_name)
@@ -53,7 +61,7 @@ pub fn compile_module(source: String, address: String, module_name: String) -> C
 fn compile_module_impl(
     source: String,
     address: String,
-    _module_name: String,
+    module_name: String,
 ) -> Result<CompilationResult, CompilerError> {
     // Parse the address
     let addr = AccountAddress::from_hex_literal(&address)
@@ -64,27 +72,22 @@ fn compile_module_impl(
     let named_addr = extract_address_name(&source)
         .unwrap_or_else(|| Symbol::from("default_addr"));
 
-    // Create temporary file
-    // Use a simple filename that doesn't require directory creation
-    let temp_path = format!("module_{}.move", addr.short_str_lossless());
+    // ✅ NEW: Use SourceMap for in-memory source management
+    let mut sources = SourceMap::new();
+    sources.add_file(format!("{}.move", module_name), source);
 
-    std::fs::write(&temp_path, &source)
-        .map_err(|e| CompilerError::InternalError(format!("Failed to write temp file: {}", e)))?;
-
-    // Configure compiler options
-    let mut options = Options::default();
-    options.sources = vec![temp_path.clone()];
-    options.named_address_mapping = vec![format!("{}={}", named_addr, address)];
-    options.skip_attribute_checks = true;
-
-    // Create emitter
+    // ✅ NO FILESYSTEM ACCESS!
+    // Compile directly from in-memory sources
     let mut emitter = StringEmitter::new();
+    let options = Options::default();
 
-    // Compile
-    let result = run_move_compiler(&mut emitter, options);
-
-    // Clean up temp file
-    let _ = std::fs::remove_file(&temp_path);
+    let result = run_move_compiler_from_sources(
+        &mut emitter,
+        sources,
+        SourceMap::new(),  // No dependencies
+        vec![(named_addr.to_string(), addr)],
+        options,
+    );
 
     match result {
         Ok((_env, units)) => {
@@ -136,7 +139,7 @@ fn extract_address_name(source: &str) -> Option<Symbol> {
     None
 }
 
-/// Compile a Move script from source code
+/// Compile a Move script from source code (filesystem-free!)
 #[wasm_bindgen]
 pub fn compile_script(source: String, address: String) -> CompilationResult {
     compile_script_impl(source, address)
@@ -151,17 +154,24 @@ fn compile_script_impl(
         .or_else(|_| AccountAddress::from_str(&address))
         .map_err(|e| CompilerError::InvalidAddress(format!("Invalid address '{}': {}", address, e)))?;
 
-    let temp_path = format!("/tmp/claude/script_{}.move", addr.short_str_lossless());
-    std::fs::write(&temp_path, &source)
-        .map_err(|e| CompilerError::InternalError(format!("Failed to write temp file: {}", e)))?;
+    let named_addr = extract_address_name(&source)
+        .unwrap_or_else(|| Symbol::from("default_addr"));
 
-    let mut options = Options::default();
-    options.sources = vec![temp_path.clone()];
-    options.skip_attribute_checks = true;
+    // ✅ NEW: Use SourceMap for in-memory source management
+    let mut sources = SourceMap::new();
+    sources.add_file("script.move", source);
 
+    // ✅ NO FILESYSTEM ACCESS!
     let mut emitter = StringEmitter::new();
-    let result = run_move_compiler(&mut emitter, options);
-    let _ = std::fs::remove_file(&temp_path);
+    let options = Options::default();
+
+    let result = run_move_compiler_from_sources(
+        &mut emitter,
+        sources,
+        SourceMap::new(),  // No dependencies
+        vec![(named_addr.to_string(), addr)],
+        options,
+    );
 
     match result {
         Ok((_env, units)) => {
@@ -207,5 +217,20 @@ mod tests {
         }
         "#;
         assert_eq!(extract_address_name(source), Some(Symbol::from("my_addr")));
+    }
+
+    #[test]
+    fn test_compile_simple_module() {
+        let source = r#"
+        module 0x1::Test {
+            public fun answer(): u64 {
+                42
+            }
+        }
+        "#;
+
+        let result = compile_module(source.to_string(), "0x1".to_string(), "Test".to_string());
+        assert!(result.success(), "Compilation should succeed");
+        assert!(!result.bytecode().is_empty(), "Should generate bytecode");
     }
 }
