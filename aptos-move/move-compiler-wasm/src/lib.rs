@@ -45,10 +45,13 @@ use std::collections::BTreeMap;
 mod compiler;
 mod package;
 mod error;
+mod vfs;
+mod memfs;
 
 pub use compiler::*;
 pub use package::*;
 pub use error::*;
+pub use vfs::*;
 
 /// Initialize panic hook for better error messages in browser console
 #[wasm_bindgen]
@@ -186,7 +189,7 @@ mod tests {
 
     #[test]
     fn test_compilation_result() {
-        let result = CompilationResult::success(vec![1, 2, 3], vec![]);
+        let result = CompilationResult::new_success(vec![1, 2, 3], vec![]);
         assert!(result.success());
         assert_eq!(result.bytecode(), vec![1, 2, 3]);
     }

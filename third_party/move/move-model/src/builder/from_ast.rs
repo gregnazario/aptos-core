@@ -10,12 +10,11 @@
 use crate::{add_move_lang_diagnostics, model::GlobalEnv, options::ModelBuilderOptions};
 use itertools::Itertools;
 use legacy_move_compiler::{
-    command_line::compiler::{PASS_EXPANSION, PASS_PARSER},
+    command_line::compiler::{SteppedCompiler, EMPTY_COMPILER, PASS_EXPANSION},
     diagnostics::FilesSourceText,
     parser::ast::Program as ParsedProgram,
-    shared::{Compiler, Flags, NamedAddressMaps},
+    shared::{CompilationEnv, Flags, NamedAddressMaps},
 };
-use move_symbol_pool::Symbol as MoveSymbol;
 use std::{collections::{BTreeMap, BTreeSet}, rc::Rc};
 
 /// Build Move model from already-parsed AST
@@ -63,7 +62,7 @@ use std::{collections::{BTreeMap, BTreeSet}, rc::Rc};
 pub fn run_model_builder_from_ast(
     parsed_program: ParsedProgram,
     files: FilesSourceText,
-    named_address_maps: NamedAddressMaps,
+    _named_address_maps: NamedAddressMaps,
     target_file_names: BTreeSet<String>,
     options: ModelBuilderOptions,
     flags: Flags,
@@ -123,29 +122,96 @@ pub fn run_model_builder_from_ast(
         }
     }
 
+    // Step 1: Extract module dependency closure information before moving parsed_program
+    // Identify which files are targets vs dependencies
+    let dep_files: BTreeSet<_> = parsed_program
+        .lib_definitions
+        .iter()
+        .map(|p| p.def.file_hash())
+        .collect();
+
     // Create a compiler from the parsed AST (bypasses file reading/parsing)
     // This is the key: we use at_parser() instead of from_files()
-    let compiler = Compiler::new_for_testing(
-        vec![],  // No sources (already parsed)
-        vec![],  // No deps (already parsed)
-        named_address_maps.clone(),
-        flags.clone(),
-        known_attributes,
-    )
-    .at_parser(parsed_program);
+    let compilation_env = CompilationEnv::new(flags.clone(), known_attributes.clone());
+    let empty_compiler: SteppedCompiler<EMPTY_COMPILER> = SteppedCompiler::new(compilation_env, None);
+    let compiler = empty_compiler.at_parser(parsed_program);
 
     // Step 2: Run expansion
-    let (_, expansion_ast) = match compiler.run::<PASS_EXPANSION>() {
+    let expansion_ast = match compiler.run::<PASS_EXPANSION>() {
         Err(diags) => {
             add_move_lang_diagnostics(&mut env, diags);
             return Ok(env);
         },
-        Ok(res) => res,
+        Ok(mut compiler) => {
+            // Check for warnings/errors after expansion
+            use legacy_move_compiler::diagnostics::codes::Severity;
+            if let Err(diags) = compiler.compilation_env().check_diags_at_or_above_severity(Severity::Warning) {
+                add_move_lang_diagnostics(&mut env, diags);
+                if env.has_errors() {
+                    return Ok(env);
+                }
+            }
+            let (_, expansion_ast) = compiler.into_ast();
+            expansion_ast
+        },
     };
 
-    // Continue with the rest of the pipeline (same as run_model_builder_with_options_and_compilation_flags)
-    // TODO: Continue with typing, etc.
-    // For now, this is a placeholder - need to implement the rest
+    // Step 3: Collect module dependencies
+    use crate::{collect_related_modules_recursive, ImplicitModuleDeps, run_move_checker, well_known};
+    use legacy_move_compiler::expansion::ast as E;
+
+    let mut visited_modules = BTreeSet::new();
+    let mut implicit_modules = [
+        ImplicitModuleDeps::new(well_known::VECTOR_MODULE),
+        ImplicitModuleDeps::new(well_known::CMP_MODULE),
+        ImplicitModuleDeps::new(well_known::STRING_MODULE),
+        ImplicitModuleDeps::new(well_known::STRING_UTILS_MODULE),
+        ImplicitModuleDeps::new(well_known::SIGNER_MODULE),
+    ];
+
+    // Collect all related modules from targets
+    for (_, mident, mdef) in &expansion_ast.modules {
+        let src_file_hash = mdef.loc.file_hash();
+        if !dep_files.contains(&src_file_hash) {
+            collect_related_modules_recursive(mident, &expansion_ast.modules, &mut visited_modules);
+        }
+        for implicit_module in &mut implicit_modules {
+            implicit_module.process(mident, &expansion_ast.modules);
+        }
+    }
+
+    for sdef in expansion_ast.scripts.values() {
+        let src_file_hash = sdef.loc.file_hash();
+        if !dep_files.contains(&src_file_hash) {
+            for (_, mident, _neighbor) in &sdef.immediate_neighbors {
+                collect_related_modules_recursive(
+                    mident,
+                    &expansion_ast.modules,
+                    &mut visited_modules,
+                );
+            }
+        }
+    }
+
+    // Step 4: Prepare expansion AST for compiler v2, and build model
+    let expansion_ast = {
+        let E::Program { modules, scripts } = expansion_ast;
+        let modules = modules.filter_map(|mident, mut mdef| {
+            // Include implicit modules and their dependencies
+            (implicit_modules
+                .iter()
+                .any(|implicit_module| implicit_module.contains(&mident.value))
+                || visited_modules.contains(&mident.value))
+            .then(|| {
+                mdef.is_source_module = true;
+                mdef
+            })
+        });
+        E::Program { modules, scripts }
+    };
+
+    // Step 5: Run the move checker (type checking and model building)
+    run_move_checker(&mut env, expansion_ast);
 
     Ok(env)
 }
