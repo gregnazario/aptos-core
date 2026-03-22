@@ -211,6 +211,7 @@ pub fn parse_program_from_sources(
     compilation_env: &mut CompilationEnv,
     named_address_maps: NamedAddressMaps,
     targets: FilesSourceText,
+    named_address_map_index: NamedAddressMapIndex,
     deps: FilesSourceText,
 ) -> anyhow::Result<(
     FilesSourceText,
@@ -229,14 +230,14 @@ pub fn parse_program_from_sources(
     let mut diags: Diagnostics = Diagnostics::new();
 
     // Parse target files
-    for (file_hash, (file_name, source_content)) in targets.iter() {
+    for (file_hash, (_file_name, source_content)) in targets.iter() {
         match parse_file_string(compilation_env, *file_hash, source_content) {
             Ok((defs, comments)) => {
                 // All files use the same named address map (index 0)
                 // In a real multi-package scenario, this would be more complex
                 source_definitions.extend(defs.into_iter().map(|def| PackageDefinition {
                     package: None,
-                    named_address_map: NamedAddressMapIndex(0), // Use first address map
+                    named_address_map: named_address_map_index,
                     def,
                 }));
                 source_comments.insert(*file_hash, comments);
@@ -248,12 +249,12 @@ pub fn parse_program_from_sources(
     }
 
     // Parse dependency files
-    for (file_hash, (file_name, source_content)) in deps.iter() {
+    for (file_hash, (_file_name, source_content)) in deps.iter() {
         match parse_file_string(compilation_env, *file_hash, source_content) {
             Ok((defs, _comments)) => {
                 lib_definitions.extend(defs.into_iter().map(|def| PackageDefinition {
                     package: None,
-                    named_address_map: NamedAddressMapIndex(0),
+                    named_address_map: named_address_map_index,
                     def,
                 }));
             }
