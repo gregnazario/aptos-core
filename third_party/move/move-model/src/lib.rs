@@ -35,6 +35,7 @@ use std::{
 
 pub mod ast;
 mod builder;
+pub use builder::from_ast;
 pub mod code_writer;
 pub mod constant_folder;
 pub mod exp_builder;
