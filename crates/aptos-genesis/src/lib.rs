@@ -18,7 +18,7 @@ use aptos_config::config::{
 };
 use aptos_crypto::ed25519::Ed25519PublicKey;
 use aptos_db::AptosDB;
-use aptos_framework::ReleaseBundle;
+use aptos_release_bundle::ReleaseBundle;
 use aptos_storage_interface::DbReaderWriter;
 use aptos_temppath::TempPath;
 use aptos_types::{

@@ -22,7 +22,7 @@ use aptos_crypto::{
     ed25519::{Ed25519PrivateKey, Ed25519PublicKey},
     PrivateKey,
 };
-use aptos_framework::ReleaseBundle;
+use aptos_release_bundle::ReleaseBundle;
 use aptos_keygen::KeyGen;
 use aptos_logger::prelude::*;
 use aptos_types::{

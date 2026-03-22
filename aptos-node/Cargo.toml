@@ -32,7 +32,7 @@ aptos-db-indexer = { workspace = true }
 aptos-dkg-runtime = { workspace = true }
 aptos-event-notifications = { workspace = true }
 aptos-executor = { workspace = true }
-aptos-framework = { workspace = true }
+aptos-release-bundle = { workspace = true }
 aptos-genesis = { workspace = true }
 aptos-indexer-grpc-fullnode = { workspace = true }
 aptos-indexer-grpc-table-info = { workspace = true }
