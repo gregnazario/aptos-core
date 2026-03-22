@@ -24,10 +24,11 @@
 
 use move_command_line_common::files::FileHash;
 use move_symbol_pool::Symbol;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 
-/// Type alias for the internal source text format used by the compiler
-pub type FilesSourceText = BTreeMap<FileHash, (Symbol, String)>;
+/// Type alias for the internal source text format used by the legacy compiler
+/// Note: Uses HashMap to match legacy_move_compiler::diagnostics::FilesSourceText
+pub type FilesSourceText = HashMap<FileHash, (Symbol, String)>;
 
 /// In-memory collection of Move source files
 ///
