@@ -23,7 +23,7 @@ aptos-api-types = { workspace = true }
 aptos-cached-packages = { workspace = true }
 aptos-cli-common = { workspace = true }
 aptos-crypto = { workspace = true }
-aptos-framework = { workspace = true }
+aptos-framework = { workspace = true, features = ["prover"] }
 aptos-gas-profiling = { workspace = true }
 aptos-gas-schedule = { workspace = true }
 aptos-rest-client = { workspace = true }

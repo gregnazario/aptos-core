@@ -1,6 +1,8 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
+#![cfg(feature = "prover")]
+
 use aptos_framework::{extended_checks, prover::ProverOptions};
 use move_binary_format::file_format_common::VERSION_DEFAULT;
 use move_model::metadata::{CompilerVersion, LanguageVersion};

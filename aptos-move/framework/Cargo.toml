@@ -35,10 +35,10 @@ move-core-types = { workspace = true }
 move-docgen = { workspace = true }
 move-model = { workspace = true }
 move-package = { workspace = true }
-move-prover = { workspace = true }
-move-prover-boogie-backend = { workspace = true }
-move-prover-bytecode-pipeline = { workspace = true }
-move-prover-lab = { workspace = true }
+move-prover = { workspace = true, optional = true }
+move-prover-boogie-backend = { workspace = true, optional = true }
+move-prover-bytecode-pipeline = { workspace = true, optional = true }
+move-prover-lab = { workspace = true, optional = true }
 move-stackless-bytecode = { workspace = true }
 move-vm-runtime = { workspace = true }
 num-traits = { workspace = true }
@@ -60,6 +60,12 @@ move-vm-types = { workspace = true, features = ["testing"] }
 [features]
 default = []
 fuzzing = ["aptos-framework-natives/fuzzing", "aptos-types/fuzzing"]
+prover = [
+    "dep:move-prover",
+    "dep:move-prover-boogie-backend",
+    "dep:move-prover-bytecode-pipeline",
+    "dep:move-prover-lab",
+]
 testing = ["aptos-framework-natives/testing", "aptos-move-stdlib/testing", "aptos-crypto/fuzzing"]
 
 [lib]

@@ -16,6 +16,7 @@ pub use release_builder::*;
 pub mod chunked_publish;
 pub mod docgen;
 pub mod extended_checks;
+#[cfg(feature = "prover")]
 pub mod prover;
 mod release_bundle;
 
