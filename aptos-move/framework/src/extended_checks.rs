@@ -423,7 +423,7 @@ impl ExtendedChecker<'_> {
                 };
 
                 if let Some(scope) = self.get_resource_group(&container) {
-                    if !scope.are_equal_envs(struct_, &container) {
+                    if !resource_group_scope_matches(&scope, struct_, &container) {
                         self.env
                             .error(&struct_.get_loc(), "resource_group scope mismatch");
                         continue;
@@ -980,5 +980,24 @@ impl<'a> ExtendedChecker<'a> {
             .addr()
             .expect_numerical()
             == AccountAddress::ONE
+    }
+}
+
+/// Check whether two structs satisfy a resource group scope constraint.
+/// Moved from `ResourceGroupScope::are_equal_envs` in `aptos-types` to avoid
+/// `aptos-types` depending on the full `move-model` crate.
+fn resource_group_scope_matches(
+    scope: &ResourceGroupScope,
+    resource: &StructEnv,
+    group: &StructEnv,
+) -> bool {
+    match scope {
+        ResourceGroupScope::Global => true,
+        ResourceGroupScope::Address => {
+            resource.module_env.get_name().addr() == group.module_env.get_name().addr()
+        },
+        ResourceGroupScope::Module => {
+            resource.module_env.get_name() == group.module_env.get_name()
+        },
     }
 }
