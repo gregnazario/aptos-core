@@ -64,8 +64,10 @@ fn compile_module_impl(
     let named_addr = extract_address_name(&source)
         .unwrap_or_else(|| Symbol::from("default_addr"));
 
-    // Create temporary file in memory (write to temp location)
-    let temp_path = format!("/tmp/claude/module_{}.move", addr.short_str_lossless());
+    // Create temporary file
+    // Use a simple filename that doesn't require directory creation
+    let temp_path = format!("module_{}.move", addr.short_str_lossless());
+
     std::fs::write(&temp_path, &source)
         .map_err(|e| CompilerError::InternalError(format!("Failed to write temp file: {}", e)))?;
 

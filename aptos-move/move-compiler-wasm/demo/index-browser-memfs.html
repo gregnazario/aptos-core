@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Compiler - Browser with Memory Filesystem</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #2d2d30;
+            padding: 1rem;
+            border-bottom: 1px solid #3e3e42;
+        }
+        .header h1 { font-size: 1.2rem; color: #cccccc; }
+        .container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        .editor-pane, .output-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .pane-header {
+            background: #252526;
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid #3e3e42;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        textarea {
+            flex: 1;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+        .controls {
+            padding: 1rem;
+            background: #252526;
+            border-top: 1px solid #3e3e42;
+            display: flex;
+            gap: 1rem;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background: #1177bb; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        .output {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f48771; }
+        .info { color: #9cdcfe; }
+        input {
+            background: #3c3c3c;
+            border: 1px solid #3e3e42;
+            color: #d4d4d4;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .status {
+            color: #888;
+            font-size: 12px;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Move Compiler - Browser (WASM + Memory Filesystem)</h1>
+        <div class="status" id="status">Loading WASM module...</div>
+    </div>
+
+    <div class="container">
+        <div class="editor-pane">
+            <div class="pane-header">Move Source Code</div>
+            <textarea id="sourceCode">module 0x1::HelloWorld {
+    public fun hello(): u64 {
+        42
+    }
+}</textarea>
+            <div class="controls">
+                <input type="text" id="address" value="0x1" placeholder="Address">
+                <input type="text" id="moduleName" value="HelloWorld" placeholder="Module Name">
+                <button id="compileBtn" onclick="compileCode()">Compile Module</button>
+                <button onclick="compileScript()">Compile Script</button>
+            </div>
+        </div>
+
+        <div class="output-pane">
+            <div class="pane-header">Output</div>
+            <div class="output" id="output">
+                <div class="info">Waiting for compilation...</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Create a simple in-memory filesystem shim
+        const memoryFS = new Map();
+
+        // Patch WASM filesystem imports
+        const wasmFS = {
+            fd_write: (fd, iovs, iovsLen, nwritten) => {
+                console.log('fs: fd_write called', { fd, iovs, iovsLen });
+                return 0; // Success
+            },
+            fd_read: (fd, iovs, iovsLen, nread) => {
+                console.log('fs: fd_read called', { fd, iovs, iovsLen });
+                return 0; // Success
+            },
+            path_open: (dirfd, dirflags, path, pathLen, oflags, fsRightsBase, fsRightsInheriting, fdflags, fd) => {
+                console.log('fs: path_open called');
+                return 0; // Success
+            },
+            fd_close: (fd) => {
+                console.log('fs: fd_close called', { fd });
+                return 0; // Success
+            }
+        };
+
+        // Import the WASM module with custom imports
+        let wasmModule;
+        let wasmInstance;
+
+        async function loadWASM() {
+            try {
+                const response = await fetch('../pkg/move_compiler_wasm_bg.wasm');
+                const buffer = await response.arrayBuffer();
+
+                // Try to instantiate with filesystem shims
+                const importObject = {
+                    __wbindgen_placeholder__: {},
+                    wasi_snapshot_preview1: wasmFS
+                };
+
+                const result = await WebAssembly.instantiate(buffer, importObject);
+                wasmInstance = result.instance;
+
+                // Now load the JS bindings
+                const module = await import('../pkg/move_compiler_wasm.js');
+                await module.default(); // Initialize wasm-bindgen
+
+                window.moveCompiler = module;
+
+                document.getElementById('status').textContent = 'Ready! WASM module loaded successfully.';
+                document.getElementById('status').className = 'status success';
+                document.getElementById('compileBtn').disabled = false;
+
+            } catch (e) {
+                console.error('Failed to load WASM:', e);
+                document.getElementById('status').textContent = 'Error loading WASM: ' + e.message;
+                document.getElementById('status').className = 'status error';
+
+                // Show the error in output
+                const output = document.getElementById('output');
+                output.innerHTML = `<div class="error">Failed to initialize:</div>
+                    <div class="error">${e.message}</div>
+                    <div class="info">Stack: ${e.stack}</div>`;
+            }
+        }
+
+        // Load WASM on page load
+        loadWASM();
+
+        // Make compile functions global
+        window.compileCode = function() {
+            const source = document.getElementById('sourceCode').value;
+            const address = document.getElementById('address').value;
+            const moduleName = document.getElementById('moduleName').value;
+            const output = document.getElementById('output');
+
+            try {
+                output.innerHTML = '<div class="info">Compiling...</div>';
+
+                const result = window.moveCompiler.compile_module(source, address, moduleName);
+
+                if (result.success) {
+                    const bytecodeHex = Array.from(result.bytecode)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+
+                    output.innerHTML = `
+                        <div class="success">✓ Compilation successful!</div>
+                        <div class="info">Bytecode length: ${result.bytecode.length} bytes</div>
+                        <div class="info">Bytecode (hex):</div>
+                        <div style="word-break: break-all; color: #4ec9b0; margin-top: 0.5rem; font-size: 11px;">
+                            ${bytecodeHex}
+                        </div>
+                    `;
+                } else {
+                    const errors = JSON.parse(result.errors);
+                    output.innerHTML = `
+                        <div class="error">✗ Compilation failed</div>
+                        ${errors.map(e => `<div class="error">• ${e}</div>`).join('')}
+                    `;
+                }
+            } catch (e) {
+                output.innerHTML = `
+                    <div class="error">Exception during compilation:</div>
+                    <div class="error">${e.message}</div>
+                    <div class="info">Stack: ${e.stack}</div>
+                `;
+                console.error(e);
+            }
+        };
+
+        window.compileScript = function() {
+            const source = document.getElementById('sourceCode').value;
+            const address = document.getElementById('address').value;
+            const output = document.getElementById('output');
+
+            try {
+                output.innerHTML = '<div class="info">Compiling script...</div>';
+
+                const result = window.moveCompiler.compile_script(source, address);
+
+                if (result.success) {
+                    const bytecodeHex = Array.from(result.bytecode)
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+
+                    output.innerHTML = `
+                        <div class="success">✓ Script compilation successful!</div>
+                        <div class="info">Bytecode length: ${result.bytecode.length} bytes</div>
+                        <div class="info">Bytecode (hex):</div>
+                        <div style="word-break: break-all; color: #4ec9b0; margin-top: 0.5rem; font-size: 11px;">
+                            ${bytecodeHex}
+                        </div>
+                    `;
+                } else {
+                    const errors = JSON.parse(result.errors);
+                    output.innerHTML = `
+                        <div class="error">✗ Script compilation failed</div>
+                        ${errors.map(e => `<div class="error">• ${e}</div>`).join('')}
+                    `;
+                }
+            } catch (e) {
+                output.innerHTML = `
+                    <div class="error">Exception during compilation:</div>
+                    <div class="error">${e.message}</div>
+                `;
+                console.error(e);
+            }
+        };
+    </script>
+</body>
+</html>
