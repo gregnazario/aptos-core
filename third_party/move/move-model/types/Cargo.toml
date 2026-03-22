@@ -1,0 +1,19 @@
+[package]
+name = "move-model-types"
+description = "Lightweight types extracted from move-model for use by downstream crates without pulling in the full compiler"
+version = "0.1.0"
+
+# Workspace inherited keys
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+repository = { workspace = true }
+rust-version = { workspace = true }
+
+[dependencies]
+serde = { workspace = true }
+
+[dev-dependencies]
+bcs = { workspace = true }
