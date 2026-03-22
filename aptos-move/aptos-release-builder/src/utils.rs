@@ -2,9 +2,8 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 use aptos_crypto::HashValue;
-use aptos_framework::generate_next_execution_hash_blob;
 use move_core_types::account_address::AccountAddress;
-use move_model::{code_writer::CodeWriter, emitln};
+use move_model::{code_writer::CodeWriter, emit, emitln};
 
 pub(crate) fn generate_governance_proposal_header(
     writer: &CodeWriter,
@@ -92,4 +91,42 @@ where
 
     body(writer);
     finish_with_footer(writer)
+}
+
+pub(crate) fn generate_blob_as_hex_string(writer: &CodeWriter, data: &[u8]) {
+    emit!(writer, "x\"");
+    for b in data.iter() {
+        emit!(writer, "{:02x}", b);
+    }
+    emit!(writer, "\"");
+}
+
+pub(crate) fn generate_next_execution_hash_blob(
+    writer: &CodeWriter,
+    for_address: AccountAddress,
+    next_execution_hash: Option<HashValue>,
+) {
+    match next_execution_hash {
+        None => {
+            emitln!(
+                writer,
+                "let framework_signer = aptos_governance::resolve_multi_step_proposal(proposal_id, @{}, {});\n",
+                for_address,
+                "x\"\"",
+            );
+        },
+        Some(next_execution_hash) => {
+            emitln!(
+                writer,
+                "let framework_signer = aptos_governance::resolve_multi_step_proposal("
+            );
+            writer.indent();
+            emitln!(writer, "proposal_id,");
+            emitln!(writer, "@{},", for_address);
+            generate_blob_as_hex_string(writer, next_execution_hash.as_slice());
+            emit!(writer, ",");
+            writer.unindent();
+            emitln!(writer, ");");
+        },
+    }
 }

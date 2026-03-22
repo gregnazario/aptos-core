@@ -1,14 +1,16 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
+mod code_emitter;
+
 use anyhow::Context;
 use aptos_crypto::HashValue;
 pub use aptos_framework_natives as natives;
 use aptos_framework_natives::code::PackageMetadata;
 use aptos_types::account_address::AccountAddress;
+use code_emitter::{emit, emitln, CodeEmitter};
 use move_binary_format::{access::ModuleAccess, errors::PartialVMError, CompiledModule};
 use move_core_types::language_storage::ModuleId;
-use move_model::{code_writer::CodeWriter, emit, emitln, model::Loc};
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, path::PathBuf};
 
@@ -174,7 +176,7 @@ impl ReleasePackage {
         is_multi_step: bool,
         next_execution_hash: Option<HashValue>,
     ) -> anyhow::Result<()> {
-        let writer = CodeWriter::new(Loc::default());
+        let mut writer = CodeEmitter::new();
         emitln!(
             writer,
             "// Upgrade proposal for package `{}`\n",
@@ -206,14 +208,14 @@ impl ReleasePackage {
         } else {
             emitln!(writer, "fun main(proposal_id: u64){");
             writer.indent();
-            generate_next_execution_hash_blob(&writer, for_address, next_execution_hash);
+            generate_next_execution_hash_blob(&mut writer, for_address, next_execution_hash);
         }
 
         emitln!(writer, "let code = vector::empty();");
 
         for i in 0..self.code.len() {
             emitln!(writer, "let chunk{} = ", i);
-            generate_blob_as_hex_string(&writer, &self.code[i]);
+            generate_blob_as_hex_string(&mut writer, &self.code[i]);
             emitln!(writer, ";");
             emitln!(writer, "vector::push_back(&mut code, chunk{});", i);
         }
@@ -234,7 +236,7 @@ impl ReleasePackage {
             };
             let chunk = metadata.drain(0..to_drain).collect::<Vec<_>>();
             emit!(writer, "let chunk{} = ", i);
-            generate_blob_as_hex_string(&writer, &chunk);
+            generate_blob_as_hex_string(&mut writer, &chunk);
             emitln!(writer, ";")
         }
 
@@ -250,12 +252,12 @@ impl ReleasePackage {
         emitln!(writer, "}");
         writer.unindent();
         emitln!(writer, "}");
-        writer.process_result(|s| std::fs::write(&out, s))?;
+        std::fs::write(&out, writer.into_output())?;
         Ok(())
     }
 }
 
-pub fn generate_blob_as_hex_string(writer: &CodeWriter, data: &[u8]) {
+pub(crate) fn generate_blob_as_hex_string(writer: &mut CodeEmitter, data: &[u8]) {
     emit!(writer, "x\"");
     for b in data.iter() {
         emit!(writer, "{:02x}", b);
@@ -263,8 +265,8 @@ pub fn generate_blob_as_hex_string(writer: &CodeWriter, data: &[u8]) {
     emit!(writer, "\"");
 }
 
-pub fn generate_next_execution_hash_blob(
-    writer: &CodeWriter,
+pub(crate) fn generate_next_execution_hash_blob(
+    writer: &mut CodeEmitter,
     for_address: AccountAddress,
     next_execution_hash: Option<HashValue>,
 ) {

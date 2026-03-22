@@ -4,7 +4,6 @@
 use crate::{components::get_signer_arg, utils::*};
 use anyhow::Result;
 use aptos_crypto::HashValue;
-use aptos_framework::generate_blob_as_hex_string;
 use aptos_types::on_chain_config::OnChainExecutionConfig;
 use move_model::{code_writer::CodeWriter, emit, emitln, model::Loc};
 

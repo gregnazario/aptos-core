@@ -3901,7 +3901,6 @@ dependencies = [
  "bcs 0.1.4",
  "move-binary-format",
  "move-core-types",
- "move-model",
  "serde",
 ]
 
@@ -4895,7 +4894,7 @@ dependencies = [
  "lru",
  "move-binary-format",
  "move-core-types",
- "move-model",
+ "move-model-types",
  "move-table-extension",
  "move-vm-types",
  "num-bigint 0.3.3",
@@ -13066,6 +13065,14 @@ dependencies = [
  "num-traits",
  "once_cell",
  "regex",
+ "serde",
+]
+
+[[package]]
+name = "move-model-types"
+version = "0.1.0"
+dependencies = [
+ "bcs 0.1.4",
  "serde",
 ]
 
