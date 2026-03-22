@@ -25,7 +25,8 @@ pub const LATEST_STABLE_LANGUAGE_VERSION: &str = LATEST_STABLE_LANGUAGE_VERSION_
 pub const LATEST_STABLE_COMPILER_VERSION_VALUE: CompilerVersion = CompilerVersion::V2_0;
 pub const LATEST_STABLE_COMPILER_VERSION: &str = LATEST_STABLE_COMPILER_VERSION_VALUE.to_str();
 
-pub static COMPILATION_METADATA_KEY: &[u8] = "compilation_metadata".as_bytes();
+// Re-export from move-model-types so that all crates see the same type.
+pub use move_model_types::{CompilationMetadata, COMPILATION_METADATA_KEY};
 
 /// Language versions enabling specific features
 pub mod lang_feature_versions {
@@ -42,31 +43,19 @@ pub mod lang_feature_versions {
 }
 
 // ================================================================================'
-// Metadata for compilation result (WORK IN PROGRESS)
+// Metadata for compilation result
 
-/// Metadata about a compilation result. To maintain serialization
-/// stability, this uses a free-form string to represent compiler version
-/// and language version, which is interpreted by the `CompilerVersion`
-/// and `LanguageVersion` types. This allows to always successfully
-/// deserialize the metadata (even older code with newer data), and leave it
-/// up to the program how to deal with decoding errors.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct CompilationMetadata {
-    /// A flag indicating whether, at time of creation, the compilation
-    /// result was considered as unstable. Unstable code may have restrictions
-    /// for deployment on production networks. This flag is true if either the
-    /// compiler or language versions are unstable.
-    pub unstable: bool,
-    /// The version of the compiler, as a string. See
-    /// `CompilationVersion::from_str` for supported version strings.
-    pub compiler_version: String,
-    /// The version of the language, as a string. See
-    /// `LanguageVersion::from_str` for supported version strings.
-    pub language_version: String,
+/// Extension methods on [`CompilationMetadata`] that depend on
+/// [`CompilerVersion`] and [`LanguageVersion`] (which live in this crate).
+pub trait CompilationMetadataExt {
+    fn new(compiler_version: CompilerVersion, language_version: LanguageVersion) -> Self;
+    fn compiler_version(&self) -> anyhow::Result<CompilerVersion>;
+    fn language_version(&self) -> anyhow::Result<LanguageVersion>;
+    fn created_as_unstable(&self) -> bool;
 }
 
-impl CompilationMetadata {
-    pub fn new(compiler_version: CompilerVersion, language_version: LanguageVersion) -> Self {
+impl CompilationMetadataExt for CompilationMetadata {
+    fn new(compiler_version: CompilerVersion, language_version: LanguageVersion) -> Self {
         Self {
             compiler_version: compiler_version.to_string(),
             language_version: language_version.to_string(),
@@ -74,16 +63,15 @@ impl CompilationMetadata {
         }
     }
 
-    pub fn compiler_version(&self) -> anyhow::Result<CompilerVersion> {
+    fn compiler_version(&self) -> anyhow::Result<CompilerVersion> {
         CompilerVersion::from_str(&self.compiler_version)
     }
 
-    pub fn language_version(&self) -> anyhow::Result<LanguageVersion> {
+    fn language_version(&self) -> anyhow::Result<LanguageVersion> {
         LanguageVersion::from_str(&self.language_version)
     }
 
-    /// Returns true of the compilation was created as unstable.
-    pub fn created_as_unstable(&self) -> bool {
+    fn created_as_unstable(&self) -> bool {
         self.unstable
     }
 }

@@ -31,8 +31,8 @@ use move_ir_types::ast as IR_AST;
 use move_model::{
     ast::{AccessSpecifier, AccessSpecifierKind, AddressSpecifier, Attribute, ResourceSpecifier},
     metadata::{
-        lang_feature_versions::LANGUAGE_VERSION_FOR_RAC, CompilationMetadata, CompilerVersion,
-        LanguageVersion, COMPILATION_METADATA_KEY,
+        lang_feature_versions::LANGUAGE_VERSION_FOR_RAC, CompilationMetadata,
+        CompilationMetadataExt, CompilerVersion, LanguageVersion, COMPILATION_METADATA_KEY,
     },
     model::{
         FieldEnv, FunId, FunctionEnv, GlobalEnv, Loc, ModuleEnv, ModuleId, Parameter, QualifiedId,

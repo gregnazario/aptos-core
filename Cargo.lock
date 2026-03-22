@@ -13059,6 +13059,7 @@ dependencies = [
  "move-command-line-common",
  "move-core-types",
  "move-ir-types",
+ "move-model-types",
  "move-prover-test-utils",
  "move-symbol-pool",
  "num 0.4.1",
