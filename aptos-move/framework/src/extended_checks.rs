@@ -996,8 +996,6 @@ fn resource_group_scope_matches(
         ResourceGroupScope::Address => {
             resource.module_env.get_name().addr() == group.module_env.get_name().addr()
         },
-        ResourceGroupScope::Module => {
-            resource.module_env.get_name() == group.module_env.get_name()
-        },
+        ResourceGroupScope::Module => resource.module_env.get_name() == group.module_env.get_name(),
     }
 }
