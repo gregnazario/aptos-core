@@ -51,17 +51,53 @@ else
   echo "WARNING: Skipping version checks!"
 fi
 
+REPO_ROOT="$(pwd)"
+
 echo "Building release $VERSION of $NAME for $OS-$PLATFORM_NAME on $ARCH"
 if [[ "$COMPATIBILITY_MODE" == "true" ]]; then
-  RUSTFLAGS="-C target-cpu=generic --cfg tokio_unstable -C target-feature=-sse4.2,-avx" cargo build -p "$CRATE_NAME" --profile cli
+  # Build RUSTFLAGS for compatibility: generic CPU, tokio_unstable, and
+  # disable SIMD extensions on x86_64 for maximum hardware compatibility
+  COMPAT_RUSTFLAGS="-C target-cpu=generic --cfg tokio_unstable"
+  if [[ "$ARCH" == "x86_64" ]]; then
+    COMPAT_RUSTFLAGS="$COMPAT_RUSTFLAGS -C target-feature=-sse4.2,-avx"
+  fi
+
+  if [[ "$OS" == "Linux" ]] && command -v cargo-zigbuild &> /dev/null; then
+    # Use cargo-zigbuild to target a specific glibc version for broad Linux compatibility
+    GLIBC_TARGET="2.31"
+    if [[ "$ARCH" == "x86_64" ]]; then
+      ZIG_TARGET="x86_64-unknown-linux-gnu.${GLIBC_TARGET}"
+    elif [[ "$ARCH" == "aarch64" ]]; then
+      ZIG_TARGET="aarch64-unknown-linux-gnu.${GLIBC_TARGET}"
+    else
+      echo "WARNING: Unsupported architecture $ARCH for zigbuild, falling back to native build"
+      ZIG_TARGET=""
+    fi
+
+    if [[ -n "$ZIG_TARGET" ]]; then
+      echo "Using cargo-zigbuild targeting glibc ${GLIBC_TARGET} (${ZIG_TARGET})"
+      RUSTFLAGS="$COMPAT_RUSTFLAGS" cargo zigbuild -p "$CRATE_NAME" --profile cli --target "$ZIG_TARGET"
+      cd "target/${ZIG_TARGET}/cli/"
+    else
+      RUSTFLAGS="$COMPAT_RUSTFLAGS" cargo build -p "$CRATE_NAME" --profile cli
+      cd target/cli/
+    fi
+  else
+    # Fallback: native build without zigbuild (non-Linux or zigbuild not installed)
+    if [[ "$OS" == "Linux" ]]; then
+      echo "WARNING: cargo-zigbuild not found, falling back to native build (glibc will match build host)"
+    fi
+    RUSTFLAGS="$COMPAT_RUSTFLAGS" cargo build -p "$CRATE_NAME" --profile cli
+    cd target/cli/
+  fi
 else
   cargo build -p "$CRATE_NAME" --profile cli
+  cd target/cli/
 fi
-cd target/cli/
 
 # Compress the CLI
 ZIP_NAME="$NAME-$VERSION-$PLATFORM_NAME-$ARCH.zip"
 
 echo "Zipping release: $ZIP_NAME"
 zip "$ZIP_NAME" "$CRATE_NAME"
-mv "$ZIP_NAME" ../..
+mv "$ZIP_NAME" "$REPO_ROOT"
