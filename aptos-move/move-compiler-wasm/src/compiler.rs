@@ -21,6 +21,7 @@ use codespan::{FileId, Files};
 use codespan_reporting::diagnostic::Diagnostic;
 
 use crate::{CompilationResult, CompilerError};
+use crate::stdlib;
 
 /// Simple string-based error emitter for WASM
 struct StringEmitter {
@@ -76,22 +77,26 @@ fn compile_module_impl(
     let mut sources = SourceMap::new();
     sources.add_file(format!("{}.move", module_name), source);
 
-    // ✅ NO FILESYSTEM ACCESS!
-    // Compile directly from in-memory sources
+    // Build named address mappings: well-known addresses + user's module address
+    let mut address_map = stdlib::well_known_addresses();
+    address_map.push((named_addr.to_string(), addr));
+
+    // Load bundled move-stdlib as dependencies
+    let deps = stdlib::stdlib_source_map();
+
     let mut emitter = StringEmitter::new();
     let options = Options::default();
 
     let result = run_move_compiler_from_sources(
         &mut emitter,
         sources,
-        SourceMap::new(),  // No dependencies
-        vec![(named_addr.to_string(), addr)],
+        deps,
+        address_map,
         options,
     );
 
     match result {
         Ok((_env, units)) => {
-            // Extract bytecode from compiled units
             let mut all_bytecode = vec![];
 
             for unit in units {
@@ -157,19 +162,24 @@ fn compile_script_impl(
     let named_addr = extract_address_name(&source)
         .unwrap_or_else(|| Symbol::from("default_addr"));
 
-    // ✅ NEW: Use SourceMap for in-memory source management
     let mut sources = SourceMap::new();
     sources.add_file("script.move", source);
 
-    // ✅ NO FILESYSTEM ACCESS!
+    // Build named address mappings: well-known addresses + user's address
+    let mut address_map = stdlib::well_known_addresses();
+    address_map.push((named_addr.to_string(), addr));
+
+    // Load bundled move-stdlib as dependencies
+    let deps = stdlib::stdlib_source_map();
+
     let mut emitter = StringEmitter::new();
     let options = Options::default();
 
     let result = run_move_compiler_from_sources(
         &mut emitter,
         sources,
-        SourceMap::new(),  // No dependencies
-        vec![(named_addr.to_string(), addr)],
+        deps,
+        address_map,
         options,
     );
 
@@ -230,7 +240,43 @@ mod tests {
         "#;
 
         let result = compile_module(source.to_string(), "0x1".to_string(), "Test".to_string());
+        if !result.success() {
+            eprintln!("Errors: {}", result.errors());
+        }
         assert!(result.success(), "Compilation should succeed");
+        assert!(!result.bytecode().is_empty(), "Should generate bytecode");
+    }
+
+    #[test]
+    fn test_compile_module_with_stdlib_imports() {
+        let source = r#"
+        module 0x42::Counter {
+            use std::signer;
+
+            struct CounterResource has key {
+                value: u64
+            }
+
+            public fun init(account: &signer) {
+                move_to(account, CounterResource { value: 0 });
+            }
+
+            public fun get_value(addr: address): u64 acquires CounterResource {
+                borrow_global<CounterResource>(addr).value
+            }
+
+            public fun increment(account: &signer) acquires CounterResource {
+                let counter = borrow_global_mut<CounterResource>(signer::address_of(account));
+                counter.value = counter.value + 1;
+            }
+        }
+        "#;
+
+        let result = compile_module(source.to_string(), "0x42".to_string(), "Counter".to_string());
+        if !result.success() {
+            eprintln!("Errors: {}", result.errors());
+        }
+        assert!(result.success(), "Module with std::signer import should compile");
         assert!(!result.bytecode().is_empty(), "Should generate bytecode");
     }
 }
