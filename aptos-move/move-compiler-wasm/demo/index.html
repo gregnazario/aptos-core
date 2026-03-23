@@ -263,14 +263,14 @@
                 <div class="form-group">
                     <label class="form-label">Move Source Code</label>
                     <textarea id="source" rows="15">module 0x42::HelloWorld {
-    use std::debug;
+    use std::string::String;
 
     public fun hello(): u64 {
         42
     }
 
-    public fun greet(name: vector<u8>) {
-        debug::print(&name);
+    public fun greet(name: String): u64 {
+        name.length()
     }
 }</textarea>
                 </div>
@@ -321,14 +321,14 @@
         // Examples
         const examples = {
             hello: `module 0x42::HelloWorld {
-    use std::debug;
+    use std::string::String;
 
     public fun hello(): u64 {
         42
     }
 
-    public fun greet(name: vector<u8>) {
-        debug::print(&name);
+    public fun greet(name: String): u64 {
+        name.length()
     }
 }`,
             counter: `module 0x1::Counter {
@@ -369,10 +369,7 @@
     }
 }`,
             script: `script {
-    use std::debug;
-
-    fun main(account: signer, value: u64) {
-        debug::print(&value);
+    fun main(_account: signer, _value: u64) {
     }
 }`
         };

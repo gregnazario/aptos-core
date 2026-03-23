@@ -47,6 +47,7 @@ mod package;
 mod error;
 mod vfs;
 mod memfs;
+mod stdlib;
 
 pub use compiler::*;
 pub use package::*;
