@@ -144,6 +144,121 @@ fn extract_address_name(source: &str) -> Option<Symbol> {
     None
 }
 
+/// Compile a single Move module with additional dependency sources.
+///
+/// `deps_json` is a JSON array of `{"path":"...", "content":"..."}` objects.
+/// These are treated as library sources (dependencies) so the compiler can
+/// resolve `use` imports that are not part of the bundled move-stdlib.
+///
+/// `extra_named_addresses_json` is a JSON object like `{"name":"0x1",...}`.
+#[wasm_bindgen]
+pub fn compile_module_with_deps(
+    source: String,
+    address: String,
+    module_name: String,
+    deps_json: String,
+    extra_named_addresses_json: String,
+) -> CompilationResult {
+    compile_module_with_deps_impl(source, address, module_name, deps_json, extra_named_addresses_json)
+        .unwrap_or_else(|e| CompilationResult::new_failure(vec![e.to_string()]))
+}
+
+fn compile_module_with_deps_impl(
+    source: String,
+    address: String,
+    module_name: String,
+    deps_json: String,
+    extra_named_addresses_json: String,
+) -> Result<CompilationResult, CompilerError> {
+    use serde::Deserialize;
+    use std::collections::BTreeMap;
+
+    #[derive(Deserialize)]
+    struct DepFile {
+        path: String,
+        content: String,
+    }
+
+    let addr = AccountAddress::from_hex_literal(&address)
+        .or_else(|_| AccountAddress::from_str(&address))
+        .map_err(|e| CompilerError::InvalidAddress(format!("Invalid address '{}': {}", address, e)))?;
+
+    let named_addr = extract_address_name(&source)
+        .unwrap_or_else(|| Symbol::from("default_addr"));
+
+    let mut sources = SourceMap::new();
+    sources.add_file(format!("{}.move", module_name), source);
+
+    // Start from the bundled stdlib deps
+    let mut deps = stdlib::stdlib_source_map();
+
+    // Add user-provided dependency sources
+    if !deps_json.is_empty() && deps_json != "[]" {
+        let dep_files: Vec<DepFile> = serde_json::from_str(&deps_json)
+            .unwrap_or_default();
+        for dep in dep_files {
+            deps.add_file(dep.path, dep.content);
+        }
+    }
+
+    // Build named address mappings
+    let mut address_map = stdlib::well_known_addresses();
+    address_map.push((named_addr.to_string(), addr));
+
+    // Add extra named addresses
+    if !extra_named_addresses_json.is_empty() && extra_named_addresses_json != "{}" {
+        let extra: BTreeMap<String, String> = serde_json::from_str(&extra_named_addresses_json)
+            .unwrap_or_default();
+        for (name, addr_str) in extra {
+            if let Ok(a) = AccountAddress::from_hex_literal(&addr_str)
+                .or_else(|_| AccountAddress::from_str(&addr_str))
+            {
+                address_map.push((name, a));
+            }
+        }
+    }
+
+    let mut emitter = StringEmitter::new();
+    let options = Options::default();
+
+    let result = run_move_compiler_from_sources(
+        &mut emitter,
+        sources,
+        deps,
+        address_map,
+        options,
+    );
+
+    match result {
+        Ok((_env, units)) => {
+            let mut all_bytecode = vec![];
+            for unit in units {
+                match unit {
+                    legacy_move_compiler::compiled_unit::AnnotatedCompiledUnit::Module(module) => {
+                        let mut bytes = vec![];
+                        module.named_module.module.serialize(&mut bytes)
+                            .map_err(|e| CompilerError::InternalError(format!("Serialization failed: {}", e)))?;
+                        all_bytecode.extend(bytes);
+                    }
+                    _ => {}
+                }
+            }
+            if all_bytecode.is_empty() {
+                Err(CompilerError::NoBytecodeGenerated)
+            } else {
+                Ok(CompilationResult::new_success(all_bytecode, vec![]))
+            }
+        }
+        Err(e) => {
+            if !emitter.errors.is_empty() {
+                Err(CompilerError::CompilationFailed(emitter.errors))
+            } else {
+                Err(CompilerError::InternalError(format!("Compilation failed: {}", e)))
+            }
+        }
+    }
+}
+
 /// Compile a Move script from source code (filesystem-free!)
 #[wasm_bindgen]
 pub fn compile_script(source: String, address: String) -> CompilationResult {
