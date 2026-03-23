@@ -382,10 +382,23 @@ where
     let mut maps = NamedAddressMaps::new();
     let map_idx = maps.insert(named_address_map.clone());
 
+    // Build parser flags with correct language version
+    let parse_flags = Flags::model_compilation()
+        .set_skip_attribute_checks(options.skip_attribute_checks)
+        .set_keep_testing_functions(options.compile_test_code)
+        .set_language_version(options.language_version.unwrap_or_default().into());
+
+    // Use all known attributes when none are specified (same as run_checker path)
+    let known_attrs = if !options.skip_attribute_checks && options.known_attributes.is_empty() {
+        KnownAttribute::get_all_attribute_names().clone()
+    } else {
+        options.known_attributes.clone()
+    };
+
     // Parse the program from sources
     let mut compilation_env = CompilationEnv::new(
-        Flags::empty(),
-        options.known_attributes.clone(),
+        parse_flags,
+        known_attrs,
     );
 
     let (files, pprog_res) = parse_program_from_sources(
