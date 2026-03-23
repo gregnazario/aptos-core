@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Compiler E2E Test Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #results {
+            padding: 30px;
+        }
+
+        .test-group {
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .test-group-header {
+            background: #e9ecef;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #495057;
+        }
+
+        .test-case {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s;
+        }
+
+        .test-case:last-child {
+            border-bottom: none;
+        }
+
+        .test-case:hover {
+            background: #f8f9fa;
+        }
+
+        .test-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+
+        .test-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .status-running {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .status-passed {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-failed {
+            background: #dc3545;
+            color: white;
+        }
+
+        .test-details {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .test-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+        }
+
+        .test-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .summary-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #495057;
+        }
+
+        .summary-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Move Compiler E2E Test Suite</h1>
+            <p class="subtitle">Filesystem-Free Browser-Native Compilation Tests</p>
+        </header>
+
+        <div class="controls">
+            <button id="runTests" onclick="runAllTests()">Run All Tests</button>
+            <button id="clearResults" onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script type="module">
+        import init, { compile_module, compile_script, get_version_info } from '../pkg/move_compiler_wasm.js';
+
+        let wasmInitialized = false;
+        const testResults = [];
+
+        // Test definitions
+        const testSuites = [
+            {
+                name: "Basic Compilation",
+                tests: [
+                    {
+                        name: "Simple module with single function",
+                        code: `module 0x1::SimpleTest {
+    public fun get_answer(): u64 {
+        42
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "SimpleTest",
+                        expectedSuccess: true,
+                    },
+                    {
+                        name: "Module with multiple functions",
+                        code: `module 0x42::Math {
+    public fun add(a: u64, b: u64): u64 {
+        a + b
+    }
+
+    public fun multiply(a: u64, b: u64): u64 {
+        a * b
+    }
+
+    public fun square(x: u64): u64 {
+        multiply(x, x)
+    }
+}`,
+                        address: "0x42",
+                        moduleName: "Math",
+                        expectedSuccess: true,
+                    },
+                    {
+                        name: "Module with struct",
+                        code: `module 0x1::Counter {
+    struct Counter has key {
+        value: u64
+    }
+
+    public fun create(value: u64): Counter {
+        Counter { value }
+    }
+
+    public fun value(counter: &Counter): u64 {
+        counter.value
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "Counter",
+                        expectedSuccess: true,
+                    },
+                ]
+            },
+            {
+                name: "Error Handling",
+                tests: [
+                    {
+                        name: "Syntax error - missing semicolon",
+                        code: `module 0x1::Invalid {
+    public fun test(): u64 {
+        let x = 42
+        x
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "Invalid",
+                        expectedSuccess: false,
+                        expectedError: true,
+                    },
+                    {
+                        name: "Type error - string to u64",
+                        code: `module 0x1::TypeError {
+    public fun test(): u64 {
+        "not a number"
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "TypeError",
+                        expectedSuccess: false,
+                        expectedError: true,
+                    },
+                ]
+            },
+            {
+                name: "Advanced Features",
+                tests: [
+                    {
+                        name: "Generic function",
+                        code: `module 0x1::Generic {
+    public fun identity<T>(x: T): T {
+        x
+    }
+
+    public fun swap<T1, T2>(x: T1, y: T2): (T2, T1) {
+        (y, x)
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "Generic",
+                        expectedSuccess: true,
+                    },
+                    {
+                        name: "Vector operations",
+                        code: `module 0x1::VectorOps {
+    use std::vector;
+
+    public fun sum(nums: vector<u64>): u64 {
+        let sum = 0;
+        let i = 0;
+        let len = vector::length(&nums);
+
+        while (i < len) {
+            sum = sum + *vector::borrow(&nums, i);
+            i = i + 1;
+        };
+
+        sum
+    }
+}`,
+                        address: "0x1",
+                        moduleName: "VectorOps",
+                        expectedSuccess: true,
+                    },
+                ]
+            },
+            {
+                name: "Script Compilation",
+                tests: [
+                    {
+                        name: "Simple script",
+                        code: `script {
+    fun main() {
+        let x = 42;
+    }
+}`,
+                        address: "0x1",
+                        isScript: true,
+                        expectedSuccess: true,
+                    },
+                ]
+            }
+        ];
+
+        async function initWasm() {
+            if (!wasmInitialized) {
+                const runBtn = document.getElementById('runTests');
+                runBtn.disabled = true;
+                runBtn.innerHTML = 'Initializing WASM...<span class="spinner"></span>';
+
+                try {
+                    await init();
+                    wasmInitialized = true;
+                    runBtn.disabled = false;
+                    runBtn.textContent = 'Run All Tests';
+
+                    // Show version info
+                    const versionInfo = get_version_info();
+                    console.log('WASM initialized:', versionInfo);
+                } catch (e) {
+                    runBtn.textContent = 'WASM Init Failed';
+                    console.error('Failed to initialize WASM:', e);
+                    alert('Failed to initialize WASM compiler: ' + e.message);
+                }
+            }
+        }
+
+        async function runTest(test, suiteIndex, testIndex) {
+            const testId = `test-${suiteIndex}-${testIndex}`;
+            const testEl = document.getElementById(testId);
+
+            // Update status to running
+            updateTestStatus(testEl, 'running');
+
+            const startTime = performance.now();
+
+            try {
+                let result;
+                if (test.isScript) {
+                    result = compile_script(test.code, test.address);
+                } else {
+                    result = compile_module(test.code, test.address, test.moduleName);
+                }
+
+                const duration = performance.now() - startTime;
+
+                if (test.expectedSuccess && result.success) {
+                    // Expected success, got success
+                    updateTestStatus(testEl, 'passed');
+                    addTestDetails(testEl, `✓ Compiled successfully in ${duration.toFixed(2)}ms\n` +
+                                          `Bytecode size: ${result.bytecode.length} bytes`, 'success');
+                    return { passed: true, duration };
+                } else if (!test.expectedSuccess && !result.success) {
+                    // Expected failure, got failure
+                    updateTestStatus(testEl, 'passed');
+                    const errors = JSON.parse(result.errors);
+                    addTestDetails(testEl, `✓ Failed as expected in ${duration.toFixed(2)}ms\n` +
+                                          `Errors: ${errors.length}`, 'success');
+                    return { passed: true, duration };
+                } else if (test.expectedSuccess && !result.success) {
+                    // Expected success, got failure
+                    updateTestStatus(testEl, 'failed');
+                    const errors = JSON.parse(result.errors);
+                    addTestDetails(testEl, `✗ Expected success but failed:\n${errors.join('\n')}`, 'error');
+                    return { passed: false, duration };
+                } else {
+                    // Expected failure, got success
+                    updateTestStatus(testEl, 'failed');
+                    addTestDetails(testEl, `✗ Expected failure but succeeded`, 'error');
+                    return { passed: false, duration };
+                }
+            } catch (e) {
+                const duration = performance.now() - startTime;
+                updateTestStatus(testEl, 'failed');
+                addTestDetails(testEl, `✗ Exception: ${e.message}\n${e.stack}`, 'error');
+                return { passed: false, duration };
+            }
+        }
+
+        function updateTestStatus(testEl, status) {
+            const statusEl = testEl.querySelector('.test-status');
+            statusEl.className = 'test-status status-' + status;
+            statusEl.textContent = status.toUpperCase();
+            if (status === 'running') {
+                statusEl.innerHTML = 'RUNNING<span class="spinner"></span>';
+            }
+        }
+
+        function addTestDetails(testEl, message, type) {
+            const existing = testEl.querySelector('.test-details');
+            if (existing) existing.remove();
+
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = type === 'success' ? 'test-success' : 'test-error';
+            detailsDiv.textContent = message;
+            testEl.appendChild(detailsDiv);
+        }
+
+        window.runAllTests = async function() {
+            await initWasm();
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            testResults.length = 0;
+
+            // Create summary
+            const summary = document.createElement('div');
+            summary.className = 'summary';
+            summary.id = 'summary';
+            summary.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-value" id="total-tests">0</div>
+                    <div class="summary-label">Total Tests</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="passed-tests">0</div>
+                    <div class="summary-label">Passed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="failed-tests">0</div>
+                    <div class="summary-label">Failed</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-value" id="avg-time">0ms</div>
+                    <div class="summary-label">Avg Time</div>
+                </div>
+            `;
+            resultsDiv.appendChild(summary);
+
+            // Create progress bar
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            progressBar.innerHTML = '<div class="progress-fill" id="progress-fill"></div>';
+            resultsDiv.appendChild(progressBar);
+
+            // Create test groups
+            let totalTests = 0;
+            testSuites.forEach((suite, suiteIndex) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'test-group';
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'test-group-header';
+                headerDiv.textContent = suite.name;
+                groupDiv.appendChild(headerDiv);
+
+                suite.tests.forEach((test, testIndex) => {
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'test-case';
+                    testDiv.id = `test-${suiteIndex}-${testIndex}`;
+
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'test-name';
+                    nameDiv.innerHTML = `${test.name} <span class="test-status status-pending">PENDING</span>`;
+                    testDiv.appendChild(nameDiv);
+
+                    groupDiv.appendChild(testDiv);
+                    totalTests++;
+                });
+
+                resultsDiv.appendChild(groupDiv);
+            });
+
+            document.getElementById('total-tests').textContent = totalTests;
+
+            // Run tests
+            let passed = 0;
+            let failed = 0;
+            let completed = 0;
+            const durations = [];
+
+            for (let suiteIndex = 0; suiteIndex < testSuites.length; suiteIndex++) {
+                const suite = testSuites[suiteIndex];
+                for (let testIndex = 0; testIndex < suite.tests.length; testIndex++) {
+                    const test = suite.tests[testIndex];
+                    const result = await runTest(test, suiteIndex, testIndex);
+
+                    if (result.passed) passed++;
+                    else failed++;
+                    completed++;
+                    durations.push(result.duration);
+
+                    // Update summary
+                    document.getElementById('passed-tests').textContent = passed;
+                    document.getElementById('failed-tests').textContent = failed;
+                    const avgTime = durations.reduce((a, b) => a + b, 0) / durations.length;
+                    document.getElementById('avg-time').textContent = avgTime.toFixed(2) + 'ms';
+
+                    // Update progress
+                    const progress = (completed / totalTests) * 100;
+                    document.getElementById('progress-fill').style.width = progress + '%';
+
+                    // Small delay between tests
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+            }
+
+            console.log(`Tests complete: ${passed} passed, ${failed} failed`);
+        };
+
+        window.clearResults = function() {
+            document.getElementById('results').innerHTML = '';
+        };
+
+        // Initialize on load
+        window.addEventListener('load', initWasm);
+    </script>
+</body>
+</html>
