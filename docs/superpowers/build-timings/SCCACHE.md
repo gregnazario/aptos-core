@@ -111,19 +111,28 @@ The non-compiling `-sys` crates in the tree (`core-foundation-sys`, `security-fr
 ## Quick Setup Script
 
 ```bash
-./scripts/sccache_setup.sh          # Install + print CC/CXX config
+./scripts/sccache_setup.sh          # Install + print config (S3 shared cache)
 ./scripts/sccache_setup.sh --rust   # Also print RUSTC_WRAPPER config
+./scripts/sccache_setup.sh --local  # Local disk cache only (no S3)
 ```
+
+By default the script configures the shared S3 bucket (`aptos-sccache-shared`) so
+C/C++ compilation artifacts are shared across all developers and CI. This means the
+first developer to compile (e.g.) RocksDB populates the cache and every subsequent
+clean build gets instant hits.
+
+AWS credentials (`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`) are required for S3
+access. Without them sccache silently falls back to local-only caching.
 
 ## CI Usage
 
 CI uses two composite actions that install sccache and configure both C/C++ and Rust caching:
 
-- **`lint-test.yaml` jobs** use `.github/actions/sccache-setup` (standalone action)
-- **Other workflows** use sccache steps built into `.github/actions/rust-setup`
+- **`lint-test.yaml` jobs** use `.github/actions/sccache-setup` — S3 backend (`aptos-sccache-shared`)
+- **Other workflows** use sccache steps built into `.github/actions/rust-setup` — GHA cache backend
 
 Both actions configure:
-- `RUSTC_WRAPPER=sccache` — caches Rust compilation units via GitHub Actions cache
+- `RUSTC_WRAPPER=sccache` — caches Rust compilation units
 - `CC_x86_64_unknown_linux_gnu=sccache clang` — caches C compilations
 - `CXX_x86_64_unknown_linux_gnu=sccache clang++` — caches C++ compilations
 
@@ -138,5 +147,3 @@ Coverage builds pass `sccache-cache-rust: "false"` because `cargo-llvm-cov` is i
   with:
     sccache-cache-rust: "false"  # only for coverage builds
 ```
-
-The `mozilla-actions/sccache-action@v0.0.9` action uses GitHub Actions cache as the storage backend automatically (`SCCACHE_GHA_ENABLED=true`).

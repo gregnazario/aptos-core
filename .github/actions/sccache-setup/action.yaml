@@ -15,7 +15,11 @@ runs:
     - name: Configure sccache environment
       shell: bash
       run: |
-        echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
+        echo "SCCACHE_BUCKET=aptos-sccache-shared" >> $GITHUB_ENV
+        echo "SCCACHE_REGION=us-west-2" >> $GITHUB_ENV
+        echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
+        # Normalize checkout path so cache keys are path-independent
+        echo "SCCACHE_BASEDIRS=$GITHUB_WORKSPACE" >> $GITHUB_ENV
         # Wrap C/C++ compilers for -sys crate caching (~95s savings)
         echo "CC_x86_64_unknown_linux_gnu=sccache clang" >> $GITHUB_ENV
         echo "CXX_x86_64_unknown_linux_gnu=sccache clang++" >> $GITHUB_ENV
