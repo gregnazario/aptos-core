@@ -44,8 +44,17 @@ help:
 	@echo "  make lint               Check lints without modifying (clippy + fmt + sort)"
 	@echo "  make fmt                Auto-fix formatting and dependency sort order"
 	@echo ""
+	@echo "Validation (CI parity):"
+	@echo "  make check-licenses           Check dependency licenses (cargo deny)"
+	@echo "  make check-cached-packages    Verify Move cached packages are fresh"
+	@echo "  make check-vm-features        Verify VM feature flags"
+	@echo "  make check-crypto-symbols     CryptoHasher domain separation check"
+	@echo "  make lint-shell               Shellcheck on dev_setup.sh"
+	@echo "  make check-undeclared-features Find undeclared Cargo feature dependencies"
+	@echo "  make show-changed             Show changed files and affected packages"
+	@echo ""
 	@echo "Pre-push (CI mirror):"
-	@echo "  make pre-push           Run lint + targeted tests (what CI checks)"
+	@echo "  make pre-push           Run lint + validation + targeted tests"
 	@echo ""
 	@echo "Cleaning:"
 	@echo "  make clean              Remove target/ directory"
@@ -194,6 +203,41 @@ endif
 	cargo test -p $(P) --locked
 
 # ═════════════════════════════════════════════════════════════════════════════
+# Validation (CI parity checks)
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: check-licenses
+check-licenses:
+	@command -v cargo-deny &>/dev/null || { echo "cargo-deny not found. Install: cargo install cargo-deny --locked"; exit 1; }
+	cargo deny check licenses
+
+.PHONY: check-cached-packages
+check-cached-packages:
+	scripts/cargo_build_aptos_cached_packages.sh --check
+
+.PHONY: check-vm-features
+check-vm-features:
+	cargo test --profile ci --locked --features check-vm-features -p aptos-node
+
+.PHONY: check-crypto-symbols
+check-crypto-symbols:
+	python3 scripts/check-cryptohasher-symbols.py
+
+.PHONY: lint-shell
+lint-shell:
+	@command -v shellcheck &>/dev/null || { echo "shellcheck not found. Install: brew install shellcheck (or apt install shellcheck)"; exit 1; }
+	shellcheck scripts/dev_setup.sh
+
+.PHONY: check-undeclared-features
+check-undeclared-features:
+	scripts/find-packages-with-undeclared-feature-dependencies.sh
+
+.PHONY: show-changed
+show-changed:
+	cargo x changed-files -vvv
+	cargo x affected-packages -vvv
+
+# ═════════════════════════════════════════════════════════════════════════════
 # Linting
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -211,7 +255,7 @@ fmt:
 # ═════════════════════════════════════════════════════════════════════════════
 
 .PHONY: pre-push
-pre-push: lint test
+pre-push: lint check-licenses check-cached-packages check-crypto-symbols test
 	@echo ""
 	@echo "All pre-push checks passed."
 
