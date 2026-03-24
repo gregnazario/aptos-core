@@ -1,24 +1,248 @@
 # Makefile — Aptos Core developer build utilities
 #
-# sccache targets:
-#   make sccache-setup       Install sccache + generate .sccache.env for this checkout
-#   make sccache-setup-rust  Same, but also wrap rustc (disables incremental compilation)
-#   make sccache-check       Verify sccache is configured and working
-#   make sccache-stats       Show sccache hit/miss statistics
-#   make sccache-clean       Stop sccache server and clear local cache
+# Run `make` or `make help` to see all available targets.
+
+SHELL := /bin/bash
+PROJECT_ROOT := $(shell pwd)
+SCCACHE_ENV := $(PROJECT_ROOT)/.sccache.env
+FRAMEWORK_DIR := $(PROJECT_ROOT)/aptos-move/framework
+FRAMEWORK_STAMP := $(PROJECT_ROOT)/.framework-built
+
+# Move source directories to watch for framework changes
+MOVE_SOURCES := $(shell find $(FRAMEWORK_DIR) -name '*.move' -not -path '*/build/*' 2>/dev/null)
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Help
+# ═════════════════════════════════════════════════════════════════════════════
+
+.DEFAULT_GOAL := help
+
+.PHONY: help
+help:
+	@echo "Aptos Core — Developer Build Utilities"
+	@echo ""
+	@echo "Getting started:"
+	@echo "  make setup              Guided setup checklist for new developers"
+	@echo ""
+	@echo "Building:"
+	@echo "  make check              Quick workspace compile check (no codegen)"
+	@echo "  make build              Build aptos-node (debug)"
+	@echo "  make build-release      Build aptos-node (release, optimized)"
+	@echo "  make build-cli          Build aptos CLI (debug)"
+	@echo "  make build-cli-release  Build aptos CLI (release, optimized)"
+	@echo "  make framework          Rebuild Move cached packages (auto-detects changes)"
+	@echo "  make framework-force    Rebuild Move cached packages unconditionally"
+	@echo ""
+	@echo "Testing:"
+	@echo "  make test               Run targeted unit tests (changed packages only)"
+	@echo "  make test-all           Run all unit tests (full workspace)"
+	@echo "  make test-doc           Run doc tests"
+	@echo "  make test-smoke         Run smoke tests (builds release aptos-node first)"
+	@echo "  make test-package P=x   Run tests for a specific package"
+	@echo ""
+	@echo "Linting:"
+	@echo "  make lint               Check lints without modifying (clippy + fmt + sort)"
+	@echo "  make fmt                Auto-fix formatting and dependency sort order"
+	@echo ""
+	@echo "Pre-push (CI mirror):"
+	@echo "  make pre-push           Run lint + targeted tests (what CI checks)"
+	@echo ""
+	@echo "Cleaning:"
+	@echo "  make clean              Remove target/ directory"
+	@echo "  make clean-all          Remove target/ + sccache local cache + cargo registry"
+	@echo ""
+	@echo "sccache (shared build cache):"
+	@echo "  make sccache-setup      Install sccache + generate .sccache.env (S3 backend)"
+	@echo "  make sccache-setup-rust Same, but also wrap rustc (disables incremental)"
+	@echo "  make sccache-check      Verify sccache is configured and working"
+	@echo "  make sccache-stats      Show sccache hit/miss statistics"
+	@echo "  make sccache-clean      Stop sccache server and clear local cache"
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Setup (new developer onboarding)
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: setup
+setup:
+	@echo "═══ Aptos Core Developer Setup ═══"
+	@echo ""
+	@echo "Follow these steps to set up your development environment."
+	@echo "Run each target individually as needed."
+	@echo ""
+	@echo "Step 1: Install system dependencies"
+	@echo "  make setup-deps"
+	@echo "  Installs: protoc, build tools, PostgreSQL, JS/TS tools"
+	@echo ""
+	@echo "Step 2: Verify Rust toolchain"
+	@echo "  make setup-rust"
+	@echo "  Verifies rust-toolchain.toml is active and shows versions"
+	@echo ""
+	@echo "Step 3: Set up sccache (shared build cache)"
+	@echo "  make sccache-setup"
+	@echo "  Then add 'source $(SCCACHE_ENV)' to your shell profile"
+	@echo ""
+	@echo "Step 4: Verify everything works"
+	@echo "  make check"
+	@echo "  Quick compile check of the full workspace"
+	@echo ""
+	@echo "Step 5 (optional): Run a full build"
+	@echo "  make build"
+	@echo "  Builds aptos-node in debug mode"
+	@echo ""
+	@echo "For Move Prover tools (z3, cvc5, boogie), also run:"
+	@echo "  make setup-prover"
+
+.PHONY: setup-deps
+setup-deps:
+	@echo "Installing system dependencies..."
+	scripts/dev_setup.sh -b -r -P -J -t
+
+.PHONY: setup-prover
+setup-prover:
+	@echo "Installing Move Prover tools (z3, cvc5, boogie)..."
+	scripts/dev_setup.sh -b -y
+
+.PHONY: setup-rust
+setup-rust:
+	@echo "Rust toolchain:"
+	@rustup show active-toolchain
+	@echo ""
+	@rustc --version
+	@cargo --version
+	@echo ""
+	@if [ -f rust-toolchain.toml ]; then \
+		echo "rust-toolchain.toml:"; \
+		grep channel rust-toolchain.toml; \
+	fi
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Building
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: check
+check: framework
+	cargo check --workspace --locked
+
+.PHONY: build
+build: framework
+	cargo build -p aptos-node --locked
+
+.PHONY: build-release
+build-release: framework
+	cargo build -p aptos-node --release --locked
+
+.PHONY: build-cli
+build-cli: framework
+	cargo build -p aptos --locked
+
+.PHONY: build-cli-release
+build-cli-release: framework
+	cargo build -p aptos --release --locked
+
+# ─── Framework (Move cached packages) ──────────────────────────────────────
+
+.PHONY: framework
+framework: $(FRAMEWORK_STAMP)
+
+# Rebuild cached packages if any .move file is newer than the stamp
+$(FRAMEWORK_STAMP): $(MOVE_SOURCES)
+	@echo "Move files changed — rebuilding cached packages..."
+	cargo build -p aptos-cached-packages --locked
+	@touch $(FRAMEWORK_STAMP)
+
+.PHONY: framework-force
+framework-force:
+	cargo build -p aptos-cached-packages --locked
+	@touch $(FRAMEWORK_STAMP)
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Testing
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: test
+test: framework
+	cargo x targeted-unit-tests -vvv --profile ci --cargo-profile ci --locked --no-fail-fast --retries 3
+
+.PHONY: test-all
+test-all: framework
+	cargo nextest run \
+		--profile ci \
+		--cargo-profile ci \
+		--locked \
+		--workspace \
+		--exclude smoke-test \
+		--exclude aptos-testcases \
+		--exclude aptos-keyless-circuit \
+		--exclude aptos-batch-encryption \
+		--retries 3 \
+		--no-fail-fast
+
+.PHONY: test-doc
+test-doc: framework
+	cargo test --profile ci --locked --doc --workspace
+
+.PHONY: test-smoke
+test-smoke: framework
+	cargo build --locked --package=aptos-node --features=failpoints,smoke-test --release
+	LOCAL_SWARM_NODE_RELEASE=1 cargo nextest run --release --profile smoke-test --package smoke-test
+
+.PHONY: test-package
+test-package: framework
+ifndef P
+	$(error Usage: make test-package P=<package-name>)
+endif
+	cargo test -p $(P) --locked
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Linting
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: lint
+lint:
+	scripts/rust_lint.sh --check
+
+.PHONY: fmt
+fmt:
+	cargo +nightly fmt
+	cargo sort --grouped --workspace
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Pre-push (mirrors CI checks)
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: pre-push
+pre-push: lint test
+	@echo ""
+	@echo "All pre-push checks passed."
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Cleaning
+# ═════════════════════════════════════════════════════════════════════════════
+
+.PHONY: clean
+clean:
+	@echo "Removing target/ directory..."
+	cargo clean
+	@rm -f $(FRAMEWORK_STAMP)
+	@echo "Done. Run 'make clean-all' to also clear caches."
+
+.PHONY: clean-all
+clean-all: clean sccache-clean
+	@echo "Removing cargo registry cache..."
+	@rm -rf "$${HOME}/.cargo/registry/cache/"
+	@rm -rf "$${HOME}/.cargo/registry/src/"
+	@echo "All caches cleared."
+
+# ═════════════════════════════════════════════════════════════════════════════
+# sccache (shared build cache)
+# ═════════════════════════════════════════════════════════════════════════════
 #
 # After running `make sccache-setup`, add this to ~/.zshrc or ~/.bashrc:
 #   source /path/to/aptos-core/.sccache.env
 #
 # If you have multiple checkouts, source each one's .sccache.env — the
-# Makefile automatically appends to SCCACHE_BASEDIRS so all checkouts
+# generated file automatically appends to SCCACHE_BASEDIRS so all checkouts
 # share cache hits.
-
-SHELL := /bin/bash
-PROJECT_ROOT := $(shell pwd)
-SCCACHE_ENV := $(PROJECT_ROOT)/.sccache.env
-
-# ─── sccache setup ───────────────────────────────────────────────────────────
 
 .PHONY: sccache-setup
 sccache-setup: sccache-install $(SCCACHE_ENV)
@@ -38,8 +262,6 @@ sccache-setup-rust: sccache-install $(SCCACHE_ENV)
 	@echo "  source $(SCCACHE_ENV)"
 	@echo ""
 	@echo "Then restart your shell or run: source $(SCCACHE_ENV)"
-
-# ─── Install sccache ─────────────────────────────────────────────────────────
 
 .PHONY: sccache-install
 sccache-install:
@@ -63,8 +285,6 @@ sccache-install:
 		esac; \
 		echo "Installed: $$(sccache --version)"; \
 	fi
-
-# ─── Generate .sccache.env ───────────────────────────────────────────────────
 
 $(SCCACHE_ENV): FORCE
 	@echo "Generating $(SCCACHE_ENV) ..."
@@ -105,13 +325,10 @@ $(SCCACHE_ENV): FORCE
 
 FORCE:
 
-# ─── Verify setup ────────────────────────────────────────────────────────────
-
 .PHONY: sccache-check
 sccache-check:
 	@echo "=== sccache setup check ==="
 	@echo ""
-	@# Check sccache installed
 	@if command -v sccache &>/dev/null; then \
 		echo "[OK] sccache installed: $$(sccache --version)"; \
 	else \
@@ -119,7 +336,6 @@ sccache-check:
 		exit 1; \
 	fi
 	@echo ""
-	@# Check .sccache.env exists
 	@if [ -f "$(SCCACHE_ENV)" ]; then \
 		echo "[OK] $(SCCACHE_ENV) exists"; \
 	else \
@@ -127,7 +343,6 @@ sccache-check:
 		exit 1; \
 	fi
 	@echo ""
-	@# Check env vars are set
 	@if [ -n "$${SCCACHE_BUCKET:-}" ]; then \
 		echo "[OK] SCCACHE_BUCKET=$$SCCACHE_BUCKET"; \
 	else \
@@ -154,14 +369,12 @@ sccache-check:
 		echo "[INFO] RUSTC_WRAPPER not set (Rust uses incremental compilation)"; \
 	fi
 	@echo ""
-	@# Check AWS credentials (for S3 mode)
 	@if [ -n "$${AWS_ACCESS_KEY_ID:-}" ]; then \
 		echo "[OK] AWS_ACCESS_KEY_ID is set"; \
 	else \
 		echo "[WARN] AWS_ACCESS_KEY_ID not set — S3 sharing disabled (local cache only)"; \
 	fi
 	@echo ""
-	@# Check sccache server
 	@if sccache --show-stats &>/dev/null; then \
 		echo "[OK] sccache server running"; \
 		echo ""; \
@@ -169,8 +382,6 @@ sccache-check:
 	else \
 		echo "[INFO] sccache server not running (starts automatically on first compile)"; \
 	fi
-
-# ─── Stats and cleanup ───────────────────────────────────────────────────────
 
 .PHONY: sccache-stats
 sccache-stats:

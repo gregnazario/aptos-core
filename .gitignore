@@ -143,6 +143,9 @@ genesis_antithesis_*/
 .cursor/rules
 .claude
 
+# Makefile stamp files
+.framework-built
+
 #ignore proptest regressions
 **/proptest_regressions/*
 
