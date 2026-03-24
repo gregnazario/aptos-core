@@ -19,6 +19,17 @@ runs:
       uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # pin@v2.7.8
       with:
         key: ${{ inputs.ADDITIONAL_KEY }}
+    - name: Install sccache
+      uses: mozilla-actions/sccache-action@v0.0.9
+
+    - name: Configure sccache environment
+      shell: bash
+      run: |
+        echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
+        echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
+        echo "CC_x86_64_unknown_linux_gnu=sccache clang" >> $GITHUB_ENV
+        echo "CXX_x86_64_unknown_linux_gnu=sccache clang++" >> $GITHUB_ENV
+
     - name: Install build tools
       shell: bash
       run: scripts/cli/minimal_cli_build.sh

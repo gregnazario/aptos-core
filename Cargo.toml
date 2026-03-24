@@ -960,6 +960,13 @@ lto = "thin"
 strip = true
 codegen-units = 1
 
+[profile.dev]
+incremental = false        # sccache and incremental conflict; disable one
+codegen-units = 256        # more units = better cache granularity
+
+[profile.dev.package."*"]
+opt-level = 3              # optimize deps even in dev mode
+
 [profile.ci]
 inherits = "release"
 debug = "line-tables-only"

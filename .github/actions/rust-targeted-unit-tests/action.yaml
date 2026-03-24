@@ -10,6 +10,12 @@ runs:
   steps:
     # The source code must be checked out by the workflow that invokes this action.
 
+    # Cache cargo registry and build artifacts
+    - name: Run cargo cache
+      uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # pin@v2.7.8
+      with:
+        key: rust-targeted-unit-tests
+
     # Run a postgres database
     - name: Run postgres database
       run: docker run --detach -p 5432:5432 cimg/postgres:14.2

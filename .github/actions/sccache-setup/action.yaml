@@ -1,0 +1,30 @@
+name: "sccache Setup"
+description: "Install and configure sccache for CI builds"
+inputs:
+  cache-rust:
+    description: "Whether to wrap rustc with sccache (set false for coverage builds using cargo-llvm-cov)"
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Install sccache
+      uses: mozilla-actions/sccache-action@v0.0.9
+
+    - name: Configure sccache environment
+      shell: bash
+      run: |
+        echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
+        # Wrap C/C++ compilers for -sys crate caching (~95s savings)
+        echo "CC_x86_64_unknown_linux_gnu=sccache clang" >> $GITHUB_ENV
+        echo "CXX_x86_64_unknown_linux_gnu=sccache clang++" >> $GITHUB_ENV
+
+    - name: Configure sccache as rustc wrapper
+      if: inputs.cache-rust == 'true'
+      shell: bash
+      run: echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
+
+    - name: Show sccache config
+      shell: bash
+      run: sccache --show-stats

@@ -32,6 +32,8 @@ jobs:
         with:
           fetch-depth: 0 # get all the history because cargo xtest --change-since origin/main requires it.
       - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+        with:
+          sccache-cache-rust: "false" # cargo-llvm-cov is incompatible with RUSTC_WRAPPER
       - run: rustup component add llvm-tools-preview
       - uses: taiki-e/install-action@4fedbddde88aab767a45a011661f832d68202716 # pin@v2.33.28
         with:
@@ -62,6 +64,8 @@ jobs:
         with:
           fetch-depth: 0 # get all the history because cargo xtest --change-since origin/main requires it.
       - uses: aptos-labs/aptos-core/.github/actions/rust-setup@main
+        with:
+          sccache-cache-rust: "false" # cargo-llvm-cov is incompatible with RUSTC_WRAPPER
       - run: rustup component add llvm-tools-preview
       - uses: taiki-e/install-action@4fedbddde88aab767a45a011661f832d68202716 # pin@v2.33.28
         with:
