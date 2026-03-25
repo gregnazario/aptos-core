@@ -95,9 +95,9 @@ on:
         - ADHOC
         type: choice
         description: Test source (always adhoc from here)
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_AWS_SECRET_ACCESS_KEY }}
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   # This job determines which tests to run

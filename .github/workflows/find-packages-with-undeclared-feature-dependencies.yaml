@@ -2,9 +2,9 @@ name: "Find Packages with undeclared feature dependencies"
 on:
   workflow_dispatch:
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_AWS_SECRET_ACCESS_KEY }}
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   find-packages-with-undeclared-feature-dependencies:

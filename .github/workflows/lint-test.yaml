@@ -12,11 +12,13 @@ on:
       - aptos-release-v*
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   HAS_BUILDPULSE_SECRETS: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID != '' && secrets.BUILDPULSE_SECRET_ACCESS_KEY != '' }}
   HAS_DATADOG_SECRETS: ${{ secrets.DD_API_KEY != '' }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_AWS_SECRET_ACCESS_KEY }}
   CARGO_INCREMENTAL: "0"
   CARGO_TERM_COLOR: always
 

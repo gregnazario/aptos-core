@@ -22,6 +22,13 @@ runs:
     - name: Install sccache
       uses: mozilla-actions/sccache-action@v0.0.9
 
+    - name: Configure AWS credentials for sccache
+      continue-on-error: true
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::323143817725:role/sccache
+        aws-region: us-west-2
+
     # S3 sccache config — keep in sync with:
     #   .github/actions/sccache-setup/action.yaml
     #   .github/actions/rust-setup/action.yaml
