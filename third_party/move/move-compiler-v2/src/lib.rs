@@ -290,8 +290,6 @@ pub fn run_checker(options: Options) -> anyhow::Result<GlobalEnv> {
             &options.known_attributes
         },
         options.language_version.unwrap_or_default(),
-        options.warn_deprecated,
-        options.warn_of_deprecation_use_in_aptos_libs,
         options.compile_test_code,
         options.compile_verify_code,
     )?;
@@ -369,7 +367,7 @@ pub fn run_stackless_bytecode_gen(env: &GlobalEnv) -> FunctionTargetsHolder {
             for fun in module.get_functions() {
                 let id = fun.get_qualified_id();
                 // Skip inline functions because invoke and lambda are not supported in the current code generator
-                if !fun.is_inline() {
+                if !fun.is_inline() && !fun.is_lemma() {
                     todo.insert(id);
                 }
             }
