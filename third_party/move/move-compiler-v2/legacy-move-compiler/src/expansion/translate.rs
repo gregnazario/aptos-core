@@ -1961,7 +1961,6 @@ fn spec_condition_kind(
         P::SpecConditionKind_::AbortsIf => (E::SpecConditionKind_::AbortsIf, None),
         P::SpecConditionKind_::AbortsWith => (E::SpecConditionKind_::AbortsWith, None),
         P::SpecConditionKind_::SucceedsIf => (E::SpecConditionKind_::SucceedsIf, None),
-        P::SpecConditionKind_::Modifies => (E::SpecConditionKind_::Modifies, None),
         P::SpecConditionKind_::Emits => (E::SpecConditionKind_::Emits, None),
         P::SpecConditionKind_::Ensures => (E::SpecConditionKind_::Ensures, None),
         P::SpecConditionKind_::Requires => (E::SpecConditionKind_::Requires, None),
@@ -2031,17 +2030,45 @@ fn spec_member(context: &mut Context, sp!(loc, pm): P::SpecBlockMember) -> E::Sp
             name,
             uninterpreted,
             signature,
+            modifies,
+            reads,
             body,
         } => {
             let (old_aliases, signature) = function_signature(context, signature);
+            let modifies = modifies.into_iter().map(|e| exp_(context, e)).collect();
+            let reads = reads.into_iter().map(|t| type_(context, t)).collect();
             let body = function_body(context, body);
             context.set_to_outer_scope(old_aliases);
             EM::Function {
                 uninterpreted,
                 name,
                 signature,
+                modifies,
+                reads,
                 body,
             }
+        },
+        PM::ModifiesOf {
+            fun_param,
+            params,
+            targets,
+        } => EM::ModifiesOf {
+            fun_param,
+            params: params
+                .into_iter()
+                .map(|(v, t)| (v, type_(context, t)))
+                .collect(),
+            targets: targets.into_iter().map(|e| exp_(context, e)).collect(),
+        },
+        PM::ReadsOf { fun_param, types } => EM::ReadsOf {
+            fun_param,
+            types: types.into_iter().map(|t| type_(context, t)).collect(),
+        },
+        PM::Modifies { targets } => EM::Modifies {
+            targets: targets.into_iter().map(|e| exp_(context, e)).collect(),
+        },
+        PM::Reads { types } => EM::Reads {
+            types: types.into_iter().map(|t| type_(context, t)).collect(),
         },
         PM::Variable {
             is_global,
@@ -2114,8 +2141,100 @@ fn spec_member(context: &mut Context, sp!(loc, pm): P::SpecBlockMember) -> E::Sp
                 .collect();
             EM::Pragma { properties }
         },
+        PM::Proof { body } => {
+            let body = translate_proof(context, body);
+            EM::Proof { body }
+        },
+        PM::Lemma {
+            name,
+            signature,
+            spec_members,
+            proof,
+        } => {
+            let (old_aliases, signature) = function_signature(context, signature);
+            let spec_members = spec_members
+                .into_iter()
+                .map(|m| spec_member(context, m))
+                .collect();
+            let proof = proof.map(|p| translate_proof(context, p));
+            context.set_to_outer_scope(old_aliases);
+            EM::Lemma {
+                name,
+                signature,
+                spec_members,
+                proof,
+            }
+        },
     };
     sp(loc, em)
+}
+
+/// Recursively translate a parser proof to an expansion proof.
+fn translate_proof(context: &mut Context, sp!(loc, proof_): P::Proof) -> E::Proof {
+    let ep = match proof_ {
+        P::Proof_::Let(name, pexp) => E::Proof_::Let(name, exp_(context, pexp)),
+        P::Proof_::IfElse(cond, then_branch, else_branch) => E::Proof_::IfElse(
+            exp_(context, cond),
+            Box::new(translate_proof(context, *then_branch)),
+            else_branch.map(|eb| Box::new(translate_proof(context, *eb))),
+        ),
+        P::Proof_::Block(stmts) => E::Proof_::Block(
+            stmts
+                .into_iter()
+                .map(|s| translate_proof(context, s))
+                .collect(),
+        ),
+        P::Proof_::Assert(pexp) => E::Proof_::Assert(exp_(context, pexp)),
+        P::Proof_::Assume(pprops, pexp) => {
+            let props = pprops
+                .into_iter()
+                .map(|p| pragma_property(context, p))
+                .collect();
+            E::Proof_::Assume(props, exp_(context, pexp))
+        },
+        P::Proof_::Apply(chain, pargs) => {
+            let access = name_access_chain(context, Access::Term, chain, None);
+            match access {
+                Some(access) => {
+                    let args = pargs.into_iter().map(|e| exp_(context, e)).collect();
+                    E::Proof_::Apply(access, args)
+                },
+                None => E::Proof_::Block(vec![]), // error already reported
+            }
+        },
+        P::Proof_::ForallApply {
+            bindings,
+            patterns,
+            lemma,
+            args,
+        } => {
+            let ebindings = bind_with_range_list(context, bindings);
+            let epatterns = patterns
+                .into_iter()
+                .map(|group| group.into_iter().map(|e| exp_(context, e)).collect())
+                .collect();
+            let elemma = name_access_chain(context, Access::Term, lemma, None);
+            let eargs = args.into_iter().map(|e| exp_(context, e)).collect();
+            match (ebindings, elemma) {
+                (Some(ebindings), Some(elemma)) => E::Proof_::ForallApply {
+                    bindings: ebindings,
+                    patterns: epatterns,
+                    lemma: elemma,
+                    args: eargs,
+                },
+                _ => E::Proof_::Block(vec![]), // error already reported
+            }
+        },
+        P::Proof_::Calc(steps) => E::Proof_::Calc(
+            steps
+                .into_iter()
+                .map(|(pexp, op)| (exp_(context, pexp), op))
+                .collect(),
+        ),
+        P::Proof_::Post(inner) => E::Proof_::Post(Box::new(translate_proof(context, *inner))),
+        P::Proof_::Split(pexp) => E::Proof_::Split(exp_(context, pexp)),
+    };
+    sp(loc, ep)
 }
 
 fn pragma_property(context: &mut Context, sp!(loc, pp_): P::PragmaProperty) -> E::PragmaProperty {
@@ -2806,7 +2925,7 @@ fn exp_(context: &mut Context, sp!(loc, pe_): P::Exp) -> E::Exp {
             } = unbound_names;
             EE::Spec(spec_id, unbound_vars, unbound_func_ptrs)
         },
-        PE::Behavior(kind, pre_label, fn_name, type_args, sp!(args_loc, args), post_label) => {
+        PE::Behavior(kind, fn_name, type_args, sp!(args_loc, args)) => {
             if !context.in_spec_context {
                 context.env.add_diag(diag!(
                     Syntax::SpecContextRestricted,
@@ -2826,48 +2945,25 @@ fn exp_(context: &mut Context, sp!(loc, pe_): P::Exp) -> E::Exp {
                 let e_type_args = optional_types(context, type_args);
                 let e_args = sp(args_loc, exps(context, args));
                 if let Some(fn_access) = e_fn_name {
-                    EE::Behavior(kind, pre_label, fn_access, e_type_args, e_args, post_label)
+                    EE::Behavior(kind, fn_access, e_type_args, e_args)
                 } else {
                     EE::UnresolvedError
                 }
             }
         },
-        PE::LabeledCall(label, name, type_args, sp!(args_loc, args)) => {
+        PE::StateLabeled(pre_label, inner, post_label) => {
             if !context.in_spec_context {
                 context.env.add_diag(diag!(
                     Syntax::SpecContextRestricted,
                     (
                         loc,
-                        "labeled resource access only allowed in specifications"
+                        "state-labeled expression only allowed in specifications"
                     )
                 ));
                 EE::UnresolvedError
             } else {
-                let e_name =
-                    name_access_chain(context, Access::Term, name, Some(DeprecatedItem::Function));
-                let e_type_args = optional_types(context, type_args);
-                let e_args = sp(args_loc, exps(context, args));
-                if let Some(name_access) = e_name {
-                    EE::LabeledCall(label, name_access, e_type_args, e_args)
-                } else {
-                    EE::UnresolvedError
-                }
-            }
-        },
-        PE::LabeledIndex(label, target, index) => {
-            if !context.in_spec_context {
-                context.env.add_diag(diag!(
-                    Syntax::SpecContextRestricted,
-                    (
-                        loc,
-                        "labeled resource access only allowed in specifications"
-                    )
-                ));
-                EE::UnresolvedError
-            } else {
-                let e_target = exp_(context, *target);
-                let e_index = exp_(context, *index);
-                EE::LabeledIndex(label, Box::new(e_target), Box::new(e_index))
+                let e_inner = exp_(context, *inner);
+                EE::StateLabeled(pre_label, Box::new(e_inner), post_label)
             }
         },
         PE::UnresolvedError => panic!("ICE error should have been thrown"),
@@ -3378,7 +3474,65 @@ fn unbound_names_spec_block_member(unbound: &mut UnboundNames, sp!(_, m_): &E::S
         | M::Let { .. }
         | M::Include { .. }
         | M::Apply { .. }
-        | M::Pragma { .. } => (),
+        | M::Pragma { .. }
+        | M::ModifiesOf { .. }
+        | M::ReadsOf { .. }
+        | M::Modifies { .. }
+        | M::Reads { .. } => (),
+        M::Proof { body } => unbound_names_proof(unbound, body),
+        M::Lemma {
+            spec_members,
+            proof,
+            ..
+        } => {
+            for m in spec_members {
+                unbound_names_spec_block_member(unbound, m);
+            }
+            if let Some(p) = proof {
+                unbound_names_proof(unbound, p);
+            }
+        },
+    }
+}
+
+fn unbound_names_proof(unbound: &mut UnboundNames, sp!(_, proof_): &E::Proof) {
+    match proof_ {
+        E::Proof_::Let(_, e) | E::Proof_::Assert(e) => unbound_names_exp(unbound, e),
+        E::Proof_::Assume(_, e) => unbound_names_exp(unbound, e),
+        E::Proof_::IfElse(cond, then_branch, else_branch) => {
+            unbound_names_exp(unbound, cond);
+            unbound_names_proof(unbound, then_branch);
+            if let Some(eb) = else_branch {
+                unbound_names_proof(unbound, eb);
+            }
+        },
+        E::Proof_::Block(stmts) => {
+            for s in stmts {
+                unbound_names_proof(unbound, s);
+            }
+        },
+        E::Proof_::Apply(_, args) => args.iter().for_each(|e| unbound_names_exp(unbound, e)),
+        E::Proof_::ForallApply {
+            bindings,
+            patterns,
+            args,
+            ..
+        } => {
+            for group in patterns {
+                for e in group {
+                    unbound_names_exp(unbound, e);
+                }
+            }
+            args.iter().for_each(|e| unbound_names_exp(unbound, e));
+            unbound_names_binds_with_range(unbound, bindings);
+        },
+        E::Proof_::Calc(steps) => {
+            for (e, _) in steps {
+                unbound_names_exp(unbound, e);
+            }
+        },
+        E::Proof_::Post(inner) => unbound_names_proof(unbound, inner),
+        E::Proof_::Split(e) => unbound_names_exp(unbound, e),
     }
 }
 
@@ -3488,7 +3642,7 @@ fn unbound_names_exp(unbound: &mut UnboundNames, sp!(_, e_): &E::Exp) {
             unbound.vars.extend(unbound_vars);
             unbound.func_ptrs.extend(unbound_func_ptrs);
         },
-        EE::Behavior(_, _, fn_name, _type_args, sp!(_, args), _) => {
+        EE::Behavior(_, fn_name, _type_args, sp!(_, args)) => {
             match &fn_name.value {
                 E::ModuleAccess_::Name(n) => {
                     unbound.func_ptrs.insert(*n);
@@ -3497,12 +3651,8 @@ fn unbound_names_exp(unbound: &mut UnboundNames, sp!(_, e_): &E::Exp) {
             }
             unbound_names_exps(unbound, args);
         },
-        EE::LabeledCall(_, _, _, sp!(_, args)) => {
-            unbound_names_exps(unbound, args);
-        },
-        EE::LabeledIndex(_, target, index) => {
-            unbound_names_exp(unbound, target);
-            unbound_names_exp(unbound, index);
+        EE::StateLabeled(_, inner, _) => {
+            unbound_names_exp(unbound, inner);
         },
     }
 }

@@ -88,7 +88,7 @@ use aptos_types::{
     account_address::AccountAddress,
     dkg::{
         chunky_dkg::{
-            AggregatedSubtranscript, ChunkyDKG, ChunkyDKGState, ChunkyDecryptPrivKey,
+            AggregatedSubtranscript, ChunkyDKGSession, ChunkyDKGState, ChunkyDecryptPrivKey,
             TEST_DIGEST_KEY,
         },
         real_dkg::maybe_dk_from_bls_sk,
@@ -915,11 +915,15 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
             100,
             epoch_state.verifier.get_ordered_account_addresses(),
         )));
+        let encrypted_txn_limit = secret_sharing_config
+            .as_ref()
+            .map(|c| c.digest_key().max_batch_size() as u64);
         let opt_qs_payload_param_provider = Arc::new(OptQSPullParamsProvider::new(
             self.config.quorum_store.enable_opt_quorum_store,
             self.config.quorum_store.opt_qs_minimum_batch_age_usecs,
             failures_tracker.clone(),
             self.config.quorum_store.enable_opt_qs_v2_payload_tx,
+            encrypted_txn_limit,
         ));
 
         info!(epoch = epoch, "Create ProposalGenerator");
@@ -1148,7 +1152,7 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
 
     fn try_get_secret_share_config_for_epoch(
         &self,
-        consensus_key: std::sync::Arc<PrivateKey>,
+        consensus_key: Arc<PrivateKey>,
         new_epoch_state: &EpochState,
         onchain_chunky_dkg_config: &OnChainChunkyDKGConfig,
         maybe_chunky_dkg_state: anyhow::Result<ChunkyDKGState>,
@@ -1163,14 +1167,14 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
 
         let dkg_state =
             maybe_chunky_dkg_state.map_err(NoSecretSharingReason::ChunkyDKGStateResourceMissing)?;
-        let dkg_session = dkg_state
+        let dkg_session_state = dkg_state
             .last_completed
             .ok_or(NoSecretSharingReason::DKGCompletedSessionResourceMissing)?;
-        if dkg_session.metadata.dealer_epoch + 1 != new_epoch_state.epoch {
+        if dkg_session_state.metadata.dealer_epoch + 1 != new_epoch_state.epoch {
             return Err(NoSecretSharingReason::CompletedSessionTooOld);
         }
 
-        let dkg_config = ChunkyDKG::generate_config(&dkg_session.metadata);
+        let dkg_session = ChunkyDKGSession::new(&dkg_session_state.metadata);
         let my_index = new_epoch_state
             .verifier
             .address_to_validator_index()
@@ -1180,7 +1184,7 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
 
         let dkg_decrypt_key: ChunkyDecryptPrivKey = consensus_key.as_ref().into();
         let subtranscript =
-            bcs::from_bytes::<AggregatedSubtranscript>(dkg_session.transcript.as_slice())
+            bcs::from_bytes::<AggregatedSubtranscript>(dkg_session_state.transcript.as_slice())
                 .map_err(NoSecretSharingReason::TranscriptDeserializationError)?;
 
         // TODO(ibalajiarun): Replace with proper Trusted setup for production
@@ -1190,9 +1194,9 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
 
         let (encryption_key, verification_keys, msk_share) = FPTXWeighted::setup(
             &digest_key,
-            &dkg_config.public_parameters,
+            &dkg_session.public_parameters,
             &subtranscript.subtranscript,
-            &dkg_config.threshold_config,
+            &dkg_session.threshold_config,
             current_player,
             &dkg_decrypt_key,
         )
@@ -1203,7 +1207,7 @@ impl<P: OnChainConfigProvider> EpochManager<P> {
             digest_key,
             msk_share,
             verification_keys,
-            dkg_config.threshold_config,
+            dkg_session.threshold_config.clone(),
             encryption_key,
         ))
     }
