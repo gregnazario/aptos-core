@@ -337,10 +337,12 @@ $(SCCACHE_ENV): FORCE
 		echo "# Checkout: $(PROJECT_ROOT)"; \
 		echo "# Re-run 'make sccache-setup' to regenerate."; \
 		echo ""; \
-		echo "# ── S3 shared cache ──"; \
-		echo "export SCCACHE_BUCKET=aptos-sccache-shared"; \
-		echo "export SCCACHE_REGION=us-west-2"; \
-		echo "export SCCACHE_S3_USE_SSL=true"; \
+		echo "# ── S3 shared cache (only enabled when AWS credentials are present) ──"; \
+		echo 'if [ -n "$${AWS_ACCESS_KEY_ID:-}" ] || [ -n "$${AWS_PROFILE:-}" ] || [ -f "$${HOME}/.aws/credentials" ]; then'; \
+		echo "  export SCCACHE_BUCKET=aptos-shared-sccache"; \
+		echo "  export SCCACHE_REGION=us-west-2"; \
+		echo "  export SCCACHE_S3_USE_SSL=true"; \
+		echo "fi"; \
 		echo ""; \
 		echo "# ── Path normalization (enables sharing across checkouts) ──"; \
 		echo "# Appends this checkout to SCCACHE_BASEDIRS so multiple checkouts"; \
@@ -366,6 +368,13 @@ $(SCCACHE_ENV): FORCE
 		} >> $(SCCACHE_ENV); \
 	fi
 	@echo "Generated: $(SCCACHE_ENV)"
+	@if [ -z "$${AWS_ACCESS_KEY_ID:-}" ] && [ -z "$${AWS_PROFILE:-}" ] && [ ! -f "$${HOME}/.aws/credentials" ]; then \
+		echo ""; \
+		echo "WARNING: No AWS credentials detected (AWS_ACCESS_KEY_ID, AWS_PROFILE, or ~/.aws/credentials)."; \
+		echo "S3 shared cache will not work — sccache will use local-only caching."; \
+		echo "This is fine for external contributors; builds work without S3."; \
+		echo "For Aptos team members, configure AWS credentials for shared caching."; \
+	fi
 
 FORCE:
 
@@ -413,10 +422,12 @@ sccache-check:
 		echo "[INFO] RUSTC_WRAPPER not set (Rust uses incremental compilation)"; \
 	fi
 	@echo ""
-	@if [ -n "$${AWS_ACCESS_KEY_ID:-}" ]; then \
-		echo "[OK] AWS_ACCESS_KEY_ID is set"; \
+	@if [ -n "$${AWS_ACCESS_KEY_ID:-}" ] || [ -n "$${AWS_PROFILE:-}" ] || [ -f "$${HOME}/.aws/credentials" ]; then \
+		echo "[OK] AWS credentials detected"; \
 	else \
-		echo "[WARN] AWS_ACCESS_KEY_ID not set — S3 sharing disabled (local cache only)"; \
+		echo "[INFO] No AWS credentials (AWS_ACCESS_KEY_ID, AWS_PROFILE, or ~/.aws/credentials) — S3 cache disabled."; \
+		echo "       Builds still work; sccache uses local-only caching."; \
+		echo "       Aptos team members: configure AWS creds for shared S3 cache."; \
 	fi
 	@echo ""
 	@if sccache --show-stats &>/dev/null; then \

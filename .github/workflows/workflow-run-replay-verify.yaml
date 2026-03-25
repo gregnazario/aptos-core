@@ -91,6 +91,10 @@ on:
         description: "The maximum number of versions to process in a single job."
         type: number
         required: true
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_AWS_SECRET_ACCESS_KEY }}
+
 jobs:
   prepare:
     runs-on: ${{ inputs.RUNS_ON }}

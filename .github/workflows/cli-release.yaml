@@ -26,6 +26,10 @@ on:
         description: "Skip checks - If checked, the release will skip version checks"
 
 
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.SCCACHE_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.SCCACHE_AWS_SECRET_ACCESS_KEY }}
+
 jobs:
   # TODO: Deprecated, please use "Linux" instead as it's more straightforwardly named
   build-ubuntu22-binary:

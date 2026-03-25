@@ -22,13 +22,28 @@ runs:
     - name: Install sccache
       uses: mozilla-actions/sccache-action@v0.0.9
 
+    # S3 sccache config — keep in sync with:
+    #   .github/actions/sccache-setup/action.yaml
+    #   .github/actions/rust-setup/action.yaml
     - name: Configure sccache environment
       shell: bash
       run: |
-        echo "SCCACHE_GHA_ENABLED=true" >> $GITHUB_ENV
+        # Only enable S3 backend when AWS credentials are available;
+        # without creds sccache falls back to local-only caching.
+        if [ -n "${AWS_ACCESS_KEY_ID:-}" ]; then
+          echo "SCCACHE_BUCKET=aptos-shared-sccache" >> $GITHUB_ENV
+          echo "SCCACHE_REGION=us-west-2" >> $GITHUB_ENV
+          echo "SCCACHE_S3_USE_SSL=true" >> $GITHUB_ENV
+        fi
+        # Normalize checkout path so cache keys are path-independent
+        echo "SCCACHE_BASEDIRS=$GITHUB_WORKSPACE" >> $GITHUB_ENV
         echo "RUSTC_WRAPPER=sccache" >> $GITHUB_ENV
         echo "CC_x86_64_unknown_linux_gnu=sccache clang" >> $GITHUB_ENV
         echo "CXX_x86_64_unknown_linux_gnu=sccache clang++" >> $GITHUB_ENV
+
+    - name: Show sccache config
+      shell: bash
+      run: sccache --show-stats
 
     - name: Install build tools
       shell: bash
