@@ -3,6 +3,8 @@
 
 mod cargo;
 mod common;
+mod subsystems;
+mod test_plan;
 
 use crate::common::PACKAGE_NAME_DELIMITER;
 use camino::Utf8PathBuf;
@@ -10,7 +12,8 @@ use cargo::Cargo;
 use clap::{Args, Parser, Subcommand};
 pub use common::SelectedPackageArgs;
 use determinator::Utf8Paths0;
-use log::{debug, trace};
+use log::{debug, info, trace};
+use test_plan::TestPlan;
 
 // Useful package name constants for targeted tests
 const APTOS_CLI_PACKAGE_NAME: &str = "aptos";
@@ -85,6 +88,7 @@ pub enum AptosCargoCommand {
     TargetedCompilerV2Tests(CommonArgs),
     TargetedExecutionPerformanceTests(CommonArgs),
     TargetedFrameworkUpgradeTests(CommonArgs),
+    TargetedTestPlan(CommonArgs),
     TargetedUnitTests(CommonArgs),
     Test(CommonArgs),
 }
@@ -114,6 +118,7 @@ impl AptosCargoCommand {
             AptosCargoCommand::TargetedCompilerV2Tests(args) => args,
             AptosCargoCommand::TargetedExecutionPerformanceTests(args) => args,
             AptosCargoCommand::TargetedFrameworkUpgradeTests(args) => args,
+            AptosCargoCommand::TargetedTestPlan(args) => args,
             AptosCargoCommand::TargetedUnitTests(args) => args,
             AptosCargoCommand::Test(args) => args,
         }
@@ -275,6 +280,39 @@ impl AptosCargoCommand {
                     relevant_changes_detected
                 );
 
+                Ok(())
+            },
+            AptosCargoCommand::TargetedTestPlan(_) => {
+                // Generate a comprehensive JSON test plan for CI consumption.
+                // This replaces the individual targeted-*-tests commands with a single
+                // unified output that maps changed files to subsystems and test decisions.
+                let (_, _, changed_files) = package_args.identify_changed_files()?;
+                let affected_package_paths = package_args.compute_target_packages()?;
+
+                // Collect changed file paths as strings
+                let changed_file_list: Vec<String> = changed_files
+                    .into_iter()
+                    .map(|p| p.to_string())
+                    .collect();
+
+                // Look for the forge suite config relative to workspace root
+                let workspace = std::env::current_dir()
+                    .unwrap_or_default();
+                let forge_config = workspace.join(".github/forge-suite-subsystems.toml");
+                let forge_config_path = if forge_config.exists() {
+                    Some(forge_config.as_path())
+                } else {
+                    info!("No forge suite config found at {}", forge_config.display());
+                    None
+                };
+
+                let plan = TestPlan::generate(
+                    &changed_file_list,
+                    &affected_package_paths,
+                    forge_config_path,
+                );
+
+                println!("{}", plan.to_json());
                 Ok(())
             },
             AptosCargoCommand::TargetedUnitTests(_) => {

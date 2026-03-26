@@ -15,15 +15,19 @@ pub mod stake;
 #[cfg(any(test, feature = "fuzzing"))]
 pub mod test;
 pub mod update;
+#[cfg(feature = "localnet")]
 pub mod workspace;
 
 use crate::common::{
-    types::{CliCommand, CliError, CliResult, CliTypedResult},
+    types::{CliCommand, CliResult, CliTypedResult},
     utils::cli_build_information,
 };
+#[cfg(feature = "localnet")]
+use crate::common::types::CliError;
 pub use aptos_context::RealAptosContext;
 use aptos_move_cli::MoveEnv;
 use aptos_move_debugger::aptos_debugger::AptosDebugger;
+#[cfg(feature = "localnet")]
 use aptos_workspace_server::WorkspaceCommand;
 use async_trait::async_trait;
 use clap::Parser;
@@ -66,6 +70,7 @@ pub enum Tool {
     Stake(stake::StakeTool),
     #[clap(subcommand)]
     Update(update::UpdateTool),
+    #[cfg(feature = "localnet")]
     #[clap(subcommand, hide(true))]
     Workspace(WorkspaceCommand),
 }
@@ -87,6 +92,7 @@ impl Tool {
             Node(tool) => tool.execute().await,
             Stake(tool) => tool.execute().await,
             Update(tool) => tool.execute().await,
+            #[cfg(feature = "localnet")]
             Workspace(workspace) => {
                 let start_time = std::time::Instant::now();
                 let result: CliTypedResult<()> = workspace

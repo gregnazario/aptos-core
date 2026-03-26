@@ -820,6 +820,10 @@ dependencies = [
  "guppy",
  "log",
  "reqwest 0.11.23",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "toml 0.7.8",
  "url",
 ]
 

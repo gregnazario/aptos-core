@@ -36,7 +36,7 @@ aptos-logger = { workspace = true }
 aptos-move-cli = { workspace = true, features = ["testing"] }
 aptos-move-debugger = { workspace = true }
 aptos-network-checker = { workspace = true }
-aptos-node = { workspace = true }
+aptos-node = { workspace = true, optional = true }
 aptos-rest-client = { workspace = true }
 aptos-sdk = { workspace = true }
 aptos-telemetry = { workspace = true }
@@ -46,7 +46,7 @@ aptos-transaction-simulation-session = { workspace = true }
 aptos-types = { workspace = true }
 aptos-vm-genesis = { workspace = true }
 aptos-vm-types = { workspace = true }
-aptos-workspace-server = { workspace = true }
+aptos-workspace-server = { workspace = true, optional = true }
 async-trait = { workspace = true }
 backoff = { workspace = true }
 base64 = { workspace = true }
@@ -91,7 +91,8 @@ url = { workspace = true }
 jemallocator = { workspace = true }
 
 [features]
-default = []
+default = ["localnet"]
+localnet = ["dep:aptos-node", "dep:aptos-workspace-server"]
 fuzzing = []
 no-upload-proposal = []
 cli-framework-test-move = []

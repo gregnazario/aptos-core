@@ -1,0 +1,64 @@
+# Forge Suite to Subsystem Mapping
+#
+# This file maps Forge test suites to the subsystems they exercise.
+# The test target determinator uses this to skip suites whose subsystems
+# were not affected by a given PR.
+#
+# safety = "critical" means the suite will never be skipped by the determinator.
+# safety = "normal" means the suite can be skipped if its subsystems aren't affected.
+
+[suites.realistic_env_max_load]
+subsystems = ["consensus", "execution", "mempool", "network", "storage", "state-sync"]
+safety = "normal"
+
+[suites.compat]
+subsystems = ["consensus", "network", "state-sync"]
+safety = "critical"
+
+[suites.framework_upgrade]
+subsystems = ["move-framework", "execution"]
+safety = "critical"
+
+[suites.consensus_only_realistic_env_max_tps]
+subsystems = ["consensus"]
+safety = "normal"
+
+[suites.multiregion_benchmark_test]
+subsystems = ["consensus", "network"]
+safety = "normal"
+
+[suites.realistic_env_load_sweep]
+subsystems = ["consensus", "execution", "mempool"]
+safety = "normal"
+
+[suites.realistic_env_workload_sweep]
+subsystems = ["execution", "move-vm"]
+safety = "normal"
+
+[suites.realistic_env_graceful_overload]
+subsystems = ["consensus", "execution", "mempool"]
+safety = "normal"
+
+[suites.consensus_stress_test]
+subsystems = ["consensus"]
+safety = "normal"
+
+[suites.workload_mix]
+subsystems = ["execution", "move-vm"]
+safety = "normal"
+
+[suites.single_vfn_perf]
+subsystems = ["network", "state-sync"]
+safety = "normal"
+
+[suites.fullnode_reboot_stress_test]
+subsystems = ["state-sync", "storage"]
+safety = "normal"
+
+[suites.changing_working_quorum_test]
+subsystems = ["consensus"]
+safety = "normal"
+
+[suites.pfn_const_tps_with_realistic_env]
+subsystems = ["network", "state-sync"]
+safety = "normal"

@@ -1,16 +1,37 @@
 name: Test Target Determinator
-description: Runs the test target determinator
+description: Runs the test target determinator and outputs a JSON test plan
 inputs:
   GIT_CREDENTIALS:
     description: "Optional credentials to pass to git. Useful if you need to pull private repos for dependencies"
     required: false
 outputs:
+  test_plan:
+    description: "JSON test plan with subsystem-aware test decisions"
+    value: ${{ steps.test_plan.outputs.test_plan }}
   run_execution_performance_test:
     description: "Returns true if the execution performance test should be run"
-    value: ${{ steps.execution_performance_determinator.outputs.run_execution_performance_test }}
+    value: ${{ steps.parse_plan.outputs.run_execution_performance }}
   run_framework_upgrade_test:
     description: "Returns true if the framework upgrade test should be run"
-    value: ${{ steps.framework_upgrade_determinator.outputs.run_framework_upgrade_test }}
+    value: ${{ steps.parse_plan.outputs.run_framework_upgrade }}
+  run_smoke_tests:
+    description: "Returns true if smoke tests should be run"
+    value: ${{ steps.parse_plan.outputs.run_smoke_tests }}
+  run_forge_e2e:
+    description: "Returns true if forge e2e tests should be run"
+    value: ${{ steps.parse_plan.outputs.run_forge_e2e }}
+  run_forge_compat:
+    description: "Returns true if forge compat tests should be run"
+    value: ${{ steps.parse_plan.outputs.run_forge_compat }}
+  safety_override:
+    description: "Returns true if safety-critical changes were detected (all tests must run)"
+    value: ${{ steps.parse_plan.outputs.safety_override }}
+  subsystems_affected:
+    description: "Comma-separated list of affected subsystems"
+    value: ${{ steps.parse_plan.outputs.subsystems_affected }}
+  forge_suites_to_skip:
+    description: "Comma-separated list of Forge suites to skip"
+    value: ${{ steps.parse_plan.outputs.forge_suites_to_skip }}
 
 runs:
   using: composite
@@ -24,18 +45,73 @@ runs:
       with:
         GIT_CREDENTIALS: ${{ inputs.GIT_CREDENTIALS }}
 
-    # Output the changed files
+    # Output the changed files (diagnostic)
     - name: Output the changed files
       run: cargo x changed-files -vv
       shell: bash
 
-    # Output the affected packages
+    # Output the affected packages (diagnostic)
     - name: Output the affected packages
       run: cargo x affected-packages -vv
       shell: bash
 
-    # Run the execution performance test determinator
-    - name: Run the execution performance test determinator
+    # Generate the comprehensive test plan
+    - name: Generate test plan
+      id: test_plan
+      run: |
+        TEST_PLAN=$(cargo x targeted-test-plan)
+        echo "Test plan:"
+        echo "$TEST_PLAN" | jq .
+        # Store as a single-line JSON for GitHub Actions output
+        echo "test_plan=$(echo "$TEST_PLAN" | jq -c .)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # Parse the test plan into individual outputs for backward compatibility
+    - name: Parse test plan outputs
+      id: parse_plan
+      run: |
+        TEST_PLAN='${{ steps.test_plan.outputs.test_plan }}'
+        echo "run_execution_performance=$(echo "$TEST_PLAN" | jq -r '.run_execution_performance')" >> $GITHUB_OUTPUT
+        echo "run_framework_upgrade=$(echo "$TEST_PLAN" | jq -r '.run_framework_upgrade')" >> $GITHUB_OUTPUT
+        echo "run_smoke_tests=$(echo "$TEST_PLAN" | jq -r '.run_smoke_tests')" >> $GITHUB_OUTPUT
+        echo "run_forge_e2e=$(echo "$TEST_PLAN" | jq -r '.run_forge_e2e')" >> $GITHUB_OUTPUT
+        echo "run_forge_compat=$(echo "$TEST_PLAN" | jq -r '.run_forge_compat')" >> $GITHUB_OUTPUT
+        echo "safety_override=$(echo "$TEST_PLAN" | jq -r '.safety_override')" >> $GITHUB_OUTPUT
+        echo "subsystems_affected=$(echo "$TEST_PLAN" | jq -r '.subsystems_affected | join(",")')" >> $GITHUB_OUTPUT
+        echo "forge_suites_to_skip=$(echo "$TEST_PLAN" | jq -r '.forge_suites_to_skip | join(",")')" >> $GITHUB_OUTPUT
+      shell: bash
+
+    # Write targeting summary to GitHub Step Summary
+    - name: Test targeting summary
+      run: |
+        TEST_PLAN='${{ steps.test_plan.outputs.test_plan }}'
+        echo "## Test Target Determination" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Affected Subsystems" >> $GITHUB_STEP_SUMMARY
+        echo "$TEST_PLAN" | jq -r '.subsystems_affected[]' | while read s; do echo "- \`$s\`" >> $GITHUB_STEP_SUMMARY; done
+        if [ "$(echo "$TEST_PLAN" | jq -r '.subsystems_affected | length')" = "0" ]; then
+          echo "_None detected_" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Test Decisions" >> $GITHUB_STEP_SUMMARY
+        echo "| Test | Run? |" >> $GITHUB_STEP_SUMMARY
+        echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Smoke tests | $(echo "$TEST_PLAN" | jq -r '.run_smoke_tests') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Forge E2E | $(echo "$TEST_PLAN" | jq -r '.run_forge_e2e') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Forge Compat | $(echo "$TEST_PLAN" | jq -r '.run_forge_compat') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Framework Upgrade | $(echo "$TEST_PLAN" | jq -r '.run_framework_upgrade') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Execution Performance | $(echo "$TEST_PLAN" | jq -r '.run_execution_performance') |" >> $GITHUB_STEP_SUMMARY
+        echo "| Safety Override | $(echo "$TEST_PLAN" | jq -r '.safety_override') |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        SKIPS=$(echo "$TEST_PLAN" | jq -r '.forge_suites_to_skip | join(", ")')
+        if [ -n "$SKIPS" ]; then
+          echo "### Forge Suites Skipped" >> $GITHUB_STEP_SUMMARY
+          echo "$SKIPS" >> $GITHUB_STEP_SUMMARY
+        fi
+      shell: bash
+
+    # Legacy: also run the old determinators for backward compatibility during rollout
+    - name: Run the execution performance test determinator (legacy)
       id: execution_performance_determinator
       run: |
           export RESULT=$(cargo x targeted-execution-performance-tests | awk -F'Execution performance test required: ' '{print $2}')
@@ -43,8 +119,7 @@ runs:
           echo "run_execution_performance_test=$RESULT" >> $GITHUB_OUTPUT
       shell: bash
 
-    # Run the framework upgrade test determinator
-    - name: Run the framework upgrade test determinator
+    - name: Run the framework upgrade test determinator (legacy)
       id: framework_upgrade_determinator
       run: |
         export RESULT=$(cargo x targeted-framework-upgrade-tests | awk -F'Framework upgrade test required: ' '{print $2}')

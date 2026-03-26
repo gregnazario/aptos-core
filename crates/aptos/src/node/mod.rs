@@ -2,8 +2,10 @@
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
 pub mod analyze;
+#[cfg(feature = "localnet")]
 pub mod local_testnet;
 
+#[cfg(feature = "localnet")]
 use self::local_testnet::RunLocalnet;
 use crate::{
     common::{
@@ -77,6 +79,7 @@ pub enum NodeTool {
     ShowValidatorConfig(ShowValidatorConfig),
     ShowValidatorSet(ShowValidatorSet),
     ShowValidatorStake(ShowValidatorStake),
+    #[cfg(feature = "localnet")]
     #[clap(aliases = &["run-local-testnet"])]
     RunLocalnet(RunLocalnet),
     UpdateConsensusKey(UpdateConsensusKey),
@@ -102,6 +105,7 @@ impl NodeTool {
             ShowValidatorSet(tool) => tool.execute_serialized().await,
             ShowValidatorStake(tool) => tool.execute_serialized().await,
             ShowValidatorConfig(tool) => tool.execute_serialized().await,
+            #[cfg(feature = "localnet")]
             RunLocalnet(tool) => tool
                 .execute_serialized_without_logger()
                 .await
