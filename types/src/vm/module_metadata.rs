@@ -239,6 +239,19 @@ pub fn get_metadata(md: &[Metadata]) -> Option<Arc<RuntimeModuleMetadataV1>> {
     }
 }
 
+/// Look up the resource group member attribute for a given struct in module metadata.
+pub fn get_resource_group_member_from_metadata(
+    struct_tag: &StructTag,
+    metadata: &[Metadata],
+) -> Option<StructTag> {
+    let metadata = get_metadata(metadata)?;
+    metadata
+        .struct_attributes
+        .get(struct_tag.name.as_ident_str().as_str())?
+        .iter()
+        .find_map(|attr| attr.get_resource_group_member())
+}
+
 /// For the specified entry function, tries to find randomness attribute in its metadata. If it
 /// does not exist, [None] is returned.
 pub fn get_randomness_annotation_for_entry_function(

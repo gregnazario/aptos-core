@@ -47,17 +47,8 @@ use std::{
 };
 use triomphe::Arc as TriompheArc;
 
-pub fn get_resource_group_member_from_metadata(
-    struct_tag: &StructTag,
-    metadata: &[Metadata],
-) -> Option<StructTag> {
-    let metadata = get_metadata(metadata)?;
-    metadata
-        .struct_attributes
-        .get(struct_tag.name.as_ident_str().as_str())?
-        .iter()
-        .find_map(|attr| attr.get_resource_group_member())
-}
+// Re-exported from aptos_types::vm::module_metadata for backwards compatibility.
+pub use aptos_types::vm::module_metadata::get_resource_group_member_from_metadata;
 
 /// Adapter to convert a `ExecutorView` into a `AptosMoveResolver`.
 ///
