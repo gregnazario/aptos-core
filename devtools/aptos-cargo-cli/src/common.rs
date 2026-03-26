@@ -28,6 +28,14 @@ use url::Url;
 // The target directory for the devtool
 const DEVTOOL_TARGET_DIRECTORY: &str = "target/aptos-x-tool";
 
+// Packages to omit from the determinator's dependency graph.
+// These are heavy dependencies that are feature-gated (behind `localnet`)
+// in the CLI crate and should not cause transitive affected-package blow-up.
+const OMITTED_PACKAGES_FOR_DETERMINATION: [&str; 2] = [
+    "aptos-node",
+    "aptos-workspace-server",
+];
+
 // File types in `aptos-core` that are not relevant to the rust build and test process.
 // Note: this is a best effort list and will need to be updated as time goes on.
 const IGNORED_DETERMINATOR_FILE_TYPES: [&str; 1] = ["*.md"];
@@ -261,6 +269,24 @@ impl SelectedPackageArgs {
         let mut cargo_options = CargoOptions::new();
         cargo_options.set_resolver(CargoResolverVersion::V2);
         cargo_options.set_include_dev(true); // Include dev-dependencies to ensure test-only packages are handled correctly
+
+        // Omit heavy packages that are feature-gated behind `localnet` in the CLI.
+        // This prevents changes to e.g. consensus from transitively marking the CLI
+        // (and all CLI-dependent test crates) as affected via aptos-node.
+        let omitted_ids: Vec<_> = OMITTED_PACKAGES_FOR_DETERMINATION
+            .iter()
+            .filter_map(|name| {
+                head_package_graph
+                    .packages()
+                    .find(|pkg| pkg.name() == *name)
+                    .map(|pkg| {
+                        info!("Omitting package from determination: {}", name);
+                        pkg.id().clone()
+                    })
+            })
+            .collect();
+        cargo_options.add_omitted_packages(omitted_ids.iter());
+
         determinator.set_cargo_options(&cargo_options);
 
         // Set the ignore rules for the determinator
