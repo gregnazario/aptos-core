@@ -180,7 +180,8 @@ impl<E: ExecutorView> TableResolver for StorageAdapter<'_, E> {
         key: &[u8],
         maybe_layout: Option<&MoveTypeLayout>,
     ) -> Result<Option<Bytes>, PartialVMError> {
-        let state_key = StateKey::table_item(&(*handle).into(), key);
+        let state_key =
+            StateKey::table_item(&aptos_types::state_store::table::TableHandle(handle.0), key);
         self.executor_view
             .get_resource_bytes(&state_key, maybe_layout)
     }

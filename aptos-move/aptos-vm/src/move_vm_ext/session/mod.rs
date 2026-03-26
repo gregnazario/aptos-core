@@ -19,9 +19,12 @@ use aptos_framework_natives::{
 };
 use aptos_table_natives::{NativeTableContext, TableChangeSet};
 use aptos_types::{
-    chain_id::ChainId, contract_event::ContractEvent, on_chain_config::Features,
-    state_store::state_key::StateKey,
-    transaction::user_transaction_context::UserTransactionContext, write_set::WriteOp,
+    chain_id::ChainId,
+    contract_event::ContractEvent,
+    on_chain_config::Features,
+    state_store::{state_key::StateKey, table::TableHandle},
+    transaction::user_transaction_context::UserTransactionContext,
+    write_set::WriteOp,
 };
 use aptos_vm_types::{
     change_set::VMChangeSet, module_and_script_storage::module_storage::AptosModuleStorage,
@@ -489,7 +492,7 @@ where
 
         for (handle, change) in table_change_set.changes {
             for (key, value_op) in change.entries {
-                let state_key = StateKey::table_item(&handle.into(), &key);
+                let state_key = StateKey::table_item(&TableHandle(handle.0), &key);
                 let op = woc.convert_resource(&state_key, value_op, false)?;
                 resource_write_set.insert(state_key, op);
             }
