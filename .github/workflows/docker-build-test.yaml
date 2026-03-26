@@ -131,6 +131,10 @@ jobs:
     runs-on: 2cpu-gh-ubuntu24-x64
     outputs:
       run_framework_upgrade_test: ${{ steps.determine_test_targets.outputs.run_framework_upgrade_test }}
+      run_forge_e2e: ${{ steps.determine_test_targets.outputs.run_forge_e2e }}
+      run_forge_compat: ${{ steps.determine_test_targets.outputs.run_forge_compat }}
+      run_execution_performance: ${{ steps.determine_test_targets.outputs.run_execution_performance_test }}
+      safety_override: ${{ steps.determine_test_targets.outputs.safety_override }}
     steps:
       - uses: actions/checkout@v4
       - name: Run the test target determinator
@@ -255,6 +259,7 @@ jobs:
       - rust-images-performance
       - rust-images-consensus-only-perf-test
       - file_change_determinator
+      - test-target-determinator
     if: |
       !failure() && !cancelled() && needs.permission-check.result == 'success' && (
         (github.event_name == 'push' && github.ref_name != 'main') ||
@@ -276,7 +281,7 @@ jobs:
       # test lifecycle is separate from that of GHA. This protects us from the case where many Forge tests are triggered
       # by this GHA. If there is a Forge namespace collision, Forge will pre-empt the existing test running in the namespace.
       FORGE_NAMESPACE: forge-e2e-${{ needs.determine-docker-build-metadata.outputs.targetCacheId }}
-      SKIP_JOB: ${{ needs.file_change_determinator.outputs.only_docs_changed == 'true' }}
+      SKIP_JOB: ${{ needs.file_change_determinator.outputs.only_docs_changed == 'true' || (!contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') && !contains(github.event.pull_request.labels.*.name, 'CICD:run-forge-e2e-perf') && needs.test-target-determinator.outputs.run_forge_e2e == 'false') }}
       SEND_RESULTS_TO_TRUNK: true
   
   # This job determines the last released docker image tag, which is used by forge compat test.
@@ -330,7 +335,7 @@ jobs:
   
   # Run e2e compat test against testnet branch. This is a PR required job.
   forge-compat-test:
-    needs: 
+    needs:
       - permission-check
       - fetch-last-released-docker-image-tag
       - determine-docker-build-metadata
@@ -339,6 +344,7 @@ jobs:
       - rust-images-performance
       - rust-images-consensus-only-perf-test
       - file_change_determinator
+      - test-target-determinator
     if: |
       !failure() && !cancelled() && needs.permission-check.result == 'success' && (
         (github.event_name == 'push' && github.ref_name != 'main') ||
@@ -356,7 +362,7 @@ jobs:
       FORGE_RUNNER_DURATION_SECS: 300
       COMMENT_HEADER: forge-compat
       FORGE_NAMESPACE: forge-compat-${{ needs.determine-docker-build-metadata.outputs.targetCacheId }}
-      SKIP_JOB: ${{ needs.file_change_determinator.outputs.only_docs_changed == 'true' }}
+      SKIP_JOB: ${{ needs.file_change_determinator.outputs.only_docs_changed == 'true' || (!contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') && needs.test-target-determinator.outputs.run_forge_compat == 'false') }}
       SEND_RESULTS_TO_TRUNK: true
   
   # Run forge framework upgradability test. This is a PR required job.
@@ -386,7 +392,7 @@ jobs:
       FORGE_RUNNER_DURATION_SECS: 3600
       COMMENT_HEADER: forge-framework-upgrade
       FORGE_NAMESPACE: forge-framework-upgrade-${{ needs.determine-docker-build-metadata.outputs.targetCacheId }}
-      SKIP_JOB: ${{ !contains(github.event.pull_request.labels.*.name, 'CICD:run-framework-upgrade-test') && (needs.test-target-determinator.outputs.run_framework_upgrade_test == 'false') }}
+      SKIP_JOB: ${{ !contains(github.event.pull_request.labels.*.name, 'CICD:run-framework-upgrade-test') && !contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') && (needs.test-target-determinator.outputs.run_framework_upgrade_test == 'false') }}
       SEND_RESULTS_TO_TRUNK: true
 
   forge-consensus-only-perf-test:

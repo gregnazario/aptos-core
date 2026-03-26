@@ -109,9 +109,26 @@ jobs:
         with:
           GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
 
+  # This job determines which tests to run based on subsystem-aware analysis
+  test-target-determinator:
+    runs-on: runs-on,cpu=64,family=c7,disk=large,image=aptos-ubuntu-x64,run-id=${{ github.run_id }}
+    outputs:
+      run_smoke_tests: ${{ steps.determine_test_targets.outputs.run_smoke_tests }}
+      safety_override: ${{ steps.determine_test_targets.outputs.safety_override }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Run the test target determinator
+        id: determine_test_targets
+        uses: ./.github/actions/test-target-determinator
+
   # Run all rust smoke tests. This is a PR required job.
   rust-smoke-tests:
-    needs: file_change_determinator
+    needs:
+      - file_change_determinator
+      - test-target-determinator
     if: | # Only run on each PR once an appropriate event occurs
       (
         github.event_name == 'workflow_dispatch' ||
@@ -123,14 +140,14 @@ jobs:
     runs-on: runs-on,cpu=64,family=c7,disk=large,image=aptos-ubuntu-x64,run-id=${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
-        if: needs.file_change_determinator.outputs.only_docs_changed != 'true'
+        if: needs.file_change_determinator.outputs.only_docs_changed != 'true' && (contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') || needs.test-target-determinator.outputs.run_smoke_tests == 'true')
       - name: Run rust smoke tests
         uses: ./.github/actions/rust-smoke-tests
-        if: needs.file_change_determinator.outputs.only_docs_changed != 'true'
+        if: needs.file_change_determinator.outputs.only_docs_changed != 'true' && (contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') || needs.test-target-determinator.outputs.run_smoke_tests == 'true')
         with:
           GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
       - run: echo "Skipping rust smoke tests! Unrelated changes detected."
-        if: needs.file_change_determinator.outputs.only_docs_changed == 'true'
+        if: needs.file_change_determinator.outputs.only_docs_changed == 'true' || (!contains(github.event.pull_request.labels.*.name, 'CICD:run-e2e-tests') && needs.test-target-determinator.outputs.run_smoke_tests != 'true')
 
   # Check the freshess of the merge base. This is a PR required job.
   rust-check-merge-base:
