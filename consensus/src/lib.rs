@@ -19,12 +19,12 @@ extern crate core;
 mod block_storage;
 mod consensusdb;
 mod dag;
-mod epoch_manager;
+pub mod epoch_manager;
 mod error;
 mod liveness;
 mod logging;
 mod metrics_safety_rules;
-mod network;
+pub mod network;
 #[cfg(test)]
 mod network_tests;
 mod payload_client;
@@ -33,24 +33,22 @@ mod pending_votes;
 #[cfg(test)]
 mod pending_votes_test;
 pub mod persistent_liveness_storage;
-mod pipeline;
+pub mod pipeline;
 pub mod quorum_store;
-mod rand;
+pub mod rand;
 mod recovery_manager;
 mod round_manager;
-mod state_computer;
+pub mod state_computer;
 mod state_replication;
 #[cfg(any(test, feature = "fuzzing"))]
 mod test_utils;
 #[cfg(test)]
 mod twins;
-mod txn_notifier;
+pub mod txn_notifier;
 pub mod util;
 
 mod block_preparer;
 pub mod consensus_observer;
-/// AptosBFT implementation
-pub mod consensus_provider;
 /// Required by the telemetry service
 pub mod counters;
 /// AptosNet interface.

@@ -58,7 +58,7 @@ pub struct QuorumStoreDB {
 }
 
 impl QuorumStoreDB {
-    pub(crate) fn new<P: AsRef<Path> + Clone>(db_root_path: P) -> Self {
+    pub fn new<P: AsRef<Path> + Clone>(db_root_path: P) -> Self {
         let column_families = vec![BATCH_CF_NAME, BATCH_ID_CF_NAME, BATCH_V2_CF_NAME];
 
         // TODO: this fails twins tests because it assumes a unique path per process

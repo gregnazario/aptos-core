@@ -18,10 +18,10 @@ use aptos_consensus::{
         },
         publisher::consensus_publisher::ConsensusPublisher,
     },
-    consensus_provider::start_consensus_observer,
     network_interface::ConsensusMsg,
 };
 use aptos_consensus_notifications::ConsensusNotifier;
+use aptos_consensus_wiring::start_consensus_observer;
 use aptos_dkg_runtime::{start_dkg_runtime, DKGMessage};
 use aptos_event_notifications::{
     DbBackedOnChainConfig, EventNotificationListener, ReconfigNotificationListener,

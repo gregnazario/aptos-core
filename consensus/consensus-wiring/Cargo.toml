@@ -1,0 +1,36 @@
+[package]
+name = "aptos-consensus-wiring"
+description = "Wiring crate that connects aptos-consensus to concrete VM and executor implementations"
+version = "0.1.0"
+
+# Workspace inherited keys
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+publish = { workspace = true }
+repository = { workspace = true }
+rust-version = { workspace = true }
+
+[dependencies]
+aptos-bounded-executor = { workspace = true }
+aptos-channels = { workspace = true }
+aptos-config = { workspace = true }
+aptos-consensus = { workspace = true }
+aptos-consensus-notifications = { workspace = true }
+aptos-event-notifications = { workspace = true }
+aptos-executor = { workspace = true }
+aptos-logger = { workspace = true }
+aptos-mempool = { workspace = true }
+aptos-network = { workspace = true }
+aptos-runtimes = { workspace = true }
+aptos-storage-interface = { workspace = true }
+aptos-time-service = { workspace = true }
+aptos-validator-transaction-pool = { workspace = true }
+aptos-vm = { workspace = true }
+futures = { workspace = true }
+move-core-types = { workspace = true }
+tokio = { workspace = true }
+
+[lints.clippy]
+unwrap_used = "deny"

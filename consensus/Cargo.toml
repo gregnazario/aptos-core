@@ -27,7 +27,6 @@ aptos-crypto-derive = { workspace = true }
 aptos-dkg = { workspace = true }
 aptos-enum-conversion-derive = { workspace = true }
 aptos-event-notifications = { workspace = true }
-aptos-executor = { workspace = true }
 aptos-executor-types = { workspace = true }
 aptos-experimental-runtimes = { workspace = true }
 aptos-fallible = { workspace = true }
@@ -50,7 +49,6 @@ aptos-time-service = { workspace = true }
 aptos-transaction-filters = { workspace = true }
 aptos-types = { workspace = true }
 aptos-validator-transaction-pool = { workspace = true }
-aptos-vm = { workspace = true }
 ark-std = { workspace = true }
 async-trait = { workspace = true }
 bcs = { workspace = true }

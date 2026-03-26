@@ -1,7 +1,10 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
-use crate::{
+use aptos_bounded_executor::BoundedExecutor;
+use aptos_channels::aptos_channel::Receiver;
+use aptos_config::config::NodeConfig;
+use aptos_consensus::{
     consensus_observer::{
         network::{
             network_handler::ConsensusObserverNetworkMessage,
@@ -22,9 +25,6 @@ use crate::{
     txn_notifier::MempoolNotifier,
     util::time_service::ClockTimeService,
 };
-use aptos_bounded_executor::BoundedExecutor;
-use aptos_channels::aptos_channel::Receiver;
-use aptos_config::config::NodeConfig;
 use aptos_consensus_notifications::ConsensusNotificationSender;
 use aptos_event_notifications::{DbBackedOnChainConfig, ReconfigNotificationListener};
 use aptos_executor::block_executor::BlockExecutor;

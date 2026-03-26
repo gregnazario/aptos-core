@@ -196,7 +196,7 @@ pub struct EpochManager<P: OnChainConfigProvider> {
 
 impl<P: OnChainConfigProvider> EpochManager<P> {
     #[allow(clippy::too_many_arguments, clippy::unwrap_used)]
-    pub(crate) fn new(
+    pub fn new(
         node_config: &NodeConfig,
         time_service: Arc<dyn TimeService>,
         self_sender: aptos_channels::UnboundedSender<Event<ConsensusMsg>>,

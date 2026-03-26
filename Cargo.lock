@@ -968,7 +968,6 @@ dependencies = [
  "aptos-dkg",
  "aptos-enum-conversion-derive",
  "aptos-event-notifications",
- "aptos-executor",
  "aptos-executor-test-helpers",
  "aptos-executor-types",
  "aptos-experimental-runtimes",
@@ -1081,6 +1080,30 @@ dependencies = [
  "rayon",
  "serde",
  "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "aptos-consensus-wiring"
+version = "0.1.0"
+dependencies = [
+ "aptos-bounded-executor",
+ "aptos-channels",
+ "aptos-config",
+ "aptos-consensus",
+ "aptos-consensus-notifications",
+ "aptos-event-notifications",
+ "aptos-executor",
+ "aptos-logger",
+ "aptos-mempool",
+ "aptos-network",
+ "aptos-runtimes",
+ "aptos-storage-interface",
+ "aptos-time-service",
+ "aptos-validator-transaction-pool",
+ "aptos-vm",
+ "futures",
+ "move-core-types",
  "tokio",
 ]
 
@@ -3572,6 +3595,7 @@ dependencies = [
  "aptos-config",
  "aptos-consensus",
  "aptos-consensus-notifications",
+ "aptos-consensus-wiring",
  "aptos-crash-handler",
  "aptos-crypto",
  "aptos-data-client",

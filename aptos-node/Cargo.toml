@@ -23,6 +23,7 @@ aptos-channels = { workspace = true }
 aptos-config = { workspace = true }
 aptos-consensus = { workspace = true }
 aptos-consensus-notifications = { workspace = true }
+aptos-consensus-wiring = { workspace = true }
 aptos-crash-handler = { workspace = true }
 aptos-crypto = { workspace = true }
 aptos-data-client = { workspace = true }

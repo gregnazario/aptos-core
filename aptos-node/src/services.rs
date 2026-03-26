@@ -148,7 +148,7 @@ pub fn start_consensus_runtime(
         node_config.consensus.num_tokio_worker_threads as usize
     };
 
-    let consensus = aptos_consensus::consensus_provider::start_consensus(
+    let consensus = aptos_consensus_wiring::start_consensus(
         node_config,
         consensus_network_interfaces.network_client,
         consensus_network_interfaces.network_service_events,

@@ -57,6 +57,7 @@ members = [
     "config/global-constants",
     "consensus",
     "consensus/consensus-types",
+    "consensus/consensus-wiring",
     "consensus/safety-rules",
     "crates/aptos",
     "crates/aptos-admin-service",
@@ -327,6 +328,7 @@ aptos-compression = { path = "crates/aptos-compression" }
 aptos-consensus = { path = "consensus" }
 aptos-consensus-notifications = { path = "state-sync/inter-component/consensus-notifications" }
 aptos-consensus-types = { path = "consensus/consensus-types" }
+aptos-consensus-wiring = { path = "consensus/consensus-wiring" }
 aptos-config = { path = "config" }
 aptos-crash-handler = { path = "crates/crash-handler" }
 aptos-crypto = { path = "crates/aptos-crypto" }

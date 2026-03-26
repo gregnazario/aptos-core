@@ -26,7 +26,7 @@ pub struct RandDb {
 pub const RAND_DB_NAME: &str = "rand_db";
 
 impl RandDb {
-    pub(crate) fn new<P: AsRef<Path> + Clone>(db_root_path: P) -> Self {
+    pub fn new<P: AsRef<Path> + Clone>(db_root_path: P) -> Self {
         let column_families = vec![
             KEY_PAIR_CF_NAME,
             AUG_DATA_CF_NAME,
