@@ -92,7 +92,7 @@ tokio-stream = { workspace = true }
 
 [dev-dependencies]
 aptos-cached-packages = { workspace = true }
-aptos-config = { workspace = true, features = ["fuzzing"] }
+aptos-config = { workspace = true, features = ["fuzzing", "testing"] }
 aptos-consensus-types = { workspace = true, features = ["fuzzing"] }
 aptos-executor-test-helpers = { workspace = true }
 aptos-keygen = { workspace = true }

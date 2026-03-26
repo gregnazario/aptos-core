@@ -12,15 +12,16 @@ use crate::{
         transaction_tracing_config::TransactionTracingConfig, utils::RootPath, AdminServiceConfig,
         ApiConfig, BaseConfig, ConsensusConfig, Error, ExecutionConfig, IndexerGrpcConfig,
         InspectionServiceConfig, LoggerConfig, MempoolConfig, NetworkConfig,
-        PeerMonitoringServiceConfig, SafetyRulesTestConfig, StateSyncConfig, StorageConfig,
-        TelemetryServiceConfig,
+        PeerMonitoringServiceConfig, StateSyncConfig, StorageConfig, TelemetryServiceConfig,
     },
     network_id::NetworkId,
 };
 use aptos_crypto::x25519;
 use aptos_logger::info;
+#[cfg(any(test, feature = "testing"))]
 use aptos_temppath::TempPath;
 use aptos_types::account_address::AccountAddress as PeerId;
+#[cfg(any(test, feature = "testing"))]
 use rand::{prelude::StdRng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -206,13 +207,16 @@ impl NodeConfig {
     }
 
     /// Generates a random config for testing purposes
+    #[cfg(any(test, feature = "testing"))]
     pub fn generate_random_config() -> Self {
         let mut rng = StdRng::from_seed([0u8; 32]);
         Self::generate_random_config_with_template(&NodeConfig::default(), &mut rng)
     }
 
     /// Generates a random config using the given template and rng
+    #[cfg(any(test, feature = "testing"))]
     pub fn generate_random_config_with_template(template: &Self, rng: &mut StdRng) -> Self {
+        use super::SafetyRulesTestConfig;
         // Create the node and test configs
         let mut node_config = template.clone();
 

@@ -19,7 +19,7 @@ aptos-global-constants = { workspace = true }
 aptos-logger = { workspace = true }
 aptos-secure-storage = { workspace = true }
 aptos-short-hex-str = { workspace = true }
-aptos-temppath = { workspace = true }
+aptos-temppath = { workspace = true, optional = true }
 aptos-transaction-filters = { workspace = true }
 aptos-types = { workspace = true }
 arr_macro = { workspace = true }
@@ -42,6 +42,7 @@ url = { workspace = true }
 
 [dev-dependencies]
 aptos-crypto = { workspace = true }
+aptos-temppath = { workspace = true }
 aptos-types = { workspace = true, features = ["fuzzing"] }
 tempfile = { workspace = true }
 
@@ -50,7 +51,7 @@ default = []
 failpoints = []
 fuzzing = ["aptos-crypto/fuzzing", "aptos-types/fuzzing"]
 smoke-test = []
-testing = []
+testing = ["aptos-temppath"]
 tokio-console = []
 
 [package.metadata.cargo-machete]

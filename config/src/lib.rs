@@ -4,6 +4,7 @@
 #![forbid(unsafe_code)]
 
 pub mod config;
+#[cfg(any(test, feature = "testing"))]
 pub mod generator;
 pub mod keys;
 pub mod network_id;
