@@ -423,7 +423,17 @@ impl ExtendedChecker<'_> {
                 };
 
                 if let Some(scope) = self.get_resource_group(&container) {
-                    if !scope.are_equal_envs(struct_, &container) {
+                    let envs_equal = match &scope {
+                        ResourceGroupScope::Global => true,
+                        ResourceGroupScope::Address => {
+                            struct_.module_env.get_name().addr()
+                                == container.module_env.get_name().addr()
+                        },
+                        ResourceGroupScope::Module => {
+                            struct_.module_env.get_name() == container.module_env.get_name()
+                        },
+                    };
+                    if !envs_equal {
                         self.env
                             .error(&struct_.get_loc(), "resource_group scope mismatch");
                         continue;
