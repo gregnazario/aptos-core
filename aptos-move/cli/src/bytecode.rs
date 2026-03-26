@@ -7,7 +7,7 @@ use aptos_cli_common::{
     check_if_file_exists, create_dir_if_not_exist, read_dir_files, read_from_file,
     write_to_user_only_file, CliCommand, CliError, CliTypedResult, PromptOptions,
 };
-use aptos_types::vm::module_metadata::prelude::*;
+use aptos_types::vm::module_metadata::{prelude::*, CompilationMetadata};
 use async_trait::async_trait;
 use clap::{Args, Parser};
 use itertools::Itertools;
@@ -15,7 +15,7 @@ use move_binary_format::{file_format::CompiledScript, CompiledModule};
 use move_command_line_common::files::MOVE_COMPILED_EXTENSION;
 use move_coverage::coverage_map::CoverageMap;
 use move_decompiler::{Decompiler, Options as DecompilerOptions};
-use move_model::metadata::{CompilationMetadata, CompilerVersion, LanguageVersion};
+use move_model::metadata::{CompilerVersion, LanguageVersion};
 use serde::{Deserialize, Serialize};
 use std::{
     path::{Path, PathBuf},

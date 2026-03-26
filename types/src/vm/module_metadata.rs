@@ -22,10 +22,20 @@ use move_core_types::{
     language_storage::{ModuleId, StructTag},
     metadata::Metadata,
 };
-use move_model::{
-    metadata::{CompilationMetadata, COMPILATION_METADATA_KEY},
-    model::StructEnv,
-};
+/// Metadata key for compilation metadata, matching the one defined in
+/// `move-model`. Duplicated here to avoid pulling the entire compiler
+/// toolchain into `aptos-types`.
+pub static COMPILATION_METADATA_KEY: &[u8] = "compilation_metadata".as_bytes();
+
+/// A deserialization-compatible mirror of `move_model::metadata::CompilationMetadata`.
+/// Only the fields needed for validation and inspection are kept.
+/// Duplicated here to avoid `aptos-types` depending on `move-model`.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct CompilationMetadata {
+    pub unstable: bool,
+    pub compiler_version: String,
+    pub language_version: String,
+}
 use serde::{Deserialize, Serialize};
 use std::{cell::RefCell, collections::BTreeMap, env, num::NonZeroUsize, str::FromStr, sync::Arc};
 use thiserror::Error;
@@ -720,18 +730,6 @@ impl ResourceGroupScope {
             ResourceGroupScope::Global => other != self,
             ResourceGroupScope::Address => other == &ResourceGroupScope::Module,
             ResourceGroupScope::Module => false,
-        }
-    }
-
-    pub fn are_equal_envs(&self, resource: &StructEnv, group: &StructEnv) -> bool {
-        match self {
-            ResourceGroupScope::Global => true,
-            ResourceGroupScope::Address => {
-                resource.module_env.get_name().addr() == group.module_env.get_name().addr()
-            },
-            ResourceGroupScope::Module => {
-                resource.module_env.get_name() == group.module_env.get_name()
-            },
         }
     }
 
