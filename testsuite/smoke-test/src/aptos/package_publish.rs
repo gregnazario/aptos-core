@@ -4,6 +4,8 @@
 use crate::{aptos::move_test_helpers, smoke_test_environment::new_local_swarm_with_aptos};
 use aptos_forge::Swarm;
 
+// Too expensive to spin up a network to test the CLI
+#[ignore]
 #[tokio::test]
 async fn test_package_publish() {
     let swarm = new_local_swarm_with_aptos(1).await;
