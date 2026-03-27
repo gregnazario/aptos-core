@@ -12,6 +12,8 @@ use aptos_aggregator::{
     types::{DelayedFieldValue, DelayedFieldsSpeculativeError},
 };
 use aptos_table_natives::{TableHandle, TableResolver};
+// Re-exported from aptos_types::vm::module_metadata for backwards compatibility.
+pub use aptos_types::vm::module_metadata::get_resource_group_member_from_metadata;
 use aptos_types::{
     error::{PanicError, PanicOr},
     on_chain_config::{ConfigStorage, Features, OnChainConfig},
@@ -22,7 +24,6 @@ use aptos_types::{
         state_value::{StateValue, StateValueMetadata},
         StateView, StateViewId,
     },
-    vm::module_metadata::get_metadata,
 };
 use aptos_vm_environment::gas::get_gas_feature_version;
 use aptos_vm_types::{
@@ -46,9 +47,6 @@ use std::{
     collections::{BTreeMap, HashMap, HashSet},
 };
 use triomphe::Arc as TriompheArc;
-
-// Re-exported from aptos_types::vm::module_metadata for backwards compatibility.
-pub use aptos_types::vm::module_metadata::get_resource_group_member_from_metadata;
 
 /// Adapter to convert a `ExecutorView` into a `AptosMoveResolver`.
 ///

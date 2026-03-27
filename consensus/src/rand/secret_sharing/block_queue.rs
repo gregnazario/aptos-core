@@ -92,6 +92,7 @@ impl QueueItem {
 }
 
 /// Maintain ordered blocks that have pending secret shares
+#[derive(Default)]
 pub struct BlockQueue {
     queue: BTreeMap<Round, QueueItem>,
 }

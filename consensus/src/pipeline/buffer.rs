@@ -24,6 +24,12 @@ pub struct Buffer<T: Hashable> {
     tail: Cursor,
 }
 
+impl<T: Hashable> Default for Buffer<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Hashable> Buffer<T> {
     pub fn new() -> Self {
         Self {
@@ -36,6 +42,10 @@ impl<T: Hashable> Buffer<T> {
 
     pub fn len(&self) -> usize {
         self.map.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.map.is_empty()
     }
 
     pub fn head_cursor(&self) -> &Cursor {

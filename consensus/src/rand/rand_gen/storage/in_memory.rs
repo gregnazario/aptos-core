@@ -14,6 +14,12 @@ pub struct InMemRandDb<D> {
     certified_aug_data: RwLock<HashMap<AugDataId, CertifiedAugData<D>>>,
 }
 
+impl<D> Default for InMemRandDb<D> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<D> InMemRandDb<D> {
     pub fn new() -> Self {
         Self {

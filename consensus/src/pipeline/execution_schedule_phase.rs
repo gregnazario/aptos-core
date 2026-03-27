@@ -33,6 +33,7 @@ impl Display for ExecutionRequest {
     }
 }
 
+#[derive(Default)]
 pub struct ExecutionSchedulePhase;
 
 impl ExecutionSchedulePhase {

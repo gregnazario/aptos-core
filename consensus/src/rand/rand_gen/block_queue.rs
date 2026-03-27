@@ -91,6 +91,7 @@ impl QueueItem {
 }
 
 /// Maintain ordered blocks that have pending randomness
+#[derive(Default)]
 pub struct BlockQueue {
     queue: BTreeMap<Round, QueueItem>,
 }
