@@ -225,6 +225,9 @@ mod tests {
                 }
             }
         }
-        assert!(found_empty, "Clearing the discovery file should produce an empty peer set update");
+        assert!(
+            found_empty,
+            "Clearing the discovery file should produce an empty peer set update"
+        );
     }
 }
