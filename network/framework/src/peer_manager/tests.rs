@@ -1187,9 +1187,9 @@ fn test_zero_inbound_connection_limit_rejects_all_unknown_peers() {
 }
 
 #[test]
-fn test_zero_limit_still_allows_priority_peer() {
-    // Even with limit=0, a priority peer should be accepted (no non-priority to evict,
-    // but the code path handles this: priority peer eviction fails, so it's also rejected)
+fn test_zero_limit_rejects_priority_peer_with_no_peers_to_evict() {
+    // With limit=0 and no existing non-priority peers to evict, even priority peers
+    // are rejected because there are no slots to free up.
     let runtime = create_test_runtime();
     let peer_ids = ordered_peer_ids(2);
     let priority_peer = peer_ids[0];

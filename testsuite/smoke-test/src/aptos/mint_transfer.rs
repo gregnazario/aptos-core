@@ -8,7 +8,7 @@ use aptos_move_debugger::aptos_debugger::AptosDebugger;
 use aptos_types::transaction::{ExecutionStatus, TransactionStatus};
 use std::sync::Arc;
 
-// Too expensive to spin up a network to test the CLI
+// Too expensive to spin up a local network (swarm) and debugger for this test
 #[ignore]
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
 async fn test_mint_transfer() {

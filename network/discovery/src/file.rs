@@ -213,16 +213,20 @@ mod tests {
         // The next update should propagate the empty peer set
         // (may need to skip stale reads of the old state)
         let mut found_empty = false;
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(10);
         for _ in 0..20 {
-            if let Some(ConnectivityRequest::UpdateDiscoveredPeers(
-                DiscoverySource::File,
-                actual_peers,
-            )) = conn_mgr_reqs_rx.next().await
-            {
-                if actual_peers.is_empty() {
-                    found_empty = true;
-                    break;
-                }
+            match tokio::time::timeout_at(deadline, conn_mgr_reqs_rx.next()).await {
+                Ok(Some(ConnectivityRequest::UpdateDiscoveredPeers(
+                    DiscoverySource::File,
+                    actual_peers,
+                ))) => {
+                    if actual_peers.is_empty() {
+                        found_empty = true;
+                        break;
+                    }
+                },
+                Ok(_) => {},
+                Err(_) => break, // timed out
             }
         }
         assert!(

@@ -668,7 +668,7 @@ mod tests {
         let methods = config.discovery_methods();
         assert_eq!(methods.len(), 2);
         assert_eq!(methods[0], &DiscoveryMethod::Onchain);
-        assert!(matches!(methods[1], DiscoveryMethod::File(_)));
+        assert!(matches!(methods[1], &DiscoveryMethod::File(_)));
     }
 
     #[test]

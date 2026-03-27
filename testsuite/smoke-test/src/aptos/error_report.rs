@@ -32,7 +32,7 @@ async fn submit_and_check_err<F: Fn(TransactionBuilder) -> TransactionBuilder>(
     )
 }
 
-// Too expensive to spin up a network to test the CLI
+// Too expensive to spin up a local swarm and submit transactions via the REST client
 #[ignore]
 #[tokio::test]
 async fn test_error_report() {

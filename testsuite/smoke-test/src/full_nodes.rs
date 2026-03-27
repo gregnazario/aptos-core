@@ -176,7 +176,7 @@ async fn test_vfn_failover() {
     assert_balance(&vfn_client, &account_1, 12).await;
 }
 
-// Full node test covers everything in this tes
+// Full node test covers everything in this test
 #[ignore]
 #[tokio::test]
 async fn test_private_full_node() {
