@@ -4,8 +4,8 @@
 use crate::{
     common::{
         types::{
-            CliCommand, CliError, CliTypedResult, EntryFunctionArguments, MultisigAccount,
-            MultisigAccountWithSequenceNumber, ScriptFunctionArguments, TransactionOptions,
+            CliCommand, CliError, CliTypedResult, MultisigAccount,
+            MultisigAccountWithSequenceNumber, TransactionOptions, TransactionOptionsExt,
             TransactionSummary,
         },
         utils::view_json_option_str,
@@ -15,7 +15,7 @@ use crate::{
 use aptos_api_types::ViewFunction;
 use aptos_cached_packages::aptos_stdlib;
 use aptos_crypto::HashValue;
-use aptos_move_cli::EntryFunctionArguments;
+use aptos_move_cli::{EntryFunctionArguments, ScriptFunctionArguments};
 use aptos_rest_client::{
     aptos_api_types::{HexEncodedBytes, WriteResource, WriteSetChange},
     Transaction,
@@ -24,6 +24,7 @@ use aptos_types::{
     account_address::AccountAddress,
     transaction::{Multisig, MultisigTransactionPayload, TransactionPayload},
 };
+use move_core_types::diag_writer::DiagWriter;
 use async_trait::async_trait;
 use bcs::to_bytes;
 use clap::Parser;
@@ -393,10 +394,14 @@ impl CliCommand<TransactionSummary> for CreateScriptTransaction {
     async fn execute(self) -> CliTypedResult<TransactionSummary> {
         let (bytecode, _script_hash) = self
             .compile_proposal_args
-            .compile("MultisigScript", self.txn_options.prompt_options)?;
-        let multisig_payload = self
+            .compile(&DiagWriter::stderr(), "MultisigScript", self.txn_options.prompt_options)?;
+        let script_payload = self
             .script_function_args
-            .create_multisig_script_payload(bytecode)?;
+            .create_script_payload(bytecode)?;
+        let multisig_payload = match script_payload {
+            TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
+            _ => unreachable!("create_script_payload always returns Script"),
+        };
         let multisig_transaction_payload_bytes =
             to_bytes::<MultisigTransactionPayload>(&multisig_payload)?;
         let transaction_payload = if self.store_hash_only {
@@ -444,10 +449,14 @@ impl CliCommand<serde_json::Value> for VerifyScriptProposal {
         // Compile the script and create the multisig payload.
         let (bytecode, _script_hash) = self
             .compile_proposal_args
-            .compile("VerifyScript", self.txn_options.prompt_options)?;
-        let multisig_payload = self
+            .compile(&DiagWriter::stderr(), "VerifyScript", self.txn_options.prompt_options)?;
+        let script_payload = self
             .script_function_args
-            .create_multisig_script_payload(bytecode)?;
+            .create_script_payload(bytecode)?;
+        let multisig_payload = match script_payload {
+            TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
+            _ => unreachable!("create_script_payload always returns Script"),
+        };
 
         // Get expected multisig transaction payload hash hex from provided script.
         let expected_payload_hash =
@@ -534,10 +543,14 @@ impl CliCommand<TransactionSummary> for ExecuteWithScriptPayload {
     async fn execute(self) -> CliTypedResult<TransactionSummary> {
         let (bytecode, _script_hash) = self
             .compile_proposal_args
-            .compile("MultisigScript", self.execute.txn_options.prompt_options)?;
-        let multisig_payload = self
+            .compile(&DiagWriter::stderr(), "MultisigScript", self.execute.txn_options.prompt_options)?;
+        let script_payload = self
             .script_function_args
-            .create_multisig_script_payload(bytecode)?;
+            .create_script_payload(bytecode)?;
+        let multisig_payload = match script_payload {
+            TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
+            _ => unreachable!("create_script_payload always returns Script"),
+        };
         self.execute
             .txn_options
             .submit_transaction(TransactionPayload::Multisig(Multisig {
