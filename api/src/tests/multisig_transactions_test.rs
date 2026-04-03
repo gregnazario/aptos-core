@@ -1,7 +1,7 @@
 // Copyright (c) Aptos Foundation
 // Licensed pursuant to the Innovation-Enabling Source Code License, available at https://github.com/aptos-labs/aptos-core/blob/main/LICENSE
 
-use super::new_test_context;
+use super::{new_test_context, new_test_context_with_orderless_flags};
 use aptos_api_test_context::{current_function_name, TestContext};
 use aptos_types::{
     account_address::AccountAddress,
@@ -15,6 +15,8 @@ use move_core_types::{
 };
 use rstest::rstest;
 
+/// Compiled Move script bytecode for `aptos_account::transfer(to: address, amount: u64)`.
+/// Source: `script { use aptos_framework::aptos_account; fun main(to: address, amount: u64) { aptos_account::transfer(to, amount); } }`
 const SCRIPT_HEX: &str = "a11ceb0b0700000a06010002030206050806070e20082e40106e1f010200010001000103060c050300083c53454c463e5f30087472616e736665720d6170746f735f6163636f756e74ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000000000000000000000000000000000000000000114636f6d70696c6174696f6e5f6d65746164617461090003322e3003322e31000001050b000b010b02110002";
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -53,6 +55,7 @@ async fn test_multisig_transaction_with_payload_succeeds() {
     assert_eq!(0, context.get_apt_balance(multisig_account).await);
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 #[rstest(
     use_txn_payload_v2_format,
     use_orderless_transactions,

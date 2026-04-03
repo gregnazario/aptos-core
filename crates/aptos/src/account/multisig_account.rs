@@ -24,11 +24,10 @@ use aptos_types::{
     account_address::AccountAddress,
     transaction::{Multisig, MultisigTransactionPayload, TransactionPayload},
 };
-use move_core_types::diag_writer::DiagWriter;
 use async_trait::async_trait;
 use bcs::to_bytes;
 use clap::Parser;
-use move_core_types::{ident_str, language_storage::ModuleId};
+use move_core_types::{diag_writer::DiagWriter, ident_str, language_storage::ModuleId};
 use serde::Serialize;
 use serde_json::json;
 
@@ -392,12 +391,12 @@ impl CliCommand<TransactionSummary> for CreateScriptTransaction {
     }
 
     async fn execute(self) -> CliTypedResult<TransactionSummary> {
-        let (bytecode, _script_hash) = self
-            .compile_proposal_args
-            .compile(&DiagWriter::stderr(), "MultisigScript", self.txn_options.prompt_options)?;
-        let script_payload = self
-            .script_function_args
-            .create_script_payload(bytecode)?;
+        let (bytecode, _script_hash) = self.compile_proposal_args.compile(
+            &DiagWriter::stderr(),
+            "MultisigScript",
+            self.txn_options.prompt_options,
+        )?;
+        let script_payload = self.script_function_args.create_script_payload(bytecode)?;
         let multisig_payload = match script_payload {
             TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
             _ => unreachable!("create_script_payload always returns Script"),
@@ -447,12 +446,12 @@ impl CliCommand<serde_json::Value> for VerifyScriptProposal {
 
     async fn execute(self) -> CliTypedResult<serde_json::Value> {
         // Compile the script and create the multisig payload.
-        let (bytecode, _script_hash) = self
-            .compile_proposal_args
-            .compile(&DiagWriter::stderr(), "VerifyScript", self.txn_options.prompt_options)?;
-        let script_payload = self
-            .script_function_args
-            .create_script_payload(bytecode)?;
+        let (bytecode, _script_hash) = self.compile_proposal_args.compile(
+            &DiagWriter::stderr(),
+            "VerifyScript",
+            self.txn_options.prompt_options,
+        )?;
+        let script_payload = self.script_function_args.create_script_payload(bytecode)?;
         let multisig_payload = match script_payload {
             TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
             _ => unreachable!("create_script_payload always returns Script"),
@@ -541,12 +540,12 @@ impl CliCommand<TransactionSummary> for ExecuteWithScriptPayload {
     }
 
     async fn execute(self) -> CliTypedResult<TransactionSummary> {
-        let (bytecode, _script_hash) = self
-            .compile_proposal_args
-            .compile(&DiagWriter::stderr(), "MultisigScript", self.execute.txn_options.prompt_options)?;
-        let script_payload = self
-            .script_function_args
-            .create_script_payload(bytecode)?;
+        let (bytecode, _script_hash) = self.compile_proposal_args.compile(
+            &DiagWriter::stderr(),
+            "MultisigScript",
+            self.execute.txn_options.prompt_options,
+        )?;
+        let script_payload = self.script_function_args.create_script_payload(bytecode)?;
         let multisig_payload = match script_payload {
             TransactionPayload::Script(script) => MultisigTransactionPayload::Script(script),
             _ => unreachable!("create_script_payload always returns Script"),

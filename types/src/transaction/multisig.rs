@@ -16,8 +16,7 @@ pub struct Multisig {
     pub transaction_payload: Option<MultisigTransactionPayload>,
 }
 
-// We use an enum here for extensibility so we can add Script payload support
-// in the future for example.
+/// Enum for multisig transaction payloads, supporting both entry functions and scripts.
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
 pub enum MultisigTransactionPayload {
     EntryFunction(EntryFunction),
