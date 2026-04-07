@@ -280,6 +280,7 @@ impl FeatureFlag {
             Self::VM_BINARY_FORMAT_V10,
             Self::SLH_DSA_SHA2_128S_SIGNATURE,
             Self::PUBLIC_STRUCT_ENUM_ARGS,
+            Self::MULTISIG_SCRIPT,
         ]
     }
 }
