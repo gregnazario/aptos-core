@@ -5,6 +5,7 @@ use super::{new_test_context, new_test_context_with_orderless_flags};
 use aptos_api_test_context::{current_function_name, TestContext};
 use aptos_types::{
     account_address::AccountAddress,
+    on_chain_config::FeatureFlag,
     transaction::{EntryFunction, MultisigTransactionPayload, Script},
 };
 use move_core_types::{
@@ -882,6 +883,9 @@ async fn test_multisig_script_transaction_with_payload_hash(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(owner_account, vec![], 1, 1000)
@@ -927,6 +931,9 @@ async fn test_multisig_script_transaction_with_payload_hash_and_failing_executio
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(owner_account, vec![], 1, 1000)
@@ -975,6 +982,9 @@ async fn test_multisig_script_transaction_with_matching_payload(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(owner_account, vec![], 1, 1000)
@@ -1017,6 +1027,9 @@ async fn test_multisig_script_transaction_with_mismatching_payload(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(owner_account, vec![], 1, 1000)
@@ -1071,6 +1084,9 @@ async fn test_multisig_script_transaction_with_payload_not_matching_hash(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(owner_account, vec![], 1, 1000)
@@ -1115,6 +1131,9 @@ async fn test_multisig_script_transaction_simulation(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account_1 = &mut context.create_account().await;
     let owner_account_2 = &mut context.create_account().await;
     let owner_account_3 = &mut context.create_account().await;
@@ -1173,6 +1192,9 @@ async fn test_multisig_script_transaction_simulation_2_of_3(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account_1 = &mut context.create_account().await;
     let owner_account_2 = &mut context.create_account().await;
     let owner_account_3 = &mut context.create_account().await;
@@ -1235,6 +1257,9 @@ async fn test_multisig_script_transaction_simulation_fail(
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account_1 = &mut context.create_account().await;
     let owner_account_2 = &mut context.create_account().await;
     let owner_account_3 = &mut context.create_account().await;
@@ -1294,6 +1319,9 @@ async fn test_multisig_script_transaction_simulation_fail_2_of_3_insufficient_ap
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account_1 = &mut context.create_account().await;
     let owner_account_2 = &mut context.create_account().await;
     let owner_account_3 = &mut context.create_account().await;
@@ -1347,6 +1375,9 @@ async fn test_simulate_multisig_script_transaction_should_charge_gas_against_sen
         use_txn_payload_v2_format,
         use_orderless_transactions,
     );
+    context
+        .enable_feature(FeatureFlag::MULTISIG_SCRIPT as u64)
+        .await;
     let owner_account = &mut context.create_account().await;
     let multisig_account = context
         .create_multisig_account(
