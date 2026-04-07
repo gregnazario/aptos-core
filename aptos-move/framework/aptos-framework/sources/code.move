@@ -14,6 +14,7 @@ module aptos_framework::code {
     use aptos_framework::event;
     use aptos_framework::object::{Self, Object};
     use aptos_framework::permissioned_signer;
+    use aptos_framework::timestamp;
 
     friend aptos_framework::object_code_deployment;
 
@@ -78,6 +79,12 @@ module aptos_framework::code {
         is_upgrade: bool,
     }
 
+    #[event]
+    struct PublishPackageV2 has drop, store {
+        address: address,
+        name: String
+    }
+
     /// Package contains duplicate module names with existing modules publised in other packages on this address
     const EMODULE_NAME_CLASH: u64 = 0x1;
 
@@ -110,6 +117,9 @@ module aptos_framework::code {
 
     /// Current permissioned signer cannot publish codes.
     const ENO_CODE_PERMISSION: u64 = 0xB;
+
+    /// Package is not allowed to be published until the timelock is over.
+    const ETIME_LOCKED: u64 = 0xC;
 
     struct CodePublishingPermission has copy, drop, store {}
 
@@ -161,6 +171,14 @@ module aptos_framework::code {
         } else {
             borrow_global_mut<PackageRegistry>(addr).packages.push_back(metadata)
         }
+    }
+
+    /// Publishes a package at the given signer's address.  There is a timelock in which the package can only be published
+    /// after a certain time.  Note that, not using this function will result in no timelock.
+    public fun publish_package_with_timelock(owner: &signer, time_s: u64, pack: PackageMetadata, code: vector<vector<u8>>) {
+        assert!(timestamp::now_seconds() >= time_s, ETIME_LOCKED);
+        check_code_publishing_permission(owner);
+        publish_package(owner, pack, code)
     }
 
     /// Publishes a package at the given signer's address. The caller must provide package metadata describing the
@@ -215,6 +233,11 @@ module aptos_framework::code {
         event::emit(PublishPackage {
             code_address: addr,
             is_upgrade: upgrade_number > 0
+        });
+
+        event::emit(PublishPackageV2 {
+            address: addr,
+            name: pack.name
         });
 
         // Request publish
