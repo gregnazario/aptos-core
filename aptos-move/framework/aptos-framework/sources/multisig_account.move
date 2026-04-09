@@ -99,6 +99,10 @@ module aptos_framework::multisig_account {
     const EMAX_PENDING_TRANSACTIONS_EXCEEDED: u64 = 19;
     /// The multisig v2 enhancement feature is not enabled.
     const EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED: u64 = 20;
+    /// Timelock period must be greater than zero.
+    const EINVALID_TIMELOCK_DURATION: u64 = 21;
+    /// Timelock override threshold must be greater than num_signatures_required and at most the number of owners.
+    const EINVALID_TIMELOCK_OVERRIDE_THRESHOLD: u64 = 22;
 
 
     const ZERO_AUTH_KEY: vector<u8> = x"0000000000000000000000000000000000000000000000000000000000000000";
@@ -142,6 +146,17 @@ module aptos_framework::multisig_account {
         execute_transaction_events: EventHandle<TransactionExecutionSucceededEvent>,
         transaction_execution_failed_events: EventHandle<TransactionExecutionFailedEvent>,
         metadata_updated_events: EventHandle<MetadataUpdatedEvent>,
+    }
+
+    /// Support for Multisig TimeLock
+    enum MultisigAccountTimeLock has key {
+        V1 {
+            /// The time lock period in seconds after the creation of the multisig transaction.
+            timelock_period: u64,
+            /// The number of approvals required to bypass the timelock and execute immediately.
+            /// Must be greater than the number of signatures required normally and less than or equal to the number of owners.
+            override_threshold: u64,
+        }
     }
 
     /// A transaction to be executed in a multisig account.
@@ -331,12 +346,44 @@ module aptos_framework::multisig_account {
         new_metadata: SimpleMap<String, vector<u8>>,
     }
 
+    #[event]
+    struct TimelockUpdated has drop, store {
+        multisig_account: address,
+        timelock_period: u64,
+        override_threshold: u64,
+    }
+
+    #[event]
+    struct TimelockRemoved has drop, store {
+        multisig_account: address,
+    }
+
     ////////////////////////// View functions ///////////////////////////////
 
     #[view]
     /// Return the multisig account's metadata.
     public fun metadata(multisig_account: address): SimpleMap<String, vector<u8>> acquires MultisigAccount {
         borrow_global<MultisigAccount>(multisig_account).metadata
+    }
+
+    #[view]
+    /// Return the timelock period in seconds, or 0 if no timelock is configured.
+    public fun timelock_period(multisig_account: address): u64 {
+        if (exists<MultisigAccountTimeLock>(multisig_account)) {
+            (&MultisigAccountTimeLock[multisig_account]).timelock_period
+        } else {
+            0
+        }
+    }
+
+    #[view]
+    /// Return the number of approvals required to bypass the timelock, or 0 if no timelock is configured.
+    public fun timelock_override_threshold(multisig_account: address): u64 {
+        if (exists<MultisigAccountTimeLock>(multisig_account)) {
+            (&MultisigAccountTimeLock[multisig_account]).override_threshold
+        } else {
+            0
+        }
     }
 
     #[view]
@@ -408,8 +455,9 @@ module aptos_framework::multisig_account {
     public fun can_be_executed(multisig_account: address, sequence_number: u64): bool acquires MultisigAccount {
         assert_valid_sequence_number(multisig_account, sequence_number);
         let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
+
         sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account)
+            num_approvals >= num_signatures_required(multisig_account) && can_execute_with_timelock(multisig_account, sequence_number, num_approvals)
     }
 
     #[view]
@@ -420,9 +468,30 @@ module aptos_framework::multisig_account {
         if (!has_voted_for_approval(multisig_account, sequence_number, owner)) {
             num_approvals += 1;
         };
+
         is_owner(owner, multisig_account) &&
             sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account)
+            num_approvals >= num_signatures_required(multisig_account) && can_execute_with_timelock(multisig_account, sequence_number, num_approvals)
+    }
+
+    /// Return true if the transaction with given transaction id can be executed immediately, or it has to wait
+    /// for the timelock to expire.
+    inline fun can_execute_with_timelock(multisig_account: address, sequence_number: u64, num_approvals: u64): bool {
+        if (exists<MultisigAccountTimeLock>(multisig_account)) {
+            let multisig_account_resource = &MultisigAccountTimeLock[multisig_account];
+            let timelock = multisig_account_resource.timelock_period;
+            let override_threshold = multisig_account_resource.override_threshold;
+
+            // Get the pending transaction to check if the timelock has expired
+            // Assume that the transaction has already been check to exist and is valid
+            let pending_transaction = get_transaction(multisig_account, sequence_number);
+            let timelock_unlock_time = pending_transaction.creation_time_secs + timelock;
+
+            // If the number of approvals is less than the override threshold, and the timelock has not expired, return false
+            num_approvals >= override_threshold || now_seconds() >= timelock_unlock_time
+        } else {
+            true
+        }
     }
 
     #[view]
@@ -766,6 +835,58 @@ module aptos_framework::multisig_account {
     }
 
     ////////////////////////// Self-updates ///////////////////////////////
+
+    /// Upsert the timelock configuration for the multisig account.
+    /// timelock_period must be > 0, override_threshold must be > num_signatures_required
+    /// and <= the number of owners.
+    entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: u64) acquires MultisigAccount {
+        let multisig_address = address_of(multisig_account);
+        assert_multisig_account_exists(multisig_address);
+
+        assert!(
+            timelock_period > 0,
+            error::invalid_argument(EINVALID_TIMELOCK_DURATION)
+        );
+
+        let multisig_account_resource = borrow_global<MultisigAccount>(multisig_address);
+        assert!(
+            override_threshold > multisig_account_resource.num_signatures_required,
+            error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
+        );
+        assert!(
+            override_threshold <= multisig_account_resource.owners.length(),
+            error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
+        );
+
+        if (exists<MultisigAccountTimeLock>(multisig_address)) {
+            let multisig_account_resource = &mut MultisigAccountTimeLock[multisig_address];
+            multisig_account_resource.timelock_period = timelock_period;
+            multisig_account_resource.override_threshold = override_threshold;
+        } else {
+            move_to(multisig_account, MultisigAccountTimeLock::V1 {
+                timelock_period,
+                override_threshold,
+            });
+        }
+
+        emit(TimelockUpdated {
+            multisig_account: multisig_address,
+            timelock_period,
+            override_threshold,
+        });
+    }
+
+    /// Remove the timelock configuration for the multisig account.
+    entry fun remove_timelock(multisig_account: &signer) acquires MultisigAccount {
+        let multisig_address = address_of(multisig_account);
+        assert_multisig_account_exists(multisig_address);
+        if (exists<MultisigAccountTimeLock>(multisig_address)) {
+            move_from<MultisigAccountTimeLock>(multisig_address);
+            emit(TimelockRemoved {
+                multisig_account: multisig_address,
+            });
+        }
+    }
 
     /// Similar to add_owners, but only allow adding one owner.
     entry fun add_owner(multisig_account: &signer, new_owner: address) acquires MultisigAccount {
@@ -1424,6 +1545,21 @@ module aptos_framework::multisig_account {
             num_owners >= multisig_account_ref_mut.num_signatures_required,
             error::invalid_state(ENOT_ENOUGH_OWNERS)
         );
+
+        // If a timelock is configured, adjust and validate the override threshold
+        // after owner/threshold changes.
+        if (exists<MultisigAccountTimeLock>(multisig_address)) {
+            let timelock = &mut MultisigAccountTimeLock[multisig_address];
+            // If override threshold exceeds the new owner count, clamp it down.
+            if (timelock.override_threshold > num_owners) {
+                timelock.override_threshold = num_owners;
+            };
+            // Override threshold must still be greater than num_signatures_required.
+            assert!(
+                timelock.override_threshold > multisig_account_ref_mut.num_signatures_required,
+                error::invalid_state(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
+            );
+        };
     }
 
     ////////////////////////// Tests ///////////////////////////////
