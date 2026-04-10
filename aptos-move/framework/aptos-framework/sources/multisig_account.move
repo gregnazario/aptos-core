@@ -162,7 +162,7 @@ module aptos_framework::multisig_account {
             timelock_period: u64,
             /// The number of approvals required to bypass the timelock and execute immediately.
             /// Must be greater than the number of signatures required normally and less than or equal to the number of owners.
-            override_threshold: u64,
+            override_threshold: Option<u64>,
         }
     }
 
@@ -357,7 +357,7 @@ module aptos_framework::multisig_account {
     struct TimelockUpdated has drop, store {
         multisig_account: address,
         timelock_period: u64,
-        override_threshold: u64,
+        override_threshold: Option<u64>,
     }
 
     #[event]
@@ -385,11 +385,11 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return the number of approvals required to bypass the timelock, or 0 if no timelock is configured.
-    public fun timelock_override_threshold(multisig_account: address): u64 {
+    public fun timelock_override_threshold(multisig_account: address): Option<u64> {
         if (exists<MultisigAccountTimeLock>(multisig_account)) {
             (&MultisigAccountTimeLock[multisig_account]).override_threshold
         } else {
-            0
+           option::none()
         }
     }
 
@@ -497,7 +497,7 @@ module aptos_framework::multisig_account {
             let elapsed = now_seconds() - pending_transaction.creation_time_secs;
 
             // If the number of approvals meets the override threshold, or the timelock has expired, allow execution
-            num_approvals >= override_threshold || elapsed >= timelock
+            (override_threshold.is_some() && &num_approvals >= override_threshold.borrow()) || elapsed >= timelock
         } else {
             true
         }
@@ -873,7 +873,7 @@ module aptos_framework::multisig_account {
     /// Upsert the timelock configuration for the multisig account.
     /// timelock_period must be > 0, override_threshold must be > num_signatures_required
     /// and <= the number of owners.
-    entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: u64) acquires MultisigAccount {
+    entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: Option<u64>) acquires MultisigAccount {
         let multisig_address = address_of(multisig_account);
         assert_multisig_account_exists(multisig_address);
 
@@ -884,11 +884,11 @@ module aptos_framework::multisig_account {
 
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_address);
         assert!(
-            override_threshold > multisig_account_resource.num_signatures_required,
+            override_threshold.is_none() || override_threshold.borrow() > &multisig_account_resource.num_signatures_required,
             error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
         );
         assert!(
-            override_threshold <= multisig_account_resource.owners.length(),
+            override_threshold.is_none() || override_threshold.borrow() <= &multisig_account_resource.owners.length(),
             error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
         );
 
@@ -1592,12 +1592,12 @@ module aptos_framework::multisig_account {
         if (exists<MultisigAccountTimeLock>(multisig_address)) {
             let timelock = &mut MultisigAccountTimeLock[multisig_address];
             // If override threshold exceeds the new owner count, clamp it down.
-            if (timelock.override_threshold > num_owners) {
-                timelock.override_threshold = num_owners;
+            if (timelock.override_threshold.is_some() && timelock.override_threshold.borrow() > &num_owners) {
+                timelock.override_threshold = option::some(num_owners);
             };
             // Override threshold must still be greater than num_signatures_required.
             assert!(
-                timelock.override_threshold > multisig_account_ref_mut.num_signatures_required,
+                timelock.override_threshold.is_none() || timelock.override_threshold.borrow() > &multisig_account_ref_mut.num_signatures_required,
                 error::invalid_state(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
             );
         };
@@ -2700,17 +2700,17 @@ module aptos_framework::multisig_account {
 
         // No timelock by default.
         assert!(timelock_period(multisig_account) == 0, 0);
-        assert!(timelock_override_threshold(multisig_account) == 0, 1);
+        assert!(timelock_override_threshold(multisig_account) == option::none(), 1);
 
         // Configure timelock: 1 hour, override at 3-of-3.
         upsert_timelock(multisig_signer, 3600, 3);
         assert!(timelock_period(multisig_account) == 3600, 2);
-        assert!(timelock_override_threshold(multisig_account) == 3, 3);
+        assert!(timelock_override_threshold(multisig_account) == option::some(3), 3);
 
         // Update timelock: 2 hours, still 3-of-3 override.
         upsert_timelock(multisig_signer, 7200, 3);
         assert!(timelock_period(multisig_account) == 7200, 4);
-        assert!(timelock_override_threshold(multisig_account) == 3, 5);
+        assert!(timelock_override_threshold(multisig_account) == option::some(3), 5);
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
@@ -2725,7 +2725,7 @@ module aptos_framework::multisig_account {
 
         remove_timelock(multisig_signer);
         assert!(timelock_period(multisig_account) == 0, 1);
-        assert!(timelock_override_threshold(multisig_account) == 0, 2);
+        assert!(timelock_override_threshold(multisig_account) == option::none(), 2);
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
@@ -2928,14 +2928,14 @@ module aptos_framework::multisig_account {
 
         // Configure timelock with override at 3-of-3.
         upsert_timelock(multisig_signer, 3600, 3);
-        assert!(timelock_override_threshold(multisig_account) == 3, 0);
+        assert!(timelock_override_threshold(multisig_account) == option::some(3), 0);
 
         // Remove one owner (3 -> 2 owners). Override threshold should be clamped to 2.
         // Signature threshold is 2, so we need to lower it first to allow removing an owner
         // while keeping override_threshold > num_signatures_required.
         update_signatures_required(multisig_signer, 1);
         remove_owner(multisig_signer, address_of(owner_3));
-        assert!(timelock_override_threshold(multisig_account) == 2, 1);
+        assert!(timelock_override_threshold(multisig_account) == option::some(2), 1);
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
