@@ -30,6 +30,8 @@ fn quote_type_as_format(type_tag: &TypeTag) -> Format {
     use TypeTag::*;
     let str_tag: Lazy<StructTag> =
         Lazy::new(|| StructTag::from_str("0x1::string::String").unwrap());
+    let option_tag: Lazy<StructTag> =
+        Lazy::new(|| StructTag::from_str("0x1::option::Option<u8>").unwrap());
     match type_tag {
         Bool => Format::Bool,
         U8 => Format::U8,
@@ -40,9 +42,18 @@ fn quote_type_as_format(type_tag: &TypeTag) -> Format {
         U256 => Format::TypeName("U256".into()),
         Address => Format::TypeName("AccountAddress".into()),
         Vector(type_tag) => Format::Seq(Box::new(quote_type_as_format(type_tag))),
-        Struct(tag) => match tag {
-            tag if &**tag == Lazy::force(&str_tag) => Format::Seq(Box::new(Format::U8)),
-            _ => type_not_allowed(type_tag),
+        Struct(tag) => {
+            if &**tag == Lazy::force(&str_tag) {
+                Format::Seq(Box::new(Format::U8))
+            } else if tag.address == Lazy::force(&option_tag).address
+                && tag.module == Lazy::force(&option_tag).module
+                && tag.name == Lazy::force(&option_tag).name
+                && tag.type_args.len() == 1
+            {
+                Format::Option(Box::new(quote_type_as_format(&tag.type_args[0])))
+            } else {
+                type_not_allowed(type_tag)
+            }
         },
         // TODO(#17645): signed integers
         Signer | Function(..) | I8 | I16 | I32 | I64 | I128 | I256 => type_not_allowed(type_tag),
@@ -97,6 +108,8 @@ pub(crate) fn mangle_type(type_tag: &TypeTag) -> String {
     use TypeTag::*;
     let str_tag: Lazy<StructTag> =
         Lazy::new(|| StructTag::from_str("0x1::string::String").unwrap());
+    let option_tag: Lazy<StructTag> =
+        Lazy::new(|| StructTag::from_str("0x1::option::Option<u8>").unwrap());
 
     match type_tag {
         Bool => "bool".into(),
@@ -118,9 +131,18 @@ pub(crate) fn mangle_type(type_tag: &TypeTag) -> String {
             },
             _ => format!("vec{}", mangle_type(type_tag)),
         },
-        Struct(tag) => match tag {
-            tag if &**tag == Lazy::force(&str_tag) => "string".into(),
-            _ => type_not_allowed(type_tag),
+        Struct(tag) => {
+            if &**tag == Lazy::force(&str_tag) {
+                "string".into()
+            } else if tag.address == Lazy::force(&option_tag).address
+                && tag.module == Lazy::force(&option_tag).module
+                && tag.name == Lazy::force(&option_tag).name
+                && tag.type_args.len() == 1
+            {
+                format!("option{}", mangle_type(&tag.type_args[0]))
+            } else {
+                type_not_allowed(type_tag)
+            }
         },
         // TODO(#17645): signed integers
         Signer | Function(..) | I8 | I16 | I32 | I64 | I128 | I256 => type_not_allowed(type_tag),
