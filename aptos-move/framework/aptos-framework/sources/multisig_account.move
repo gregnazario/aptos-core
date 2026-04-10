@@ -156,7 +156,7 @@ module aptos_framework::multisig_account {
     }
 
     /// Support for Multisig TimeLock
-    enum MultisigAccountTimeLock has key {
+    enum MultisigAccountTimeLock has key, drop {
         V1 {
             /// The time lock period in seconds after the creation of the multisig transaction.
             timelock_period: u64,
@@ -369,7 +369,7 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return the multisig account's metadata.
-    public fun metadata(multisig_account: address): SimpleMap<String, vector<u8>> acquires MultisigAccount {
+    public fun metadata(multisig_account: address): SimpleMap<String, vector<u8>> {
         borrow_global<MultisigAccount>(multisig_account).metadata
     }
 
@@ -396,19 +396,19 @@ module aptos_framework::multisig_account {
     #[view]
     /// Return the number of signatures required to execute or execute-reject a transaction in the provided
     /// multisig account.
-    public fun num_signatures_required(multisig_account: address): u64 acquires MultisigAccount {
+    public fun num_signatures_required(multisig_account: address): u64 {
         borrow_global<MultisigAccount>(multisig_account).num_signatures_required
     }
 
     #[view]
     /// Return a vector of all of the provided multisig account's owners.
-    public fun owners(multisig_account: address): vector<address> acquires MultisigAccount {
+    public fun owners(multisig_account: address): vector<address> {
         borrow_global<MultisigAccount>(multisig_account).owners
     }
 
     #[view]
     /// Return true if the provided owner is an owner of the provided multisig account.
-    public fun is_owner(owner: address, multisig_account: address): bool acquires MultisigAccount {
+    public fun is_owner(owner: address, multisig_account: address): bool {
         borrow_global<MultisigAccount>(multisig_account).owners.contains(&owner)
     }
 
@@ -417,7 +417,7 @@ module aptos_framework::multisig_account {
     public fun get_transaction(
         multisig_account: address,
         sequence_number: u64,
-    ): MultisigTransaction acquires MultisigAccount {
+    ): MultisigTransaction {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         assert!(
             sequence_number > 0 && sequence_number < multisig_account_resource.next_sequence_number,
@@ -430,7 +430,7 @@ module aptos_framework::multisig_account {
     /// Return all pending transactions.
     public fun get_pending_transactions(
         multisig_account: address
-    ): vector<MultisigTransaction> acquires MultisigAccount {
+    ): vector<MultisigTransaction> {
         let pending_transactions: vector<MultisigTransaction> = vector[];
         let multisig_account = borrow_global<MultisigAccount>(multisig_account);
         let i = multisig_account.last_executed_sequence_number + 1;
@@ -445,7 +445,7 @@ module aptos_framework::multisig_account {
     #[view]
     /// Return the payload for the next transaction in the queue.
     public fun get_next_transaction_payload(
-        multisig_account: address, provided_payload: vector<u8>): vector<u8> acquires MultisigAccount {
+        multisig_account: address, provided_payload: vector<u8>): vector<u8> {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         let sequence_number = multisig_account_resource.last_executed_sequence_number + 1;
         let transaction = multisig_account_resource.transactions.borrow(sequence_number);
@@ -459,7 +459,7 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return true if the transaction with given transaction id can be executed now.
-    public fun can_be_executed(multisig_account: address, sequence_number: u64): bool acquires MultisigAccount {
+    public fun can_be_executed(multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
         let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
 
@@ -469,7 +469,7 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return true if the owner can execute the transaction with given transaction id now.
-    public fun can_execute(owner: address, multisig_account: address, sequence_number: u64): bool acquires MultisigAccount {
+    public fun can_execute(owner: address, multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
         let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
         if (!has_voted_for_approval(multisig_account, sequence_number, owner)) {
@@ -530,7 +530,7 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return true if the transaction with given transaction id can be officially rejected.
-    public fun can_be_rejected(multisig_account: address, sequence_number: u64): bool acquires MultisigAccount {
+    public fun can_be_rejected(multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
         let (_, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
         sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
@@ -539,7 +539,7 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return true if the owner can execute the "rejected" transaction with given transaction id now.
-    public fun can_reject(owner: address, multisig_account: address, sequence_number: u64): bool acquires MultisigAccount {
+    public fun can_reject(owner: address, multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
         let (_, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
         if (!has_voted_for_rejection(multisig_account, sequence_number, owner)) {
@@ -559,14 +559,14 @@ module aptos_framework::multisig_account {
 
     #[view]
     /// Return the id of the last transaction that was executed (successful or failed) or removed.
-    public fun last_resolved_sequence_number(multisig_account: address): u64 acquires MultisigAccount {
+    public fun last_resolved_sequence_number(multisig_account: address): u64 {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         multisig_account_resource.last_executed_sequence_number
     }
 
     #[view]
     /// Return the id of the next transaction created.
-    public fun next_sequence_number(multisig_account: address): u64 acquires MultisigAccount {
+    public fun next_sequence_number(multisig_account: address): u64 {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         multisig_account_resource.next_sequence_number
     }
@@ -574,7 +574,7 @@ module aptos_framework::multisig_account {
     #[view]
     /// Return a bool tuple indicating whether an owner has voted and if so, whether they voted yes or no.
     public fun vote(
-        multisig_account: address, sequence_number: u64, owner: address): (bool, bool) acquires MultisigAccount {
+        multisig_account: address, sequence_number: u64, owner: address): (bool, bool) {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         assert!(
             sequence_number > 0 && sequence_number < multisig_account_resource.next_sequence_number,
@@ -588,7 +588,7 @@ module aptos_framework::multisig_account {
     }
 
     #[view]
-    public fun available_transaction_queue_capacity(multisig_account: address): u64 acquires MultisigAccount {
+    public fun available_transaction_queue_capacity(multisig_account: address): u64 {
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         let num_pending_transactions = multisig_account_resource.next_sequence_number - multisig_account_resource.last_executed_sequence_number - 1;
         if (num_pending_transactions > MAX_PENDING_TRANSACTIONS) {
@@ -613,7 +613,7 @@ module aptos_framework::multisig_account {
         num_signatures_required: u64,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         create_with_owners_internal(
             multisig_account,
             owners,
@@ -642,7 +642,7 @@ module aptos_framework::multisig_account {
         create_multisig_account_signed_message: vector<u8>,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         // Verify that the `MultisigAccountCreationMessage` has the right information and is signed by the account
         // owner's key.
         let proof_challenge = MultisigAccountCreationMessage {
@@ -686,7 +686,7 @@ module aptos_framework::multisig_account {
         num_signatures_required: u64,
         metadata_keys: vector<String>,
         metadata_values:vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         create_with_owners_internal(
             multisig_account,
             owners,
@@ -723,7 +723,7 @@ module aptos_framework::multisig_account {
         create_multisig_account_signed_message: vector<u8>,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         // Verify that the `MultisigAccountCreationMessage` has the right information and is signed by the account
         // owner's key.
         let proof_challenge = MultisigAccountCreationWithAuthKeyRevocationMessage {
@@ -773,7 +773,7 @@ module aptos_framework::multisig_account {
         num_signatures_required: u64,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         create_with_owners(owner, vector[], num_signatures_required, metadata_keys, metadata_values);
     }
 
@@ -789,7 +789,7 @@ module aptos_framework::multisig_account {
         num_signatures_required: u64,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         let (multisig_account, multisig_signer_cap) = create_multisig_account(owner);
         additional_owners.push_back(address_of(owner));
         create_with_owners_internal(
@@ -812,7 +812,7 @@ module aptos_framework::multisig_account {
         num_signatures_required: u64,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         let bootstrapper_address = address_of(bootstrapper);
         create_with_owners(
             bootstrapper,
@@ -836,7 +836,7 @@ module aptos_framework::multisig_account {
         multisig_account_signer_cap: Option<SignerCapability>,
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
-    ) acquires MultisigAccount {
+    ) {
         assert!(features::multisig_accounts_enabled(), error::unavailable(EMULTISIG_ACCOUNTS_NOT_ENABLED_YET));
         assert!(
             num_signatures_required > 0 && num_signatures_required <= owners.length(),
@@ -873,7 +873,7 @@ module aptos_framework::multisig_account {
     /// Upsert the timelock configuration for the multisig account.
     /// timelock_period must be > 0, override_threshold must be > num_signatures_required
     /// and <= the number of owners.
-    entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: Option<u64>) acquires MultisigAccount {
+    entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: Option<u64>) {
         let multisig_address = address_of(multisig_account);
         assert_multisig_account_exists(multisig_address);
 
@@ -911,7 +911,7 @@ module aptos_framework::multisig_account {
     }
 
     /// Remove the timelock configuration for the multisig account.
-    entry fun remove_timelock(multisig_account: &signer) acquires MultisigAccount {
+    entry fun remove_timelock(multisig_account: &signer) {
         let multisig_address = address_of(multisig_account);
         assert_multisig_account_exists(multisig_address);
         if (exists<MultisigAccountTimeLock>(multisig_address)) {
@@ -923,7 +923,7 @@ module aptos_framework::multisig_account {
     }
 
     /// Similar to add_owners, but only allow adding one owner.
-    entry fun add_owner(multisig_account: &signer, new_owner: address) acquires MultisigAccount {
+    entry fun add_owner(multisig_account: &signer, new_owner: address) {
         add_owners(multisig_account, vector[new_owner]);
     }
 
@@ -934,7 +934,7 @@ module aptos_framework::multisig_account {
     /// ensures that a multisig transaction cannot lead to another module obtaining the multisig signer and using it to
     /// maliciously alter the owners list.
     entry fun add_owners(
-        multisig_account: &signer, new_owners: vector<address>) acquires MultisigAccount {
+        multisig_account: &signer, new_owners: vector<address>) {
         update_owner_schema(
             address_of(multisig_account),
             new_owners,
@@ -948,7 +948,7 @@ module aptos_framework::multisig_account {
         multisig_account: &signer,
         new_owners: vector<address>,
         new_num_signatures_required: u64
-    ) acquires MultisigAccount {
+    ) {
         update_owner_schema(
             address_of(multisig_account),
             new_owners,
@@ -959,7 +959,7 @@ module aptos_framework::multisig_account {
 
     /// Similar to remove_owners, but only allow removing one owner.
     entry fun remove_owner(
-        multisig_account: &signer, owner_to_remove: address) acquires MultisigAccount {
+        multisig_account: &signer, owner_to_remove: address) {
         remove_owners(multisig_account, vector[owner_to_remove]);
     }
 
@@ -971,7 +971,7 @@ module aptos_framework::multisig_account {
     /// ensures that a multisig transaction cannot lead to another module obtaining the multisig signer and using it to
     /// maliciously alter the owners list.
     entry fun remove_owners(
-        multisig_account: &signer, owners_to_remove: vector<address>) acquires MultisigAccount {
+        multisig_account: &signer, owners_to_remove: vector<address>) {
         update_owner_schema(
             address_of(multisig_account),
             vector[],
@@ -985,7 +985,7 @@ module aptos_framework::multisig_account {
         multisig_account: &signer,
         to_swap_in: address,
         to_swap_out: address
-    ) acquires MultisigAccount {
+    ) {
         update_owner_schema(
             address_of(multisig_account),
             vector[to_swap_in],
@@ -999,7 +999,7 @@ module aptos_framework::multisig_account {
         multisig_account: &signer,
         to_swap_in: vector<address>,
         to_swap_out: vector<address>
-    ) acquires MultisigAccount {
+    ) {
         update_owner_schema(
             address_of(multisig_account),
             to_swap_in,
@@ -1014,7 +1014,7 @@ module aptos_framework::multisig_account {
         new_owners: vector<address>,
         owners_to_remove: vector<address>,
         new_num_signatures_required: u64
-    ) acquires MultisigAccount {
+    ) {
         update_owner_schema(
             address_of(multisig_account),
             new_owners,
@@ -1030,7 +1030,7 @@ module aptos_framework::multisig_account {
     /// ensures that a multisig transaction cannot lead to another module obtaining the multisig signer and using it to
     /// maliciously alter the number of signatures required.
     entry fun update_signatures_required(
-        multisig_account: &signer, new_num_signatures_required: u64) acquires MultisigAccount {
+        multisig_account: &signer, new_num_signatures_required: u64) {
         update_owner_schema(
             address_of(multisig_account),
             vector[],
@@ -1047,7 +1047,7 @@ module aptos_framework::multisig_account {
     /// ensures that a multisig transaction cannot lead to another module obtaining the multisig signer and using it to
     /// maliciously alter the number of signatures required.
     entry fun update_metadata(
-        multisig_account: &signer, keys: vector<String>, values: vector<vector<u8>>) acquires MultisigAccount {
+        multisig_account: &signer, keys: vector<String>, values: vector<vector<u8>>) {
         update_metadata_internal(multisig_account, keys, values, true);
     }
 
@@ -1056,7 +1056,7 @@ module aptos_framework::multisig_account {
         keys: vector<String>,
         values: vector<vector<u8>>,
         emit_event: bool,
-    ) acquires MultisigAccount {
+    ) {
         let num_attributes = keys.length();
         assert!(
             num_attributes == values.length(),
@@ -1100,7 +1100,7 @@ module aptos_framework::multisig_account {
         owner: &signer,
         multisig_account: address,
         payload: vector<u8>,
-    ) acquires MultisigAccount {
+    ) {
         assert!(payload.length() > 0, error::invalid_argument(EPAYLOAD_CANNOT_BE_EMPTY));
 
         assert_multisig_account_exists(multisig_account);
@@ -1124,7 +1124,7 @@ module aptos_framework::multisig_account {
         owner: &signer,
         multisig_account: address,
         payload_hash: vector<u8>,
-    ) acquires MultisigAccount {
+    ) {
         // Payload hash is a sha3-256 hash, so it must be exactly 32 bytes.
         assert!(payload_hash.length() == 32, error::invalid_argument(EINVALID_PAYLOAD_HASH));
 
@@ -1144,13 +1144,13 @@ module aptos_framework::multisig_account {
 
     /// Approve a multisig transaction.
     public entry fun approve_transaction(
-        owner: &signer, multisig_account: address, sequence_number: u64) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, sequence_number: u64) {
         vote_transanction(owner, multisig_account, sequence_number, true);
     }
 
     /// Reject a multisig transaction.
     public entry fun reject_transaction(
-        owner: &signer, multisig_account: address, sequence_number: u64) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, sequence_number: u64) {
         vote_transanction(owner, multisig_account, sequence_number, false);
     }
 
@@ -1158,7 +1158,7 @@ module aptos_framework::multisig_account {
     /// Retained for backward compatibility: the function with the typographical error in its name
     /// will continue to be an accessible entry point.
     public entry fun vote_transanction(
-        owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) {
         assert_multisig_account_exists(multisig_account);
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         assert_is_owner_internal(owner, multisig_account_resource);
@@ -1189,14 +1189,14 @@ module aptos_framework::multisig_account {
 
     /// Generic function that can be used to either approve or reject a multisig transaction
     public entry fun vote_transaction(
-        owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) {
         assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         vote_transanction(owner, multisig_account, sequence_number, approved);
     }
 
     /// Generic function that can be used to either approve or reject a batch of transactions within a specified range.
     public entry fun vote_transactions(
-        owner: &signer, multisig_account: address, starting_sequence_number: u64, final_sequence_number: u64, approved: bool) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, starting_sequence_number: u64, final_sequence_number: u64, approved: bool) {
         assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         let sequence_number = starting_sequence_number;
         while(sequence_number <= final_sequence_number) {
@@ -1209,7 +1209,7 @@ module aptos_framework::multisig_account {
     public entry fun execute_rejected_transaction(
         owner: &signer,
         multisig_account: address,
-    ) acquires MultisigAccount {
+    ) {
         assert_multisig_account_exists(multisig_account);
         assert_is_owner(owner, multisig_account);
 
@@ -1244,7 +1244,7 @@ module aptos_framework::multisig_account {
         owner: &signer,
         multisig_account: address,
         final_sequence_number: u64,
-    ) acquires MultisigAccount {
+    ) {
         assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         assert!(last_resolved_sequence_number(multisig_account) < final_sequence_number, error::invalid_argument(EINVALID_SEQUENCE_NUMBER));
         assert!(final_sequence_number < next_sequence_number(multisig_account), error::invalid_argument(EINVALID_SEQUENCE_NUMBER));
@@ -1260,7 +1260,7 @@ module aptos_framework::multisig_account {
     ///
     /// Transaction payload is optional if it's already stored on chain for the transaction.
     fun validate_multisig_transaction(
-        owner: &signer, multisig_account: address, payload: vector<u8>) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, payload: vector<u8>) {
         assert_multisig_account_exists(multisig_account);
         assert_is_owner(owner, multisig_account);
         let sequence_number = last_resolved_sequence_number(multisig_account) + 1;
@@ -1318,7 +1318,7 @@ module aptos_framework::multisig_account {
         executor: address,
         multisig_account: address,
         transaction_payload: vector<u8>,
-    ) acquires MultisigAccount {
+    ) {
         let num_approvals = transaction_execution_cleanup_common(executor, multisig_account);
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         emit(
@@ -1339,7 +1339,7 @@ module aptos_framework::multisig_account {
         multisig_account: address,
         transaction_payload: vector<u8>,
         execution_error: ExecutionError,
-    ) acquires MultisigAccount {
+    ) {
         let num_approvals = transaction_execution_cleanup_common(executor, multisig_account);
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         emit(
@@ -1516,7 +1516,7 @@ module aptos_framework::multisig_account {
         new_owners: vector<address>,
         owners_to_remove: vector<address>,
         optional_new_num_signatures_required: Option<u64>,
-    ) acquires MultisigAccount {
+    ) {
         assert_multisig_account_exists(multisig_address);
         let multisig_account_ref_mut =
             borrow_global_mut<MultisigAccount>(multisig_address);
@@ -1665,7 +1665,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_end_to_end(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -1716,7 +1716,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_end_to_end_with_implicit_votes(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -1751,7 +1751,7 @@ module aptos_framework::multisig_account {
     }
 
     #[test(owner = @0x123)]
-    public entry fun test_create_with_single_owner(owner: &signer) acquires MultisigAccount {
+    public entry fun test_create_with_single_owner(owner: &signer) {
         setup();
         let owner_addr = address_of(owner);
         create_account(owner_addr);
@@ -1763,7 +1763,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_create_with_as_many_sigs_required_as_num_owners(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         create_account(owner_1_addr);
@@ -1775,7 +1775,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x1000B, location = Self)]
     public entry fun test_create_with_zero_signatures_required_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 0, vector[], vector[]);
@@ -1784,7 +1784,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x1000B, location = Self)]
     public entry fun test_create_with_too_many_signatures_required_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 2, vector[], vector[]);
@@ -1793,7 +1793,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x10001, location = Self)]
     public entry fun test_create_with_duplicate_owners_should_fail(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         create_account(address_of(owner_1));
         create_with_owners(
@@ -1812,7 +1812,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0xD000E, location = Self)]
     public entry fun test_create_with_without_feature_flag_enabled_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup_disabled();
         create_account(address_of(owner));
         create(owner, 2, vector[], vector[]);
@@ -1821,7 +1821,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x10001, location = Self)]
     public entry fun test_create_with_creator_in_additional_owners_list_should_fail(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         create_account(address_of(owner_1));
         create_with_owners(owner_1, vector[
@@ -1837,7 +1837,7 @@ module aptos_framework::multisig_account {
 
     #[test]
     public entry fun test_create_multisig_account_on_top_of_existing_with_signer()
-    acquires MultisigAccount {
+    {
         setup();
 
         let multisig_address = @0xabc;
@@ -1857,7 +1857,7 @@ module aptos_framework::multisig_account {
 
     #[test]
     public entry fun test_create_multisig_account_on_top_of_existing_multi_ed25519_account()
-    acquires MultisigAccount {
+    {
         setup();
         let (curr_sk, curr_pk) = multi_ed25519::generate_keys(2, 3);
         let pk_unvalidated = multi_ed25519::public_key_to_unvalidated(&curr_pk);
@@ -1890,7 +1890,7 @@ module aptos_framework::multisig_account {
 
     #[test]
     public entry fun test_create_multisig_account_on_top_of_existing_and_revoke_auth_key_with_signer()
-    acquires MultisigAccount {
+    {
         setup();
 
         let multisig_address = @0xabc;
@@ -1918,7 +1918,7 @@ module aptos_framework::multisig_account {
 
     #[test]
     public entry fun test_create_multisig_account_on_top_of_existing_multi_ed25519_account_and_revoke_auth_key()
-    acquires MultisigAccount {
+    {
         setup();
         let (curr_sk, curr_pk) = multi_ed25519::generate_keys(2, 3);
         let pk_unvalidated = multi_ed25519::public_key_to_unvalidated(&curr_pk);
@@ -1959,7 +1959,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_update_signatures_required(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         create_account(owner_1_addr);
@@ -1974,7 +1974,7 @@ module aptos_framework::multisig_account {
     }
 
     #[test(owner = @0x123)]
-    public entry fun test_update_metadata(owner: &signer) acquires MultisigAccount {
+    public entry fun test_update_metadata(owner: &signer) {
         setup();
         let owner_addr = address_of(owner);
         create_account(owner_addr);
@@ -1994,7 +1994,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x1000B, location = Self)]
     public entry fun test_update_with_zero_signatures_required_should_fail(
-        owner: & signer) acquires MultisigAccount {
+        owner: & signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2005,7 +2005,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x30005, location = Self)]
     public entry fun test_update_with_too_many_signatures_required_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2015,7 +2015,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_add_owners(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         create_account(address_of(owner_1));
         create(owner_1, 1, vector[], vector[]);
@@ -2034,7 +2034,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_remove_owners(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2060,7 +2060,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x30005, location = Self)]
     public entry fun test_remove_all_owners_should_fail(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2076,7 +2076,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x30005, location = Self)]
     public entry fun test_remove_owners_with_fewer_remaining_than_signature_threshold_should_fail(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2091,7 +2091,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_create_transaction(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2115,7 +2115,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x10004, location = Self)]
     public entry fun test_create_transaction_with_empty_payload_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2126,7 +2126,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123, non_owner = @0x124)]
     #[expected_failure(abort_code = 0x507D3, location = Self)]
     public entry fun test_create_transaction_with_non_owner_should_fail(
-        owner: &signer, non_owner: &signer) acquires MultisigAccount {
+        owner: &signer, non_owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2136,7 +2136,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner = @0x123)]
     public entry fun test_create_transaction_with_hashes(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2147,7 +2147,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x1000C, location = Self)]
     public entry fun test_create_transaction_with_empty_hash_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2158,7 +2158,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123, non_owner = @0x124)]
     #[expected_failure(abort_code = 0x507D3, location = Self)]
     public entry fun test_create_transaction_with_hashes_and_non_owner_should_fail(
-        owner: &signer, non_owner: &signer) acquires MultisigAccount {
+        owner: &signer, non_owner: &signer) {
         setup();
         create_account(address_of(owner));
         create(owner, 1, vector[], vector[]);
@@ -2168,7 +2168,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_approve_transaction(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2189,7 +2189,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_validate_transaction_should_not_consider_removed_owners(
-        owner_1: &signer, owner_2: &signer, owner_3: & signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: & signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2213,7 +2213,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x607D6, location = Self)]
     public entry fun test_approve_transaction_with_invalid_sequence_number_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2226,7 +2226,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123, non_owner = @0x124)]
     #[expected_failure(abort_code = 0x507D3, location = Self)]
     public entry fun test_approve_transaction_with_non_owner_should_fail(
-        owner: &signer, non_owner: &signer) acquires MultisigAccount {
+        owner: &signer, non_owner: &signer) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2238,7 +2238,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner = @0x123)]
     public entry fun test_approval_transaction_after_rejecting(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         let owner_addr = address_of(owner);
         create_account(owner_addr);
@@ -2254,7 +2254,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_reject_transaction(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2276,7 +2276,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner = @0x123)]
     public entry fun test_reject_transaction_after_approving(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         let owner_addr = address_of(owner);
         create_account(owner_addr);
@@ -2292,7 +2292,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     #[expected_failure(abort_code = 0x607D6, location = Self)]
     public entry fun test_reject_transaction_with_invalid_sequence_number_should_fail(
-        owner: &signer) acquires MultisigAccount {
+        owner: &signer) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2305,7 +2305,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123, non_owner = @0x124)]
     #[expected_failure(abort_code = 0x507D3, location = Self)]
     public entry fun test_reject_transaction_with_non_owner_should_fail(
-        owner: &signer, non_owner: &signer) acquires MultisigAccount {
+        owner: &signer, non_owner: &signer) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2315,7 +2315,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_transaction_successful(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2334,7 +2334,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_transaction_failed(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2353,7 +2353,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_transaction_with_full_payload(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2372,7 +2372,7 @@ module aptos_framework::multisig_account {
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_rejected_transaction(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2392,7 +2392,7 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123, non_owner = @0x124)]
     #[expected_failure(abort_code = 0x507D3, location = Self)]
     public entry fun test_execute_rejected_transaction_with_non_owner_should_fail(
-        owner: &signer, non_owner: &signer) acquires MultisigAccount {
+        owner: &signer, non_owner: &signer) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2406,7 +2406,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x3000A, location = Self)]
     public entry fun test_execute_rejected_transaction_without_sufficient_rejections_should_fail(
-        owner_1: &signer, owner_2: &signer, owner_3: &signer) acquires MultisigAccount {
+        owner_1: &signer, owner_2: &signer, owner_3: &signer) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2430,7 +2430,7 @@ module aptos_framework::multisig_account {
         owner_1: &signer,
         owner_2: &signer,
         owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2458,7 +2458,7 @@ module aptos_framework::multisig_account {
         owner_1: &signer,
         owner_2: &signer,
         owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2485,7 +2485,7 @@ module aptos_framework::multisig_account {
         owner: &signer,
         multisig_account: address,
         payload: vector<u8>,
-    ) acquires MultisigAccount {
+    ) {
         while(available_transaction_queue_capacity(multisig_account) == 0) {
             execute_rejected_transaction(owner, multisig_account)
         };
@@ -2494,7 +2494,7 @@ module aptos_framework::multisig_account {
 
     #[test_only]
     fun vote_all_transactions(
-        owner: &signer, multisig_account: address, approved: bool) acquires MultisigAccount {
+        owner: &signer, multisig_account: address, approved: bool) {
         let starting_sequence_number = last_resolved_sequence_number(multisig_account) + 1;
         let final_sequence_number = next_sequence_number(multisig_account) - 1;
         vote_transactions(owner, multisig_account, starting_sequence_number, final_sequence_number, approved);
@@ -2505,7 +2505,7 @@ module aptos_framework::multisig_account {
         owner_1: &signer,
         owner_2: &signer,
         owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         let owner_1_addr = address_of(owner_1);
         let owner_2_addr = address_of(owner_2);
@@ -2553,7 +2553,7 @@ module aptos_framework::multisig_account {
     public entry fun test_create_transaction_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2567,7 +2567,7 @@ module aptos_framework::multisig_account {
     public entry fun test_create_transaction_with_hash_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2581,7 +2581,7 @@ module aptos_framework::multisig_account {
     public entry fun test_reject_transaction_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2597,7 +2597,7 @@ module aptos_framework::multisig_account {
     public entry fun test_approve_transaction_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2612,7 +2612,7 @@ module aptos_framework::multisig_account {
     public entry fun test_vote_transaction_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2627,7 +2627,7 @@ module aptos_framework::multisig_account {
     public entry fun test_vote_transactions_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2642,7 +2642,7 @@ module aptos_framework::multisig_account {
     public entry fun test_execute_rejected_transaction_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2659,7 +2659,7 @@ module aptos_framework::multisig_account {
     public entry fun test_execute_rejected_transactions_should_fail_if_not_owner(
         owner: &signer,
         non_owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         create_account(address_of(owner));
         let multisig_account = get_next_multisig_account_address(address_of(owner));
@@ -2676,7 +2676,7 @@ module aptos_framework::multisig_account {
     /// Helper to create a 2-of-3 multisig and return the multisig address.
     fun setup_timelock_multisig(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ): address acquires MultisigAccount {
+    ): address {
         setup();
         let owner_1_addr = address_of(owner_1);
         create_account(owner_1_addr);
@@ -2694,7 +2694,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_upsert_timelock(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
@@ -2703,12 +2703,12 @@ module aptos_framework::multisig_account {
         assert!(timelock_override_threshold(multisig_account) == option::none(), 1);
 
         // Configure timelock: 1 hour, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
         assert!(timelock_period(multisig_account) == 3600, 2);
         assert!(timelock_override_threshold(multisig_account) == option::some(3), 3);
 
         // Update timelock: 2 hours, still 3-of-3 override.
-        upsert_timelock(multisig_signer, 7200, 3);
+        upsert_timelock(multisig_signer, 7200, option::some(3));
         assert!(timelock_period(multisig_account) == 7200, 4);
         assert!(timelock_override_threshold(multisig_account) == option::some(3), 5);
     }
@@ -2716,11 +2716,11 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_remove_timelock(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
         assert!(timelock_period(multisig_account) == 3600, 0);
 
         remove_timelock(multisig_signer);
@@ -2732,55 +2732,55 @@ module aptos_framework::multisig_account {
     #[expected_failure(abort_code = 0x10015, location = Self)]
     public entry fun test_upsert_timelock_below_minimum_should_fail(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
         // 3599 seconds is below the 1-hour minimum.
-        upsert_timelock(multisig_signer, 3599, 3);
+        upsert_timelock(multisig_signer, 3599, option::some(3));
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x10015, location = Self)]
     public entry fun test_upsert_timelock_above_maximum_should_fail(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
         // 14 days + 1 second exceeds the maximum.
-        upsert_timelock(multisig_signer, 1209601, 3);
+        upsert_timelock(multisig_signer, 1209601, option::some(3));
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x10016, location = Self)]
     public entry fun test_upsert_timelock_override_not_greater_than_threshold_should_fail(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
         // override_threshold = 2 = num_signatures_required, must be strictly greater.
-        upsert_timelock(multisig_signer, 3600, 2);
+        upsert_timelock(multisig_signer, 3600, option::some(2));
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     #[expected_failure(abort_code = 0x10016, location = Self)]
     public entry fun test_upsert_timelock_override_exceeds_owners_should_fail(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
         // override_threshold = 4 but only 3 owners.
-        upsert_timelock(multisig_signer, 3600, 4);
+        upsert_timelock(multisig_signer, 3600, option::some(4));
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_blocked_before_timelock_expires(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create and approve a transaction (2-of-3 approvals).
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -2798,12 +2798,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_allowed_after_timelock_expires(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create and approve a transaction.
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -2823,12 +2823,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_execute_with_override_bypasses_timelock(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create transaction and get all 3 owners to approve.
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -2846,12 +2846,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_implicit_vote_counts_toward_override(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create transaction, 2 explicit approvals (owner_1 auto-approves, owner_2 approves).
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -2867,7 +2867,7 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_no_timelock_executes_normally(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
 
         // No timelock configured. Normal execution works immediately.
@@ -2882,12 +2882,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_timelock_does_not_block_rejection(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create transaction, then reject it.
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -2902,12 +2902,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_remove_timelock_allows_immediate_execution(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure then remove timelock.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
         remove_timelock(multisig_signer);
 
         // Create and approve a transaction.
@@ -2922,12 +2922,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_owner_removal_clamps_override_threshold(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure timelock with override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
         assert!(timelock_override_threshold(multisig_account) == option::some(3), 0);
 
         // Remove one owner (3 -> 2 owners). Override threshold should be clamped to 2.
@@ -2942,12 +2942,12 @@ module aptos_framework::multisig_account {
     #[expected_failure(abort_code = 0x30016, location = Self)]
     public entry fun test_owner_removal_fails_if_override_becomes_invalid(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure timelock with override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Remove one owner: 3 -> 2 owners, override clamped to 2.
         // But num_signatures_required is also 2, so override (2) is NOT > threshold (2).
@@ -2959,12 +2959,12 @@ module aptos_framework::multisig_account {
     #[expected_failure(abort_code = 0x30016, location = Self)]
     public entry fun test_raise_threshold_to_match_override_should_fail(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure timelock with override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Raise num_signatures_required to 3 = override_threshold.
         // Override must be strictly greater, so this should fail.
@@ -2974,12 +2974,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_timelock_with_override_at_boundary(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create transaction with only 2 approvals (below override).
         create_transaction(owner_1, multisig_account, PAYLOAD);
@@ -3002,16 +3002,14 @@ module aptos_framework::multisig_account {
     #[test(owner = @0x123)]
     public entry fun test_timelock_single_owner(
         owner: &signer
-    ) acquires MultisigAccount {
+    ) {
         setup();
         let owner_addr = address_of(owner);
         create_account(owner_addr);
-        let multisig_account = get_next_multisig_account_address(owner_addr);
         // 1-of-1 multisig. Cannot set timelock because override must be > 1 but <= 1 (impossible).
         create(owner, 1, vector[], vector[]);
 
         // Verify that a 1-of-1 can't configure a timelock (no valid override_threshold).
-        let multisig_signer = &create_signer(multisig_account);
         // override_threshold = 1 is not > num_signatures_required (1).
         let can_set = false;
         // There's no valid override_threshold for a 1-of-1 multisig.
@@ -3022,12 +3020,12 @@ module aptos_framework::multisig_account {
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
     public entry fun test_timelock_multiple_transactions_in_order(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
-    ) acquires MultisigAccount {
+    ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
         // Configure 1 hour timelock, override at 3-of-3.
-        upsert_timelock(multisig_signer, 3600, 3);
+        upsert_timelock(multisig_signer, 3600, option::some(3));
 
         // Create two transactions.
         create_transaction(owner_1, multisig_account, PAYLOAD);
