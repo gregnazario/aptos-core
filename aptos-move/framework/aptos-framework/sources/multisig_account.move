@@ -503,8 +503,10 @@ module aptos_framework::multisig_account {
         }
     }
 
+    #[lint::skip(unused_function)]
     /// Return true if the transaction has enough approvals to meet the signature threshold.
     /// Does NOT check the timelock — used by the prologue to separate quorum from timelock errors.
+    /// Used in the VM
     inline fun has_enough_approvals_for_execution(
         multisig_account: address, sequence_number: u64
     ): (bool, u64) {
@@ -837,7 +839,6 @@ module aptos_framework::multisig_account {
         metadata_keys: vector<String>,
         metadata_values: vector<vector<u8>>,
     ) {
-        assert!(features::multisig_accounts_enabled(), error::unavailable(EMULTISIG_ACCOUNTS_NOT_ENABLED_YET));
         assert!(
             num_signatures_required > 0 && num_signatures_required <= owners.length(),
             error::invalid_argument(EINVALID_SIGNATURES_REQUIRED),
@@ -1190,14 +1191,12 @@ module aptos_framework::multisig_account {
     /// Generic function that can be used to either approve or reject a multisig transaction
     public entry fun vote_transaction(
         owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) {
-        assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         vote_transanction(owner, multisig_account, sequence_number, approved);
     }
 
     /// Generic function that can be used to either approve or reject a batch of transactions within a specified range.
     public entry fun vote_transactions(
         owner: &signer, multisig_account: address, starting_sequence_number: u64, final_sequence_number: u64, approved: bool) {
-        assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         let sequence_number = starting_sequence_number;
         while(sequence_number <= final_sequence_number) {
             vote_transanction(owner, multisig_account, sequence_number, approved);
@@ -1215,12 +1214,11 @@ module aptos_framework::multisig_account {
 
         let sequence_number = last_resolved_sequence_number(multisig_account) + 1;
         let owner_addr = address_of(owner);
-        if (features::multisig_v2_enhancement_feature_enabled()) {
-            // Implicitly vote for rejection if the owner has not voted for rejection yet.
-            if (!has_voted_for_rejection(multisig_account, sequence_number, owner_addr)) {
-                reject_transaction(owner, multisig_account, sequence_number);
-            }
-        };
+
+        // Implicitly vote for rejection if the owner has not voted for rejection yet.
+        if (!has_voted_for_rejection(multisig_account, sequence_number, owner_addr)) {
+            reject_transaction(owner, multisig_account, sequence_number);
+        }
 
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         let (_, num_rejections) = remove_executed_transaction(multisig_account_resource);
@@ -1245,7 +1243,6 @@ module aptos_framework::multisig_account {
         multisig_account: address,
         final_sequence_number: u64,
     ) {
-        assert!(features::multisig_v2_enhancement_feature_enabled(), error::invalid_state(EMULTISIG_V2_ENHANCEMENT_NOT_ENABLED));
         assert!(last_resolved_sequence_number(multisig_account) < final_sequence_number, error::invalid_argument(EINVALID_SEQUENCE_NUMBER));
         assert!(final_sequence_number < next_sequence_number(multisig_account), error::invalid_argument(EINVALID_SEQUENCE_NUMBER));
         while(last_resolved_sequence_number(multisig_account) < final_sequence_number) {
@@ -1255,6 +1252,7 @@ module aptos_framework::multisig_account {
 
     ////////////////////////// To be called by VM only ///////////////////////////////
 
+    #[lint::skip(unused_function)]
     /// Called by the VM as part of transaction prologue, which is invoked during mempool transaction validation and as
     /// the first step of transaction execution.
     ///
@@ -1268,17 +1266,10 @@ module aptos_framework::multisig_account {
 
         // Check quorum and timelock separately so each gets a distinct error code.
         let num_approvals;
-        if (features::multisig_v2_enhancement_feature_enabled()) {
-            let (has_quorum, approvals) = has_enough_approvals_for_execution_with_implicit(
-                address_of(owner), multisig_account, sequence_number);
-            assert!(has_quorum, error::invalid_argument(ENOT_ENOUGH_APPROVALS));
-            num_approvals = approvals;
-        } else {
-            let (has_quorum, approvals) = has_enough_approvals_for_execution(
-                multisig_account, sequence_number);
-            assert!(has_quorum, error::invalid_argument(ENOT_ENOUGH_APPROVALS));
-            num_approvals = approvals;
-        };
+        let (has_quorum, approvals) = has_enough_approvals_for_execution_with_implicit(
+            address_of(owner), multisig_account, sequence_number);
+        assert!(has_quorum, error::invalid_argument(ENOT_ENOUGH_APPROVALS));
+        num_approvals = approvals;
 
         // Timelock check — separate from quorum so the error is unambiguous.
         assert!(
@@ -1300,8 +1291,7 @@ module aptos_framework::multisig_account {
 
         // If the transaction payload is stored on chain and there is a provided payload,
         // verify that the provided payload matches the stored payload.
-        if (features::abort_if_multisig_payload_mismatch_enabled()
-            && transaction.payload.is_some()
+        if (transaction.payload.is_some()
             && !payload.is_empty()
         ) {
             let stored_payload = transaction.payload.borrow();
@@ -1312,6 +1302,7 @@ module aptos_framework::multisig_account {
         }
     }
 
+    #[lint::skip(unused_function)]
     /// Post-execution cleanup for a successful multisig transaction execution.
     /// This function is private so no other code can call this beside the VM itself as part of MultisigTransaction.
     fun successful_transaction_execution_cleanup(
@@ -1320,7 +1311,7 @@ module aptos_framework::multisig_account {
         transaction_payload: vector<u8>,
     ) {
         let num_approvals = transaction_execution_cleanup_common(executor, multisig_account);
-        let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
+        let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         emit(
             TransactionExecutionSucceeded {
                 multisig_account,
@@ -1332,6 +1323,7 @@ module aptos_framework::multisig_account {
         );
     }
 
+    #[lint::skip(unused_function)]
     /// Post-execution cleanup for a failed multisig transaction execution.
     /// This function is private so no other code can call this beside the VM itself as part of MultisigTransaction.
     fun failed_transaction_execution_cleanup(
@@ -1341,7 +1333,7 @@ module aptos_framework::multisig_account {
         execution_error: ExecutionError,
     ) {
         let num_approvals = transaction_execution_cleanup_common(executor, multisig_account);
-        let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
+        let multisig_account_resource = borrow_global<MultisigAccount>(multisig_account);
         emit(
             TransactionExecutionFailed {
                 multisig_account,
@@ -1363,7 +1355,7 @@ module aptos_framework::multisig_account {
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         let (num_approvals, _) = remove_executed_transaction(multisig_account_resource);
 
-        if (features::multisig_v2_enhancement_feature_enabled() && implicit_approval) {
+        if (implicit_approval) {
             emit(
                 Vote {
                     multisig_account,
@@ -1391,12 +1383,10 @@ module aptos_framework::multisig_account {
         multisig_account: address,
         transaction: MultisigTransaction
     ) {
-        if (features::multisig_v2_enhancement_feature_enabled()) {
-            assert!(
-                available_transaction_queue_capacity(multisig_account) > 0,
-                error::invalid_state(EMAX_PENDING_TRANSACTIONS_EXCEEDED)
-            );
-        };
+        assert!(
+            available_transaction_queue_capacity(multisig_account) > 0,
+            error::invalid_state(EMAX_PENDING_TRANSACTIONS_EXCEEDED)
+        );
 
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
 
@@ -1615,6 +1605,7 @@ module aptos_framework::multisig_account {
     use aptos_std::multi_ed25519;
     #[test_only]
     use std::string::utf8;
+    #[test_only]
     use std::features;
     #[test_only]
     use aptos_framework::aptos_coin;
@@ -1644,18 +1635,6 @@ module aptos_framework::multisig_account {
         let framework_signer = &create_signer(@0x1);
         features::change_feature_flags_for_testing(
             framework_signer, vector[features::get_multisig_accounts_feature(), features::get_multisig_v2_enhancement_feature(), features::get_abort_if_multisig_payload_mismatch_feature()], vector[]);
-        timestamp::set_time_has_started_for_testing(framework_signer);
-        chain_id::initialize_for_test(framework_signer, 1);
-        let (burn, mint) = aptos_coin::initialize_for_test(framework_signer);
-        destroy_mint_cap(mint);
-        destroy_burn_cap(burn);
-    }
-
-    #[test_only]
-    fun setup_disabled() {
-        let framework_signer = &create_signer(@0x1);
-        features::change_feature_flags_for_testing(
-            framework_signer, vector[], vector[features::get_multisig_accounts_feature()]);
         timestamp::set_time_has_started_for_testing(framework_signer);
         chain_id::initialize_for_test(framework_signer, 1);
         let (burn, mint) = aptos_coin::initialize_for_test(framework_signer);
@@ -1807,15 +1786,6 @@ module aptos_framework::multisig_account {
             2,
             vector[],
             vector[]);
-    }
-
-    #[test(owner = @0x123)]
-    #[expected_failure(abort_code = 0xD000E, location = Self)]
-    public entry fun test_create_with_without_feature_flag_enabled_should_fail(
-        owner: &signer) {
-        setup_disabled();
-        create_account(address_of(owner));
-        create(owner, 2, vector[], vector[]);
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
