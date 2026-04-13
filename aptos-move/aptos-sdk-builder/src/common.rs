@@ -204,3 +204,115 @@ pub(crate) fn entry_function_abis(abis: &[EntryABI]) -> Vec<EntryFunctionABI> {
         })
         .collect::<Vec<_>>()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use move_core_types::{
+        account_address::AccountAddress,
+        identifier::Identifier,
+        language_storage::{ModuleId, StructTag, TypeTag},
+    };
+    use serde_reflection::Format;
+    use move_core_types::parser::parse_type_tag;
+
+    /// Helper: build a 0x1::option::Option<inner> TypeTag.
+    fn option_type(inner: TypeTag) -> TypeTag {
+        TypeTag::Struct(Box::new(StructTag {
+            address: AccountAddress::ONE,
+            module: Identifier::new("option").unwrap(),
+            name: Identifier::new("Option").unwrap(),
+            type_args: vec![inner],
+        }))
+    }
+
+    // ── mangle_type tests ──────────────────────────────────────
+
+    #[test]
+    fn test_mangle_type_primitives() {
+        assert_eq!(mangle_type(&TypeTag::Bool), "bool");
+        assert_eq!(mangle_type(&TypeTag::U8), "u8");
+        assert_eq!(mangle_type(&TypeTag::U16), "u16");
+        assert_eq!(mangle_type(&TypeTag::U32), "u32");
+        assert_eq!(mangle_type(&TypeTag::U64), "u64");
+        assert_eq!(mangle_type(&TypeTag::U128), "u128");
+        assert_eq!(mangle_type(&TypeTag::U256), "u256");
+        assert_eq!(mangle_type(&TypeTag::Address), "address");
+    }
+
+    #[test]
+    fn test_mangle_type_option() {
+        let type_tag1 = parse_type_tag("0x1::option::Option<u64>").unwrap();
+        assert_eq!(mangle_type(&type_tag1), "optionu64");
+        let type_tag2 = parse_type_tag("0x1::option::Option<bool>").unwrap();
+        assert_eq!(mangle_type(&type_tag2), "optionbool");
+        let type_tag3 = parse_type_tag("0x1::option::Option<address>").unwrap();
+        assert_eq!(mangle_type(&type_tag3), "optionaddress");
+    }
+    #[test]
+    fn test_mangle_type_option_nested() {
+        // Nested Option<Option<u64>> is supported via recursion.
+        let type_tag = parse_type_tag("0x1::option::Option<0x1::option::Option<u64>>").unwrap();
+        assert_eq!(mangle_type(&type_tag), "optionoptionu64");
+    }
+
+    #[test]
+    #[should_panic(expected = "Transaction scripts cannot take arguments of type")]
+    fn test_mangle_type_option_unsupported_inner_type() {
+        // An inner struct that is not String or Option should panic.
+        let type_tag = parse_type_tag("0x1::option::Option<0x1::coin::Coin<u8>>").unwrap();
+        mangle_type(&type_tag);
+    }
+
+    // ── quote_type_as_format tests ─────────────────────────────
+
+    #[test]
+    fn test_quote_type_as_format_option_u64() {
+        let tag = option_type(TypeTag::U64);
+        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::U64)));
+    }
+
+    #[test]
+    fn test_quote_type_as_format_option_bool() {
+        let tag = option_type(TypeTag::Bool);
+        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::Bool)));
+    }
+
+    #[test]
+    fn test_quote_type_as_format_option_u128() {
+        let tag = option_type(TypeTag::U128);
+        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::U128)));
+    }
+
+    #[test]
+    fn test_quote_type_as_format_option_vector_u8() {
+        let tag = option_type(TypeTag::Vector(Box::new(TypeTag::U8)));
+        assert_eq!(
+            quote_type_as_format(&tag),
+            Format::Option(Box::new(Format::Seq(Box::new(Format::U8))))
+        );
+    }
+
+    // ── make_abi_enum_container with Option arg ────────────────
+
+    #[test]
+    fn test_make_abi_enum_container_with_option_arg() {
+        let abi = EntryABI::EntryFunction(EntryFunctionABI::new(
+            "test_func".to_string(),
+            ModuleId::new(AccountAddress::ONE, Identifier::new("test_module").unwrap()),
+            String::new(),
+            vec![],
+            vec![ArgumentABI::new("opt_val".to_string(), option_type(TypeTag::U64))],
+        ));
+        // Should not panic — this was the original crash site.
+        let container = make_abi_enum_container(&[abi]);
+        match container {
+            ContainerFormat::Enum(variants) => {
+                assert_eq!(variants.len(), 1);
+                let variant = variants.get(&0).unwrap();
+                assert_eq!(variant.name, "TestModuleTestFunc");
+            },
+            _ => panic!("Expected Enum container"),
+        }
+    }
+}

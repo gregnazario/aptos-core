@@ -183,6 +183,11 @@ spec aptos_framework::multisig_account {
         ensures result == global<MultisigAccount>(multisig_account).owners;
     }
 
+    spec is_owner(owner: address, multisig_account: address): bool {
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        ensures result == vector::spec_contains(global<MultisigAccount>(multisig_account).owners, owner);
+    }
+
     spec get_transaction(
         multisig_account: address,
         sequence_number: u64,
@@ -239,6 +244,161 @@ spec aptos_framework::multisig_account {
         let vote = voted && simple_map::spec_get(votes, owner);
         ensures result_1 == voted;
         ensures result_2 == vote;
+    }
+
+    ////////////////////////// Timelock view function specs ///////////////////////////////
+
+    spec timelock_period(multisig_account: address): u64 {
+        aborts_if false;
+        ensures !exists<MultisigAccountTimeLock>(multisig_account) ==> result == 0;
+        ensures exists<MultisigAccountTimeLock>(multisig_account) ==>
+            result == global<MultisigAccountTimeLock>(multisig_account).timelock_period;
+    }
+
+    spec timelock_override_threshold(multisig_account: address): Option<u64> {
+        aborts_if false;
+        ensures !exists<MultisigAccountTimeLock>(multisig_account) ==>
+            option::is_none(result);
+        ensures exists<MultisigAccountTimeLock>(multisig_account) ==>
+            result == global<MultisigAccountTimeLock>(multisig_account).override_threshold;
+    }
+
+    ////////////////////////// Timelock entry function specs ///////////////////////////////
+
+    spec upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: Option<u64>) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        let multisig_address = signer::address_of(multisig_account);
+        // Must be a multisig account.
+        aborts_if !exists<MultisigAccount>(multisig_address);
+        // Timelock period must be within valid range.
+        aborts_if timelock_period < MIN_TIMELOCK_PERIOD || timelock_period > MAX_TIMELOCK_PERIOD;
+        // Override threshold must be > num_signatures_required (if provided).
+        aborts_if option::is_some(override_threshold) &&
+            option::borrow(override_threshold) <= global<MultisigAccount>(multisig_address).num_signatures_required;
+        // Override threshold must be <= number of owners (if provided).
+        aborts_if option::is_some(override_threshold) &&
+            option::borrow(override_threshold) > len(global<MultisigAccount>(multisig_address).owners);
+        // After upsert, the timelock resource exists.
+        ensures exists<MultisigAccountTimeLock>(multisig_address);
+        // The stored values match the provided values.
+        ensures global<MultisigAccountTimeLock>(multisig_address).timelock_period == timelock_period;
+        ensures global<MultisigAccountTimeLock>(multisig_address).override_threshold == override_threshold;
+    }
+
+    spec remove_timelock(multisig_account: &signer) {
+        use std::signer;
+        let multisig_address = signer::address_of(multisig_account);
+        aborts_if !exists<MultisigAccount>(multisig_address);
+        // After removal, the timelock resource no longer exists.
+        ensures !exists<MultisigAccountTimeLock>(multisig_address);
+    }
+
+    ////////////////////////// Core entry function specs ///////////////////////////////
+
+    spec create_transaction(owner: &signer, multisig_account: address, payload: vector<u8>) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        // Payload cannot be empty.
+        aborts_if len(payload) == 0;
+        // Must be a multisig account.
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        // Caller must be an owner.
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+    }
+
+    spec create_transaction_with_hash(owner: &signer, multisig_account: address, payload_hash: vector<u8>) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        // Hash must be exactly 32 bytes.
+        aborts_if len(payload_hash) != 32;
+        // Must be a multisig account.
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        // Caller must be an owner.
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+    }
+
+    spec approve_transaction(owner: &signer, multisig_account: address, sequence_number: u64) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+    }
+
+    spec reject_transaction(owner: &signer, multisig_account: address, sequence_number: u64) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+    }
+
+    spec vote_transanction(owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        // Caller must be an owner.
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+        // Transaction must exist.
+        aborts_if !table::spec_contains(global<MultisigAccount>(multisig_account).transactions, sequence_number);
+    }
+
+    spec vote_transaction(owner: &signer, multisig_account: address, sequence_number: u64, approved: bool) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+        aborts_if !table::spec_contains(global<MultisigAccount>(multisig_account).transactions, sequence_number);
+    }
+
+    spec execute_rejected_transaction(owner: &signer, multisig_account: address) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        aborts_if !exists<MultisigAccount>(multisig_account);
+        aborts_if !vector::spec_contains(global<MultisigAccount>(multisig_account).owners, signer::address_of(owner));
+    }
+
+    ////////////////////////// Internal function specs ///////////////////////////////
+
+    spec create_with_owners_internal(
+        multisig_account: &signer,
+        owners: vector<address>,
+        num_signatures_required: u64,
+        multisig_account_signer_cap: Option<SignerCapability>,
+        metadata_keys: vector<String>,
+        metadata_values: vector<vector<u8>>,
+    ) {
+        use std::signer;
+        pragma aborts_if_is_partial;
+        // num_signatures_required must be in [1, len(owners)].
+        aborts_if num_signatures_required == 0 || num_signatures_required > len(owners);
+        // After creation, MultisigAccount resource exists.
+        ensures exists<MultisigAccount>(signer::address_of(multisig_account));
+        let post multisig = global<MultisigAccount>(signer::address_of(multisig_account));
+        // num_signatures_required is set correctly.
+        ensures multisig.num_signatures_required == num_signatures_required;
+        // Sequence numbers are initialized correctly.
+        ensures multisig.last_executed_sequence_number == 0;
+        ensures multisig.next_sequence_number == 1;
+    }
+
+    spec remove_executed_transaction(multisig_account_resource: &mut MultisigAccount): (u64, u64) {
+        pragma aborts_if_is_partial;
+        // last_executed_sequence_number must not overflow.
+        aborts_if multisig_account_resource.last_executed_sequence_number + 1 > MAX_U64;
+        // The transaction to remove must exist.
+        aborts_if !table::spec_contains(
+            multisig_account_resource.transactions,
+            multisig_account_resource.last_executed_sequence_number + 1
+        );
+        // After removal, last_executed_sequence_number increments by 1.
+        ensures multisig_account_resource.last_executed_sequence_number ==
+            old(multisig_account_resource).last_executed_sequence_number + 1;
+    }
+
+    spec validate_owners(owners: &vector<address>, multisig_account: address) {
+        pragma aborts_if_is_partial;
+        // Aborts if the multisig account address is in the owner list.
+        aborts_if vector::spec_contains(owners, multisig_account);
     }
 
 }
