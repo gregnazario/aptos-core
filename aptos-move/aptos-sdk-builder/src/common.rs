@@ -212,9 +212,9 @@ mod tests {
         account_address::AccountAddress,
         identifier::Identifier,
         language_storage::{ModuleId, StructTag, TypeTag},
+        parser::parse_type_tag,
     };
     use serde_reflection::Format;
-    use move_core_types::parser::parse_type_tag;
 
     /// Helper: build a 0x1::option::Option<inner> TypeTag.
     fn option_type(inner: TypeTag) -> TypeTag {
@@ -269,19 +269,28 @@ mod tests {
     #[test]
     fn test_quote_type_as_format_option_u64() {
         let tag = option_type(TypeTag::U64);
-        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::U64)));
+        assert_eq!(
+            quote_type_as_format(&tag),
+            Format::Option(Box::new(Format::U64))
+        );
     }
 
     #[test]
     fn test_quote_type_as_format_option_bool() {
         let tag = option_type(TypeTag::Bool);
-        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::Bool)));
+        assert_eq!(
+            quote_type_as_format(&tag),
+            Format::Option(Box::new(Format::Bool))
+        );
     }
 
     #[test]
     fn test_quote_type_as_format_option_u128() {
         let tag = option_type(TypeTag::U128);
-        assert_eq!(quote_type_as_format(&tag), Format::Option(Box::new(Format::U128)));
+        assert_eq!(
+            quote_type_as_format(&tag),
+            Format::Option(Box::new(Format::U128))
+        );
     }
 
     #[test]
@@ -302,7 +311,10 @@ mod tests {
             ModuleId::new(AccountAddress::ONE, Identifier::new("test_module").unwrap()),
             String::new(),
             vec![],
-            vec![ArgumentABI::new("opt_val".to_string(), option_type(TypeTag::U64))],
+            vec![ArgumentABI::new(
+                "opt_val".to_string(),
+                option_type(TypeTag::U64),
+            )],
         ));
         // Should not panic — this was the original crash site.
         let container = make_abi_enum_container(&[abi]);
