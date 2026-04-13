@@ -104,7 +104,7 @@ module aptos_framework::multisig_account {
     /// Timelock override threshold must be greater than num_signatures_required and at most the number of owners.
     const EINVALID_TIMELOCK_OVERRIDE_THRESHOLD: u64 = 22;
     /// Transaction has enough approvals but the timelock period has not yet elapsed.
-    const ETIMELOCK_NOT_EXPIRED: u64 = 2012;
+    const ETIMELOCK_NOT_EXPIRED: u64 = 23;
 
 
     const ZERO_AUTH_KEY: vector<u8> = x"0000000000000000000000000000000000000000000000000000000000000000";
@@ -501,33 +501,6 @@ module aptos_framework::multisig_account {
         } else {
             true
         }
-    }
-
-    #[lint::skip(unused_function)]
-    /// Return true if the transaction has enough approvals to meet the signature threshold.
-    /// Does NOT check the timelock — used by the prologue to separate quorum from timelock errors.
-    /// Used in the VM
-    inline fun has_enough_approvals_for_execution(
-        multisig_account: address, sequence_number: u64
-    ): (bool, u64) {
-        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
-        let can = sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account);
-        (can, num_approvals)
-    }
-
-    /// Same as has_enough_approvals_for_execution but counts the owner's implicit vote (v2 enhancement).
-    inline fun has_enough_approvals_for_execution_with_implicit(
-        owner: address, multisig_account: address, sequence_number: u64
-    ): (bool, u64) {
-        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
-        if (!has_voted_for_approval(multisig_account, sequence_number, owner)) {
-            num_approvals += 1;
-        };
-        let can = is_owner(owner, multisig_account) &&
-            sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account);
-        (can, num_approvals)
     }
 
     #[view]
@@ -1264,12 +1237,12 @@ module aptos_framework::multisig_account {
         let sequence_number = last_resolved_sequence_number(multisig_account) + 1;
         assert_transaction_exists(multisig_account, sequence_number);
 
-        // Check quorum and timelock separately so each gets a distinct error code.
-        let num_approvals;
-        let (has_quorum, approvals) = has_enough_approvals_for_execution_with_implicit(
-            address_of(owner), multisig_account, sequence_number);
-        assert!(has_quorum, error::invalid_argument(ENOT_ENOUGH_APPROVALS));
-        num_approvals = approvals;
+        // Count approvals, including the executing owner's implicit vote.
+        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
+        if (!has_voted_for_approval(multisig_account, sequence_number, address_of(owner))) {
+            num_approvals += 1;
+        };
+        assert!(num_approvals >= num_signatures_required(multisig_account), error::invalid_argument(ENOT_ENOUGH_APPROVALS));
 
         // Timelock check — separate from quorum so the error is unambiguous.
         assert!(

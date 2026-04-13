@@ -81,8 +81,6 @@ and implement the governance voting logic on top.
 -  [Function `can_be_executed`](#0x1_multisig_account_can_be_executed)
 -  [Function `can_execute`](#0x1_multisig_account_can_execute)
 -  [Function `can_execute_with_timelock`](#0x1_multisig_account_can_execute_with_timelock)
--  [Function `has_enough_approvals_for_execution`](#0x1_multisig_account_has_enough_approvals_for_execution)
--  [Function `has_enough_approvals_for_execution_with_implicit`](#0x1_multisig_account_has_enough_approvals_for_execution_with_implicit)
 -  [Function `can_be_rejected`](#0x1_multisig_account_can_be_rejected)
 -  [Function `can_reject`](#0x1_multisig_account_can_reject)
 -  [Function `get_next_multisig_account_address`](#0x1_multisig_account_get_next_multisig_account_address)
@@ -1601,7 +1599,7 @@ Provided target function does not match the hash stored in the on-chain transact
 Transaction has enough approvals but the timelock period has not yet elapsed.
 
 
-<pre><code><b>const</b> <a href="multisig_account.md#0x1_multisig_account_ETIMELOCK_NOT_EXPIRED">ETIMELOCK_NOT_EXPIRED</a>: u64 = 2012;
+<pre><code><b>const</b> <a href="multisig_account.md#0x1_multisig_account_ETIMELOCK_NOT_EXPIRED">ETIMELOCK_NOT_EXPIRED</a>: u64 = 23;
 </code></pre>
 
 
@@ -2014,73 +2012,6 @@ for the timelock to expire.
     } <b>else</b> {
         <b>true</b>
     }
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_multisig_account_has_enough_approvals_for_execution"></a>
-
-## Function `has_enough_approvals_for_execution`
-
-Return true if the transaction has enough approvals to meet the signature threshold.
-Does NOT check the timelock — used by the prologue to separate quorum from timelock errors.
-Used in the VM
-
-
-<pre><code>#[lint::skip(#[unused_function])]
-<b>fun</b> <a href="multisig_account.md#0x1_multisig_account_has_enough_approvals_for_execution">has_enough_approvals_for_execution</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: <b>address</b>, sequence_number: u64): (bool, u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code>inline <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_has_enough_approvals_for_execution">has_enough_approvals_for_execution</a>(
-    <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: <b>address</b>, sequence_number: u64
-): (bool, u64) {
-    <b>let</b> (num_approvals, _) = <a href="multisig_account.md#0x1_multisig_account_num_approvals_and_rejections">num_approvals_and_rejections</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number);
-    <b>let</b> can = sequence_number == <a href="multisig_account.md#0x1_multisig_account_last_resolved_sequence_number">last_resolved_sequence_number</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>) + 1 &&
-        num_approvals &gt;= <a href="multisig_account.md#0x1_multisig_account_num_signatures_required">num_signatures_required</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>);
-    (can, num_approvals)
-}
-</code></pre>
-
-
-
-</details>
-
-<a id="0x1_multisig_account_has_enough_approvals_for_execution_with_implicit"></a>
-
-## Function `has_enough_approvals_for_execution_with_implicit`
-
-Same as has_enough_approvals_for_execution but counts the owner's implicit vote (v2 enhancement).
-
-
-<pre><code><b>fun</b> <a href="multisig_account.md#0x1_multisig_account_has_enough_approvals_for_execution_with_implicit">has_enough_approvals_for_execution_with_implicit</a>(owner: <b>address</b>, <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: <b>address</b>, sequence_number: u64): (bool, u64)
-</code></pre>
-
-
-
-<details>
-<summary>Implementation</summary>
-
-
-<pre><code>inline <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_has_enough_approvals_for_execution_with_implicit">has_enough_approvals_for_execution_with_implicit</a>(
-    owner: <b>address</b>, <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: <b>address</b>, sequence_number: u64
-): (bool, u64) {
-    <b>let</b> (num_approvals, _) = <a href="multisig_account.md#0x1_multisig_account_num_approvals_and_rejections">num_approvals_and_rejections</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number);
-    <b>if</b> (!<a href="multisig_account.md#0x1_multisig_account_has_voted_for_approval">has_voted_for_approval</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number, owner)) {
-        num_approvals += 1;
-    };
-    <b>let</b> can = <a href="multisig_account.md#0x1_multisig_account_is_owner">is_owner</a>(owner, <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>) &&
-        sequence_number == <a href="multisig_account.md#0x1_multisig_account_last_resolved_sequence_number">last_resolved_sequence_number</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>) + 1 &&
-        num_approvals &gt;= <a href="multisig_account.md#0x1_multisig_account_num_signatures_required">num_signatures_required</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>);
-    (can, num_approvals)
 }
 </code></pre>
 
@@ -3569,12 +3500,12 @@ Transaction payload is optional if it's already stored on chain for the transact
     <b>let</b> sequence_number = <a href="multisig_account.md#0x1_multisig_account_last_resolved_sequence_number">last_resolved_sequence_number</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>) + 1;
     <a href="multisig_account.md#0x1_multisig_account_assert_transaction_exists">assert_transaction_exists</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number);
 
-    // Check quorum and timelock separately so each gets a distinct <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">error</a> <a href="code.md#0x1_code">code</a>.
-    <b>let</b> num_approvals;
-    <b>let</b> (has_quorum, approvals) = <a href="multisig_account.md#0x1_multisig_account_has_enough_approvals_for_execution_with_implicit">has_enough_approvals_for_execution_with_implicit</a>(
-        address_of(owner), <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number);
-    <b>assert</b>!(has_quorum, <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="multisig_account.md#0x1_multisig_account_ENOT_ENOUGH_APPROVALS">ENOT_ENOUGH_APPROVALS</a>));
-    num_approvals = approvals;
+    // Count approvals, including the executing owner's implicit vote.
+    <b>let</b> (num_approvals, _) = <a href="multisig_account.md#0x1_multisig_account_num_approvals_and_rejections">num_approvals_and_rejections</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number);
+    <b>if</b> (!<a href="multisig_account.md#0x1_multisig_account_has_voted_for_approval">has_voted_for_approval</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, sequence_number, address_of(owner))) {
+        num_approvals += 1;
+    };
+    <b>assert</b>!(num_approvals &gt;= <a href="multisig_account.md#0x1_multisig_account_num_signatures_required">num_signatures_required</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>), <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="multisig_account.md#0x1_multisig_account_ENOT_ENOUGH_APPROVALS">ENOT_ENOUGH_APPROVALS</a>));
 
     // Timelock check — separate from quorum so the <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error">error</a> is unambiguous.
     <b>assert</b>!(
