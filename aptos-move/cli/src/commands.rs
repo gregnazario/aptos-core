@@ -2894,6 +2894,80 @@ impl CliCommand<TransactionSummary> for ReplaySimulate {
         let (vm_status, txn_output) =
             local_simulation::simulate_transaction_using_debugger(&*debugger, version, signed_txn)?;
 
+        // Print detailed error information for failed transactions.
+        match &vm_status {
+            move_core_types::vm_status::VMStatus::MoveAbort {
+                location,
+                code,
+                message,
+            } => {
+                let category = code >> 16;
+                let reason = code & 0xFFFF;
+                let category_name = match category {
+                    0x1 => "INVALID_ARGUMENT",
+                    0x2 => "OUT_OF_RANGE",
+                    0x3 => "INVALID_STATE",
+                    0x4 => "UNAUTHENTICATED",
+                    0x5 => "PERMISSION_DENIED",
+                    0x6 => "NOT_FOUND",
+                    0x7 => "ABORTED",
+                    0x8 => "ALREADY_EXISTS",
+                    0x9 => "RESOURCE_EXHAUSTED",
+                    0xA => "CANCELLED",
+                    0xB => "INTERNAL",
+                    0xC => "NOT_IMPLEMENTED",
+                    0xD => "UNAVAILABLE",
+                    _ => "UNKNOWN",
+                };
+                println!();
+                println!("Transaction aborted!");
+                println!("  Location: {}", location);
+                println!(
+                    "  Abort code: {} (category: {} [{}], reason: {})",
+                    code, category, category_name, reason
+                );
+                if let Some(msg) = message {
+                    println!("  Message: {}", msg);
+                }
+                println!();
+            },
+            move_core_types::vm_status::VMStatus::ExecutionFailure {
+                location,
+                function,
+                code_offset,
+                status_code,
+                message,
+                ..
+            } => {
+                println!();
+                println!("Transaction execution failed!");
+                println!("  Location: {}", location);
+                println!("  Function index: {}, code offset: {}", function, code_offset);
+                println!("  Status: {:?}", status_code);
+                if let Some(msg) = message {
+                    println!("  Message: {}", msg);
+                }
+                println!();
+            },
+            move_core_types::vm_status::VMStatus::Error {
+                status_code,
+                message,
+                ..
+            } => {
+                println!();
+                println!("VM error: {:?}", status_code);
+                if let Some(msg) = message {
+                    println!("  Message: {}", msg);
+                }
+                println!();
+            },
+            move_core_types::vm_status::VMStatus::Executed => {
+                println!();
+                println!("Transaction succeeded!");
+                println!();
+            },
+        }
+
         let success = match txn_output.status() {
             TransactionStatus::Keep(exec_status) => Some(exec_status.is_success()),
             TransactionStatus::Discard(_) | TransactionStatus::Retry => None,
