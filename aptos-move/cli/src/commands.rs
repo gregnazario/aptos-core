@@ -2849,14 +2849,29 @@ impl CliCommand<TransactionSummary> for ReplaySimulate {
         let chain_id = txn.chain_id();
 
         // Build a new RawTransaction with generous gas settings.
-        const SIMULATION_MAX_GAS: u64 = 2_000_000;
-        const SIMULATION_GAS_UNIT_PRICE: u64 = 100;
+        // Use the original transaction's gas unit price (which was valid on-chain).
+        // Cap max_gas to what the sender can afford so the prologue balance check passes.
+        let gas_unit_price = txn.gas_unit_price();
+        let max_gas = {
+            const DEFAULT_MAX_GAS: u64 = 2_000_000;
+            if gas_unit_price == 0 {
+                DEFAULT_MAX_GAS
+            } else {
+                // Fetch APT balance to compute affordable max gas.
+                let balance: u64 = client
+                    .view_apt_account_balance_at_version(sender, version)
+                    .await
+                    .map(|r| r.into_inner())
+                    .unwrap_or(0);
+                std::cmp::min(balance / gas_unit_price, DEFAULT_MAX_GAS)
+            }
+        };
         let raw_txn = aptos_types::transaction::RawTransaction::new(
             sender,
             sequence_number,
             payload,
-            SIMULATION_MAX_GAS,
-            SIMULATION_GAS_UNIT_PRICE,
+            max_gas,
+            gas_unit_price,
             // Set expiration far in the future so it never expires during simulation.
             u64::MAX,
             chain_id,
@@ -2887,7 +2902,7 @@ impl CliCommand<TransactionSummary> for ReplaySimulate {
         let summary = TransactionSummary {
             transaction_hash: txn.committed_hash().into(),
             gas_used: Some(txn_output.gas_used()),
-            gas_unit_price: Some(SIMULATION_GAS_UNIT_PRICE),
+            gas_unit_price: Some(gas_unit_price),
             pending: None,
             sender: Some(sender),
             sequence_number: Some(sequence_number),
