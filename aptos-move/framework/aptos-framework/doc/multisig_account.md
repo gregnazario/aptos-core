@@ -94,9 +94,11 @@ and implement the governance voting logic on top.
 -  [Function `create_with_existing_account_and_revoke_auth_key`](#0x1_multisig_account_create_with_existing_account_and_revoke_auth_key)
 -  [Function `create`](#0x1_multisig_account_create)
 -  [Function `create_with_owners`](#0x1_multisig_account_create_with_owners)
+-  [Function `create_with_owners_and_timelock`](#0x1_multisig_account_create_with_owners_and_timelock)
 -  [Function `create_with_owners_then_remove_bootstrapper`](#0x1_multisig_account_create_with_owners_then_remove_bootstrapper)
 -  [Function `create_with_owners_internal`](#0x1_multisig_account_create_with_owners_internal)
 -  [Function `upsert_timelock`](#0x1_multisig_account_upsert_timelock)
+-  [Function `upsert_timelock_internal`](#0x1_multisig_account_upsert_timelock_internal)
 -  [Function `remove_timelock`](#0x1_multisig_account_remove_timelock)
 -  [Function `add_owner`](#0x1_multisig_account_add_owner)
 -  [Function `add_owners`](#0x1_multisig_account_add_owners)
@@ -311,7 +313,13 @@ This will be stored in the multisig account (created as a resource account separ
 
 ## Enum Resource `MultisigAccountTimeLock`
 
-Support for Multisig TimeLock
+Support for Multisig TimeLock.
+<code>drop</code> is safe here because this resource holds only primitives (no capabilities, no
+event handles). It's used so that <code>remove_timelock</code> can <code><b>move_from</b></code> without destructuring.
+Note that because on-chain transactions cannot realistically be executed in less than a
+second, the resolution of <code>creation_time_secs</code> is at-second granularity — setting/removing
+a timelock within the same on-chain second as a pending transaction's creation is not a
+concern in practice.
 
 
 <pre><code>enum <a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a> <b>has</b> drop, key
@@ -1594,6 +1602,16 @@ Provided target function does not match the hash stored in the on-chain transact
 
 
 
+<a id="0x1_multisig_account_ETIMELOCK_DOES_NOT_EXIST"></a>
+
+No timelock configuration exists for the multisig account.
+
+
+<pre><code><b>const</b> <a href="multisig_account.md#0x1_multisig_account_ETIMELOCK_DOES_NOT_EXIST">ETIMELOCK_DOES_NOT_EXIST</a>: u64 = 24;
+</code></pre>
+
+
+
 <a id="0x1_multisig_account_ETIMELOCK_NOT_EXPIRED"></a>
 
 Transaction has enough approvals but the timelock period has not yet elapsed.
@@ -2551,6 +2569,69 @@ at most the total number of owners.
 
 </details>
 
+<a id="0x1_multisig_account_create_with_owners_and_timelock"></a>
+
+## Function `create_with_owners_and_timelock`
+
+Like <code>create_with_owners</code>, but also configures a timelock at creation time so the initial
+queue is protected by the timelock from the very first transaction.
+
+<code>timelock_period</code> and <code>override_threshold</code> are two separate <code>Option&lt;u64&gt;</code> because entry
+function arguments cannot carry tuple-typed options. If <code>timelock_period</code> is <code>None</code> no
+timelock is configured and <code>override_threshold</code> must also be <code>None</code>. If <code>timelock_period</code>
+is <code>Some</code>, the bounds and invariants are identical to <code>upsert_timelock</code>.
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_create_with_owners_and_timelock">create_with_owners_and_timelock</a>(owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, additional_owners: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<b>address</b>&gt;, num_signatures_required: u64, metadata_keys: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-stdlib/../move-stdlib/doc/string.md#0x1_string_String">string::String</a>&gt;, metadata_values: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;, timelock_period: <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;, override_threshold: <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;)
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>public</b> entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_create_with_owners_and_timelock">create_with_owners_and_timelock</a>(
+    owner: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+    additional_owners: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<b>address</b>&gt;,
+    num_signatures_required: u64,
+    metadata_keys: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;String&gt;,
+    metadata_values: <a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;<a href="../../aptos-stdlib/../move-stdlib/doc/vector.md#0x1_vector">vector</a>&lt;u8&gt;&gt;,
+    timelock_period: Option&lt;u64&gt;,
+    override_threshold: Option&lt;u64&gt;,
+) {
+    // A timelock override_threshold <b>has</b> no meaning without a timelock_period — reject it up
+    // front so a caller cannot be surprised that their override setting was silently dropped.
+    <b>assert</b>!(
+        timelock_period.is_some() || override_threshold.is_none(),
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_invalid_argument">error::invalid_argument</a>(<a href="multisig_account.md#0x1_multisig_account_EINVALID_TIMELOCK_OVERRIDE_THRESHOLD">EINVALID_TIMELOCK_OVERRIDE_THRESHOLD</a>)
+    );
+
+    <b>let</b> (<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, multisig_signer_cap) = <a href="multisig_account.md#0x1_multisig_account_create_multisig_account">create_multisig_account</a>(owner);
+    additional_owners.push_back(address_of(owner));
+    <a href="multisig_account.md#0x1_multisig_account_create_with_owners_internal">create_with_owners_internal</a>(
+        &<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>,
+        additional_owners,
+        num_signatures_required,
+        <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(multisig_signer_cap),
+        metadata_keys,
+        metadata_values,
+    );
+
+    <b>if</b> (timelock_period.is_some()) {
+        <a href="multisig_account.md#0x1_multisig_account_upsert_timelock_internal">upsert_timelock_internal</a>(
+            &<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>,
+            timelock_period.destroy_some(),
+            override_threshold,
+        );
+    }
+}
+</code></pre>
+
+
+
+</details>
+
 <a id="0x1_multisig_account_create_with_owners_then_remove_bootstrapper"></a>
 
 ## Function `create_with_owners_then_remove_bootstrapper`
@@ -2661,8 +2742,18 @@ be an owner after the vanity multisig address has been secured.
 ## Function `upsert_timelock`
 
 Upsert the timelock configuration for the multisig account.
-timelock_period must be > 0, override_threshold must be > num_signatures_required
-and <= the number of owners.
+timelock_period must be between MIN_TIMELOCK_PERIOD and MAX_TIMELOCK_PERIOD.
+override_threshold, if provided, must be > num_signatures_required and <= the number of owners.
+
+Note on pending transactions: the timelock check measures elapsed time from a transaction's
+<code>creation_time_secs</code>, not from when the timelock was activated. Because multisig transactions
+execute strictly in sequence order, this is only observable for transactions queued *after*
+this <code>upsert_timelock</code> call but *before* it executes — those transactions may become
+executable sooner than <code>timelock_period</code> seconds after this call takes effect, because part
+of their elapsed time is counted from before the new timelock was live. Transactions queued
+after this call has executed receive the full <code>timelock_period</code> protection. This residual
+window is bounded by the previous timelock period (or by approval time, if there was no
+prior timelock) and is considered an acceptable, operator-visible risk.
 
 
 <pre><code>entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_upsert_timelock">upsert_timelock</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, timelock_period: u64, override_threshold: <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;)
@@ -2675,6 +2766,37 @@ and <= the number of owners.
 
 
 <pre><code>entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_upsert_timelock">upsert_timelock</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, timelock_period: u64, override_threshold: Option&lt;u64&gt;) {
+    <a href="multisig_account.md#0x1_multisig_account_upsert_timelock_internal">upsert_timelock_internal</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>, timelock_period, override_threshold);
+}
+</code></pre>
+
+
+
+</details>
+
+<a id="0x1_multisig_account_upsert_timelock_internal"></a>
+
+## Function `upsert_timelock_internal`
+
+Shared validation + publish logic for timelock configuration. Used by <code>upsert_timelock</code> and
+by the creation-time variants (<code>create_with_owners_and_timelock</code>, ...) so the invariant that
+<code><a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a></code> is only ever published through a single validated path is preserved.
+
+
+<pre><code><b>fun</b> <a href="multisig_account.md#0x1_multisig_account_upsert_timelock_internal">upsert_timelock_internal</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>, timelock_period: u64, override_threshold: <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_Option">option::Option</a>&lt;u64&gt;)
+</code></pre>
+
+
+
+<details>
+<summary>Implementation</summary>
+
+
+<pre><code><b>fun</b> <a href="multisig_account.md#0x1_multisig_account_upsert_timelock_internal">upsert_timelock_internal</a>(
+    <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>,
+    timelock_period: u64,
+    override_threshold: Option&lt;u64&gt;,
+) {
     <b>let</b> multisig_address = address_of(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>);
     <a href="multisig_account.md#0x1_multisig_account_assert_multisig_account_exists">assert_multisig_account_exists</a>(multisig_address);
 
@@ -2721,6 +2843,7 @@ and <= the number of owners.
 ## Function `remove_timelock`
 
 Remove the timelock configuration for the multisig account.
+Aborts if no timelock is configured.
 
 
 <pre><code>entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_remove_timelock">remove_timelock</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>)
@@ -2735,12 +2858,14 @@ Remove the timelock configuration for the multisig account.
 <pre><code>entry <b>fun</b> <a href="multisig_account.md#0x1_multisig_account_remove_timelock">remove_timelock</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: &<a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer">signer</a>) {
     <b>let</b> multisig_address = address_of(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>);
     <a href="multisig_account.md#0x1_multisig_account_assert_multisig_account_exists">assert_multisig_account_exists</a>(multisig_address);
-    <b>if</b> (<b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address)) {
-        <b>move_from</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address);
-        emit(<a href="multisig_account.md#0x1_multisig_account_TimelockRemoved">TimelockRemoved</a> {
-            <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: multisig_address,
-        });
-    }
+    <b>assert</b>!(
+        <b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address),
+        <a href="../../aptos-stdlib/../move-stdlib/doc/error.md#0x1_error_not_found">error::not_found</a>(<a href="multisig_account.md#0x1_multisig_account_ETIMELOCK_DOES_NOT_EXIST">ETIMELOCK_DOES_NOT_EXIST</a>)
+    );
+    <b>move_from</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address);
+    emit(<a href="multisig_account.md#0x1_multisig_account_TimelockRemoved">TimelockRemoved</a> {
+        <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: multisig_address,
+    });
 }
 </code></pre>
 
@@ -4174,9 +4299,15 @@ Add new owners, remove owners to remove, update signatures required.
     // after owner/threshold changes.
     <b>if</b> (<b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address)) {
         <b>let</b> timelock = &<b>mut</b> <a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>[multisig_address];
-        // If override threshold exceeds the new owner count, clamp it down.
+        // If override threshold exceeds the new owner count, clamp it down and emit an <a href="event.md#0x1_event">event</a>
+        // so off-chain monitors observe the security-relevant mutation.
         <b>if</b> (timelock.override_threshold.is_some() && timelock.override_threshold.borrow() &gt; &num_owners) {
             timelock.override_threshold = <a href="../../aptos-stdlib/../move-stdlib/doc/option.md#0x1_option_some">option::some</a>(num_owners);
+            emit(<a href="multisig_account.md#0x1_multisig_account_TimelockUpdated">TimelockUpdated</a> {
+                <a href="multisig_account.md#0x1_multisig_account">multisig_account</a>: multisig_address,
+                timelock_period: timelock.timelock_period,
+                override_threshold: timelock.override_threshold,
+            });
         };
         // Override threshold must still be greater than num_signatures_required.
         <b>assert</b>!(
@@ -4634,6 +4765,7 @@ Add new owners, remove owners to remove, update signatures required.
 <b>ensures</b> <b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address);
 <b>ensures</b> <b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address).timelock_period == timelock_period;
 <b>ensures</b> <b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address).override_threshold == override_threshold;
+<b>ensures</b> <b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccount">MultisigAccount</a>&gt;(multisig_address) == <b>old</b>(<b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccount">MultisigAccount</a>&gt;(multisig_address));
 </code></pre>
 
 
@@ -4651,7 +4783,9 @@ Add new owners, remove owners to remove, update signatures required.
 
 <pre><code><b>let</b> multisig_address = <a href="../../aptos-stdlib/../move-stdlib/doc/signer.md#0x1_signer_address_of">signer::address_of</a>(<a href="multisig_account.md#0x1_multisig_account">multisig_account</a>);
 <b>aborts_if</b> !<b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccount">MultisigAccount</a>&gt;(multisig_address);
+<b>aborts_if</b> !<b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address);
 <b>ensures</b> !<b>exists</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccountTimeLock">MultisigAccountTimeLock</a>&gt;(multisig_address);
+<b>ensures</b> <b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccount">MultisigAccount</a>&gt;(multisig_address) == <b>old</b>(<b>global</b>&lt;<a href="multisig_account.md#0x1_multisig_account_MultisigAccount">MultisigAccount</a>&gt;(multisig_address));
 </code></pre>
 
 

@@ -105,6 +105,8 @@ module aptos_framework::multisig_account {
     const EINVALID_TIMELOCK_OVERRIDE_THRESHOLD: u64 = 22;
     /// Transaction has enough approvals but the timelock period has not yet elapsed.
     const ETIMELOCK_NOT_EXPIRED: u64 = 23;
+    /// No timelock configuration exists for the multisig account.
+    const ETIMELOCK_DOES_NOT_EXIST: u64 = 24;
 
 
     const ZERO_AUTH_KEY: vector<u8> = x"0000000000000000000000000000000000000000000000000000000000000000";
@@ -155,7 +157,13 @@ module aptos_framework::multisig_account {
         metadata_updated_events: EventHandle<MetadataUpdatedEvent>,
     }
 
-    /// Support for Multisig TimeLock
+    /// Support for Multisig TimeLock.
+    /// `drop` is safe here because this resource holds only primitives (no capabilities, no
+    /// event handles). It's used so that `remove_timelock` can `move_from` without destructuring.
+    /// Note that because on-chain transactions cannot realistically be executed in less than a
+    /// second, the resolution of `creation_time_secs` is at-second granularity — setting/removing
+    /// a timelock within the same on-chain second as a pending transaction's creation is not a
+    /// concern in practice.
     enum MultisigAccountTimeLock has key, drop {
         V1 {
             /// The time lock period in seconds after the creation of the multisig transaction.
@@ -777,6 +785,49 @@ module aptos_framework::multisig_account {
         );
     }
 
+    /// Like `create_with_owners`, but also configures a timelock at creation time so the initial
+    /// queue is protected by the timelock from the very first transaction.
+    ///
+    /// `timelock_period` and `override_threshold` are two separate `Option<u64>` because entry
+    /// function arguments cannot carry tuple-typed options. If `timelock_period` is `None` no
+    /// timelock is configured and `override_threshold` must also be `None`. If `timelock_period`
+    /// is `Some`, the bounds and invariants are identical to `upsert_timelock`.
+    public entry fun create_with_owners_and_timelock(
+        owner: &signer,
+        additional_owners: vector<address>,
+        num_signatures_required: u64,
+        metadata_keys: vector<String>,
+        metadata_values: vector<vector<u8>>,
+        timelock_period: Option<u64>,
+        override_threshold: Option<u64>,
+    ) {
+        // A timelock override_threshold has no meaning without a timelock_period — reject it up
+        // front so a caller cannot be surprised that their override setting was silently dropped.
+        assert!(
+            timelock_period.is_some() || override_threshold.is_none(),
+            error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
+        );
+
+        let (multisig_account, multisig_signer_cap) = create_multisig_account(owner);
+        additional_owners.push_back(address_of(owner));
+        create_with_owners_internal(
+            &multisig_account,
+            additional_owners,
+            num_signatures_required,
+            option::some(multisig_signer_cap),
+            metadata_keys,
+            metadata_values,
+        );
+
+        if (timelock_period.is_some()) {
+            upsert_timelock_internal(
+                &multisig_account,
+                timelock_period.destroy_some(),
+                override_threshold,
+            );
+        }
+    }
+
     /// Like `create_with_owners`, but removes the calling account after creation.
     ///
     /// This is for creating a vanity multisig account from a bootstrapping account that should not
@@ -845,9 +896,30 @@ module aptos_framework::multisig_account {
     ////////////////////////// Self-updates ///////////////////////////////
 
     /// Upsert the timelock configuration for the multisig account.
-    /// timelock_period must be > 0, override_threshold must be > num_signatures_required
-    /// and <= the number of owners.
+    /// timelock_period must be between MIN_TIMELOCK_PERIOD and MAX_TIMELOCK_PERIOD.
+    /// override_threshold, if provided, must be > num_signatures_required and <= the number of owners.
+    ///
+    /// Note on pending transactions: the timelock check measures elapsed time from a transaction's
+    /// `creation_time_secs`, not from when the timelock was activated. Because multisig transactions
+    /// execute strictly in sequence order, this is only observable for transactions queued *after*
+    /// this `upsert_timelock` call but *before* it executes — those transactions may become
+    /// executable sooner than `timelock_period` seconds after this call takes effect, because part
+    /// of their elapsed time is counted from before the new timelock was live. Transactions queued
+    /// after this call has executed receive the full `timelock_period` protection. This residual
+    /// window is bounded by the previous timelock period (or by approval time, if there was no
+    /// prior timelock) and is considered an acceptable, operator-visible risk.
     entry fun upsert_timelock(multisig_account: &signer, timelock_period: u64, override_threshold: Option<u64>) {
+        upsert_timelock_internal(multisig_account, timelock_period, override_threshold);
+    }
+
+    /// Shared validation + publish logic for timelock configuration. Used by `upsert_timelock` and
+    /// by the creation-time variants (`create_with_owners_and_timelock`, ...) so the invariant that
+    /// `MultisigAccountTimeLock` is only ever published through a single validated path is preserved.
+    fun upsert_timelock_internal(
+        multisig_account: &signer,
+        timelock_period: u64,
+        override_threshold: Option<u64>,
+    ) {
         let multisig_address = address_of(multisig_account);
         assert_multisig_account_exists(multisig_address);
 
@@ -885,15 +957,18 @@ module aptos_framework::multisig_account {
     }
 
     /// Remove the timelock configuration for the multisig account.
+    /// Aborts if no timelock is configured.
     entry fun remove_timelock(multisig_account: &signer) {
         let multisig_address = address_of(multisig_account);
         assert_multisig_account_exists(multisig_address);
-        if (exists<MultisigAccountTimeLock>(multisig_address)) {
-            move_from<MultisigAccountTimeLock>(multisig_address);
-            emit(TimelockRemoved {
-                multisig_account: multisig_address,
-            });
-        }
+        assert!(
+            exists<MultisigAccountTimeLock>(multisig_address),
+            error::not_found(ETIMELOCK_DOES_NOT_EXIST)
+        );
+        move_from<MultisigAccountTimeLock>(multisig_address);
+        emit(TimelockRemoved {
+            multisig_account: multisig_address,
+        });
     }
 
     /// Similar to add_owners, but only allow adding one owner.
@@ -1554,9 +1629,15 @@ module aptos_framework::multisig_account {
         // after owner/threshold changes.
         if (exists<MultisigAccountTimeLock>(multisig_address)) {
             let timelock = &mut MultisigAccountTimeLock[multisig_address];
-            // If override threshold exceeds the new owner count, clamp it down.
+            // If override threshold exceeds the new owner count, clamp it down and emit an event
+            // so off-chain monitors observe the security-relevant mutation.
             if (timelock.override_threshold.is_some() && timelock.override_threshold.borrow() > &num_owners) {
                 timelock.override_threshold = option::some(num_owners);
+                emit(TimelockUpdated {
+                    multisig_account: multisig_address,
+                    timelock_period: timelock.timelock_period,
+                    override_threshold: timelock.override_threshold,
+                });
             };
             // Override threshold must still be greater than num_signatures_required.
             assert!(
@@ -2669,6 +2750,90 @@ module aptos_framework::multisig_account {
         remove_timelock(multisig_signer);
         assert!(timelock_period(multisig_account) == 0, 1);
         assert!(timelock_override_threshold(multisig_account) == option::none(), 2);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    #[expected_failure(abort_code = 0x60018, location = Self)]
+    public entry fun test_remove_timelock_when_none_configured_should_fail(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
+        let multisig_signer = &create_signer(multisig_account);
+        // No timelock was ever configured — removal must abort rather than be a silent no-op,
+        // so operators are not misled into thinking they removed protection they never had.
+        remove_timelock(multisig_signer);
+        // Suppress unused-variable warning.
+        assert!(timelock_period(multisig_account) == 0, 0);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_create_with_owners_and_timelock(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        setup();
+        let owner_1_addr = address_of(owner_1);
+        create_account(owner_1_addr);
+        let multisig_account = get_next_multisig_account_address(owner_1_addr);
+
+        // Atomic creation + timelock: MultisigAccount and MultisigAccountTimeLock are
+        // published in the same transaction — no unprotected window before the first txn.
+        create_with_owners_and_timelock(
+            owner_1,
+            vector[address_of(owner_2), address_of(owner_3)],
+            2,
+            vector[],
+            vector[],
+            option::some(3600),
+            option::some(3),
+        );
+        assert!(timelock_period(multisig_account) == 3600, 0);
+        assert!(timelock_override_threshold(multisig_account) == option::some(3), 1);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_create_with_owners_and_no_timelock(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        setup();
+        let owner_1_addr = address_of(owner_1);
+        create_account(owner_1_addr);
+        let multisig_account = get_next_multisig_account_address(owner_1_addr);
+
+        // timelock_period = None means no timelock resource is published. Equivalent to the
+        // existing `create_with_owners` path.
+        create_with_owners_and_timelock(
+            owner_1,
+            vector[address_of(owner_2), address_of(owner_3)],
+            2,
+            vector[],
+            vector[],
+            option::none(),
+            option::none(),
+        );
+        assert!(timelock_period(multisig_account) == 0, 0);
+        assert!(timelock_override_threshold(multisig_account) == option::none(), 1);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    #[expected_failure(abort_code = 0x10016, location = Self)]
+    public entry fun test_create_with_owners_override_without_timelock_should_fail(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        setup();
+        let owner_1_addr = address_of(owner_1);
+        create_account(owner_1_addr);
+
+        // (timelock_period = None, override_threshold = Some) is incoherent — abort rather
+        // than silently drop the override.
+        create_with_owners_and_timelock(
+            owner_1,
+            vector[address_of(owner_2), address_of(owner_3)],
+            2,
+            vector[],
+            vector[],
+            option::none(),
+            option::some(3),
+        );
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]

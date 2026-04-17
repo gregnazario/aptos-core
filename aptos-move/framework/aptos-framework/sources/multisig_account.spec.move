@@ -284,14 +284,22 @@ spec aptos_framework::multisig_account {
         // The stored values match the provided values.
         ensures global<MultisigAccountTimeLock>(multisig_address).timelock_period == timelock_period;
         ensures global<MultisigAccountTimeLock>(multisig_address).override_threshold == override_threshold;
+        // Frame condition: the MultisigAccount resource itself is not mutated. This pins the
+        // invariant that upsert_timelock cannot perturb owners, num_signatures_required, the
+        // transaction queue, metadata, or any event handles.
+        ensures global<MultisigAccount>(multisig_address) == old(global<MultisigAccount>(multisig_address));
     }
 
     spec remove_timelock(multisig_account: &signer) {
         use std::signer;
         let multisig_address = signer::address_of(multisig_account);
         aborts_if !exists<MultisigAccount>(multisig_address);
+        // Aborts if no timelock exists — removal is no longer silent.
+        aborts_if !exists<MultisigAccountTimeLock>(multisig_address);
         // After removal, the timelock resource no longer exists.
         ensures !exists<MultisigAccountTimeLock>(multisig_address);
+        // Frame condition: the MultisigAccount resource itself is not mutated.
+        ensures global<MultisigAccount>(multisig_address) == old(global<MultisigAccount>(multisig_address));
     }
 
     ////////////////////////// Core entry function specs ///////////////////////////////
