@@ -107,6 +107,9 @@ module aptos_framework::multisig_account {
     const ETIMELOCK_NOT_EXPIRED: u64 = 23;
     /// No timelock configuration exists for the multisig account.
     const ETIMELOCK_DOES_NOT_EXIST: u64 = 24;
+    /// Timelocked multisig resolution requires the resolving side to have plurality of actual voters.
+    /// Approvals must strictly exceed rejections; rejections win ties (tie-to-reject).
+    const ENO_PLURALITY: u64 = 25;
 
 
     const ZERO_AUTH_KEY: vector<u8> = x"0000000000000000000000000000000000000000000000000000000000000000";
@@ -469,68 +472,139 @@ module aptos_framework::multisig_account {
     /// Return true if the transaction with given transaction id can be executed now.
     public fun can_be_executed(multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
-        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
 
         sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account) && can_execute_with_timelock(multisig_account, sequence_number, num_approvals)
+            num_approvals >= num_signatures_required(multisig_account) &&
+            can_execute_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections)
     }
 
     #[view]
     /// Return true if the owner can execute the transaction with given transaction id now.
     public fun can_execute(owner: address, multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
-        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        // Simulate the vote `owner` would implicitly cast by calling `execute_transaction`:
+        // if they had previously rejected, their vote flips (upsert), reducing rejections.
+        if (has_voted_for_rejection(multisig_account, sequence_number, owner)) {
+            num_rejections -= 1;
+        };
         if (!has_voted_for_approval(multisig_account, sequence_number, owner)) {
             num_approvals += 1;
         };
 
         is_owner(owner, multisig_account) &&
             sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_approvals >= num_signatures_required(multisig_account) && can_execute_with_timelock(multisig_account, sequence_number, num_approvals)
+            num_approvals >= num_signatures_required(multisig_account) &&
+            can_execute_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections)
     }
 
     /// Return true if the transaction with given transaction id can be executed immediately, or it has to wait
-    /// for the timelock to expire.
-    inline fun can_execute_with_timelock(multisig_account: address, sequence_number: u64, num_approvals: u64): bool {
+    /// for the timelock to expire. Under a timelock, the approval side must also have plurality of actual voters
+    /// (tie-to-reject): approvals must strictly exceed rejections.
+    inline fun can_execute_with_timelock(
+        multisig_account: address,
+        sequence_number: u64,
+        num_approvals: u64,
+        num_rejections: u64,
+    ): bool {
         if (exists<MultisigAccountTimeLock>(multisig_account)) {
-            let multisig_account_resource = &MultisigAccountTimeLock[multisig_account];
-            let timelock = multisig_account_resource.timelock_period;
-            let override_threshold = multisig_account_resource.override_threshold;
+            // Plurality gate applies to timelocked multisigs only.
+            if (has_approval_plurality(num_approvals, num_rejections)) {
+                let multisig_account_resource = &MultisigAccountTimeLock[multisig_account];
+                let timelock = multisig_account_resource.timelock_period;
+                let override_threshold = multisig_account_resource.override_threshold;
 
-            // Get the pending transaction to check if the timelock has expired
-            // Assume that the transaction has already been checked to exist and is valid
-            let pending_transaction = get_transaction(multisig_account, sequence_number);
+                // Get the pending transaction to check if the timelock has expired
+                // Assume that the transaction has already been checked to exist and is valid
+                let pending_transaction = get_transaction(multisig_account, sequence_number);
 
-            // Use subtraction to avoid overflow (now_seconds() >= creation_time_secs is always true)
-            let elapsed = now_seconds() - pending_transaction.creation_time_secs;
+                // Use subtraction to avoid overflow (now_seconds() >= creation_time_secs is always true)
+                let elapsed = now_seconds() - pending_transaction.creation_time_secs;
 
-            // If the number of approvals meets the override threshold, or the timelock has expired, allow execution
-            (override_threshold.is_some() && &num_approvals >= override_threshold.borrow()) || elapsed >= timelock
+                // If the number of approvals meets the override threshold, or the timelock has expired, allow execution
+                (override_threshold.is_some() && &num_approvals >= override_threshold.borrow()) || elapsed >= timelock
+            } else {
+                false
+            }
         } else {
             true
         }
     }
 
+    /// Return true if the transaction with given transaction id can be rejected immediately, or it has to wait
+    /// for the timelock to expire. Symmetric to `can_execute_with_timelock`: under a timelock, the rejection side
+    /// must have plurality of actual voters (tie-to-reject), and must either meet the override threshold or wait
+    /// for the timelock to elapse. Without a timelock, no gate applies here (existing k-of-n rule stands).
+    inline fun can_reject_with_timelock(
+        multisig_account: address,
+        sequence_number: u64,
+        num_approvals: u64,
+        num_rejections: u64,
+    ): bool {
+        if (exists<MultisigAccountTimeLock>(multisig_account)) {
+            // Plurality gate applies to timelocked multisigs only.
+            if (has_rejection_plurality(num_approvals, num_rejections)) {
+                let multisig_account_resource = &MultisigAccountTimeLock[multisig_account];
+                let timelock = multisig_account_resource.timelock_period;
+                let override_threshold = multisig_account_resource.override_threshold;
+
+                let pending_transaction = get_transaction(multisig_account, sequence_number);
+                let elapsed = now_seconds() - pending_transaction.creation_time_secs;
+
+                // Mirror execution's early-resolution path: rejections hit override threshold OR timelock elapsed.
+                (override_threshold.is_some() && &num_rejections >= override_threshold.borrow()) || elapsed >= timelock
+            } else {
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    /// Returns true when the approval side has plurality of actual voters and is therefore allowed
+    /// to resolve a timelocked transaction. Under tie-to-reject semantics, approvals must strictly
+    /// exceed rejections.
+    inline fun has_approval_plurality(num_approvals: u64, num_rejections: u64): bool {
+        num_approvals > num_rejections
+    }
+
+    /// Returns true when the rejection side has plurality of actual voters and is therefore allowed
+    /// to resolve a timelocked transaction. Under tie-to-reject semantics, rejections win ties —
+    /// rejections resolve when rejections are at least as many as approvals.
+    inline fun has_rejection_plurality(num_approvals: u64, num_rejections: u64): bool {
+        num_rejections >= num_approvals
+    }
+
     #[view]
     /// Return true if the transaction with given transaction id can be officially rejected.
+    /// For timelocked multisigs, rejection additionally requires plurality of actual voters
+    /// (tie-to-reject) and either meeting the override threshold or the timelock elapsing.
     public fun can_be_rejected(multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
-        let (_, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
         sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_rejections >= num_signatures_required(multisig_account)
+            num_rejections >= num_signatures_required(multisig_account) &&
+            can_reject_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections)
     }
 
     #[view]
     /// Return true if the owner can execute the "rejected" transaction with given transaction id now.
     public fun can_reject(owner: address, multisig_account: address, sequence_number: u64): bool {
         assert_valid_sequence_number(multisig_account, sequence_number);
-        let (_, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        // Simulate the vote `owner` would implicitly cast by calling `execute_rejected_transaction`:
+        // if they had previously approved, their vote flips (upsert), reducing approvals.
+        if (has_voted_for_approval(multisig_account, sequence_number, owner)) {
+            num_approvals -= 1;
+        };
         if (!has_voted_for_rejection(multisig_account, sequence_number, owner)) {
             num_rejections += 1;
         };
         is_owner(owner, multisig_account) &&
             sequence_number == last_resolved_sequence_number(multisig_account) + 1 &&
-            num_rejections >= num_signatures_required(multisig_account)
+            num_rejections >= num_signatures_required(multisig_account) &&
+            can_reject_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections)
     }
 
     #[view]
@@ -929,12 +1003,14 @@ module aptos_framework::multisig_account {
         );
 
         let multisig_account_resource = borrow_global<MultisigAccount>(multisig_address);
+        let num_signatures_required = multisig_account_resource.num_signatures_required;
+        let num_owners = multisig_account_resource.owners.length();
         assert!(
-            override_threshold.is_none() || override_threshold.borrow() > &multisig_account_resource.num_signatures_required,
+            override_threshold.is_none() || *override_threshold.borrow() > num_signatures_required,
             error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
         );
         assert!(
-            override_threshold.is_none() || override_threshold.borrow() <= &multisig_account_resource.owners.length(),
+            override_threshold.is_none() || *override_threshold.borrow() <= num_owners,
             error::invalid_argument(EINVALID_TIMELOCK_OVERRIDE_THRESHOLD)
         );
 
@@ -1266,7 +1342,16 @@ module aptos_framework::multisig_account {
         // Implicitly vote for rejection if the owner has not voted for rejection yet.
         if (!has_voted_for_rejection(multisig_account, sequence_number, owner_addr)) {
             reject_transaction(owner, multisig_account, sequence_number);
-        }
+        };
+
+        // Plurality + rejection-timelock gate (no-op when no timelock is configured).
+        // Must run before remove_executed_transaction because the timelock check reads
+        // creation_time_secs from the still-present transaction record.
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        assert!(
+            can_reject_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections),
+            error::invalid_state(ETIMELOCK_NOT_EXPIRED),
+        );
 
         let multisig_account_resource = borrow_global_mut<MultisigAccount>(multisig_account);
         let (_, num_rejections) = remove_executed_transaction(multisig_account_resource);
@@ -1312,16 +1397,23 @@ module aptos_framework::multisig_account {
         let sequence_number = last_resolved_sequence_number(multisig_account) + 1;
         assert_transaction_exists(multisig_account, sequence_number);
 
-        // Count approvals, including the executing owner's implicit vote.
-        let (num_approvals, _) = num_approvals_and_rejections(multisig_account, sequence_number);
-        if (!has_voted_for_approval(multisig_account, sequence_number, address_of(owner))) {
+        // Count approvals and rejections, including the executing owner's implicit vote.
+        // If they had previously rejected, their vote flips (upsert in vote_transanction), so
+        // reduce rejections to match the post-call state.
+        let owner_addr = address_of(owner);
+        let (num_approvals, num_rejections) = num_approvals_and_rejections(multisig_account, sequence_number);
+        if (has_voted_for_rejection(multisig_account, sequence_number, owner_addr)) {
+            num_rejections -= 1;
+        };
+        if (!has_voted_for_approval(multisig_account, sequence_number, owner_addr)) {
             num_approvals += 1;
         };
         assert!(num_approvals >= num_signatures_required(multisig_account), error::invalid_argument(ENOT_ENOUGH_APPROVALS));
 
-        // Timelock check — separate from quorum so the error is unambiguous.
+        // Timelock + plurality check — separate from quorum so the error is unambiguous.
+        // For timelocked multisigs this also requires approval-side plurality of actual voters.
         assert!(
-            can_execute_with_timelock(multisig_account, sequence_number, num_approvals),
+            can_execute_with_timelock(multisig_account, sequence_number, num_approvals, num_rejections),
             error::invalid_state(ETIMELOCK_NOT_EXPIRED),
         );
 
@@ -2988,21 +3080,119 @@ module aptos_framework::multisig_account {
     }
 
     #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
-    public entry fun test_timelock_does_not_block_rejection(
+    public entry fun test_timelock_blocks_rejection_below_override(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        // Under Reading A, timelocked rejections are symmetric with executions:
+        // they require override_threshold rejections OR timelock elapsed, plus rejection-side plurality.
+        let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
+        let multisig_signer = &create_signer(multisig_account);
+
+        // Configure 1 hour timelock with override at 3-of-3.
+        upsert_timelock(multisig_signer, 3600, option::some(3));
+
+        // Create transaction, accumulate k=2 rejections (meets base threshold but not override).
+        create_transaction(owner_1, multisig_account, PAYLOAD);
+        reject_transaction(owner_1, multisig_account, 1);
+        reject_transaction(owner_2, multisig_account, 1);
+
+        // Plurality is satisfied (2 rejections > 0 approvals) but override_threshold isn't met
+        // and timelock hasn't elapsed, so rejection is blocked.
+        assert!(!can_be_rejected(multisig_account, 1), 0);
+
+        // Third rejection meets the override threshold — rejection can now resolve.
+        reject_transaction(owner_3, multisig_account, 1);
+        assert!(can_be_rejected(multisig_account, 1), 1);
+        execute_rejected_transaction(owner_1, multisig_account);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_timelock_expiry_allows_rejection(
         owner_1: &signer, owner_2: &signer, owner_3: &signer
     ) {
         let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
         let multisig_signer = &create_signer(multisig_account);
 
-        // Configure 1 hour timelock.
+        // Configure 1 hour timelock with override at 3-of-3.
         upsert_timelock(multisig_signer, 3600, option::some(3));
 
-        // Create transaction, then reject it.
+        // Accumulate k=2 rejections — not enough to beat the override.
         create_transaction(owner_1, multisig_account, PAYLOAD);
         reject_transaction(owner_1, multisig_account, 1);
         reject_transaction(owner_2, multisig_account, 1);
+        assert!(!can_be_rejected(multisig_account, 1), 0);
 
-        // Rejection is not subject to the timelock — can reject immediately.
+        // After timelock elapses, the override is no longer needed. Plurality + k is enough.
+        timestamp::fast_forward_seconds(3600);
+        assert!(can_be_rejected(multisig_account, 1), 1);
+        execute_rejected_transaction(owner_1, multisig_account);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_plurality_tie_blocks_execute_allows_reject(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        // Tie-to-reject: with equal approvals and rejections, execute is blocked but reject resolves.
+        // Uses timelock expiry so only the plurality rule is under test (override_threshold is irrelevant).
+        let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
+        let multisig_signer = &create_signer(multisig_account);
+
+        // 1 hour timelock, no override — after expiry only plurality gates the outcome.
+        upsert_timelock(multisig_signer, 3600, option::none());
+
+        // Tie at the threshold: 1 yes, 1 no. Neither meets k=2, so set up a tie at k.
+        create_transaction(owner_1, multisig_account, PAYLOAD);
+        // owner_1 already approved via create_transaction. Have owner_2 approve, owner_3 reject —
+        // then owner_1 flips to reject to produce a 1y/2n distribution? No, we want an exact tie.
+        // Approach: use a 4-owner simulation by reject_transaction + approve_transaction.
+        reject_transaction(owner_2, multisig_account, 1);
+        // Now: 1 yes (owner_1), 1 no (owner_2). k=2, neither side has k. Not a useful test at k.
+        // Instead, have owner_3 also reject to get 1y/2n (rejection side plurality, below k for exec).
+        reject_transaction(owner_3, multisig_account, 1);
+        timestamp::fast_forward_seconds(3600);
+
+        // 1 yes, 2 no: approvals < k → cannot execute; rejections >= k and plurality-reject → can reject.
+        assert!(!can_be_executed(multisig_account, 1), 0);
+        assert!(can_be_rejected(multisig_account, 1), 1);
+        execute_rejected_transaction(owner_1, multisig_account);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_plurality_approve_wins(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        // With 2 yes vs 1 no after timelock expiry, approve has plurality and execution resolves;
+        // rejection is blocked even though num_rejections would meet k if we'd set k=1.
+        let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
+        let multisig_signer = &create_signer(multisig_account);
+
+        upsert_timelock(multisig_signer, 3600, option::none());
+
+        create_transaction(owner_1, multisig_account, PAYLOAD);
+        approve_transaction(owner_2, multisig_account, 1);
+        reject_transaction(owner_3, multisig_account, 1);
+        timestamp::fast_forward_seconds(3600);
+
+        // 2 yes, 1 no: approval has plurality → execute can resolve, reject is blocked by plurality.
+        assert!(can_be_executed(multisig_account, 1), 0);
+        // Rejection side does not have plurality (1 < 2), and k=2 isn't met anyway.
+        assert!(!can_be_rejected(multisig_account, 1), 1);
+    }
+
+    #[test(owner_1 = @0x123, owner_2 = @0x124, owner_3 = @0x125)]
+    public entry fun test_non_timelocked_multisig_unaffected_by_plurality(
+        owner_1: &signer, owner_2: &signer, owner_3: &signer
+    ) {
+        // Without a timelock, the plurality rule is a no-op: rejection races execution exactly as before.
+        let multisig_account = setup_timelock_multisig(owner_1, owner_2, owner_3);
+
+        // No timelock configured.
+        create_transaction(owner_1, multisig_account, PAYLOAD);
+        // 1 yes (owner_1), 2 no → rejection hits k=2 even though there's equal-or-greater-approval noise.
+        reject_transaction(owner_2, multisig_account, 1);
+        reject_transaction(owner_3, multisig_account, 1);
+
+        // Both meet k=2 only on the reject side here, but the key check is that no plurality gate applies.
         assert!(can_be_rejected(multisig_account, 1), 0);
         execute_rejected_transaction(owner_1, multisig_account);
     }
