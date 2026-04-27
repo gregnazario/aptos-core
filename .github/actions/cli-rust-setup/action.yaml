@@ -8,17 +8,23 @@ inputs:
     description: "An optional additional key to pass to rust-cache"
     required: false
     default: ""
+  PROFILE:
+    description: "Build profile for cache key scoping (e.g. debug, release, performance, cli)"
+    required: false
+    default: "debug"
 
 runs:
   using: composite
   steps:
     - uses: dsherret/rust-toolchain-file@v1
-    # rust-cache action will cache ~/.cargo and ./target
-    # https://github.com/Swatinem/rust-cache#cache-details
+    # rust-cache caches ~/.cargo and ./target. PROFILE scoping prevents debug and
+    # release builds from overwriting each other's artifacts. Cache writes are
+    # gated to main so PR branches read without polluting the shared cache.
     - name: Run cargo cache
       uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # pin@v2.9.1
       with:
-        key: ${{ inputs.ADDITIONAL_KEY }}
+        key: ${{ inputs.PROFILE }}-${{ inputs.ADDITIONAL_KEY }}
+        save-if: ${{ github.ref == 'refs/heads/main' }}
     - name: Install build tools
       shell: bash
       run: scripts/cli/minimal_cli_build.sh
