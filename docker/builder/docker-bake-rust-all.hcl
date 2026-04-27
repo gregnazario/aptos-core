@@ -77,13 +77,18 @@ target "debian-base" {
   }
 }
 
+// Pinned rust image digest shared between builder-base and chef-planner.
+locals {
+  rust_image = "docker-image://rust:1.93.1-trixie@sha256:ecbe59a8408895edd02d9ef422504b8501dd9fa1526de27a45b73406d734d659"
+}
+
 target "builder-base" {
   dockerfile = "docker/builder/builder.Dockerfile"
   target     = "builder-base"
   context    = "."
   contexts = {
     # Run `docker buildx imagetools inspect rust:1.93.1-trixie` to find the latest multi-platform hash
-    rust = "docker-image://rust:1.93.1-trixie@sha256:ecbe59a8408895edd02d9ef422504b8501dd9fa1526de27a45b73406d734d659"
+    rust = local.rust_image
   }
   args = {
     PROFILE            = "${PROFILE}"
@@ -96,12 +101,48 @@ target "builder-base" {
   ]
 }
 
+// Planner stage: scans workspace Cargo manifests and emits recipe.json.
+// Invalidated only when Cargo.toml / Cargo.lock files change.
+target "chef-planner" {
+  dockerfile = "docker/builder/builder.Dockerfile"
+  target     = "chef-planner"
+  context    = "."
+  contexts = {
+    rust = local.rust_image
+  }
+  cache-from = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:planner-${NORMALIZED_GIT_BRANCH_OR_PR}",
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:planner-main",
+  ] : []
+  cache-to = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:planner-${NORMALIZED_GIT_BRANCH_OR_PR},mode=max",
+  ] : []
+}
+
+// Each builder target below follows the same cargo-chef pattern:
+//   1. cook step   — compiles only deps (Docker layer, cached until Cargo.lock changes)
+//   2. source copy — brings in real code without touching target/
+//   3. build step  — recompiles only the crates that changed
+//
+// cache-from tries the branch/PR cache first, then falls back to main so PRs
+// get warm deps without requiring a prior successful build on the same branch.
+// cache-to writes with mode=max so intermediate cook layers are also cached.
+
 target "aptos-node-builder" {
   dockerfile = "docker/builder/builder.Dockerfile"
   target     = "aptos-node-builder"
+  context    = "."
   contexts = {
     builder-base = "target:builder-base"
+    chef-planner = "target:chef-planner"
   }
+  cache-from = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:node-${NORMALIZED_GIT_BRANCH_OR_PR}",
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:node-main",
+  ] : []
+  cache-to = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:node-${NORMALIZED_GIT_BRANCH_OR_PR},mode=max",
+  ] : []
   secret = [
     "id=GIT_CREDENTIALS"
   ]
@@ -110,9 +151,18 @@ target "aptos-node-builder" {
 target "tools-builder" {
   dockerfile = "docker/builder/builder.Dockerfile"
   target     = "tools-builder"
+  context    = "."
   contexts = {
     builder-base = "target:builder-base"
+    chef-planner = "target:chef-planner"
   }
+  cache-from = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:tools-${NORMALIZED_GIT_BRANCH_OR_PR}",
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:tools-main",
+  ] : []
+  cache-to = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:tools-${NORMALIZED_GIT_BRANCH_OR_PR},mode=max",
+  ] : []
   secret = [
     "id=GIT_CREDENTIALS"
   ]
@@ -121,9 +171,18 @@ target "tools-builder" {
 target "forge-builder" {
   dockerfile = "docker/builder/builder.Dockerfile"
   target     = "forge-builder"
+  context    = "."
   contexts = {
     builder-base = "target:builder-base"
+    chef-planner = "target:chef-planner"
   }
+  cache-from = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:forge-${NORMALIZED_GIT_BRANCH_OR_PR}",
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:forge-main",
+  ] : []
+  cache-to = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:forge-${NORMALIZED_GIT_BRANCH_OR_PR},mode=max",
+  ] : []
   secret = [
     "id=GIT_CREDENTIALS"
   ]
@@ -132,9 +191,18 @@ target "forge-builder" {
 target "indexer-builder" {
   dockerfile = "docker/builder/builder.Dockerfile"
   target     = "indexer-builder"
+  context    = "."
   contexts = {
     builder-base = "target:builder-base"
+    chef-planner = "target:chef-planner"
   }
+  cache-from = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:indexer-${NORMALIZED_GIT_BRANCH_OR_PR}",
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:indexer-main",
+  ] : []
+  cache-to = CI == "true" ? [
+    "type=registry,ref=${GCP_DOCKER_ARTIFACT_REPO}/builder-cache:indexer-${NORMALIZED_GIT_BRANCH_OR_PR},mode=max",
+  ] : []
   secret = [
     "id=GIT_CREDENTIALS"
   ]

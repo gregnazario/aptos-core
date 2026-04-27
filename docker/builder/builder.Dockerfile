@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1.4
 
-FROM rust as rust-base
+FROM rust AS rust-base
 WORKDIR /aptos
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
@@ -41,9 +41,19 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${CLANG_VERSION} 100 \
     && update-alternatives --install /usr/bin/lld lld /usr/bin/lld-${CLANG_VERSION} 100
 
+### cargo-chef base — shared by the planner and all builder stages ###
+FROM rust-base AS cargo-chef-base
+RUN cargo install cargo-chef --locked
 
-### Build Rust code ###
-FROM rust-base as builder-base
+### Planner: scan workspace Cargo manifests and emit a dependency recipe ###
+# This stage only needs Cargo files (no compiled artifacts), so it stays small
+# and is invalidated only when Cargo.toml / Cargo.lock files change.
+FROM cargo-chef-base AS chef-planner
+COPY --link . /aptos/
+RUN cargo chef prepare --recipe-path recipe.json
+
+### Shared build environment — tooling only, no source ###
+FROM cargo-chef-base AS builder-base
 
 # Confirm that this Dockerfile is being invoked from an appropriate builder.
 # See https://github.com/aptos-labs/aptos-core/pull/2471
@@ -66,39 +76,117 @@ RUN ARCHITECTURE=$(uname -m | sed -e "s/arm64/arm_64/g" | sed -e "s/aarch64/aarc
     && unzip -o "protoc-21.5-linux-$ARCHITECTURE.zip" -d /usr/local 'include/*' \
     && chmod +x "/usr/local/bin/protoc" \
     && rm "protoc-21.5-linux-$ARCHITECTURE.zip"
+
 RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git_credentials \
     git config --global credential.helper store
 
-COPY --link . /aptos/
+# Copy cargo configuration so the cook steps below use the correct linker
+# (.cargo/config.toml sets clang + lld for x86_64-unknown-linux-gnu).
+COPY --link .cargo/ /aptos/.cargo/
+COPY --link rust-toolchain.toml /aptos/rust-toolchain.toml
 
-FROM builder-base as aptos-node-builder
+### aptos-node builder ###
+FROM builder-base AS aptos-node-builder
 
+# Cook dependencies: this layer is cached until Cargo.toml / Cargo.lock change.
+# The performance profile requires an extra --config flag for cross-language LTO.
+COPY --from=chef-planner /aptos/recipe.json recipe.json
 RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
     --mount=type=cache,target=/usr/local/cargo/git,id=node-builder-cargo-git-cache \
     --mount=type=cache,target=/usr/local/cargo/registry,id=node-builder-cargo-registry-cache \
-    --mount=type=cache,target=/aptos/target,id=node-builder-target-cache-trixie \
+    if [ "${PROFILE:-release}" = "performance" ]; then \
+      cargo chef cook --profile=performance --config .cargo/performance.toml \
+          -p aptos-node -p aptos-debugger --recipe-path recipe.json; \
+    else \
+      cargo chef cook --locked --profile=${PROFILE:-release} \
+          -p aptos-node -p aptos-debugger --recipe-path recipe.json; \
+    fi
+
+# Build application code. .dockerignore excludes target/, so pre-compiled deps
+# from the cook step above are preserved when source is copied in.
+COPY --link . /aptos/
+RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
+    --mount=type=cache,target=/usr/local/cargo/git,id=node-builder-cargo-git-cache \
+    --mount=type=cache,target=/usr/local/cargo/registry,id=node-builder-cargo-registry-cache \
     docker/builder/build-with-feature.sh
 
-FROM builder-base as forge-builder
+### forge builder ###
+FROM builder-base AS forge-builder
 
+COPY --from=chef-planner /aptos/recipe.json recipe.json
 RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
     --mount=type=cache,target=/usr/local/cargo/git,id=forge-builder-cargo-git-cache \
     --mount=type=cache,target=/usr/local/cargo/registry,id=forge-builder-cargo-registry-cache \
-    --mount=type=cache,target=/aptos/target,id=forge-builder-target-cache-trixie \
+    if [ "${PROFILE:-release}" = "performance" ]; then \
+      cargo chef cook --profile=performance --config .cargo/performance.toml \
+          -p aptos-forge-cli --recipe-path recipe.json; \
+    else \
+      cargo chef cook --locked --profile=${PROFILE:-release} \
+          -p aptos-forge-cli --recipe-path recipe.json; \
+    fi
+
+COPY --link . /aptos/
+RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
+    --mount=type=cache,target=/usr/local/cargo/git,id=forge-builder-cargo-git-cache \
+    --mount=type=cache,target=/usr/local/cargo/registry,id=forge-builder-cargo-registry-cache \
     docker/builder/build-forge-cli.sh
 
-FROM builder-base as tools-builder
+### tools builder ###
+FROM builder-base AS tools-builder
 
+COPY --from=chef-planner /aptos/recipe.json recipe.json
 RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
     --mount=type=cache,target=/usr/local/cargo/git,id=tools-builder-cargo-git-cache \
     --mount=type=cache,target=/usr/local/cargo/registry,id=tools-builder-cargo-registry-cache \
-    --mount=type=cache,target=/aptos/target,id=tools-builder-target-cache-trixie \
+    cargo chef cook --locked --profile=cli \
+        -p aptos \
+        -p aptos-faucet-service \
+        -p aptos-openapi-spec-generator \
+        -p aptos-telemetry-service \
+        -p aptos-keyless-pepper-service \
+        -p aptos-transaction-emitter \
+        -p aptos-release-builder \
+        --recipe-path recipe.json
+
+COPY --link . /aptos/
+RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
+    --mount=type=cache,target=/usr/local/cargo/git,id=tools-builder-cargo-git-cache \
+    --mount=type=cache,target=/usr/local/cargo/registry,id=tools-builder-cargo-registry-cache \
     docker/builder/build-tools-with-cli-profile.sh
 
-FROM builder-base as indexer-builder
+### indexer builder ###
+FROM builder-base AS indexer-builder
 
+COPY --from=chef-planner /aptos/recipe.json recipe.json
 RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
     --mount=type=cache,target=/usr/local/cargo/git,id=indexer-builder-cargo-git-cache \
     --mount=type=cache,target=/usr/local/cargo/registry,id=indexer-builder-cargo-registry-cache \
-    --mount=type=cache,target=/aptos/target,id=indexer-builder-target-cache-trixie \
+    if [ "${PROFILE:-release}" = "performance" ]; then \
+      cargo chef cook --profile=performance --config .cargo/performance.toml \
+          -p aptos-indexer-grpc-cache-worker \
+          -p aptos-indexer-grpc-file-store \
+          -p aptos-indexer-grpc-data-service \
+          -p aptos-nft-metadata-crawler \
+          -p aptos-indexer-grpc-file-checker \
+          -p aptos-indexer-grpc-data-service-v2 \
+          -p aptos-indexer-grpc-manager \
+          -p aptos-indexer-grpc-gateway \
+          --recipe-path recipe.json; \
+    else \
+      cargo chef cook --locked --profile=${PROFILE:-release} \
+          -p aptos-indexer-grpc-cache-worker \
+          -p aptos-indexer-grpc-file-store \
+          -p aptos-indexer-grpc-data-service \
+          -p aptos-nft-metadata-crawler \
+          -p aptos-indexer-grpc-file-checker \
+          -p aptos-indexer-grpc-data-service-v2 \
+          -p aptos-indexer-grpc-manager \
+          -p aptos-indexer-grpc-gateway \
+          --recipe-path recipe.json; \
+    fi
+
+COPY --link . /aptos/
+RUN --mount=type=secret,id=GIT_CREDENTIALS,target=/root/.git-credentials \
+    --mount=type=cache,target=/usr/local/cargo/git,id=indexer-builder-cargo-git-cache \
+    --mount=type=cache,target=/usr/local/cargo/registry,id=indexer-builder-cargo-registry-cache \
     docker/builder/build-indexer.sh
